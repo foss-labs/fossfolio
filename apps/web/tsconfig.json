@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "pages/index.js",
+        "jest.setup.ts",
+        "jest.config.js"
+    ],
+    "exclude": ["node_modules"],
+    "baseUrl": ".",
+    "compilerOptions": {
+        "incremental": true,
+        "skipDefaultLibCheck": false,
+        "jsx": "preserve",
+        "paths": {
+            "@app/*": ["./*"]
+        }
+    },
+    "typeRoots": ["./node_modules/@types/", "./types.d.ts"]
+}
