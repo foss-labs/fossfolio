@@ -10,5 +10,7 @@ export const theme = extendTheme({
     config,
     fonts: {
         heading: `'inter', sans-serif`,
+        Text: `'inter', sans-serif`,
+        body: `'inter', sans-serif`,
     },
 });
