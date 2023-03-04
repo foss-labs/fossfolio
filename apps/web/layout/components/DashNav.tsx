@@ -7,7 +7,7 @@ export const DashNav = () => (
     <Flex
         flexDirection="column"
         alignItems="center"
-        bg="#D0D5DD"
+        bg="#f9f5ff"
         w="220px"
         p="9"
         pt="64px"
