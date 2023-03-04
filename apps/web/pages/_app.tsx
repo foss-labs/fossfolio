@@ -5,6 +5,7 @@ import SuperTokens, { SuperTokensWrapper } from 'supertokens-auth-react';
 import { authConfig } from '@app/auth';
 import { theme } from '@app/theme';
 import { Child } from '@app/types';
+import '@fontsource/inter';
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {

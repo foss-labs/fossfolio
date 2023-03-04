@@ -7,6 +7,7 @@ export const Event = () => (
         borderRadius="12px"
         width="280px"
         background="#FCFCFD"
+        shadow="md"
     >
         <Image src="/placeholder.png" borderTopRadius="12px" />
         <VStack width="100%" paddingInline="8px">
@@ -38,15 +39,6 @@ export const Event = () => (
                 </Text>
             </Flex>
             <Flex flexWrap="wrap" width="100%" columnGap="5px" rowGap="5px">
-                <Badge
-                    textTransform="capitalize"
-                    backgroundColor="#F2F4F7"
-                    textColor="#344054"
-                    padding="3px"
-                    borderRadius="18px"
-                >
-                    265 Participants
-                </Badge>
                 <Badge
                     textTransform="capitalize"
                     backgroundColor="#F2F4F7"
