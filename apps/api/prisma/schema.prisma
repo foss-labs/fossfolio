@@ -55,8 +55,14 @@ model Event {
   organizers              User[]
   teams                   Team[]
   members                 TeamMembers[]
+  
+  academicStatus          AcademicStatus
 
+}
 
+enum AcademicStatus {
+  Student
+  Professional
 }
 
 model Prizes {
