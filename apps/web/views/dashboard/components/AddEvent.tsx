@@ -6,10 +6,9 @@ export const AddEvent = () => (
     <Center
         border="1px dotted rgba(208, 213, 221, 1)"
         w="300px"
-        h="300px"
+        h="auto"
         borderWidth="3px"
         borderRadius="2xl"
-        mt="30px"
         flexDirection="column"
         position="relative"
         _hover={{ cursor: 'pointer', bg: '#f2f4f7' }}
