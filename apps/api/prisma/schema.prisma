@@ -10,8 +10,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Hackathon {
+  id                    String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+  slug                  String
+  title                 String
+  image                 String
+  tags                  tag[]
+  registrationStarting  DateTime
+  registrationEnding    DateTime
+  eventStarting         DateTime
+  eventEnding           DateTime
+  description           String
+  submissionGuidelines  String
+  venue                 String
+  mode                  String
+  rules                 String
+  twitter               String?
+  website               String?
+  instagram             String?
+  email                 String?
+  linkedin              String?
+  discord               String?
+  FAQ                   Json[]
+  fee                   String?
+  orgnizersPrize        Int
+  partnersPrize         Json[]
+}
+
+model level {
+    id    String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+    name  String     @unique
+}
+
+model organizer {
+    id    String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+    name  String
+}
+
+model tag {
+    id        String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+    name      String     @unique
+    hackathon Hackathon[]
+}
+
+model participant {
+  id          String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+  name        String
+  email       String
+  description String
+
 }
