@@ -34,6 +34,14 @@ export const MainNav = () => {
                         _hover={{ cursor: 'pointer' }}
                         color="#667085"
                     >
+                        <Link href="/events">Events</Link>
+                    </Heading>
+                    <Heading
+                        as="nav"
+                        fontSize="15px"
+                        _hover={{ cursor: 'pointer' }}
+                        color="#667085"
+                    >
                         <Link href="/dashboard">Dashboard</Link>
                     </Heading>
                     <Heading
