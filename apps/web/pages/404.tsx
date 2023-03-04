@@ -1,9 +1,9 @@
 import { Button, Center, Flex, Heading } from '@chakra-ui/react';
 import React from 'react';
 import Image from 'next/image';
-import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { useRouter } from 'next/router';
+import { NextPageWithLayout } from './_app';
 
 const Error: NextPageWithLayout = () => {
     const router = useRouter();
@@ -36,6 +36,6 @@ const Error: NextPageWithLayout = () => {
     );
 };
 
-Error.Layout = HomeLayout;
+Error.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
 
 export default Error;

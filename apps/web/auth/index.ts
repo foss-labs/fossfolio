@@ -1,21 +1,15 @@
-import ThirdParty, { Google } from 'supertokens-auth-react/recipe/thirdparty';
-import Session from 'supertokens-auth-react/recipe/session';
-import { ENV } from '@app/config';
+import SuperTokens from 'supertokens-web-js';
+import Session from 'supertokens-web-js/recipe/session';
+import ThirdParty from 'supertokens-web-js/recipe/thirdparty';
 
-export const authConfig = () => ({
-    appInfo: {
-        appName: ENV.appName,
-        apiDomain: ENV.apiDomain,
-        websiteDomain: ENV.domain,
-        apiBasePath: ENV.apiPath,
-        websiteBasePath: ENV.webPath,
-    },
-    recipeList: [
-        ThirdParty.init({
-            signInAndUpFeature: {
-                providers: [Google.init()],
-            },
-        }),
-        Session.init(),
-    ],
-});
+const initAuth = () => {
+    SuperTokens.init({
+        appInfo: {
+            apiDomain: process.env.NEXT_PUBLIC_API_DOMAIN as string,
+            appName: process.env.NEXT_PUBLIC_SUPERTOKEN_APP_NAME as string,
+        },
+        recipeList: [Session.init(), ThirdParty.init()],
+    });
+};
+
+export default initAuth;
