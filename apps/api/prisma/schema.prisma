@@ -10,8 +10,97 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Hackathon {
+  id                    String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+  slug                  String     @unique
+  organizerId           String
+  organizer             Organizer   @relation(fields: [organizerId], references: [id])
+  title                 String
+  image                 String
+  tags                  Tag[]
+  registrationStarting  DateTime
+  registrationEnding    DateTime
+  eventStarting         DateTime
+  eventEnding           DateTime
+  description           String
+  submissionGuidelines  String
+  venue                 String
+  mode                  Mode
+  rules                 String
+  twitter               String?
+  website               String?
+  instagram             String?
+  email                 String?
+  linkedin              String?
+  discord               String?
+  FAQ                   Json[]
+  fee                   String?
+  orgnizersPrize        Int
+  sponsor               Sponsor[]
+  participantStatus     ParticipatedHacks[]
+}
+
+model Sponsor {
+    id  String  @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+    name String
+    level Level
+    hackId String
+    hackathon Hackathon @relation(fields: [hackId], references: [id])
+    price Int?
+}
+
+enum Mode {
+  ONLINE
+  OFFLINE
+}
+
+enum Level {
+    Platinum
+    Gold
+    Silver
+    Bronze
+}
+
+model Organizer {
+    id      String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+    name    String
+    hackId  Hackathon[]
+}
+
+model Tag {
+    id        String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+    name      String     @unique
+    hackathon Hackathon[]
+}
+
+model Participant {
+  id                     String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+  participatedHacks      ParticipatedHacks[]
+  name                   String
+  email                  String
+  description            String
+  githubId               String?
+  Skills                 Skill[]
+}
+
+model ParticipatedHacks{
+  id            String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+  hackId        String 
+  hackathon     Hackathon @relation(fields: [hackId],references: [id])
+  participantId String
+  participant   Participant @relation(fields: [participantId],references: [id])
+  status        Status
+  projectLink   String
+  videoLink     String
+}
+
+enum Status {
+  Submitted
+  NotSubmitted
+}
+
+model Skill {
+  id   String @id @unique @default(dbgenerated("gen_random_uuid()::TEXT"))
+  name String @unique
+  participant Participant[]
 }
