@@ -4,11 +4,17 @@ import ThirdParty from 'supertokens-node/recipe/thirdparty';
 import Dashboard from 'supertokens-node/recipe/dashboard';
 import UserMetadata from 'supertokens-node/recipe/usermetadata';
 import { Inject, Injectable } from '@nestjs/common';
+import { catchError, firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
 import { ConfigInjectionToken, AuthModuleConfig } from '../config.interface';
 
 @Injectable()
 export class SupertokensService {
-    constructor(@Inject(ConfigInjectionToken) private config: AuthModuleConfig) {
+    constructor(
+        @Inject(ConfigInjectionToken) private config: AuthModuleConfig,
+        private httpService: HttpService,
+    ) {
         supertokens.init({
             appInfo: this.config.appInfo,
             supertokens: {
@@ -32,43 +38,32 @@ export class SupertokensService {
                     override: {
                         apis: (originalImplementation) => ({
                             ...originalImplementation,
-                            /* signInUpPOST: async (input) => {
+
+                            async signInUpPOST(input) {
                                 if (originalImplementation.signInUpPOST === undefined) {
                                     throw Error('Should never come here');
                                 }
+
                                 const response = await originalImplementation.signInUpPOST(input);
+
                                 if (response.status === 'OK') {
-                                    if (response.createdNewUser) {
-                                        const { user } = response;
-                                        const { email, thirdParty, id } = user;
-                                        const { userId } = thirdParty;
-                                        const { data } = await firstValueFrom(
-                                            this.httpService
-                                                .get(`https://api.github.com/user/${userId}`)
-                                                .pipe(
-                                                    catchError((error: AxiosError) => {
-                                                        this.logger.error(error.response?.data);
-                                                        this.logger.log(
-                                                            error.message,
-                                                            'Github API Error',
-                                                        );
-                                                        throw error;
-                                                    }),
-                                                ),
-                                        );
-                                        const github = {
-                                            id,
-                                            name: data.name,
-                                            email,
-                                            avatar: data.avatar_url || null,
-                                            githubid: data.login || null,
-                                        };
-                                        const temp = await this.profileSevice.create(github);
-                                        this.logger.log(temp.message);
-                                    }
+                                    const accessToken = response.authCodeResponse.access_token;
+                                    const { data } = await firstValueFrom(
+                                        httpService
+                                            .get(
+                                                ` https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
+                                            )
+                                            .pipe(
+                                                catchError((err: AxiosError) => {
+                                                    throw err.response?.data;
+                                                }),
+                                            ),
+                                    );
+                                    console.log(data);
                                 }
+
                                 return response;
-                            }, */
+                            },
                         }),
                     },
                 }),

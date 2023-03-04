@@ -1,9 +1,9 @@
 import React from 'react';
-import { NextPageWithLayout } from 'next';
 import { DashLayout } from '@app/layout';
+import { NextPageWithLayout } from '../_app';
 
 const Page: NextPageWithLayout = () => <div>sdfbdhjs</div>;
 
-Page.Layout = DashLayout;
+Page.getLayout = (page) => <DashLayout>{page}</DashLayout>;
 
 export default Page;
