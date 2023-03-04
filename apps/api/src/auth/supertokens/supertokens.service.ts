@@ -51,7 +51,7 @@ export class SupertokensService {
                                     const { data } = await firstValueFrom(
                                         httpService
                                             .get(
-                                                ` https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
+                                                `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
                                             )
                                             .pipe(
                                                 catchError((err: AxiosError) => {
@@ -59,6 +59,7 @@ export class SupertokensService {
                                                 }),
                                             ),
                                     );
+                                    // @ts-ignore
                                     console.log(data);
                                 }
 
