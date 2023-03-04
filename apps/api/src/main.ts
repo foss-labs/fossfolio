@@ -20,8 +20,8 @@ async function bootstrap() {
     await app.register(plugin);
     fastify.setErrorHandler(errorHandler());
     const config = new DocumentBuilder()
-        .setTitle('SHN Platform APIs')
-        .setDescription('APIs provided by SHN Platform')
+        .setTitle('FOSSFolio')
+        .setDescription('APIs provided by FOSSFolio')
         .setVersion('0.0.1')
         .build();
     const document = SwaggerModule.createDocument(app, config);
