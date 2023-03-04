@@ -1,8 +1,8 @@
 import React from 'react';
-import { NextPageWithLayout } from 'next';
 import { DashLayout } from '@app/layout';
 import { Team } from '@app/views/dashboard';
 import { Flex } from '@chakra-ui/react';
+import { NextPageWithLayout } from '../_app';
 
 const Data = {
     name: 'Team',
@@ -35,6 +35,6 @@ const Page: NextPageWithLayout = () => (
     </Flex>
 );
 
-Page.Layout = DashLayout;
+Page.getLayout = (page) => <DashLayout>{page}</DashLayout>;
 
 export default Page;

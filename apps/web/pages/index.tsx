@@ -1,6 +1,6 @@
 import { HomeLayout } from '@app/layout';
 import { Center, Heading } from '@chakra-ui/react';
-import { NextPageWithLayout } from 'next';
+import { NextPageWithLayout } from './_app';
 
 const Home: NextPageWithLayout = () => (
     <Center h="90vh" flexDir="column">
@@ -11,6 +11,5 @@ const Home: NextPageWithLayout = () => (
     </Center>
 );
 
-Home.Layout = HomeLayout;
-
+Home.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
 export default Home;
