@@ -14,7 +14,7 @@ model Hackathon {
   id                    String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
   slug                  String     @unique
   organizerId           String
-  organizer             Organizer   @relation(fields: [organizerId], references: [id])
+  organizer             User[]
   title                 String
   image                 String
   tags                  Tag[]
@@ -24,7 +24,7 @@ model Hackathon {
   eventEnding           DateTime
   description           String
   submissionGuidelines  String
-  venue                 String
+  venue                 String?
   mode                  Mode
   rules                 String
   twitter               String?
@@ -41,12 +41,12 @@ model Hackathon {
 }
 
 model Sponsor {
-    id  String  @id @default(dbgenerated("gen_random_uuid()::TEXT"))
-    name String
-    level Level
-    hackId String
+    id        String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+    name      String
+    level     Level
+    hackId    String
     hackathon Hackathon @relation(fields: [hackId], references: [id])
-    price Int?
+    price     Int?
 }
 
 enum Mode {
@@ -61,21 +61,16 @@ enum Level {
     Bronze
 }
 
-model Organizer {
-    id      String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
-    name    String
-    hackId  Hackathon[]
-}
-
 model Tag {
-    id        String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
-    name      String     @unique
+    id        String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+    name      String @unique
     hackathon Hackathon[]
 }
 
-model Participant {
-  id                     String     @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+model User {
+  id                     String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
   participatedHacks      ParticipatedHacks[]
+  hackId                 Hackathon[]
   name                   String
   email                  String
   description            String
@@ -88,10 +83,10 @@ model ParticipatedHacks{
   hackId        String 
   hackathon     Hackathon @relation(fields: [hackId],references: [id])
   participantId String
-  participant   Participant @relation(fields: [participantId],references: [id])
+  participant   User @relation(fields: [participantId],references: [id])
   status        Status
-  projectLink   String
-  videoLink     String
+  projectLink   String?
+  videoLink     String?
 }
 
 enum Status {
@@ -102,5 +97,5 @@ enum Status {
 model Skill {
   id   String @id @unique @default(dbgenerated("gen_random_uuid()::TEXT"))
   name String @unique
-  participant Participant[]
+  user User[]
 }
