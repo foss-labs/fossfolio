@@ -19,7 +19,7 @@ model User {
   skills                  Skill[]
   organized               Event[]
   participated            TeamMembers[]
-
+  Student                 Boolean
 }
 
 model Event {
