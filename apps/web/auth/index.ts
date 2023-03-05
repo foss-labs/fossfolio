@@ -1,15 +1,26 @@
-import SuperTokens from 'supertokens-web-js';
 import Session from 'supertokens-web-js/recipe/session';
 import ThirdParty from 'supertokens-web-js/recipe/thirdparty';
+import Router from 'next/router';
 
-const initAuth = () => {
-    SuperTokens.init({
-        appInfo: {
-            apiDomain: process.env.NEXT_PUBLIC_API_DOMAIN as string,
-            appName: process.env.NEXT_PUBLIC_SUPERTOKEN_APP_NAME as string,
+const initAuth = () => ({
+    appInfo: {
+        appName: 'FOSSFolio',
+        apiDomain: 'http://localhost:3001',
+        // @ts-ignore
+        websiteDomain: 'http://localhost:3000',
+        apiBasePath: '/auth',
+        websiteBasePath: '/auth',
+    },
+    recipeList: [ThirdParty.init(), Session.init()],
+    windowHandler: (oI: any) => ({
+        ...oI,
+        location: {
+            ...oI.location,
+            setHref: (href: string) => {
+                Router.push(href);
+            },
         },
-        recipeList: [Session.init(), ThirdParty.init()],
-    });
-};
+    }),
+});
 
 export default initAuth;

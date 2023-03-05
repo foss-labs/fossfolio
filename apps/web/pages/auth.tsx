@@ -1,27 +1,20 @@
-import { useAuth } from '@app/hooks';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { signInAndUp } from 'supertokens-web-js/recipe/thirdparty';
+import React, { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import SuperTokens, { redirectToAuth } from 'supertokens-auth-react';
 
-const Auth = () => {
-    const router = useRouter();
-    const { getData } = useAuth();
-    async function handleGithubCallback() {
-        try {
-            const response = await signInAndUp();
-            if (response.status === 'OK') {
-                await getData();
-                await router.push('/');
-            }
-        } catch (err: any) {
-            router.push('/error');
-        }
-    }
+const SuperTokensComponentNoSSR = dynamic<
+    React.ComponentProps<typeof SuperTokens.getRoutingComponent>
+    // eslint-disable-next-line no-promise-executor-return
+>(new Promise((res) => res(SuperTokens.getRoutingComponent)), { ssr: false });
 
+// eslint-disable-next-line react/function-component-definition
+export default function Auth() {
+    // if the user visits a page that is not handled by us (like /auth/random), then we redirect them back to the auth page.
     useEffect(() => {
-        handleGithubCallback();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (SuperTokens.canHandleRoute() === false) {
+            redirectToAuth();
+        }
     }, []);
-    return <div>Logging In</div>;
-};
-export default Auth;
+
+    return <SuperTokensComponentNoSSR />;
+}
