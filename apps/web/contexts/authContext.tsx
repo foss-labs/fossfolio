@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: Child) => {
             }
             if (data.success && data.data) {
                 setUser(data.data);
-                if (data.data.mobile) setIsProfileComplete(true);
+                if (data.data) setIsProfileComplete(true);
             }
         } catch {
             router.push('/error');
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: Child) => {
         setUserLoading(true);
         try {
             const authUrl = await getAuthorisationURLWithQueryParamsAndSetState({
-                providerId: 'google',
+                providerId: 'github',
                 authorisationURL: `${process.env.NEXT_PUBLIC_WEBSITE_DOMAIN}/auth`,
             });
             router.push(authUrl);

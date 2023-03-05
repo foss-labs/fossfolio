@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String          @unique @id
+  email               String          @unique
+  githubID            String          @unique
+  name                String?
+  mobile              String?
+
+  bio                 String?
+  avatar              String
+
+  student             Boolean @default(true)
+  organized           Event[]
+  participated        TeamMember[]
+}
+
+model Event {
+  id                  String          @id @unique @db.Uuid @default(uuid())
+  slug                    String @unique
+  title                   String
+  image                   String
+  description             String
+  guidelines              String
+  status                  EventStatus @default(PENDING)
+
+  mode                    Mode @default(ONLINE)
+  venue                   String?
+
+  registrationStart       DateTime
+  registrationEnd         DateTime
+  eventStarting           DateTime
+  eventEnding             DateTime
+
+  twitter                 String?
+  email                   String?
+  website                 String?
+  instagram               String?
+  linkedin                String?
+  discord                 String?
+  teams                   Team[]
+  organizers              User[]
+  tags                    Tag[]
+
+  participants            TeamMember[]
+}
+
+model Team {
+  id                  String          @id @unique @db.Uuid @default(uuid())
+  name                String
+  repo                String
+  inviteCode          String?         @default(cuid()) @unique
+  event               Event           @relation(fields: [eventId], references: [id])
+  eventId             String          @db.Uuid
+  members             TeamMember[]
+}
+
+model TeamMember{
+  id                  String          @unique @db.Uuid @default(uuid())
+  role                Role            @default(MEMBER)
+  team                Team            @relation(fields: [teamId], references: [id])
+  teamId              String          @db.Uuid
+  user                User            @relation(fields: [userId], references: [id])
+  userId              String
+  event               Event           @relation(fields: [eventId], references: [id])
+  eventId             String          @db.Uuid
+  @@unique([userId, eventId])
+  @@unique([userId, teamId])
+  @@id([userId, eventId])
+}
+
+model Tag{
+  id        String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+  name      String @unique
+  events    Event[]
+}
+
+enum Role {
+  MEMBER
+  LEADER
+}
+
+enum Mode {
+  OFFLINE
+  ONLINE
+  HYBRID
+}
+
+enum EventStatus {
+  PENDING
+  LISTED
+  UPDATION
+}
