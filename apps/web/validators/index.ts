@@ -63,5 +63,13 @@ export const userInfo = Yup.object({
 
 export const regEvent = Yup.object({
     name: Yup.string().required(),
-    email: Yup.string().required(),
+    repo: Yup.string()
+        .matches(/^https:\/\/github.com\/[^/]+\/[^/]+$/g)
+        .required('Enter a Valid Github Repo'),
+    lead: Yup.string().required('Enter your Email'),
+    members: Yup.array()
+        .min(1)
+        .max(4)
+        .required('Team must have at least one member')
+        .of(Yup.string().nullable()),
 });
