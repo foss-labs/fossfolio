@@ -6,7 +6,7 @@ import { signInAndUp } from 'supertokens-web-js/recipe/thirdparty';
 const Auth = () => {
     const router = useRouter();
     const { getData } = useAuth();
-    async function handleGoogleCallback() {
+    async function handleGithubCallback() {
         try {
             const response = await signInAndUp();
             if (response.status === 'OK') {
@@ -19,9 +19,9 @@ const Auth = () => {
     }
 
     useEffect(() => {
-        handleGoogleCallback();
+        handleGithubCallback();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    return <h3>Logging In</h3>;
+    return <div>Logging In</div>;
 };
 export default Auth;
