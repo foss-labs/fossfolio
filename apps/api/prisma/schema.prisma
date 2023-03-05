@@ -56,6 +56,15 @@ model Event {
   members                 TeamMembers[]
 }
 
+enum TeamStatus {
+  PENDING
+  INREVIEW
+  INVITATION
+  ACCEPTED
+  REJECTED
+  NOTACCEPTED
+}
+
 model Prizes {
   id          String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
   eventId     String
@@ -119,6 +128,7 @@ model Team {
 
   members       TeamMembers[]
   createdAt     DateTime @default(now())
+  Status        TeamStatus @default(PENDING)
 
 }
 
