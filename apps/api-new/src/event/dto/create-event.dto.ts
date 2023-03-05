@@ -95,7 +95,7 @@ export class CreateEventDto {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    organizer: string;
+    organizerId: string;
 
     @ApiProperty()
     @IsArray()

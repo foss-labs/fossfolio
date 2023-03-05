@@ -26,7 +26,7 @@ model User {
 }
 
 model Event {
-  id                  String          @id @unique @db.Uuid @default(uuid())
+  id                      String          @id @unique @db.Uuid @default(uuid())
   slug                    String @unique
   title                   String
   image                   String
