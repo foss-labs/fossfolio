@@ -21,9 +21,10 @@ export const EventValidator = Yup.object({
     image: Yup.string().required(),
     description: Yup.string().required(),
     guidelines: Yup.string().required(),
-    mode: Yup.string().required(),
-    venue: Yup.string(),
-    fee: Yup.number().required(),
+    mode: Yup.object({
+        label: Yup.string().required(),
+        value: Yup.string().required(),
+    }),
 
     registrationStart: Yup.date().required(),
     registrationEnd: Yup.date().required(),
@@ -36,23 +37,6 @@ export const EventValidator = Yup.object({
     instgram: Yup.string(),
     linkedin: Yup.string(),
     discord: Yup.string(),
-
-    faq: Yup.array().of(
-        Yup.object({
-            question: Yup.string().required(),
-            answer: Yup.string().required(),
-        }),
-    ),
-    sponsors: Yup.array().of(
-        Yup.object({
-            name: Yup.string().required(),
-            description: Yup.string().required(),
-            tier: Yup.string().required(),
-            prize: Yup.object({
-                prize: Yup.string().required(),
-            }),
-        }),
-    ),
 });
 
 export const TeamValidator = Yup.object({
@@ -61,4 +45,23 @@ export const TeamValidator = Yup.object({
         .required()
         .matches(/^https:\/\/github.com\/[^/]+\/[^/]+$/g),
     description: Yup.string().required('Enter a Valid Description'),
+});
+
+const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+export const userInfo = Yup.object({
+    name: Yup.string().required(),
+    email: Yup.string().required(),
+    phoneNumber: Yup.string()
+        .required()
+        .min(10)
+        .max(10)
+        .matches(phoneRegExp, 'Phone number is not valid'),
+    bio: Yup.string(),
+});
+
+export const regEvent = Yup.object({
+    name: Yup.string().required(),
+    email: Yup.string().required(),
 });
