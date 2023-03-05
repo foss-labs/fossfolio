@@ -43,12 +43,12 @@
 FossFolio is and open source web application for people to Find, Host and Manage Hackathons.
 
 ## Find Hackathons
-Users can go to the website and see a directory of all the published hackathons which are ongoin and upcoming at site.tld/hackathons. Users can find the one they like to join and register for the event on the site by filling in the necessary information. Users get a dashboard where the can see all the hackthons they've registered for and options to edit their profile information.
+Users can go to the website and see a directory of all the published hackathons which are ongoing and upcoming. Users can find the ones they like to join and register for the event on the site by filling in the necessary information. Users get a dashboard where the can see all the hackathons they've registered for and options to edit their profile information.
 
 ## Host Hackathons
-Users who want to host hackathons can use the "Create Hackathon" option and fill in the necessary details in a form and publish the event. Upon publishing everyone can see that event on the site.tld+/hackathons.
+Users who want to host hackathons can use the "Create Hackathon" option and fill in the necessary details in a form and publish the event. Upon publishing everyone can see that event on the site.
 
-### Managin Created Hackathons
+### Managing Created Hackathons
 Users who are hosting hackathons will get a detailed dashboard that displays the following data:
 - Total number of participants
 - Total number of teams
