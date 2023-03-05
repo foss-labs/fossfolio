@@ -1,6 +1,5 @@
 import React from 'react';
 import { DashLayout } from '@app/layout';
-import { Team } from '@app/views/dashboard';
 import {
     Badge,
     Box,
@@ -12,32 +11,11 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { FiSearch } from 'react-icons/fi';
-import { NextPageWithLayout } from '../_app';
-
-const Data = {
-    name: 'Team',
-    users: [
-        {
-            name: 'sreehri',
-            email: 'sreehri@gmail.com',
-            dp: './.',
-        },
-        {
-            name: 'sreehri',
-            email: 'sreehri@gmail.com',
-            dp: './.',
-        },
-        {
-            name: 'sreehri',
-            email: 'sreehri@gmail.com',
-            dp: './.',
-        },
-    ],
-};
+import { NextPageWithLayout } from '../../_app';
 
 const Page: NextPageWithLayout = () => (
     <Flex flexDir="column" p="70px">
-        <Flex flexDir="row" ml="20px" justifyContent="space-between">
+        <Flex flexDir="row" justifyContent="space-between">
             <Box>
                 <Heading alignSelf="flex-start" fontSize="15px">
                     FOSS HACK 3.0
@@ -59,13 +37,6 @@ const Page: NextPageWithLayout = () => (
                 <Icon as={FiSearch} />
             </InputRightElement>
         </InputGroup>
-        <Flex flexWrap="wrap" columnGap="40px" mt="40px" rowGap="30px">
-            <Team name={Data.name} users={Data.users} />
-            <Team name={Data.name} users={Data.users} />
-            <Team name={Data.name} users={Data.users} />
-            <Team name={Data.name} users={Data.users} />
-            <Team name={Data.name} users={Data.users} />
-        </Flex>
     </Flex>
 );
 

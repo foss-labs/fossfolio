@@ -1,5 +1,6 @@
 import { Flex, Heading, Icon } from '@chakra-ui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { FiArrowLeft, FiHome, FiUser } from 'react-icons/fi';
 
@@ -44,14 +45,16 @@ export const DashNav = () => (
                 Teams
             </Heading>
         </Flex>
-        <Heading
-            fontSize="12px"
-            mt="64px"
-            _hover={{ cursor: 'pointer', color: '#6941C6' }}
-            color="#42307D"
-        >
-            <Icon as={FiArrowLeft} mr="9px" />
-            Your Hackthons
-        </Heading>
+        <Link href="/dashboard">
+            <Heading
+                fontSize="12px"
+                mt="64px"
+                _hover={{ cursor: 'pointer', color: '#6941C6' }}
+                color="#42307D"
+            >
+                <Icon as={FiArrowLeft} mr="9px" />
+                Your Hackthons
+            </Heading>
+        </Link>
     </Flex>
 );
