@@ -19,7 +19,6 @@ import { InferType } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { EventValidator } from '@app/validators';
-import { FileInput } from './File';
 
 interface Prop {
     isOpen: boolean;
@@ -28,7 +27,7 @@ interface Prop {
 
 type Event = InferType<typeof EventValidator>;
 
-export const CreateHackModal = ({ isOpen, onClose }: Prop) => {
+export const RegisterHack = ({ isOpen, onClose }: Prop) => {
     const {
         register,
         handleSubmit,
@@ -50,7 +49,7 @@ export const CreateHackModal = ({ isOpen, onClose }: Prop) => {
                 <form onSubmit={handleSubmit(handleFormData)}>
                     <ModalHeader>
                         <Heading as="h2" fontSize="30px">
-                            Create a Hackathon
+                            Create Team
                         </Heading>
                     </ModalHeader>
                     <ModalCloseButton />
@@ -104,11 +103,6 @@ export const CreateHackModal = ({ isOpen, onClose }: Prop) => {
                                 {...register('description')}
                             />
                             <FormErrorMessage>description should not be empty</FormErrorMessage>
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel fontSize="14px">Your cover image</FormLabel>
-                            <FileInput />
-                            <FormErrorMessage>image should not be empmty</FormErrorMessage>
                         </FormControl>
                         <FormControl isInvalid={!!errors.website}>
                             <FormLabel fontSize="14px">Website</FormLabel>
