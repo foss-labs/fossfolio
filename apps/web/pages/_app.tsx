@@ -1,36 +1,28 @@
-/* eslint-disable react/jsx-props-no-spreading */
+import React, { ReactNode } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
-import SuperTokens, { SuperTokensWrapper } from 'supertokens-auth-react';
-import { authConfig } from '@app/auth';
-import { theme } from '@app/theme';
-import { Child } from '@app/types';
-import '@fontsource/inter';
+import { NextPage } from 'next';
+import initAuth from '@app/auth';
+import { AuthProvider } from '@app/contexts';
 
-type ComponentWithPageLayout = AppProps & {
-    Component: AppProps['Component'] & {
-        Layout?: (arg: Child) => JSX.Element;
-    };
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+    getLayout?: (page: React.ReactElement) => ReactNode;
 };
 
-if (typeof window !== 'undefined') {
-    SuperTokens.init(authConfig());
-}
+type AppPropsWithLayout = AppProps & {
+    Component: NextPageWithLayout;
+};
 
-const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
-    <SuperTokensWrapper>
-        {/* <AuthContext> */}
-        <ChakraProvider theme={theme}>
-            {Component.Layout ? (
-                <Component.Layout>
-                    <Component {...pageProps} />
-                </Component.Layout>
-            ) : (
-                <Component {...pageProps} />
-            )}
+const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+    if (typeof window !== 'undefined') {
+        initAuth();
+    }
+    const getLayout = Component.getLayout ?? ((page) => page);
+
+    return (
+        <ChakraProvider>
+            <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
         </ChakraProvider>
-        {/* </AuthContext> */}
-    </SuperTokensWrapper>
-);
-
+    );
+};
 export default MyApp;

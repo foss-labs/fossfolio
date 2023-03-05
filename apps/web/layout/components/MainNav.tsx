@@ -3,9 +3,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useAuth } from '@app/hooks';
 
 export const MainNav = () => {
     const router = useRouter();
+    const { login } = useAuth();
+
     return (
         <Flex
             p="4"
@@ -24,6 +27,14 @@ export const MainNav = () => {
                         onClick={() => router.push('/')}
                     >
                         Home
+                    </Heading>
+                    <Heading
+                        as="nav"
+                        fontSize="15px"
+                        _hover={{ cursor: 'pointer' }}
+                        color="#667085"
+                    >
+                        <Link href="/events">Events</Link>
                     </Heading>
                     <Heading
                         as="nav"
@@ -50,6 +61,7 @@ export const MainNav = () => {
                     fontSize="15px"
                     _hover={{ cursor: 'pointer' }}
                     color="#667085"
+                    onClick={login}
                 >
                     Login
                 </Heading>

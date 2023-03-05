@@ -1,3 +1,5 @@
+volume
+
 node_modules
 .next
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -21,6 +23,10 @@ tmp
 # misc
 .DS_Store
 *.pem
+
+volume
+local
+tmp
 
 # debug
 npm-debug.log*
@@ -53,3 +59,7 @@ yarn-error.log*
 **/public/sw.js.map
 **/public/workbox-*.js.map
 **/public/worker-*.js.map
+
+
+.env
+.env.local

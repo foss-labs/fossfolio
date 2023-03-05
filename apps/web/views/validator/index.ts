@@ -1,0 +1,1 @@
+export { EventValidator } from './Event';

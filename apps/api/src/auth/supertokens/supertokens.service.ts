@@ -71,6 +71,8 @@ export class SupertokensService {
                                         name: data.name,
                                     };
                                     await userService.create(temp);
+                                    // @ts-ignore
+                                    console.log(temp);
                                 }
 
                                 return response;
