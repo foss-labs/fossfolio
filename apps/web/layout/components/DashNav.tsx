@@ -1,7 +1,7 @@
 import { Flex, Heading, Icon } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
-import { FiArrowLeft, FiHome } from 'react-icons/fi';
+import { FiArrowLeft, FiHome, FiUser } from 'react-icons/fi';
 
 export const DashNav = () => (
     <Flex
@@ -33,34 +33,15 @@ export const DashNav = () => (
                 DashBoard
             </Heading>
             <Heading
+                alignSelf="flex-start"
                 fontWeight="500"
                 display="flex"
                 fontSize="15px"
                 color="#6941C6"
                 _hover={{ cursor: 'pointer', color: '#42307D' }}
             >
-                <Icon as={FiHome} mr="9px" fontSize="16px" />
-                DashBoard
-            </Heading>
-            <Heading
-                fontWeight="500"
-                display="flex"
-                fontSize="15px"
-                color="#6941C6"
-                _hover={{ cursor: 'pointer', color: '#42307D' }}
-            >
-                <Icon as={FiHome} mr="9px" fontSize="16px" />
-                DashBoard
-            </Heading>
-            <Heading
-                fontWeight="500"
-                display="flex"
-                fontSize="15px"
-                color="#6941C6"
-                _hover={{ cursor: 'pointer', color: '#42307D' }}
-            >
-                <Icon as={FiHome} mr="9px" fontSize="16px" />
-                DashBoard
+                <Icon as={FiUser} mr="9px" fontSize="16px" />
+                Teams
             </Heading>
         </Flex>
         <Heading
