@@ -19,7 +19,7 @@ model User {
   skills                  Skill[]
   organized               Event[]
   participated            TeamMembers[]
-  Student                 Boolean
+  student                 Boolean
 }
 
 model Event {
@@ -29,10 +29,9 @@ model Event {
   image                   String
   description             String
   guidelines              String
-  mode                    Mode
+  mode                    Mode @default(ONLINE)
   venue                   String?
-  fee                     BigInt?
-
+  fee                     Int?
   
   status                  EventStatus @default(PENDING)
   registrationStart       DateTime
@@ -40,14 +39,14 @@ model Event {
   eventStarting           DateTime
   eventEnding             DateTime
   
-  twitter                 String
-  email                   String
+  twitter                 String?
+  email                   String?
   website                 String?
   instagram               String?
   linkedin                String?
   discord                 String?
 
-  faq                     Json?
+  faq                     Json[]
 
   sponsors                Sponsor[]
   prizes                  Prizes[]
@@ -55,21 +54,13 @@ model Event {
   organizers              User[]
   teams                   Team[]
   members                 TeamMembers[]
-  
-  academicStatus          AcademicStatus
-
-}
-
-enum AcademicStatus {
-  Student
-  Professional
 }
 
 model Prizes {
   id          String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
   eventId     String
-  sponsorId   String
-  sponsor     Sponsor @relation(fields: [sponsorId], references: [id])
+  sponsorId   String?
+  sponsor     Sponsor? @relation(fields: [sponsorId], references: [id])
   event       Event @relation(fields: [eventId], references: [id])
 }
 

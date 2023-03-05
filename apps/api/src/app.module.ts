@@ -5,6 +5,8 @@ import { LoggerModule } from 'nestjs-pino';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
+import { UserModule } from './user/user.module';
+import { NocoModule } from './noco/noco.module';
 
 @Module({
     imports: [
@@ -56,6 +58,8 @@ import { AppController } from './app.controller';
             googleClientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
             DashboardApiKey: process.env.DASHBOARD_API_KEY as string,
         }),
+        UserModule,
+        NocoModule,
     ],
     controllers: [AppController],
     providers: [],
