@@ -12,6 +12,7 @@ export class EventController {
         try {
             return await this.eventService.createEvent(createEventDto);
         } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-throw-literal
             throw new CreateEventException(error);
         }
     }
@@ -26,6 +27,7 @@ export class EventController {
         try {
             return await this.eventService.viewAllEvents();
         } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-throw-literal
             throw new CreateEventException(error);
         }
     }
@@ -37,6 +39,7 @@ export class EventController {
         try {
             return await this.eventService.viewMyEvents();
         } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-throw-literal
             throw new CreateEventException(error);
         }
     }

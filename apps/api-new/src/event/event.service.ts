@@ -25,6 +25,7 @@ export class EventService {
         // check for slug //
         const userBySlug = await this.getEventBySlug(createEventDto.slug);
         if (userBySlug.data != null) {
+            // eslint-disable-next-line @typescript-eslint/no-throw-literal
             throw new CreateEventException('User with same slug exists');
         }
         const tagArray = createEventDto.tags.map((id: string) => ({

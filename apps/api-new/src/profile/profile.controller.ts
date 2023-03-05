@@ -16,6 +16,7 @@ export class ProfileController {
             authId = session.getUserId();
             return await this.profileService.read(authId);
         } catch (err) {
+            // eslint-disable-next-line @typescript-eslint/no-throw-literal
             throw new ReadException(err);
         }
     }
