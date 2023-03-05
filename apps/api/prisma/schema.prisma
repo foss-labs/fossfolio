@@ -9,14 +9,16 @@ datasource db {
 
 model User {
   id                      String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
-  name                    String
+  name                    String?
+  avatar                  String
   email                   String
-  bio                     String
+  phone                   String?
+  bio                     String?
   githubID                String?
   skills                  Skill[]
   organized               Event[]
   participated            TeamMembers[]
-  Student                 Boolean
+  student                 Boolean @default(true)
 }
 
 model Event {
@@ -26,10 +28,9 @@ model Event {
   image                   String
   description             String
   guidelines              String
-  mode                    Mode
+  mode                    Mode @default(ONLINE)
   venue                   String?
-  fee                     BigInt?
-
+  fee                     Int?
   
   status                  EventStatus @default(PENDING)
   registrationStart       DateTime
@@ -37,14 +38,14 @@ model Event {
   eventStarting           DateTime
   eventEnding             DateTime
   
-  twitter                 String
-  email                   String
+  twitter                 String?
+  email                   String?
   website                 String?
   instagram               String?
   linkedin                String?
   discord                 String?
 
-  faq                     Json?
+  faq                     Json[]
 
   sponsors                Sponsor[]
   prizes                  Prizes[]
@@ -52,14 +53,15 @@ model Event {
   organizers              User[]
   teams                   Team[]
   members                 TeamMembers[]
-  
-  academicStatus          AcademicStatus
-
 }
 
-enum AcademicStatus {
-  Student
-  Professional
+enum TeamStatus {
+  PENDING
+  INREVIEW
+  INVITATION
+  ACCEPTED
+  REJECTED
+  NOTACCEPTED
 }
 
 model Prizes {
@@ -126,6 +128,7 @@ model Team {
 
   members       TeamMembers[]
   createdAt     DateTime @default(now())
+  Status        TeamStatus @default(PENDING)
 
 }
 

@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { AxiosError } from 'axios';
+import { UserService } from '../../user/user.service';
 import { ConfigInjectionToken, AuthModuleConfig } from '../config.interface';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class SupertokensService {
     constructor(
         @Inject(ConfigInjectionToken) private config: AuthModuleConfig,
         private httpService: HttpService,
+        private userService: UserService,
     ) {
         supertokens.init({
             appInfo: this.config.appInfo,
@@ -59,8 +61,18 @@ export class SupertokensService {
                                                 }),
                                             ),
                                     );
+                                    const temp = {
+                                        id: data.id,
+                                        email: data.email,
+                                        avatar: data.avatar,
+                                        githubID: data.githubID,
+                                        bio: data.bio,
+                                        student: true,
+                                        name: data.name,
+                                    };
+                                    await userService.create(temp);
                                     // @ts-ignore
-                                    console.log(data);
+                                    console.log(temp);
                                 }
 
                                 return response;
