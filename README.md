@@ -6,18 +6,11 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<div align="center">
-  <a href="./apps/web/public/logo.svg">
-    <img src="./apps/web/public/logo.svg" alt="Logo" width="80" height="80">
-  </a>
+<h1 style="text-align: center;">FossFolio</h1>
 
-  <h3 align="center">FossHack</h3>
+## Foss Hack 3.0
 
-  <p align="center">
-    Where Hacking Happens
-    <br />
-  </p>
-</div>
+FOSS Hack 3.0 is the third edition of FOSS Hack, a hackathon to promote Free and Open Source Software by bringing together students and professionals to build or extend FOSS projects.
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -42,15 +35,25 @@
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
+FossFolio is an opensource web platform that enables people to discover, host and manage hackathons. 
 
-Saturday Hacknight is a community built Platform for Tinkers to conduct Hacking activities.
+### Find Hackathons
+Users can go to the site and find a directory of active and upcoming hackathons. Find the ones you like and apply for them. Users will get to see all the Ongoing, Upcomng and Previous hackathons they registered for in the user dashboard.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+### Host Hackathon
+If you want to host a hackathon, be it online or offline, you can creat a hackathon on the site and fill in the necessary information. Other users will be able to see the hackathon you created in the site.com/hackathons page so hackers can apply to participate in the event.
+
+#### Managing Hackathons
+On the Host dashboard, hosts are able to see the following:
+- Number of participants
+- Number of teams
+- Number of student applicants
+- Number of professional applicants
 
 ### Built With
 
--   [NextJs](https://nextjs.org/)
--   [NestJs](https://nestjs.com/)
+-   [React JS](https://reactjs.org/)
+-   [Nest JS](https://nestjs.com/)
 -   [Typescript](https://typescript.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
