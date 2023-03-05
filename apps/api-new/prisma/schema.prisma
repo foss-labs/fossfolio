@@ -49,7 +49,9 @@ model Event {
   linkedin                String?
   discord                 String?
   teams                   Team[]
-  organizers              User[]
+
+  organizerId             String
+  organizer               User @relation(fields: [organizerId], references: [id])
   tags                    Tag[]
 
   participants            TeamMember[]

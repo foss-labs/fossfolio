@@ -31,25 +31,14 @@ export class EventService {
             id,
         }));
 
-        const organizerArray = createEventDto.organizers.map((id: string) => ({
-            id,
-        }));
-
-        const teamArray = createEventDto.teams.map((id: string) => ({
-            id,
-        }));
-
         const response = await this.prismaService.event.create({
             data: {
                 ...createEventDto,
                 tags: { connect: tagArray },
-                organizers: { connect: organizerArray },
-                teams: { connect: teamArray },
             },
             include: {
                 tags: true,
                 teams: true,
-                organizers: true,
             },
         });
 

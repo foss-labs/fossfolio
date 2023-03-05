@@ -93,12 +93,9 @@ export class CreateEventDto {
     discord?: string;
 
     @ApiProperty()
-    @IsArray()
-    teams: Array<string>;
-
-    @ApiProperty()
-    @IsArray()
-    organizers: Array<string>;
+    @IsString()
+    @IsNotEmpty()
+    organizer: string;
 
     @ApiProperty()
     @IsArray()

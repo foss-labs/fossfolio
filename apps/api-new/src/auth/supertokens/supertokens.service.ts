@@ -7,8 +7,9 @@ import UserMetadata from 'supertokens-node/recipe/usermetadata';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
-import { ProfileService } from 'src/profile/profile.service';
+
 import { ConfigInjectionToken, AuthModuleConfig } from '../config.interface';
+import { ProfileService } from '../../profile/profile.service';
 
 @Injectable()
 export class SupertokensService {
@@ -71,7 +72,7 @@ export class SupertokensService {
                                             name: data.name,
                                             email,
                                             avatar: data.avatar_url || null,
-                                            githubid: data.login || null,
+                                            githubID: data.login || null,
                                         };
                                         const temp = await this.profileSevice.create(github);
                                         this.logger.log(temp.message);

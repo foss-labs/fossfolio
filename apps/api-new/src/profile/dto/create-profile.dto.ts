@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, IsBoolean, IsArray } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsBoolean } from 'class-validator';
 
 export class CreateProfileDto {
     @ApiProperty()
     @IsString()
+    @IsNotEmpty()
     id: string;
 
     @ApiProperty()
@@ -29,17 +30,10 @@ export class CreateProfileDto {
     bio?: string;
 
     @ApiProperty()
+    @IsString()
     avatar: string;
 
     @ApiProperty()
     @IsBoolean()
     student?: boolean;
-
-    @ApiProperty()
-    @IsArray()
-    organized?: string[];
-
-    @ApiProperty()
-    @IsArray()
-    participated?: string[];
 }
