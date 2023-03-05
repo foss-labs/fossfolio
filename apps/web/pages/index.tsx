@@ -1,14 +1,26 @@
 import { HomeLayout } from '@app/layout';
-import { Center, Heading } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Heading, HStack, Image } from '@chakra-ui/react';
 import { NextPageWithLayout } from './_app';
 
 const Home: NextPageWithLayout = () => (
-    <Center h="90vh" flexDir="column">
-        <Heading mr="200px">Never Miss a Hackathon Again!</Heading>
-        <Heading ml="200px" mt="20px">
-            Build for developer by Developers
-        </Heading>
-    </Center>
+    <Flex h="90vh" flexDir="row" justifyContent="space-between" p="7">
+        <Center>
+            <Box w="400px" ml="60px">
+                <Heading fontSize="48px">
+                    Discover,host and manage hackathons all in one place.
+                </Heading>
+                <HStack mt="40px">
+                    <Button colorScheme="purple">Find a Hackathon</Button>
+                    <Button colorScheme="purple" variant="outline">
+                        Host a Hackathon
+                    </Button>
+                </HStack>
+            </Box>
+        </Center>
+        <Center>
+            <Image src="/main.png" />
+        </Center>
+    </Flex>
 );
 
 Home.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
