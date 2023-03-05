@@ -13,7 +13,7 @@ interface Data {
 }
 
 export const Team = ({ name, users }: Data) => (
-    <VStack bg="#f9f5ff" h="300px" w="294px" borderRadius="lg" p="6" boxShadow="sm">
+    <VStack bg="#f9f5ff" h="300px" w="250px" borderRadius="lg" p="6" boxShadow="sm">
         <Flex flexDirection="column" mt="12px" alignSelf="flex-start">
             <Heading fontSize="12px" fontWeight="400">
                 Team

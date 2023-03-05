@@ -13,7 +13,7 @@ export const EventValidator = Yup.object({
             async (value) =>
                 new Promise((resolve) => {
                     debounce(async () => {
-                        const { data } = await api.get(`/api/events/slug/${value}`);
+                        const { data } = await api.get(`/events/slug/${value}`);
                         resolve(data.data.success);
                     }, 1000);
                 }) as boolean | Promise<boolean> | Promise<Yup.ValidationError>,
@@ -53,4 +53,12 @@ export const EventValidator = Yup.object({
             }),
         }),
     ),
+});
+
+export const TeamValidator = Yup.object({
+    name: Yup.string().required('Enter a Valid Team Name'),
+    repo: Yup.string()
+        .required()
+        .matches(/^https:\/\/github.com\/[^/]+\/[^/]+$/g),
+    description: Yup.string().required('Enter a Valid Description'),
 });
