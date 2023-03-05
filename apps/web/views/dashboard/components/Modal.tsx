@@ -18,8 +18,8 @@ import {
 import { InferType } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { EventValidator } from '@app/validators';
 import { FileInput } from './File';
-import { EventValidator } from '../../validator';
 
 interface Prop {
     isOpen: boolean;

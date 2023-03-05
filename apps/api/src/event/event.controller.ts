@@ -3,7 +3,7 @@ import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { CreateEventException } from './exception/create-event.exceptions';
 
-@Controller('user')
+@Controller('event')
 export class EventController {
     constructor(private readonly eventService: EventService) {}
 

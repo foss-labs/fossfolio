@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: Child) => {
 
     const getData = async () => {
         try {
-            const { data } = await api.get('/profile');
+            const { data } = await api.get('/user');
             if (!data.success) {
                 throw new Error();
             }

@@ -47,34 +47,31 @@ export class SupertokensService {
                                 }
 
                                 const response = await originalImplementation.signInUpPOST(input);
-
                                 if (response.status === 'OK') {
-                                    const accessToken = response.authCodeResponse.access_token;
-                                    const { data } = await firstValueFrom(
-                                        httpService
-                                            .get(
-                                                `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
-                                            )
-                                            .pipe(
-                                                catchError((err: AxiosError) => {
-                                                    throw err.response?.data;
-                                                }),
-                                            ),
-                                    );
-                                    const temp = {
-                                        id: data.id,
-                                        email: data.email,
-                                        avatar: data.avatar,
-                                        githubID: data.githubID,
-                                        bio: data.bio,
-                                        student: true,
-                                        name: data.name,
-                                    };
-                                    await userService.create(temp);
-                                    // @ts-ignore
-                                    console.log(temp);
+                                    if (response.createdNewUser) {
+                                        const accessToken = response.authCodeResponse.access_token;
+                                        const { data } = await firstValueFrom(
+                                            httpService
+                                                .get(
+                                                    `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
+                                                )
+                                                .pipe(
+                                                    catchError((err: AxiosError) => {
+                                                        throw err.response?.data;
+                                                    }),
+                                                ),
+                                        );
+                                        const temp = {
+                                            email: data.email as string,
+                                            avatar: data.picture as string,
+                                            githubID: '',
+                                            bio: '',
+                                            student: true,
+                                            name: '',
+                                        };
+                                        await userService.create(temp);
+                                    }
                                 }
-
                                 return response;
                             },
                         }),

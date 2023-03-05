@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { EventModule } from './event/event.module';
 import { NocoModule } from './noco/noco.module';
+import { UserModule } from './user/user.module';
 
 @Module({
     imports: [
@@ -60,6 +61,7 @@ import { NocoModule } from './noco/noco.module';
         }),
         EventModule,
         NocoModule,
+        UserModule,
     ],
     controllers: [AppController],
     providers: [],

@@ -6,14 +6,14 @@ import { ReadUserException } from './exception/read-user.exception';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private userService: UserService) {}
 
     @Get()
     @UseGuards(new AuthGuard())
     async read(@Session() session: SessionContainer) {
         let authId: string;
         try {
-            authId = session.getUserId();
+            authId = await session.getUserId();
             return await this.userService.read(authId);
         } catch (error) {
             throw new ReadUserException(error);
