@@ -1,10 +1,11 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { UserService } from '../user/user.service';
 import { ConfigInjectionToken, AuthModuleConfig } from './config.interface';
 import { SupertokensService } from './supertokens/supertokens.service';
 
 @Module({
-    providers: [SupertokensService],
+    providers: [SupertokensService, UserService],
     exports: [],
     controllers: [],
     imports: [HttpModule],

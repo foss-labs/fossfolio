@@ -12,14 +12,16 @@ datasource db {
 
 model User {
   id                      String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
-  name                    String
+  name                    String?
+  avatar                  String
   email                   String
-  bio                     String
+  phone                   String?
+  bio                     String?
   githubID                String?
   skills                  Skill[]
   organized               Event[]
   participated            TeamMembers[]
-  student                 Boolean
+  student                 Boolean @default(true)
 }
 
 model Event {

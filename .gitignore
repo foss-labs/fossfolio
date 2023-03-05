@@ -2,6 +2,8 @@ node_modules
 .next
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+volume
+tmp
 # dependencies
 /node_modules
 /.pnp
