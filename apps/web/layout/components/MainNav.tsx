@@ -55,16 +55,18 @@ export const MainNav = () => {
                 </Flex>
             </Flex>
             <Flex alignItems="center">
-                <Heading
+                <Button
                     mr="30px"
                     as="nav"
                     fontSize="15px"
                     _hover={{ cursor: 'pointer' }}
                     color="#667085"
                     onClick={login}
+                    colorScheme="purple"
+                    variant="outline"
                 >
                     Login
-                </Heading>
+                </Button>
                 <Button colorScheme="purple">Create an event</Button>
             </Flex>
         </Flex>

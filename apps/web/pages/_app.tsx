@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
+import SuperTokens from 'supertokens-web-js';
 import type { AppProps } from 'next/app';
 import { NextPage } from 'next';
 import initAuth from '@app/auth';
@@ -13,16 +14,17 @@ type AppPropsWithLayout = AppProps & {
     Component: NextPageWithLayout;
 };
 
+if (typeof window !== 'undefined') {
+    SuperTokens.init(initAuth());
+}
+
 const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
-    if (typeof window !== 'undefined') {
-        initAuth();
-    }
     const getLayout = Component.getLayout ?? ((page) => page);
 
     return (
-        <ChakraProvider>
-            <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
-        </ChakraProvider>
+        <AuthProvider>
+            <ChakraProvider>{getLayout(<Component {...pageProps} />)}</ChakraProvider>
+        </AuthProvider>
     );
 };
 export default MyApp;
