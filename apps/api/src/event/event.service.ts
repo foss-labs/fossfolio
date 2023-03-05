@@ -9,7 +9,7 @@ interface Resp {
 }
 
 @Injectable()
-export class UserService {
+export class EventService {
     constructor(private prismaService: PrismaService) {}
 
     // Response Handler

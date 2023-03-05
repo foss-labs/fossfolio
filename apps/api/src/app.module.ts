@@ -5,7 +5,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
-import { UserModule } from './user/user.module';
+import { EventModule } from './event/event.module';
 import { NocoModule } from './noco/noco.module';
 
 @Module({
@@ -58,7 +58,7 @@ import { NocoModule } from './noco/noco.module';
             googleClientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
             DashboardApiKey: process.env.DASHBOARD_API_KEY as string,
         }),
-        UserModule,
+        EventModule,
         NocoModule,
     ],
     controllers: [AppController],

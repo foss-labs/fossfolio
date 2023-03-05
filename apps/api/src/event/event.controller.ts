@@ -1,16 +1,16 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { UserService } from './user.service';
+import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { CreateEventException } from './exception/create-event.exceptions';
 
 @Controller('user')
-export class UserController {
-    constructor(private readonly userService: UserService) {}
+export class EventController {
+    constructor(private readonly eventService: EventService) {}
 
     @Post('/createEvent')
     async createEvent(@Body() createEventDto: CreateEventDto) {
         try {
-            return await this.userService.createEvent(createEventDto);
+            return await this.eventService.createEvent(createEventDto);
         } catch (error) {
             throw new CreateEventException(error);
         }
@@ -18,13 +18,13 @@ export class UserController {
 
     @Get('/viewEvents')
     async getEventbySlug(@Query('search') search: string) {
-        return this.userService.getEventBySlug(search);
+        return this.eventService.getEventBySlug(search);
     }
 
     @Get('/viewAllEvents')
     async viewEvent() {
         try {
-            return await this.userService.viewAllEvents();
+            return await this.eventService.viewAllEvents();
         } catch (error) {
             throw new CreateEventException(error);
         }
@@ -35,7 +35,7 @@ export class UserController {
     @Get('/viewMyEvents')
     async viewMyEvents() {
         try {
-            return await this.userService.viewMyEvents();
+            return await this.eventService.viewMyEvents();
         } catch (error) {
             throw new CreateEventException(error);
         }
