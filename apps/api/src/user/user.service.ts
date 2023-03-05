@@ -76,7 +76,6 @@ export class UserService {
     }
 
     // Get my hackathons
-
     async viewMyEvents() {
         const resp = await this.prismaService.event.findMany({
             where: {},

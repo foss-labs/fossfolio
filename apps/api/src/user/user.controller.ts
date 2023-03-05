@@ -8,7 +8,7 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Post('/createEvent')
-    async createUser(@Body() createEventDto: CreateEventDto) {
+    async createEvent(@Body() createEventDto: CreateEventDto) {
         try {
             return await this.userService.createEvent(createEventDto);
         } catch (error) {
@@ -22,7 +22,7 @@ export class UserController {
     }
 
     @Get('/viewAllEvents')
-    async viewUser() {
+    async viewEvent() {
         try {
             return await this.userService.viewAllEvents();
         } catch (error) {
