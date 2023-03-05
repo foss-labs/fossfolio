@@ -118,7 +118,7 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 [contributors-shield]: https://img.shields.io/github/contributors/DarkPhoenix2704/fossfolio.svg?style=for-the-badge
-[contributors-url]: https://github.com//graphs/contributorsDarkPhoenix2704/fossfolio
+[contributors-url]: https://github.com/graphs/contributorsDarkPhoenix2704/fossfolio
 [forks-shield]: https://img.shields.io/github/forks/.svg?style=for-the-badgeDarkPhoenix2704/fossfolio
 [forks-url]: https://github.com//network/membersDarkPhoenix2704/fossfolio
 [stars-shield]: https://img.shields.io/github/stars/DarkPhoenix2704/fossfolio.svg?style=for-the-badge
