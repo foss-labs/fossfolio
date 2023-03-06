@@ -3,7 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { HomeLayout } from '@app/layout';
 import { useRouter } from 'next/router';
-import { NextPageWithLayout } from './_app';
+import { NextPageWithLayout } from 'next';
 
 const Error: NextPageWithLayout = () => {
     const router = useRouter();
@@ -36,6 +36,6 @@ const Error: NextPageWithLayout = () => {
     );
 };
 
-Error.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
+Error.Layout = HomeLayout;
 
 export default Error;

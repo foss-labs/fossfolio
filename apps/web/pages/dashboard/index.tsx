@@ -2,9 +2,8 @@ import React from 'react';
 import { HomeLayout } from '@app/layout';
 import { Box, Heading, Flex } from '@chakra-ui/react';
 import { AddEvent, Event } from '@app/views/dashboard';
-import { NextPageWithLayout } from '../_app';
 
-const index: NextPageWithLayout = () => (
+const index = () => (
     <Box p="6">
         <Heading>Your Hackathons</Heading>
         <Flex mt="30px" columnGap="30px" flexWrap="wrap">
@@ -14,6 +13,6 @@ const index: NextPageWithLayout = () => (
     </Box>
 );
 
-index.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
+index.Layout = HomeLayout;
 
 export default index;

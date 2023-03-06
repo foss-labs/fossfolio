@@ -1,30 +1,40 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
-import SuperTokens from 'supertokens-web-js';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import SuperTokens, { SuperTokensWrapper } from 'supertokens-auth-react';
 import type { AppProps } from 'next/app';
-import { NextPage } from 'next';
 import initAuth from '@app/auth';
 import { AuthProvider } from '@app/contexts';
+import { Child } from '@app/types';
+import { theme } from '@app/theme';
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-    getLayout?: (page: React.ReactElement) => ReactNode;
-};
-
-type AppPropsWithLayout = AppProps & {
-    Component: NextPageWithLayout;
+type ComponentWithPageLayout = AppProps & {
+    Component: AppProps['Component'] & {
+        Layout?: (arg: Child) => JSX.Element;
+    };
 };
 
 if (typeof window !== 'undefined') {
     SuperTokens.init(initAuth());
 }
 
-const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
-    const getLayout = Component.getLayout ?? ((page) => page);
+const queryClient = new QueryClient();
 
-    return (
-        <AuthProvider>
-            <ChakraProvider>{getLayout(<Component {...pageProps} />)}</ChakraProvider>
-        </AuthProvider>
-    );
-};
+const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
+    <SuperTokensWrapper>
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <ChakraProvider theme={theme}>
+                    {Component.Layout ? (
+                        <Component.Layout>
+                            <Component {...pageProps} />
+                        </Component.Layout>
+                    ) : (
+                        <Component {...pageProps} />
+                    )}
+                </ChakraProvider>
+            </AuthProvider>
+        </QueryClientProvider>
+    </SuperTokensWrapper>
+);
 export default MyApp;

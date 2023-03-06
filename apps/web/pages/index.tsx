@@ -3,7 +3,7 @@ import { HomeLayout } from '@app/layout';
 import { Box, Button, Center, Flex, HStack, Image } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { AnimatedCharacters } from '@app/views/home';
-import { NextPageWithLayout } from './_app';
+import { NextPageWithLayout } from 'next';
 
 const container = {
     visible: {
@@ -50,5 +50,5 @@ const Home: NextPageWithLayout = () => (
     </Flex>
 );
 
-Home.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
+Home.Layout = HomeLayout;
 export default Home;
