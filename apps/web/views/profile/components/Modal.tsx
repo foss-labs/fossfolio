@@ -19,7 +19,7 @@ import {
 import { InferType } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { regEvent } from '@app/validators';
+import { regEvent } from '@app/views/validators';
 
 interface Prop {
     isOpen: boolean;

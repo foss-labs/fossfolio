@@ -18,7 +18,7 @@ import {
 import { InferType } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { EventValidator } from '@app/validators';
+import { EventValidator } from '@app/views/validators';
 import { FileInput } from './File';
 
 interface Prop {
