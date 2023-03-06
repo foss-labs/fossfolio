@@ -13,18 +13,18 @@ const container = {
     },
 };
 
-const Head = ['Discover,host and manage hackathons all in one place.'];
+const Head = ['Discover,host and manage Events,Hackathons all in one place.'];
 
 const Home: NextPageWithLayout = () => (
     <Flex
         minH="90vh"
-        flexDir={{ sm: 'column-reverse', md: 'row' }}
-        justifyContent="space-between"
+        flexDir={{ base: 'column-reverse', md: 'row' }}
+        justifyContent={{ base: 'space-around', md: 'space-between' }}
         p="7"
         flex="1"
     >
         <Center>
-            <Box w="600px">
+            <Box w={{ base: '300px', md: '600px' }}>
                 <motion.div
                     className="App"
                     initial="hidden"
@@ -45,7 +45,7 @@ const Home: NextPageWithLayout = () => (
             </Box>
         </Center>
         <Center>
-            <Image src="/main.png" />
+            <Image src="/main.png" width="800px" />
         </Center>
     </Flex>
 );

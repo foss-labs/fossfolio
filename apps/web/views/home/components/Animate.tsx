@@ -51,17 +51,17 @@ export const AnimatedCharacters = ({ text }: Animate) => {
     words.map((word: any) => word.push('\u00A0'));
 
     return (
-        <Heading fontSize={{ sm: '40px', md: '48px' }}>
+        <Heading fontSize={{ base: '30px', md: '48px' }}>
             {words.map((data: any, index: number) => (
                 // Wrap each word in the Wrapper component
-                <Wrapper key={data + randomId}>
-                    {words[index].flat().map((element: string) => (
+                <Wrapper key={data + randomId + index}>
+                    {words[index].flat().map((element: string, indexs: number) => (
                         <span
                             style={{
                                 overflow: 'hidden',
                                 display: 'inline-block',
                             }}
-                            key={element + randomId}
+                            key={element + randomId + indexs}
                         >
                             <motion.span style={{ display: 'inline-block' }} variants={item}>
                                 {element}
