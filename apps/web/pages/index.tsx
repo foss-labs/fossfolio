@@ -24,7 +24,7 @@ const Home: NextPageWithLayout = () => (
         flex="1"
     >
         <Center>
-            <Box w="400px" ml="60px">
+            <Box w="600px">
                 <motion.div
                     className="App"
                     initial="hidden"

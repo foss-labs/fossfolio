@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React from 'react';
+import React, { useId } from 'react';
 import { motion } from 'framer-motion';
 import { Child } from '@app/types';
 import { Box, Heading } from '@chakra-ui/react';
@@ -20,6 +20,7 @@ type Animate = {
 // Handles the deconstruction of each word and character to setup for the
 // individual character animations
 export const AnimatedCharacters = ({ text }: Animate) => {
+    const randomId = useId();
     // Framer Motion variant object, for controlling animation
     const item = {
         hidden: {
@@ -50,17 +51,17 @@ export const AnimatedCharacters = ({ text }: Animate) => {
     words.map((word: any) => word.push('\u00A0'));
 
     return (
-        <Heading fontSize="48px">
+        <Heading fontSize={{ sm: '40px', md: '48px' }}>
             {words.map((data: any, index: number) => (
                 // Wrap each word in the Wrapper component
-                <Wrapper key={data}>
+                <Wrapper key={data + randomId}>
                     {words[index].flat().map((element: string) => (
                         <span
                             style={{
                                 overflow: 'hidden',
                                 display: 'inline-block',
                             }}
-                            key={element}
+                            key={element + randomId}
                         >
                             <motion.span style={{ display: 'inline-block' }} variants={item}>
                                 {element}

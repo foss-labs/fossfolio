@@ -1,5 +1,5 @@
-import { Button, Flex } from '@chakra-ui/react';
-import Image from 'next/image';
+import { Button, Flex, Heading } from '@chakra-ui/react';
+
 // import Link from 'next/link';
 import React from 'react';
 // import { useRouter } from 'next/router';
@@ -17,8 +17,13 @@ export const MainNav = () => (
         _hover={{ cursor: 'not-allowed' }}
     >
         <Flex alignItems="center">
-            <Image src="/logo.svg" alt="fossfolio" width="150" height="150" />
-            <Flex ml={{ sm: '0', md: '60px' }} w="300px" justifyContent="space-around">
+            {/* <Image src="/logo.svg" alt="fossfolio" width="150" height="150" /> */}
+            <Heading fontSize="29px">FossFolio</Heading>
+            <Flex
+                ml={{ sm: '0', md: '60px' }}
+                w={{ sm: 'none', md: '300px' }}
+                justifyContent="space-around"
+            >
                 {/* <Link href="/">
                         <Heading
                             as="nav"

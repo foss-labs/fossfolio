@@ -66,7 +66,7 @@ export const regEvent = Yup.object({
     repo: Yup.string()
         .matches(/^https:\/\/github.com\/[^/]+\/[^/]+$/g)
         .required('Enter a Valid Github Repo'),
-    lead: Yup.string().required('Enter your Email'),
+    email: Yup.string().required('Enter your Email'),
     members: Yup.array()
         .min(1)
         .max(4)
