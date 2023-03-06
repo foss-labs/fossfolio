@@ -7,19 +7,16 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="./apps/web/public/logo.svg">
-    <img src="./apps/web/public/logo.svg" alt="Logo" width="80" height="80">
-  </a>
-
-  <h3 align="center">FossHack</h3>
-
+  <h3 align="center">Foss Hack 3.0</h3>
   <p align="center">
-    Where Hacking Happens
+    FOSS Hack 3.0 is the third edition of FOSS Hack, a hackathon to promote Free and Open Source Software by bringing together students and professionals to build or extend FOSS projects.
     <br />
   </p>
 </div>
 
 <!-- TABLE OF CONTENTS -->
+<br>
+<br>
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -43,14 +40,27 @@
 
 ## About The Project
 
-Saturday Hacknight is a community built Platform for Tinkers to conduct Hacking activities.
+FossFolio is and open source web application for people to Find, Host and Manage Hackathons.
+
+## Find Hackathons
+Users can go to the website and see a directory of all the published hackathons which are ongoing and upcoming. Users can find the ones they like to join and register for the event on the site by filling in the necessary information. Users get a dashboard where the can see all the hackathons they've registered for and options to edit their profile information.
+
+## Host Hackathons
+Users who want to host hackathons can use the "Create Hackathon" option and fill in the necessary details in a form and publish the event. Upon publishing everyone can see that event on the site.
+
+### Managing Created Hackathons
+Users who are hosting hackathons will get a detailed dashboard that displays the following data:
+- Total number of participants
+- Total number of teams
+- Number of student and professional applicants
+- List of all the participants and teams with details of participants
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
 
--   [NextJs](https://nextjs.org/)
--   [NestJs](https://nestjs.com/)
+-   [React Js](https://reactjs.org/)
+-   [Nest Js](https://nestjs.com/)
 -   [Typescript](https://typescript.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -108,7 +118,7 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 [contributors-shield]: https://img.shields.io/github/contributors/DarkPhoenix2704/fossfolio.svg?style=for-the-badge
-[contributors-url]: https://github.com//graphs/contributorsDarkPhoenix2704/fossfolio
+[contributors-url]: https://github.com/graphs/contributorsDarkPhoenix2704/fossfolio
 [forks-shield]: https://img.shields.io/github/forks/.svg?style=for-the-badgeDarkPhoenix2704/fossfolio
 [forks-url]: https://github.com//network/membersDarkPhoenix2704/fossfolio
 [stars-shield]: https://img.shields.io/github/stars/DarkPhoenix2704/fossfolio.svg?style=for-the-badge
