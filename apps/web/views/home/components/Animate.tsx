@@ -51,16 +51,16 @@ export const AnimatedCharacters = ({ text }: Animate) => {
 
     return (
         <Heading fontSize="48px">
-            {words.map((_: any, index: number) => (
+            {words.map((data: any, index: number) => (
                 // Wrap each word in the Wrapper component
-                <Wrapper key={index}>
-                    {words[index].flat().map((element: string, indexs: number) => (
+                <Wrapper key={data}>
+                    {words[index].flat().map((element: string) => (
                         <span
                             style={{
                                 overflow: 'hidden',
                                 display: 'inline-block',
                             }}
-                            key={indexs}
+                            key={element}
                         >
                             <motion.span style={{ display: 'inline-block' }} variants={item}>
                                 {element}

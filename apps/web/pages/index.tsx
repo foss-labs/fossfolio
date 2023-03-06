@@ -16,7 +16,13 @@ const container = {
 const Head = ['Discover,host and manage hackathons all in one place.'];
 
 const Home: NextPageWithLayout = () => (
-    <Flex h="90vh" flexDir="row" justifyContent="space-between" p="7">
+    <Flex
+        minH="90vh"
+        flexDir={{ sm: 'column-reverse', md: 'row' }}
+        justifyContent="space-between"
+        p="7"
+        flex="1"
+    >
         <Center>
             <Box w="400px" ml="60px">
                 <motion.div
