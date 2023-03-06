@@ -13,7 +13,7 @@ import { Card } from '@app/views/events';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InferType } from 'yup';
-import { regEvent } from '@app/validators';
+import { regEvent } from '@app/views/validators';
 import { NextPageWithLayout } from './_app';
 
 type Eve = InferType<typeof regEvent>;
