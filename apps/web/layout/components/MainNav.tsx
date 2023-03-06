@@ -18,7 +18,12 @@ export const MainNav = () => {
         >
             <Flex alignItems="center">
                 <Image src="/logo.svg" alt="fossfolio" width="150" height="150" />
-                <Flex ml="60px" w="300px" justifyContent="space-around">
+                <Flex
+                    ml="60px"
+                    w="300px"
+                    justifyContent="space-around"
+                    _hover={{ cursor: 'not-allowed' }}
+                >
                     <Heading
                         as="nav"
                         fontSize="15px"
@@ -67,7 +72,7 @@ export const MainNav = () => {
                 >
                     Login
                 </Button>
-                <Button colorScheme="purple">Create an event</Button>
+                <Button colorScheme="purple">Coming soon</Button>
             </Flex>
         </Flex>
     );
