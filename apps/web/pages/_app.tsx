@@ -6,7 +6,7 @@ import type { AppProps } from 'next/app';
 import initAuth from '@app/auth';
 import { AuthProvider } from '@app/contexts';
 import { Child } from '@app/types';
-import { theme } from '@app/theme';
+import { DefaultSeo } from 'next-seo';
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
@@ -21,20 +21,26 @@ if (typeof window !== 'undefined') {
 const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
-    <SuperTokensWrapper>
-        <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <ChakraProvider theme={theme}>
-                    {Component.Layout ? (
-                        <Component.Layout>
+    <>
+        <DefaultSeo
+            title="FossFolio"
+            description="Discover,host and manage Events,Hackathons all in one place. "
+        />
+        <ChakraProvider>
+            <SuperTokensWrapper>
+                <QueryClientProvider client={queryClient}>
+                    <AuthProvider>
+                        {Component.Layout ? (
+                            <Component.Layout>
+                                <Component {...pageProps} />
+                            </Component.Layout>
+                        ) : (
                             <Component {...pageProps} />
-                        </Component.Layout>
-                    ) : (
-                        <Component {...pageProps} />
-                    )}
-                </ChakraProvider>
-            </AuthProvider>
-        </QueryClientProvider>
-    </SuperTokensWrapper>
+                        )}
+                    </AuthProvider>
+                </QueryClientProvider>
+            </SuperTokensWrapper>
+        </ChakraProvider>
+    </>
 );
 export default MyApp;

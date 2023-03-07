@@ -7,8 +7,8 @@ const initAuth = () => ({
         appName: 'FOSSFolio',
         apiDomain: 'http://localhost:3001',
         websiteDomain: 'http://localhost:3000',
-        apiBasePath: '/auth',
-        websiteBasePath: '/auth',
+        apiBasePath: '/',
+        websiteBasePath: '/',
     },
     recipeList: [
         Session.init(),

@@ -32,14 +32,18 @@ const Home: NextPageWithLayout = () => (
                     animate="visible"
                     variants={container}
                 >
-                    {Head.map((el) => (
-                        <AnimatedCharacters text={el} />
+                    {Head.map((el, key) => (
+                        <AnimatedCharacters text={el} key={key + 5} />
                     ))}
                 </motion.div>
                 <HStack mt="40px">
-                    <Button colorScheme="purple">Find a Hackathon</Button>
-                    <Button colorScheme="purple" variant="outline">
-                        Host a Hackathon
+                    <Button
+                        colorScheme="purple"
+                        onClick={() => {
+                            window.location.href = 'https://rebrand.ly/fossfolio';
+                        }}
+                    >
+                        Get Notified
                     </Button>
                 </HStack>
             </Box>

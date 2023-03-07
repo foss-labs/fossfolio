@@ -29,6 +29,7 @@ const Profile: NextPageWithLayout = () => {
     });
 
     const getUserInput: SubmitHandler<Eve> = (data) => {
+        // eslint-disable-next-line no-console
         console.log(data);
     };
     return (
