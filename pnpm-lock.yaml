@@ -134,6 +134,7 @@ importers:
       '@hookform/resolvers': ^2.9.11
       '@types/react': ^18.0.28
       '@types/react-dom': ^18.0.11
+      '@types/use-ackee': ^2.0.0
       axios: ^1.3.4
       framer-motion: ^10.0.1
       next: ^13.2.3
@@ -144,6 +145,7 @@ importers:
       react-icons: ^4.8.0
       react-query: ^3.39.3
       supertokens-auth-react: 0.28.1
+      use-ackee: ^3.0.1
       yup: ^1.0.2
     dependencies:
       '@chakra-ui/react': 2.5.1_llidv3byuxn3l2nsibklt32qgu
@@ -161,10 +163,12 @@ importers:
       react-icons: 4.8.0_react@18.2.0
       react-query: 3.39.3_biqbaboplfbrettd7655fr4n2y
       supertokens-auth-react: 0.28.1_zula6vjvt3wdocc4mwcxqa6nzi
+      use-ackee: 3.0.1_react@18.2.0
       yup: 1.0.2
     devDependencies:
       '@types/react': 18.0.28
       '@types/react-dom': 18.0.11
+      '@types/use-ackee': 2.0.0
 
 packages:
 
@@ -2465,6 +2469,10 @@ packages:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
     dev: true
 
+  /@types/ackee-tracker/5.0.2:
+    resolution: {integrity: sha512-0ieQOQmXlud6ez+USJLLdiXlo1if+vetB5ep0YpiE2IY+AzuEZe50ohbSNZq2VbbwG9ZBW2GhKShKEczRkmHuw==}
+    dev: true
+
   /@types/body-parser/1.19.2:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
     dependencies:
@@ -2620,6 +2628,12 @@ packages:
       '@types/mime': 3.0.1
       '@types/node': 18.14.6
     dev: false
+
+  /@types/use-ackee/2.0.0:
+    resolution: {integrity: sha512-rLKdPEdtXZxfbBfptlRPV1DqJgNSVHYtHotlv8sc3bKmm0LCQ9yNARExGQL4zJ/CF2Wq5sD37LwRRraPiWOewA==}
+    dependencies:
+      '@types/ackee-tracker': 5.0.2
+    dev: true
 
   /@types/validator/13.7.13:
     resolution: {integrity: sha512-EMfHccxNKXaSxTK6DN0En9WsXa7uR4w3LQtx31f6Z2JjG5hJQeVX5zUYMZoatjZgnoQmRcT94WnNWwi0BzQW6Q==}
@@ -2912,6 +2926,12 @@ packages:
 
   /abstract-logging/2.0.1:
     resolution: {integrity: sha512-2BjRTZxTPvheOvGbBslFSYOUkr+SjPtOnrLP33f+VIWLzezQpZcqVg7ja3L4dBXmzzgwT+a029jRx5PCi3JuiA==}
+    dev: false
+
+  /ackee-tracker/5.1.0:
+    resolution: {integrity: sha512-A7iKkGyUnEXuOzxultQB7hnm4bStYCo1c38MYRRihBfqUP8AImhtZOODb00t9xrXs/BTsg06bz1MKpXeMs9sYw==}
+    dependencies:
+      platform: 1.3.6
     dev: false
 
   /acorn-import-assertions/1.8.0_acorn@8.8.2:
@@ -7641,6 +7661,10 @@ packages:
       thread-stream: 2.3.0
     dev: false
 
+  /platform/1.3.6:
+    resolution: {integrity: sha512-fnWVljUchTro6RiCFvCXBbNhJc2NijN7oIQxbwsyL0buWJPG85v81ehlHI9fXrJsMNgTofEoWIQeClKpgxFLrg==}
+    dev: false
+
   /pluralize/8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
@@ -9432,6 +9456,15 @@ packages:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
+    dev: false
+
+  /use-ackee/3.0.1_react@18.2.0:
+    resolution: {integrity: sha512-c3PJweMI1mpkYXCzCfzz+sUfjH2BhfwhhiqPzBol0giZDzP0h279XpJLg2VtS4XeIaCACIqEW8Z3yJD7iRdcMQ==}
+    peerDependencies:
+      react: ^17.0.0
+    dependencies:
+      ackee-tracker: 5.1.0
+      react: 18.2.0
     dev: false
 
   /use-callback-ref/1.3.0_pmekkgnqduwlme35zpnqhenc34:
