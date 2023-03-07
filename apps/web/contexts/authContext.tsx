@@ -1,7 +1,7 @@
-import React, { createContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import Session from 'supertokens-web-js/recipe/session';
-import { getAuthorisationURLWithQueryParamsAndSetState } from 'supertokens-web-js/recipe/thirdparty';
+import Session from 'supertokens-auth-react/recipe/session';
+import { getAuthorisationURLWithQueryParamsAndSetState } from 'supertokens-auth-react/recipe/thirdparty';
 import api from '@app/api';
 import { Child, User } from '@app/types';
 
@@ -63,19 +63,6 @@ export const AuthProvider = ({ children }: Child) => {
         setUserLoading(false);
         setUser(null);
     };
-
-    useEffect(() => {
-        (async () => {
-            if (await doesSessionExist()) {
-                await getData();
-            }
-        })();
-        return () => {
-            setUser(null);
-            setUserLoading(true);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [doesSessionExist]);
 
     const value = useMemo(
         () => ({

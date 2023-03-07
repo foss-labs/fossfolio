@@ -14,7 +14,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InferType } from 'yup';
 import { regEvent } from '@app/views/validators';
-import { NextPageWithLayout } from './_app';
+import { NextPageWithLayout } from 'next';
 
 type Eve = InferType<typeof regEvent>;
 
@@ -29,6 +29,7 @@ const Profile: NextPageWithLayout = () => {
     });
 
     const getUserInput: SubmitHandler<Eve> = (data) => {
+        // eslint-disable-next-line no-console
         console.log(data);
     };
     return (
@@ -77,6 +78,6 @@ const Profile: NextPageWithLayout = () => {
     );
 };
 
-Profile.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
+Profile.Layout = HomeLayout;
 
 export default Profile;

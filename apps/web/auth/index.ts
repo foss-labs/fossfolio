@@ -1,17 +1,23 @@
-import Session from 'supertokens-web-js/recipe/session';
-import ThirdParty from 'supertokens-web-js/recipe/thirdparty';
+import ThirdParty, { Github } from 'supertokens-auth-react/recipe/thirdparty';
+import Session from 'supertokens-auth-react/recipe/session';
 import Router from 'next/router';
 
 const initAuth = () => ({
     appInfo: {
         appName: 'FOSSFolio',
         apiDomain: 'http://localhost:3001',
-        // @ts-ignore
         websiteDomain: 'http://localhost:3000',
-        apiBasePath: '/auth',
-        websiteBasePath: '/auth',
+        apiBasePath: '/',
+        websiteBasePath: '/',
     },
-    recipeList: [ThirdParty.init(), Session.init()],
+    recipeList: [
+        Session.init(),
+        ThirdParty.init({
+            signInAndUpFeature: {
+                providers: [Github.init()],
+            },
+        }),
+    ],
     windowHandler: (oI: any) => ({
         ...oI,
         location: {

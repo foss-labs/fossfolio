@@ -3,7 +3,7 @@ import { HomeLayout } from '@app/layout';
 import { Box, Button, Center, Flex, HStack, Image } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { AnimatedCharacters } from '@app/views/home';
-import { NextPageWithLayout } from './_app';
+import { NextPageWithLayout } from 'next';
 
 const container = {
     visible: {
@@ -13,12 +13,18 @@ const container = {
     },
 };
 
-const Head = ['Discover,host and manage hackathons all in one place.'];
+const Head = ['Discover,host and manage Events,Hackathons all in one place.'];
 
 const Home: NextPageWithLayout = () => (
-    <Flex h="90vh" flexDir="row" justifyContent="space-between" p="7">
+    <Flex
+        minH="90vh"
+        flexDir={{ base: 'column-reverse', md: 'row' }}
+        justifyContent={{ base: 'space-around', md: 'space-between' }}
+        p="7"
+        flex="1"
+    >
         <Center>
-            <Box w="400px" ml="60px">
+            <Box w={{ base: '300px', md: '600px' }}>
                 <motion.div
                     className="App"
                     initial="hidden"
@@ -26,23 +32,27 @@ const Home: NextPageWithLayout = () => (
                     animate="visible"
                     variants={container}
                 >
-                    {Head.map((el) => (
-                        <AnimatedCharacters text={el} />
+                    {Head.map((el, key) => (
+                        <AnimatedCharacters text={el} key={key + 5} />
                     ))}
                 </motion.div>
                 <HStack mt="40px">
-                    <Button colorScheme="purple">Find a Hackathon</Button>
-                    <Button colorScheme="purple" variant="outline">
-                        Host a Hackathon
+                    <Button
+                        colorScheme="purple"
+                        onClick={() => {
+                            window.location.href = 'https://rebrand.ly/fossfolio';
+                        }}
+                    >
+                        Get Notified
                     </Button>
                 </HStack>
             </Box>
         </Center>
         <Center>
-            <Image src="/main.png" />
+            <Image src="/main.png" width="800px" />
         </Center>
     </Flex>
 );
 
-Home.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
+Home.Layout = HomeLayout;
 export default Home;

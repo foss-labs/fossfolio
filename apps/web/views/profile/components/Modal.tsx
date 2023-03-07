@@ -73,12 +73,12 @@ export const RegisterHack = ({ isOpen, onClose }: Prop) => {
                             />
                             <FormErrorMessage>Enter a Valid Repo</FormErrorMessage>
                         </FormControl>
-                        <FormControl isInvalid={!!errors.lead}>
+                        <FormControl isInvalid={!!errors.email}>
                             <FormLabel fontSize="14px">Enter your Email ID</FormLabel>
                             <Input
                                 type="string"
                                 placeholder="example@gmail.com"
-                                {...register('lead')}
+                                {...register('email')}
                             />
                             <FormErrorMessage>Enter a Valid Email</FormErrorMessage>
                         </FormControl>

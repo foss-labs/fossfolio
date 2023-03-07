@@ -11,7 +11,7 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { FiSearch } from 'react-icons/fi';
-import { NextPageWithLayout } from '../../_app';
+import { NextPageWithLayout } from 'next';
 
 const Page: NextPageWithLayout = () => (
     <Flex flexDir="column" p="70px">
@@ -40,6 +40,6 @@ const Page: NextPageWithLayout = () => (
     </Flex>
 );
 
-Page.getLayout = (page) => <DashLayout>{page}</DashLayout>;
+Page.Layout = DashLayout;
 
 export default Page;

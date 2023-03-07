@@ -5,7 +5,7 @@ import { Card } from '@app/views/events';
 import { useRouter } from 'next/router';
 import { Flex, Heading } from '@chakra-ui/react';
 import axiosHandler from '@app/api';
-import { NextPageWithLayout } from './_app';
+import { NextPageWithLayout } from 'next';
 
 const Events: NextPageWithLayout = () => {
     const [data, setData] = useState<any>([]);
@@ -51,6 +51,6 @@ const Events: NextPageWithLayout = () => {
     );
 };
 
-Events.getLayout = (page) => <HomeLayout>{page}</HomeLayout>;
+Events.Layout = HomeLayout;
 
 export default Events;
