@@ -17,7 +17,7 @@ const Head = ['Discover,host and manage Events,Hackathons all in one place.'];
 
 const Home: NextPageWithLayout = () => (
     <Flex
-        minH="90vh"
+        maxH="90vh"
         flexDir={{ base: 'column-reverse', md: 'row' }}
         justifyContent={{ base: 'space-around', md: 'space-between' }}
         p="7"
@@ -37,13 +37,9 @@ const Home: NextPageWithLayout = () => (
                     ))}
                 </motion.div>
                 <HStack mt="40px">
-                    <Button
-                        colorScheme="purple"
-                        onClick={() => {
-                            window.location.href = 'https://rebrand.ly/fossfolio';
-                        }}
-                    >
-                        Get Notified
+                    <Button colorScheme="purple">Join Hackathon</Button>
+                    <Button colorScheme="purple" variant="outline">
+                        Create Hackathon
                     </Button>
                 </HStack>
             </Box>
