@@ -1,4 +1,4 @@
-import React, { createContext, useState, useMemo } from 'react';
+import React, { createContext, useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Session from 'supertokens-auth-react/recipe/session';
 import { getAuthorisationURLWithQueryParamsAndSetState } from 'supertokens-auth-react/recipe/thirdparty';
@@ -13,6 +13,7 @@ interface Prop {
     logout: () => Promise<void>;
     isProfileComplete: boolean;
     getData: () => Promise<void>;
+    isUserExist: boolean;
 }
 
 export const AuthContext = createContext({} as Prop);
@@ -22,6 +23,7 @@ export const AuthProvider = ({ children }: Child) => {
     const [user, setUser] = useState<User | null>(null);
     const [isUserLoading, setUserLoading] = useState<boolean>(false);
     const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false);
+    const [isUserExist, setUserExist] = useState<boolean>(false);
     const { doesSessionExist } = Session;
 
     const getData = async () => {
@@ -41,6 +43,13 @@ export const AuthProvider = ({ children }: Child) => {
             router.push('/error');
         }
     };
+
+    useEffect(() => {
+        (async () => {
+            const resp = await doesSessionExist();
+            setUserExist(resp);
+        })();
+    }, [doesSessionExist]);
 
     const login = async () => {
         setUserLoading(true);
@@ -73,6 +82,7 @@ export const AuthProvider = ({ children }: Child) => {
             login,
             logout,
             getData,
+            isUserExist,
         }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [doesSessionExist, isUserLoading, user, setUser, isProfileComplete],
