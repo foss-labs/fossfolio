@@ -7,8 +7,6 @@ import initAuth from '@app/auth';
 import { AuthProvider } from '@app/contexts';
 import { Child } from '@app/types';
 import { DefaultSeo } from 'next-seo';
-// import { useRouter } from 'next/router';
-// import { useAckee } from 'use-ackee';
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
@@ -23,30 +21,6 @@ if (typeof window !== 'undefined') {
 const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
-    // const router = useRouter();
-
-    // useEffect(() => {
-    //     const handleRouteChange = (url: string) => {
-    //         // eslint-disable-next-line react-hooks/rules-of-hooks
-    //         useAckee(
-    //             url,
-    //             {
-    //                 server: 'https://ackee.anbarasu.me',
-    //                 domainId: '4caf51ca-f780-4a8c-8653-5cfa441405cd',
-    //             },
-    //             {
-    //                 detailed: true,
-    //                 ignoreLocalhost: true,
-    //                 ignoreOwnVisits: true,
-    //             },
-    //         );
-    //     };
-    //     router.events.on('routeChangeComplete', handleRouteChange);
-    //     return () => {
-    //         router.events.off('routeChangeComplete', handleRouteChange);
-    //     };
-    // }, [router.events]);
-
     <>
         <DefaultSeo
             title="FossFolio"

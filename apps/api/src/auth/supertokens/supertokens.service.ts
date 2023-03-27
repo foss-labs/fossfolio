@@ -12,6 +12,10 @@ export class SupertokensService {
     constructor(@Inject(ConfigInjectionToken) private config: AuthModuleConfig) {
         SuperTokens.init({
             appInfo: this.config.appInfo,
+            supertokens: {
+                connectionURI: this.config.connectionURI,
+                apiKey: this.config.apiKey,
+            },
             recipeList: [
                 ThirdParty.init({
                     signInAndUpFeature: {

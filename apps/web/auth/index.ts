@@ -5,10 +5,8 @@ import Router from 'next/router';
 const initAuth = () => ({
     appInfo: {
         appName: 'FOSSFolio',
-        apiDomain: 'http://localhost:3001',
+        apiDomain: 'http://localhost:8080',
         websiteDomain: 'http://localhost:3000',
-        apiBasePath: '/auth',
-        websiteBasePath: '/',
     },
     recipeList: [
         Session.init(),

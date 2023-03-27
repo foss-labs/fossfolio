@@ -30,7 +30,8 @@ export const AuthProvider = ({ children }: Child) => {
         try {
             const { data } = await api.get('/user');
             if (!data.success) {
-                throw new Error();
+                // eslint-disable-next-line no-new
+                new Error();
             }
             if (data.success && data.data === null) {
                 router.push('/error');
@@ -85,7 +86,7 @@ export const AuthProvider = ({ children }: Child) => {
             isUserExist,
         }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [doesSessionExist, isUserLoading, user, setUser, isProfileComplete],
+        [doesSessionExist, user, setUser],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
