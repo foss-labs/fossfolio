@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
-import { ProfileModule } from './profile/profile.module';
 
 @Module({
     imports: [
@@ -40,7 +39,6 @@ import { ProfileModule } from './profile/profile.module';
             githubClientSecret: process.env.GITHUB_CLIENT_SECRET as string,
             DashboardApiKey: process.env.DASHBOARD_API_KEY as string,
         }),
-        ProfileModule,
     ],
     controllers: [AppController],
     providers: [],

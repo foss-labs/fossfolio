@@ -2,6 +2,7 @@ import { MiddlewareConsumer, Module, NestModule, DynamicModule } from '@nestjs/c
 
 import { AuthMiddleware } from './auth.middleware';
 import { ConfigInjectionToken, AuthModuleConfig } from './config.interface';
+import { SupertokensService } from './supertokens/supertokens.service';
 
 @Module({
     providers: [],
@@ -19,6 +20,7 @@ export class AuthModule implements NestModule {
         appInfo,
         githubClientId,
         githubClientSecret,
+        DashboardApiKey,
     }: AuthModuleConfig): DynamicModule {
         return {
             providers: [
@@ -29,9 +31,11 @@ export class AuthModule implements NestModule {
                         apiKey,
                         githubClientId,
                         githubClientSecret,
+                        DashboardApiKey,
                     },
                     provide: ConfigInjectionToken,
                 },
+                SupertokensService,
             ],
             exports: [],
             imports: [],

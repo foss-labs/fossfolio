@@ -14,7 +14,7 @@ async function bootstrap() {
     app.useGlobalFilters(new SupertokensExceptionFilter());
 
     await app.listen(
-        (process.env.PORT as string) || 3001,
+        (process.env.PORT as string) || 8080,
         (process.env.HOST as string) || '0.0.0.0',
     );
 }
