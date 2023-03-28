@@ -1,5 +1,6 @@
 import * as Joi from 'joi';
 import { Module } from '@nestjs/common';
+import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
@@ -38,6 +39,12 @@ import { AppController } from './app.controller';
             githubClientId: process.env.GITHUB_CLIENT_ID as string,
             githubClientSecret: process.env.GITHUB_CLIENT_SECRET as string,
             DashboardApiKey: process.env.DASHBOARD_API_KEY as string,
+        }),
+        LoggerModule.forRoot({
+            pinoHttp: {
+                level: 'info',
+                redact: ['req.headers'],
+            },
         }),
     ],
     controllers: [AppController],

@@ -76,7 +76,9 @@ export const MainNav = () => {
                         fontSize="15px"
                         _hover={{ cursor: 'pointer' }}
                         color="#667085"
-                        onClick={login}
+                        onClick={async () => {
+                            await login();
+                        }}
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<BsGithub />}
@@ -92,7 +94,9 @@ export const MainNav = () => {
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<AiOutlineLogout />}
-                        onClick={logout}
+                        onClick={async () => {
+                            await logout();
+                        }}
                     >
                         Logout
                     </Button>

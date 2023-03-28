@@ -4,10 +4,12 @@ import { AppModule } from './app.module';
 import { SupertokensExceptionFilter } from './auth/auth.filter';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, {
+        bufferLogs: true,
+    });
     app.enableCors({
         origin: process.env.SUPERTOKENS_WEBSITE_DOMAIN,
-        allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
+        allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders(), 'st-auth-mode'],
         credentials: true,
     });
 

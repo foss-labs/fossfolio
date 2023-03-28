@@ -1,7 +1,7 @@
 import { useAuth } from '@app/hooks';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { signInAndUp } from 'supertokens-auth-react/recipe/thirdparty';
+import { signInAndUp } from 'supertokens-web-js/recipe/thirdparty';
 
 const Auth = () => {
     const router = useRouter();
