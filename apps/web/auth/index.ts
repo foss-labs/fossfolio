@@ -1,6 +1,5 @@
-import ThirdParty, { Github } from 'supertokens-auth-react/recipe/thirdparty';
-import Session from 'supertokens-auth-react/recipe/session';
-import Router from 'next/router';
+import ThirdPartyJS from 'supertokens-web-js/recipe/thirdparty';
+import SessionWebJs from 'supertokens-web-js/recipe/session';
 
 const initAuth = () => ({
     appInfo: {
@@ -8,23 +7,7 @@ const initAuth = () => ({
         apiDomain: 'http://localhost:8080',
         websiteDomain: 'http://localhost:3000',
     },
-    recipeList: [
-        Session.init(),
-        ThirdParty.init({
-            signInAndUpFeature: {
-                providers: [Github.init()],
-            },
-        }),
-    ],
-    windowHandler: (oI: any) => ({
-        ...oI,
-        location: {
-            ...oI.location,
-            setHref: (href: string) => {
-                Router.push(href);
-            },
-        },
-    }),
+    recipeList: [SessionWebJs.init(), ThirdPartyJS.init()],
 });
 
 export default initAuth;

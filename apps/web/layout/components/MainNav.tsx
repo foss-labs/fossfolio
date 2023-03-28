@@ -73,7 +73,6 @@ export const MainNav = () => {
                 {!isUserExist ? (
                     <Button
                         mr="30px"
-                        as="nav"
                         fontSize="15px"
                         _hover={{ cursor: 'pointer' }}
                         color="#667085"
@@ -87,14 +86,13 @@ export const MainNav = () => {
                 ) : (
                     <Button
                         mr="30px"
-                        as="nav"
                         fontSize="15px"
                         _hover={{ cursor: 'pointer' }}
                         color="#667085"
-                        onClick={logout}
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<AiOutlineLogout />}
+                        onClick={logout}
                     >
                         Logout
                     </Button>

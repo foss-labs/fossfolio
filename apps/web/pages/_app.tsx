@@ -1,7 +1,6 @@
 import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import SuperTokens, { SuperTokensWrapper } from 'supertokens-auth-react';
+import SuperTokens from 'supertokens-web-js';
 import type { AppProps } from 'next/app';
 import initAuth from '@app/auth';
 import { AuthProvider } from '@app/contexts';
@@ -18,8 +17,6 @@ if (typeof window !== 'undefined') {
     SuperTokens.init(initAuth());
 }
 
-const queryClient = new QueryClient();
-
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
     <>
         <DefaultSeo
@@ -27,19 +24,15 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
             description="Discover,host and manage Events,Hackathons all in one place. "
         />
         <ChakraProvider>
-            <SuperTokensWrapper>
-                <QueryClientProvider client={queryClient}>
-                    <AuthProvider>
-                        {Component.Layout ? (
-                            <Component.Layout>
-                                <Component {...pageProps} />
-                            </Component.Layout>
-                        ) : (
-                            <Component {...pageProps} />
-                        )}
-                    </AuthProvider>
-                </QueryClientProvider>
-            </SuperTokensWrapper>
+            <AuthProvider>
+                {Component.Layout ? (
+                    <Component.Layout>
+                        <Component {...pageProps} />
+                    </Component.Layout>
+                ) : (
+                    <Component {...pageProps} />
+                )}
+            </AuthProvider>
         </ChakraProvider>
     </>
 );

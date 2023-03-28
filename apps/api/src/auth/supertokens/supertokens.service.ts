@@ -17,6 +17,9 @@ export class SupertokensService {
                 apiKey: this.config.apiKey,
             },
             recipeList: [
+                Dashboard.init({
+                    apiKey: this.config.DashboardApiKey,
+                }),
                 ThirdParty.init({
                     signInAndUpFeature: {
                         providers: [
@@ -26,9 +29,6 @@ export class SupertokensService {
                             }),
                         ],
                     },
-                }),
-                Dashboard.init({
-                    apiKey: this.config.DashboardApiKey,
                 }),
                 UserMetadata.init(),
                 Session.init(),
