@@ -11,95 +11,67 @@ datasource db {
 }
 
 model User {
-  id                  String          @unique @id
-  email               String          @unique
-  githubID            String          @unique
-  name                String?
-  mobile              String?
+  id                      String       @id @unique
+  slug                    String       @unique
+  name                    String
+  email                   String
+  phone                   String?
+  avatar                  String?
+  bio                     String?
+  address                 String?
+  pronoun                 Pronoun?
+  tShirt                  SizeChart?
+  foodPreference          FoodPreference  @default(ANYTHING)
 
-  bio                 String?
-  avatar              String
 
-  student             Boolean @default(true)
-  organized           Event[]
-  participated        TeamMember[]
-}
-
-model Event {
-  id                      String          @id @unique @db.Uuid @default(uuid())
-  slug                    String @unique
-  title                   String
-  image                   String
-  description             String
-  guidelines              String
-  status                  EventStatus @default(PENDING)
-
-  mode                    Mode @default(ONLINE)
-  venue                   String?
-
-  registrationStart       DateTime
-  registrationEnd         DateTime
-  eventStarting           DateTime
-  eventEnding             DateTime
-
+  github                  String?
+  linkedIn                String?
   twitter                 String?
-  email                   String?
-  website                 String?
-  instagram               String?
-  linkedin                String?
-  discord                 String?
-  teams                   Team[]
+  portfolio               String?
+  resume                  String?
 
-  organizerId             String
-  organizer               User @relation(fields: [organizerId], references: [id])
-  tags                    Tag[]
+  city                    String?
+  pincode                 Int?
+  
+  emergencyContact        String?
+  emergencyContactName    String?
 
-  participants            TeamMember[]
+  skills                  Skill[]
 }
 
-model Team {
-  id                  String          @id @unique @db.Uuid @default(uuid())
-  name                String
-  repo                String
-  inviteCode          String?         @default(cuid()) @unique
-  event               Event           @relation(fields: [eventId], references: [id])
-  eventId             String          @db.Uuid
-  members             TeamMember[]
+model Skill {
+  id                      String @id @unique @default(dbgenerated("gen_random_uuid()::TEXT"))
+  name                    String @unique
+  user                    User[]
 }
 
-model TeamMember{
-  id                  String          @unique @db.Uuid @default(uuid())
-  role                Role            @default(MEMBER)
-  team                Team            @relation(fields: [teamId], references: [id])
-  teamId              String          @db.Uuid
-  user                User            @relation(fields: [userId], references: [id])
-  userId              String
-  event               Event           @relation(fields: [eventId], references: [id])
-  eventId             String          @db.Uuid
-  @@unique([userId, eventId])
-  @@unique([userId, teamId])
-  @@id([userId, eventId])
+model Experience {
+  id                      String @id @unique @default(dbgenerated("gen_random_uuid()::TEXT"))
+  employer                String
+  role                    String
+  from                    DateTime
+  to                      DateTime?
+  description             String?
 }
 
-model Tag{
-  id        String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
-  name      String @unique
-  events    Event[]
+enum SizeChart{
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+  XXXL
 }
 
-enum Role {
-  MEMBER
-  LEADER
+enum FoodPreference {
+  VEG
+  NONVEG
+  ANYTHING
 }
 
-enum Mode {
-  OFFLINE
-  ONLINE
-  HYBRID
-}
-
-enum EventStatus {
-  PENDING
-  LISTED
-  UPDATION
+enum Pronoun {
+  HE_HIM
+  SHE_HER
+  THEY_THEM
 }
