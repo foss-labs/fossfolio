@@ -5,18 +5,16 @@
 [![MIT License][license-shield]][license-url]
 
 <!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <h3 align="center">Foss Hack 3.0</h3>
-  <p align="center">
-    FOSS Hack 3.0 is the third edition of FOSS Hack, a hackathon to promote Free and Open Source Software by bringing together students and professionals to build or extend FOSS projects.
-    <br />
-  </p>
-</div>
+<br/>
+<h1 align="center">Foss Folio</h>
+<!-- ABOUT THE PROJECT -->
+
+## About The Project
+
+FossFolio is and open source web application for people to Find, Host and Manage Hackathons.
 
 <!-- TABLE OF CONTENTS -->
-<br>
-<br>
+<br/>
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -35,12 +33,6 @@
     </li>
   </ol>
 </details>
-
-<!-- ABOUT THE PROJECT -->
-
-## About The Project
-
-FossFolio is and open source web application for people to Find, Host and Manage Hackathons.
 
 ## Find Hackathons
 
