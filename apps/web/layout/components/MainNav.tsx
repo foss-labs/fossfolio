@@ -73,11 +73,12 @@ export const MainNav = () => {
                 {!isUserExist ? (
                     <Button
                         mr="30px"
-                        as="nav"
                         fontSize="15px"
                         _hover={{ cursor: 'pointer' }}
                         color="#667085"
-                        onClick={login}
+                        onClick={async () => {
+                            await login();
+                        }}
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<BsGithub />}
@@ -87,14 +88,15 @@ export const MainNav = () => {
                 ) : (
                     <Button
                         mr="30px"
-                        as="nav"
                         fontSize="15px"
                         _hover={{ cursor: 'pointer' }}
                         color="#667085"
-                        onClick={logout}
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<AiOutlineLogout />}
+                        onClick={async () => {
+                            await logout();
+                        }}
                     >
                         Logout
                     </Button>

@@ -1,39 +1,35 @@
-/* eslint-disable */
-
-import {
-    CanActivate,
-    ExecutionContext,
-    HttpException,
-    HttpStatus,
-    Injectable,
-} from '@nestjs/common';
-import { verifySession } from 'supertokens-node/recipe/session/framework/fastify';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Error as STError } from 'supertokens-node';
+
+import { verifySession } from 'supertokens-node/recipe/session/framework/express';
+import { VerifySessionOptions } from 'supertokens-node/recipe/session';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        let ctx: any, resp: any;
-        try {
-            ctx = context.switchToHttp();
+    constructor(private readonly verifyOptions?: VerifySessionOptions) {}
 
-            resp = ctx.getResponse();
-            await verifySession({ sessionRequired: true })(ctx.getRequest(), resp);
-        } catch (error) {
-            if (resp.headersSent) {
-                throw new STError({
-                    message: 'RESPONSE_SENT',
-                    type: 'RESPONSE_SENT',
-                });
-            } else {
-                throw new HttpException(
-                    {
-                        message: 'Session Error',
-                    },
-                    HttpStatus.SERVICE_UNAVAILABLE,
-                );
-            }
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const ctx = context.switchToHttp();
+
+        let err;
+        const resp = ctx.getResponse();
+        // You can create an optional version of this by passing {sessionRequired: false} to verifySession
+        await verifySession(this.verifyOptions)(ctx.getRequest(), resp, (res) => {
+            err = res;
+        });
+
+        if (resp.headersSent) {
+            throw new STError({
+                message: 'RESPONSE_SENT',
+                type: 'RESPONSE_SENT',
+            });
         }
+
+        if (err) {
+            // eslint-disable-next-line @typescript-eslint/no-throw-literal
+            throw err;
+        }
+
         return true;
     }
 }

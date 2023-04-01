@@ -1,7 +1,7 @@
 import React, { createContext, useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Session from 'supertokens-auth-react/recipe/session';
-import { getAuthorisationURLWithQueryParamsAndSetState } from 'supertokens-auth-react/recipe/thirdparty';
+import Session from 'supertokens-web-js/recipe/session';
+import { getAuthorisationURLWithQueryParamsAndSetState } from 'supertokens-web-js/recipe/thirdparty';
 import api from '@app/api';
 import { Child, User } from '@app/types';
 
@@ -30,7 +30,8 @@ export const AuthProvider = ({ children }: Child) => {
         try {
             const { data } = await api.get('/user');
             if (!data.success) {
-                throw new Error();
+                // eslint-disable-next-line no-new
+                new Error();
             }
             if (data.success && data.data === null) {
                 router.push('/error');
@@ -51,7 +52,7 @@ export const AuthProvider = ({ children }: Child) => {
         })();
     }, [doesSessionExist]);
 
-    const login = async () => {
+    async function login() {
         setUserLoading(true);
         try {
             const authUrl = await getAuthorisationURLWithQueryParamsAndSetState({
@@ -64,7 +65,7 @@ export const AuthProvider = ({ children }: Child) => {
         } finally {
             setUserLoading(false);
         }
-    };
+    }
 
     const logout = async () => {
         setUserLoading(true);
@@ -85,7 +86,7 @@ export const AuthProvider = ({ children }: Child) => {
             isUserExist,
         }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [doesSessionExist, isUserLoading, user, setUser, isProfileComplete],
+        [user, setUser, login],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
