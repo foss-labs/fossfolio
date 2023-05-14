@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@chakra-ui/react": "^2.5.1",
+    "@chakra-ui/react": "^2.6.1",
     "@clerk/nextjs": "^4.17.3",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
