@@ -23,6 +23,14 @@ model User {
   student             Boolean @default(true)
   organized           Event[]
   participated        TeamMember[]
+
+  organizationId      Organization[]
+}
+
+model Organization {
+    id                      String          @id @unique @db.Uuid @default(uuid())
+    memberId                User[]
+    eventId                 Event[]
 }
 
 model Event {
@@ -52,9 +60,13 @@ model Event {
 
   organizerId             String
   organizer               User @relation(fields: [organizerId], references: [id])
+
+  organisations           Organization[]
   tags                    Tag[]
 
   participants            TeamMember[]
+
+  sponsors                Sponsor[]
 }
 
 model Team {
@@ -85,6 +97,11 @@ model Tag{
   id        String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
   name      String @unique
   events    Event[]
+}
+
+model Sponsor {
+  id        String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
+  event     Event[]
 }
 
 enum Role {
