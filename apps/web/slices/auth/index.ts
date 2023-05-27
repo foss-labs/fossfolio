@@ -32,12 +32,13 @@ const authSlice = createSlice({
 });
 
 export const fetchUser = () => async (dispatch: any) => {
-    const { data, error } = await supaClient.auth.getUser();
-
-    if (error) {
+    try {
+        const { data, error } = await supaClient.auth.getUser();
+        if (error) dispatch(authSlice.actions.setLoggedOut());
+        else dispatch(authSlice.actions.setLoggedIn(data.user?.user_metadata));
+    } catch {
         dispatch(authSlice.actions.setLoggedOut());
     }
-    dispatch(authSlice.actions.setLoggedIn(data.user?.user_metadata));
 };
 
 export const authReducer = authSlice.reducer;
