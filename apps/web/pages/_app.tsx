@@ -1,11 +1,12 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import { ApolloProvider } from '@apollo/client';
 import { ChakraProvider } from '@chakra-ui/react';
-import SuperTokens from 'supertokens-web-js';
-import type { AppProps } from 'next/app';
-import initAuth from '@app/auth';
-import { AuthProvider } from '@app/contexts';
-import { Child } from '@app/types';
 import { DefaultSeo } from 'next-seo';
+import type { AppProps } from 'next/app';
+import { Child } from '@app/types';
+import { store } from '@app/store';
+import { gqClient } from '@app/config';
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
@@ -13,18 +14,14 @@ type ComponentWithPageLayout = AppProps & {
     };
 };
 
-if (typeof window !== 'undefined') {
-    SuperTokens.init(initAuth());
-}
-
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
-    <>
-        <DefaultSeo
-            title="FossFolio"
-            description="Discover,host and manage Events,Hackathons all in one place. "
-        />
-        <ChakraProvider>
-            <AuthProvider>
+    <ApolloProvider client={gqClient}>
+        <Provider store={store}>
+            <DefaultSeo
+                title="FossFolio"
+                description="Discover,host and manage Events,Hackathons all in one place. "
+            />
+            <ChakraProvider>
                 {Component.Layout ? (
                     <Component.Layout>
                         <Component {...pageProps} />
@@ -32,8 +29,8 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => (
                 ) : (
                     <Component {...pageProps} />
                 )}
-            </AuthProvider>
-        </ChakraProvider>
-    </>
+            </ChakraProvider>
+        </Provider>
+    </ApolloProvider>
 );
 export default MyApp;

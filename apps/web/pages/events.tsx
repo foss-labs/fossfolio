@@ -4,7 +4,7 @@ import { HomeLayout } from '@app/layout';
 import { Card } from '@app/views/events';
 import { useRouter } from 'next/router';
 import { Flex, Heading } from '@chakra-ui/react';
-import axiosHandler from '@app/api';
+import { apiHandler } from '@app/config/handler';
 import { NextPageWithLayout } from 'next';
 
 const Events: NextPageWithLayout = () => {
@@ -15,7 +15,7 @@ const Events: NextPageWithLayout = () => {
     const getData = async () => {
         try {
             setIsLoading(true);
-            const { data: apiData } = await axiosHandler.get('/user/ViewAllEvents');
+            const { data: apiData } = await apiHandler.get('/user/ViewAllEvents');
             if (!apiData.ok) {
                 throw new Error();
             }
