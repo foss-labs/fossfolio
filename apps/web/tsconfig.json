@@ -7,7 +7,7 @@
         "pages/index.js",
         "jest.setup.ts",
         "jest.config.js"
-, "pages/dashboard/[id]", "../../index.ts"    ],
+, "pages/dashboard/[id]", "../../store.ts"    ],
     "exclude": ["node_modules"],
     "baseUrl": ".",
     "compilerOptions": {
