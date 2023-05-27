@@ -1,4 +1,4 @@
-import api from '@app/api';
+import api from '@app/config/handler';
 import { debounce } from '@app/utils';
 import * as Yup from 'yup';
 
