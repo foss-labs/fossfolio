@@ -1,15 +1,15 @@
-import { Button, Flex, Heading } from '@chakra-ui/react';
+import { Button, Flex, Heading, useDisclosure } from '@chakra-ui/react';
 
 import Link from 'next/link';
 import React from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from '@app/hooks';
 import { BsGithub } from 'react-icons/bs';
 import { AiOutlineLogout } from 'react-icons/ai';
+import { AuthModal } from './AuthModal';
 
 export const MainNav = () => {
     const router = useRouter();
-    const { login, isUserExist, logout } = useAuth();
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
         <Flex
@@ -19,7 +19,7 @@ export const MainNav = () => {
             justifyContent="space-between"
         >
             <Flex alignItems="center">
-                {/* <Image src="/logo.svg" alt="fossfolio" width="150" height="150" /> */}
+                <AuthModal isOpen={isOpen} onClose={onClose} />
                 <Heading fontSize="29px">FossFolio</Heading>
                 <Flex
                     ml={{ sm: '0', md: '60px' }}
@@ -70,15 +70,13 @@ export const MainNav = () => {
                 </Flex>
             </Flex>
             <Flex alignItems="center">
-                {!isUserExist ? (
+                {true ? (
                     <Button
                         mr="30px"
                         fontSize="15px"
                         _hover={{ cursor: 'pointer' }}
                         color="#667085"
-                        onClick={async () => {
-                            await login();
-                        }}
+                        onClick={onOpen}
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<BsGithub />}
@@ -95,7 +93,7 @@ export const MainNav = () => {
                         variant="outline"
                         rightIcon={<AiOutlineLogout />}
                         onClick={async () => {
-                            await logout();
+                            // await logout();
                         }}
                     >
                         Logout
