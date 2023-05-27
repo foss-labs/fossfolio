@@ -1,15 +1,23 @@
-import { Button, Flex, Heading, useDisclosure } from '@chakra-ui/react';
-
-import Link from 'next/link';
+import { Button, Flex, Heading, useDisclosure, Link } from '@chakra-ui/react';
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useSelector, useDispatch } from 'react-redux';
 import { BsGithub } from 'react-icons/bs';
 import { AiOutlineLogout } from 'react-icons/ai';
+import { authActions } from '@app/slices';
 import { AuthModal } from './AuthModal';
 
 export const MainNav = () => {
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const authState = useSelector((state: any) => state.auth.isLoggedIn);
+
+    const dispatch = useDispatch();
+
+    const logout = () => {
+        dispatch(authActions.setLoggedOut());
+    };
 
     return (
         <Flex
@@ -70,18 +78,20 @@ export const MainNav = () => {
                 </Flex>
             </Flex>
             <Flex alignItems="center">
-                {true ? (
+                {authState ? (
                     <Button
                         mr="30px"
                         fontSize="15px"
                         _hover={{ cursor: 'pointer' }}
                         color="#667085"
-                        onClick={onOpen}
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<BsGithub />}
+                        onClick={async () => {
+                            await logout();
+                        }}
                     >
-                        Login
+                        Logout
                     </Button>
                 ) : (
                     <Button
@@ -92,11 +102,9 @@ export const MainNav = () => {
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<AiOutlineLogout />}
-                        onClick={async () => {
-                            // await logout();
-                        }}
+                        onClick={onOpen}
                     >
-                        Logout
+                        Login
                     </Button>
                 )}
             </Flex>

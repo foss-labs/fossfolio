@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authReducer } from '@app/slices';
+import thunk from 'redux-thunk';
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
     },
+    middleware: [thunk],
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
