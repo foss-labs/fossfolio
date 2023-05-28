@@ -13,8 +13,13 @@ export const HomeLayout = ({ children }: Child) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const unProtectedRoutes = ['/events'];
+
         dispatch<any>(fetchUser());
-        if (!authState) router.replace('/');
+        if (!unProtectedRoutes.includes(router.pathname)) {
+            if (!authState) router.replace('/');
+        }
+
         supaClient.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
                 dispatch(authActions.setLoggedIn({ payload: session?.user.user_metadata }));
