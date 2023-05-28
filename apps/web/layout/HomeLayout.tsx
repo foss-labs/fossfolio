@@ -11,10 +11,9 @@ export const HomeLayout = ({ children }: Child) => {
     const router = useRouter();
     const authState = useSelector((state: any) => state.auth.isLoggedIn);
     const dispatch = useDispatch();
+    const unProtectedRoutes = ['/events'];
 
     useEffect(() => {
-        const unProtectedRoutes = ['/events'];
-
         dispatch<any>(fetchUser());
         if (!unProtectedRoutes.includes(router.pathname)) {
             if (!authState) router.replace('/');
