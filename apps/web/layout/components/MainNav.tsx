@@ -1,5 +1,5 @@
-import { Button, Flex, Heading, useDisclosure, Link } from '@chakra-ui/react';
-import React from 'react';
+import { Button, Flex, Heading, useDisclosure, Link, forwardRef } from '@chakra-ui/react';
+import React, { useImperativeHandle } from 'react';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { BsGithub } from 'react-icons/bs';
@@ -7,7 +7,7 @@ import { AiOutlineLogout } from 'react-icons/ai';
 import { authActions } from '@app/slices';
 import { AuthModal } from './AuthModal';
 
-export const MainNav = () => {
+export const MainNav = forwardRef((_props, ref) => {
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -15,9 +15,18 @@ export const MainNav = () => {
 
     const dispatch = useDispatch();
 
+    const login = () => {
+        onOpen();
+    };
     const logout = () => {
         dispatch(authActions.setLoggedOut());
     };
+
+    useImperativeHandle(ref, () => ({
+        redirectLogin() {
+            login();
+        },
+    }));
 
     return (
         <Flex
@@ -102,7 +111,9 @@ export const MainNav = () => {
                         colorScheme="purple"
                         variant="outline"
                         rightIcon={<AiOutlineLogout />}
-                        onClick={onOpen}
+                        onClick={async () => {
+                            await login();
+                        }}
                     >
                         Login
                     </Button>
@@ -110,4 +121,4 @@ export const MainNav = () => {
             </Flex>
         </Flex>
     );
-};
+});
