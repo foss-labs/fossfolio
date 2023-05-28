@@ -7,11 +7,11 @@ import { authActions } from '@app/slices';
 import { supaClient } from '@app/config/supabaseClient';
 import { MainNav } from './components/MainNav';
 
+const unProtectedRoutes = ['/events'];
 export const HomeLayout = ({ children }: Child) => {
     const router = useRouter();
     const authState = useSelector((state: any) => state.auth.isLoggedIn);
     const dispatch = useDispatch();
-    const unProtectedRoutes = ['/events'];
 
     useEffect(() => {
         dispatch<any>(fetchUser());
