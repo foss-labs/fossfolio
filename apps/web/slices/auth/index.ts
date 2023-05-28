@@ -20,6 +20,7 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setLoggedIn: (state: Draft<IAuth>, action: PayloadAction<any>) => {
+            console.log(action);
             state.isLoggedIn = true;
             state.user = action.payload;
         },
@@ -35,7 +36,7 @@ export const fetchUser = () => async (dispatch: any) => {
     try {
         const { data, error } = await supaClient.auth.getUser();
         if (error) dispatch(authSlice.actions.setLoggedOut());
-        else dispatch(authSlice.actions.setLoggedIn(data.user?.user_metadata));
+        else dispatch(authSlice.actions.setLoggedIn({ payload: data.user?.user_metadata }));
     } catch {
         dispatch(authSlice.actions.setLoggedOut());
     }
