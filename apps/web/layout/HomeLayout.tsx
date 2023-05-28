@@ -7,6 +7,7 @@ import { authActions } from '@app/slices';
 import { supaClient } from '@app/config/supabaseClient';
 import { MainNav } from './components/MainNav';
 
+const unProtectedRoutes = ['/events'];
 export const HomeLayout = ({ children }: Child) => {
     const router = useRouter();
     const authState = useSelector((state: any) => state.auth.isLoggedIn);
@@ -14,7 +15,10 @@ export const HomeLayout = ({ children }: Child) => {
 
     useEffect(() => {
         dispatch<any>(fetchUser());
-        if (!authState) router.replace('/');
+        if (!unProtectedRoutes.includes(router.pathname)) {
+            if (!authState) router.replace('/');
+        }
+
         supaClient.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
                 dispatch(authActions.setLoggedIn({ payload: session?.user.user_metadata }));
