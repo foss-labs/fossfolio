@@ -1,4 +1,4 @@
-import { HomeLayout } from '@app/layout';
+import { DashLayout } from '@app/layout';
 import {
     Button,
     Flex,
@@ -9,24 +9,35 @@ import {
     Input,
     VStack,
 } from '@chakra-ui/react';
-import { Card } from '@app/views/events';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InferType } from 'yup';
 import { regEvent } from '@app/views/validators';
 import { NextPageWithLayout } from 'next';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 type Eve = InferType<typeof regEvent>;
 
 const Profile: NextPageWithLayout = () => {
+    const userState = useSelector((state: any) => state.auth.user);
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm<Eve>({
         mode: 'onSubmit',
         resolver: yupResolver(regEvent),
     });
+
+    useEffect(() => {
+        if (userState) {
+            setValue('email', userState?.payload.email);
+            setValue('name', userState?.payload.full_name);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userState]);
 
     const getUserInput: SubmitHandler<Eve> = (data) => {
         // eslint-disable-next-line no-console
@@ -35,15 +46,6 @@ const Profile: NextPageWithLayout = () => {
     return (
         <Flex p="6" flexDir="column">
             <Flex justifyContent="space-between">
-                <Flex columnGap="25px" flexWrap="wrap" flexDir="column">
-                    <Heading textAlign="start" fontSize="38px">
-                        Your Registrations
-                    </Heading>
-                    <Flex columnGap="25px" flexWrap="wrap">
-                        <Card />
-                        <Card />
-                    </Flex>
-                </Flex>
                 <form onSubmit={handleSubmit(getUserInput)}>
                     <VStack w="592px" spacing="40px" alignItems="center" mr="50px">
                         <Heading alignSelf="start" fontSize="38px">
@@ -78,6 +80,6 @@ const Profile: NextPageWithLayout = () => {
     );
 };
 
-Profile.Layout = HomeLayout;
+Profile.Layout = DashLayout;
 
 export default Profile;

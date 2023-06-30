@@ -1,5 +1,5 @@
 import React from 'react';
-import { HomeLayout } from '@app/layout';
+import { DashLayout } from '@app/layout';
 import { Box, Heading, Flex } from '@chakra-ui/react';
 import { AddEvent, Event } from '@app/views/dashboard';
 
@@ -13,6 +13,6 @@ const index = () => (
     </Box>
 );
 
-index.Layout = HomeLayout;
+index.Layout = DashLayout;
 
 export default index;

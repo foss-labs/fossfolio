@@ -37,9 +37,9 @@ const Home: NextPageWithLayout = () => (
                     ))}
                 </motion.div>
                 <HStack mt="40px">
-                    <Button colorScheme="purple">Join Hackathon</Button>
+                    <Button colorScheme="purple">Join Event</Button>
                     <Button colorScheme="purple" variant="outline">
-                        Create Hackathon
+                        Create Events
                     </Button>
                 </HStack>
             </Box>

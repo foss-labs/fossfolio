@@ -1,6 +1,7 @@
-import { Button, Flex, Heading, useDisclosure, Link, forwardRef } from '@chakra-ui/react';
+import { Button, Flex, Heading, useDisclosure, forwardRef } from '@chakra-ui/react';
 import React, { useImperativeHandle } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { BsGithub } from 'react-icons/bs';
 import { AiOutlineLogout } from 'react-icons/ai';
@@ -74,14 +75,14 @@ export const MainNav = forwardRef((_props, ref) => {
                             Dashboard
                         </Heading>
                     </Link>
-                    <Link href="/pricing">
+                    <Link href="/dashboard/profile">
                         <Heading
                             as="nav"
                             fontSize="15px"
                             _hover={{ cursor: 'pointer' }}
                             color="#667085"
                         >
-                            Pricing
+                            Profile
                         </Heading>
                     </Link>
                 </Flex>
