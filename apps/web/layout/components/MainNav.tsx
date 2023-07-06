@@ -1,11 +1,12 @@
 import { Button, Flex, Heading, useDisclosure, forwardRef } from '@chakra-ui/react';
-import React, { useImperativeHandle } from 'react';
+import React, { useEffect, useImperativeHandle } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { BsGithub } from 'react-icons/bs';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { authActions } from '@app/slices';
+import { fetchUser } from '@app/slices/auth';
 import { AuthModal } from '../AuthModal';
 
 export const MainNav = forwardRef((_props, ref) => {
@@ -15,6 +16,11 @@ export const MainNav = forwardRef((_props, ref) => {
     const authState = useSelector((state: any) => state.auth.isLoggedIn);
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch<any>(fetchUser());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const login = () => {
         onOpen();
@@ -75,16 +81,18 @@ export const MainNav = forwardRef((_props, ref) => {
                             Dashboard
                         </Heading>
                     </Link>
-                    <Link href="/dashboard/profile">
-                        <Heading
-                            as="nav"
-                            fontSize="15px"
-                            _hover={{ cursor: 'pointer' }}
-                            color="#667085"
-                        >
-                            Profile
-                        </Heading>
-                    </Link>
+                    {authState && (
+                        <Link href="/dashboard/profile">
+                            <Heading
+                                as="nav"
+                                fontSize="15px"
+                                _hover={{ cursor: 'pointer' }}
+                                color="#667085"
+                            >
+                                Profile
+                            </Heading>
+                        </Link>
+                    )}
                 </Flex>
             </Flex>
             <Flex alignItems="center">

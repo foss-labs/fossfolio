@@ -27,6 +27,7 @@ export const AuthModal = ({ isOpen, onClose }: IModal) => (
                     supabaseClient={supaClient}
                     providers={['google', 'github']}
                     appearance={{ theme: ThemeSupa }}
+                    redirectTo="/events"
                 />
             </ModalBody>
         </ModalContent>
