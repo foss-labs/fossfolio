@@ -11,14 +11,19 @@ export const AuthProvider = ({ children }: Child): JSX.Element => {
     const authState = useSelector((state: any) => state.auth.isLoggedIn);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch<any>(fetchUser());
-        if (!authState) router.replace('/?authreq=true');
-        supaClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-                dispatch(authActions.setLoggedIn({ payload: session?.user.user_metadata }));
-            }
-        });
-
+        // we dont need to call the api every time if already authenticated right ?
+        if (!authState) {
+            // asyncronous function
+            dispatch<any>(fetchUser());
+            // auth state will be updated to true
+            // if the promise was resolved
+            if (!authState) router.replace('/?authreq=true');
+            supaClient.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                    dispatch(authActions.setLoggedIn({ payload: session?.user.user_metadata }));
+                }
+            });
+        }
         // add router.query to dependencies so invoke useeffect of return to home after unauthorized route access
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authState]);
