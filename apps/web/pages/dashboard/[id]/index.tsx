@@ -41,5 +41,5 @@ const Page: NextPageWithLayout = () => (
 );
 
 Page.Layout = DashLayout;
-
+Page.RequireAuth = true;
 export default Page;

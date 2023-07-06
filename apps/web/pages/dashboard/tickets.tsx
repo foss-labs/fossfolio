@@ -16,5 +16,6 @@ const Tickets: NextPageWithLayout = () => (
     </Flex>
 );
 Tickets.Layout = DashLayout;
+Tickets.RequireAuth = true;
 
 export default Tickets;

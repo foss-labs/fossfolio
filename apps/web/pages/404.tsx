@@ -37,5 +37,5 @@ const Error: NextPageWithLayout = () => {
 };
 
 Error.Layout = HomeLayout;
-
+Error.RequireAuth = false;
 export default Error;

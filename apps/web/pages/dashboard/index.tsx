@@ -2,8 +2,9 @@ import React from 'react';
 import { DashLayout } from '@app/layout';
 import { Box, Heading, Flex } from '@chakra-ui/react';
 import { AddEvent, Event } from '@app/views/dashboard';
+import { NextPageWithLayout } from 'next';
 
-const index = () => (
+const index: NextPageWithLayout = () => (
     <Box p="6">
         <Heading>Your Hackathons</Heading>
         <Flex mt="30px" columnGap="30px" flexWrap="wrap">
@@ -14,5 +15,6 @@ const index = () => (
 );
 
 index.Layout = DashLayout;
+index.RequireAuth = true;
 
 export default index;

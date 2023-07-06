@@ -50,5 +50,6 @@ const Events: NextPageWithLayout = () => {
 };
 
 Events.Layout = HomeLayout;
+Events.RequireAuth = false;
 
 export default Events;

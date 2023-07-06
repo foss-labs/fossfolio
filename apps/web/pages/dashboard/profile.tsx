@@ -81,5 +81,6 @@ const Profile: NextPageWithLayout = () => {
 };
 
 Profile.Layout = DashLayout;
+Profile.RequireAuth = true;
 
 export default Profile;

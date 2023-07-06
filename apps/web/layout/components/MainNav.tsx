@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { BsGithub } from 'react-icons/bs';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { authActions } from '@app/slices';
-import { AuthModal } from './AuthModal';
+import { AuthModal } from '../AuthModal';
 
 export const MainNav = forwardRef((_props, ref) => {
     const router = useRouter();

@@ -51,4 +51,5 @@ const Home: NextPageWithLayout = () => (
 );
 
 Home.Layout = HomeLayout;
+Home.RequireAuth = false;
 export default Home;

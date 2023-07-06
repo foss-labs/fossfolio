@@ -8,7 +8,10 @@ declare module 'next' {
         Layout?: (page: ReactNode) => ReactNode;
     };
 
-    type NextPageWithLayout = NextPage & { Layout: (arg0: Child) => JSX.Element };
+    type NextPageWithLayout = NextPage & {
+        Layout: (arg0: Child) => JSX.Element;
+        RequireAuth: boolean;
+    };
 }
 
 declare module 'next/app' {
