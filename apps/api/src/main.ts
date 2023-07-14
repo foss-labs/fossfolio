@@ -1,19 +1,22 @@
-import supertokens from 'supertokens-node';
+import * as session from 'express-session';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SupertokensExceptionFilter } from './auth/auth.filter';
+
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         bufferLogs: true,
     });
-    app.enableCors({
-        origin: process.env.SUPERTOKENS_WEBSITE_DOMAIN,
-        allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders(), 'st-auth-mode'],
-        credentials: true,
-    });
 
-    app.useGlobalFilters(new SupertokensExceptionFilter());
+    app.use(
+        session({
+            secret: process.env.SESSION_SECRET as string,
+            resave: false,
+            saveUninitialized: false,
+        }),
+    );
+    app.use(cookieParser());
 
     await app.listen(
         (process.env.PORT as string) || 8080,
