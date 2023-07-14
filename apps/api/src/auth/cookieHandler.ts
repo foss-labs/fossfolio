@@ -6,6 +6,7 @@ export const cookieHandler = (
         accessToken: string;
         refreshToken: string;
     },
+    redirect?: boolean,
 ) => {
     res.cookie('access_token', authToken.accessToken, {
         httpOnly: true,
@@ -18,5 +19,11 @@ export const cookieHandler = (
         maxAge: 1000 * 60 * 60 * 6, // 6 hours
     });
 
-    res.status(200).redirect(process.env.CLIENT_REDIRECT_URI);
+    if (!redirect) {
+        return res.status(200).json({
+            message: 'Success',
+        });
+    }
+
+    return res.status(200).redirect(process.env.CLIENT_REDIRECT_URI);
 };

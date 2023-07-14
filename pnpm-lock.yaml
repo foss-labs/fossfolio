@@ -102,6 +102,9 @@ importers:
       '@types/passport-github2':
         specifier: ^1.2.5
         version: 1.2.5
+      '@types/passport-jwt':
+        specifier: ^3.0.9
+        version: 3.0.9
       prisma:
         specifier: ^5.0.0
         version: 5.0.0
@@ -2353,7 +2356,6 @@ packages:
     resolution: {integrity: sha512-drE6uz7QBKq1fYqqoFKTDRdFCPHd5TCub75BM+D+cMx7NU9hUz7SESLfC2fSCXVFMO5Yj8sOWHuGqPgjc+fz0Q==}
     dependencies:
       '@types/node': 20.4.2
-    dev: false
 
   /@types/lodash.mergewith@4.6.7:
     resolution: {integrity: sha512-3m+lkO5CLRRYU0fhGRp7zbsGi6+BZj0uTVSwvcKU+nSlhjA9/QRNfuSGnD2mX6hQA7ZbmcCkzk5h4ZYGOtk14A==}
@@ -2397,11 +2399,26 @@ packages:
       '@types/passport-oauth2': 1.4.12
     dev: true
 
+  /@types/passport-jwt@3.0.9:
+    resolution: {integrity: sha512-5XJt+79emfgpuBvBQusUPylFIVtW1QVAAkTRwCbRJAmxUjmLtIqUU6V1ovpnHPu6Qut3mR5Juc+s7kd06roNTg==}
+    dependencies:
+      '@types/express': 4.17.17
+      '@types/jsonwebtoken': 9.0.2
+      '@types/passport-strategy': 0.2.35
+    dev: true
+
   /@types/passport-oauth2@1.4.12:
     resolution: {integrity: sha512-RZg6cYTyEGinrZn/7REYQds6zrTxoBorX1/fdaz5UHzkG8xdFE7QQxkJagCr2ETzGII58FAFDmnmbTUVMrltNA==}
     dependencies:
       '@types/express': 4.17.17
       '@types/oauth': 0.9.1
+      '@types/passport': 1.0.12
+    dev: true
+
+  /@types/passport-strategy@0.2.35:
+    resolution: {integrity: sha512-o5D19Jy2XPFoX2rKApykY15et3Apgax00RRLf0RUotPDUsYrQa7x4howLYr9El2mlUApHmCMv5CZ1IXqKFQ2+g==}
+    dependencies:
+      '@types/express': 4.17.17
       '@types/passport': 1.0.12
     dev: true
 

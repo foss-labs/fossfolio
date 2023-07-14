@@ -18,6 +18,7 @@ import { PrismaModule } from './prisma/prisma.module';
                 GITHUB_CALLBACK_URL: Joi.string(),
                 GITHUB_SCOPE: Joi.string(),
                 ACCESS_TOKEN_VALIDITY: Joi.string(),
+                API_BASE_URL: Joi.string(),
             }),
             validationOptions: {
                 allowUnknown: true,

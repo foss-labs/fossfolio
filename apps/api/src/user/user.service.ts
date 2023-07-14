@@ -42,7 +42,7 @@ export class UserService {
         return createdUser;
     }
 
-    async updateRefreshToken(uid: string, refreshToken: string) {
+    async updateRefreshToken(uid: string, refreshToken: string | null) {
         try {
             const updatedUser = await this.prismaService.user.update({
                 where: {
@@ -52,10 +52,23 @@ export class UserService {
                     refreshToken: refreshToken,
                 },
             });
-
             return updatedUser;
         } catch (error) {
             throw error;
+        }
+    }
+
+    async findUserById(uid: string) {
+        try {
+            const user = await this.prismaService.user.findUnique({
+                where: {
+                    uid: uid,
+                },
+            });
+
+            return user;
+        } catch (error) {
+            return null;
         }
     }
 }
