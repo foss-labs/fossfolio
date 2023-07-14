@@ -1,19 +1,22 @@
 {
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
-    "exclude": ["node_modules"],
     "compilerOptions": {
-        "jsx": "react-jsx",
         "module": "commonjs",
         "declaration": true,
+        "removeComments": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "target": "ES2017",
+        "target": "es2017",
+        "sourceMap": true,
         "outDir": "./dist",
-        "isolatedModules": false,
-        "noUnusedParameters": false,
-        "strictPropertyInitialization": false,
-        "strict": true,
-        "baseUrl": "./"
+        "baseUrl": "./",
+        "incremental": true,
+        "skipLibCheck": true,
+        "strict": false,
+        "strictNullChecks": false,
+        "noImplicitAny": false,
+        "strictBindCallApply": false,
+        "forceConsistentCasingInFileNames": false,
+        "noFallthroughCasesInSwitch": true
     }
 }

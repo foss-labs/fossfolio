@@ -6,3 +6,35 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  uid      String   @id @default(cuid())
+  email    String?  @unique
+  displayName String?
+  slug     String?  @unique
+  photoURL String?
+
+  refreshToken String?
+  createdAt DateTime @default(now())
+
+  providerAccounts Account[]
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [uid])
+
+  provider  String
+  providerAccountId String
+
+  providerAccessToken String?
+  providerRefreshToken String?
+
+  scope String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, providerAccountId], name: "verify_provider_account")
+}
