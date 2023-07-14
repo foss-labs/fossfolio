@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { Provider } from 'react-redux';
-import { ApolloProvider } from '@apollo/client';
 import { ChakraProvider } from '@chakra-ui/react';
 import Router from 'next/router';
 import { DefaultSeo } from 'next-seo';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
-import { store } from '@app/store';
-import { gqClient } from '@app/config';
 import { AuthProvider } from '@app/layout';
 import { PageLoader } from '@app/components/loader';
 
@@ -17,6 +14,8 @@ type ComponentWithPageLayout = AppProps & {
         RequireAuth?: boolean;
     };
 };
+
+const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
     const [isPageLoading, setPageLoading] = useState<boolean>(false);
@@ -31,31 +30,29 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
 
     if (Component.RequireAuth) {
         return (
-            <ApolloProvider client={gqClient}>
-                <Provider store={store}>
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
                     <DefaultSeo
                         title="FossFolio"
                         description="Discover,host and manage Events,Hackathons all in one place. "
                     />
                     <ChakraProvider>
-                        <AuthProvider>
-                            <PageLoader isOpen={isPageLoading} />
-                            {Component.Layout ? (
-                                <Component.Layout>
-                                    <Component {...pageProps} />
-                                </Component.Layout>
-                            ) : (
+                        <PageLoader isOpen={isPageLoading} />
+                        {Component.Layout ? (
+                            <Component.Layout>
                                 <Component {...pageProps} />
-                            )}
-                        </AuthProvider>
+                            </Component.Layout>
+                        ) : (
+                            <Component {...pageProps} />
+                        )}
                     </ChakraProvider>
-                </Provider>
-            </ApolloProvider>
+                </AuthProvider>
+            </QueryClientProvider>
         );
     }
     return (
-        <ApolloProvider client={gqClient}>
-            <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
                 <DefaultSeo
                     title="FossFolio"
                     description="Discover,host and manage Events,Hackathons all in one place. "
@@ -70,8 +67,8 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                         <Component {...pageProps} />
                     )}
                 </ChakraProvider>
-            </Provider>
-        </ApolloProvider>
+            </AuthProvider>
+        </QueryClientProvider>
     );
 };
 export default MyApp;

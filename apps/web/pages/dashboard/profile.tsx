@@ -14,30 +14,27 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { InferType } from 'yup';
 import { regEvent } from '@app/views/validators';
 import { NextPageWithLayout } from 'next';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
 
 type Eve = InferType<typeof regEvent>;
 
 const Profile: NextPageWithLayout = () => {
-    const userState = useSelector((state: any) => state.auth.user);
     const {
         register,
         handleSubmit,
         formState: { errors },
-        setValue,
+        // setValue,
     } = useForm<Eve>({
         mode: 'onSubmit',
         resolver: yupResolver(regEvent),
     });
 
-    useEffect(() => {
-        if (userState) {
-            setValue('email', userState?.payload.email);
-            setValue('name', userState?.payload.full_name);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userState]);
+    // useEffect(() => {
+    //     if (userState) {
+    //         setValue('email', userState?.payload.email);
+    //         setValue('name', userState?.payload.full_name);
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [userState]);
 
     const getUserInput: SubmitHandler<Eve> = (data) => {
         // eslint-disable-next-line no-console
