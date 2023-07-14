@@ -31,8 +31,6 @@ model Account {
   providerAccessToken String?
   providerRefreshToken String?
 
-  scope String?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
