@@ -1,9 +1,10 @@
-import { RegisterHack } from '@app/views/profile/components/Modal';
-import { Badge, Box, Flex, Heading, Image, Text, useDisclosure } from '@chakra-ui/react';
 import React from 'react';
+import { RegisterHack } from '@app/views/profile/components/Modal';
+import { Badge, Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
+import { useToggle } from '@app/hooks';
 
 export const Card = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [isOpen, changeOpenState] = useToggle(false);
     return (
         <Box
             borderRadius="md"
@@ -13,9 +14,9 @@ export const Card = () => {
             shadow="sm"
             transition="0.4s"
             borderEndRadius="0px 12px 12px 0px"
-            onClick={() => onOpen()}
+            onClick={changeOpenState.on}
         >
-            <RegisterHack isOpen={isOpen} onClose={onClose} />
+            <RegisterHack isOpen={isOpen} onClose={changeOpenState.off} />
             <Image
                 src="/foss.png"
                 alt="foss"
