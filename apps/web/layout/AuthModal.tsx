@@ -8,10 +8,20 @@ import {
     Heading,
     Text,
     Button,
-    VStack
+    VStack,
 } from '@chakra-ui/react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@app/ui/components/alert-dialog';
 import React from 'react';
-
 
 type IModal = {
     isOpen: boolean;
@@ -19,22 +29,19 @@ type IModal = {
 };
 
 export const AuthModal = ({ isOpen, onClose }: IModal) => (
-    <Modal isOpen={isOpen} onClose={onClose} >
-        <ModalOverlay />
-        <ModalContent minW="700px">
-            <ModalBody>
-                <Flex justifyContent="space-between">
-                    <Flex flexDir="column" p="4" w="full">
-                        <Heading>Welcome !</Heading>
-                         <Text ml="20px">Sign in to continue</Text>
-                         <VStack mt="40px" justifyContent="center">
-                         <Button variant="outline" colorScheme='red'>Continue with Google</Button>
-                         <Button variant="solid" colorScheme="facebook">Continue with Github</Button>
-                         </VStack>
-                    </Flex>
-                   <Image src="/event.jpg" alt="a rave image" width="50%"/>
-                </Flex>
-            </ModalBody>
-        </ModalContent>
-    </Modal>
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your account and
+                    remove your data from our servers.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
 );

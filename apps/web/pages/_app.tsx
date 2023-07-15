@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
 import { PageLoader } from '@app/components/loader';
-import "../theme/style.css"
+import { ThemeProvider } from '@app/ui/components/ThemeProvider';
+import '../theme/style.css';
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
@@ -31,6 +32,7 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
     if (Component.RequireAuth) {
         return (
             <QueryClientProvider client={queryClient}>
+                <ThemeProvider>
                     <DefaultSeo
                         title="FossFolio"
                         description="Discover,host and manage Events,Hackathons all in one place. "
@@ -45,12 +47,13 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                             <Component {...pageProps} />
                         )}
                     </ChakraProvider>
-             
+                </ThemeProvider>
             </QueryClientProvider>
         );
     }
     return (
         <QueryClientProvider client={queryClient}>
+            <ThemeProvider>
                 <DefaultSeo
                     title="FossFolio"
                     description="Discover,host and manage Events,Hackathons all in one place. "
@@ -65,6 +68,7 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                         <Component {...pageProps} />
                     )}
                 </ChakraProvider>
+            </ThemeProvider>
         </QueryClientProvider>
     );
 };
