@@ -5,7 +5,6 @@ import { DefaultSeo } from 'next-seo';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
-import { AuthProvider } from '@app/layout';
 import { PageLoader } from '@app/components/loader';
 
 type ComponentWithPageLayout = AppProps & {
@@ -31,7 +30,6 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
     if (Component.RequireAuth) {
         return (
             <QueryClientProvider client={queryClient}>
-                <AuthProvider>
                     <DefaultSeo
                         title="FossFolio"
                         description="Discover,host and manage Events,Hackathons all in one place. "
@@ -46,13 +44,12 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                             <Component {...pageProps} />
                         )}
                     </ChakraProvider>
-                </AuthProvider>
+             
             </QueryClientProvider>
         );
     }
     return (
         <QueryClientProvider client={queryClient}>
-            <AuthProvider>
                 <DefaultSeo
                     title="FossFolio"
                     description="Discover,host and manage Events,Hackathons all in one place. "
@@ -67,7 +64,6 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                         <Component {...pageProps} />
                     )}
                 </ChakraProvider>
-            </AuthProvider>
         </QueryClientProvider>
     );
 };

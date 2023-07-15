@@ -2,14 +2,16 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
-    ModalCloseButton,
     ModalBody,
+    Flex,
+    Image,
+    Heading,
+    Text,
+    Button,
+    VStack
 } from '@chakra-ui/react';
 import React from 'react';
-import { Auth } from '@supabase/auth-ui-react';
-import { supaClient } from '@app/config/supabaseClient';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
+
 
 type IModal = {
     isOpen: boolean;
@@ -17,18 +19,21 @@ type IModal = {
 };
 
 export const AuthModal = ({ isOpen, onClose }: IModal) => (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} >
         <ModalOverlay />
-        <ModalContent>
-            <ModalHeader />
-            <ModalCloseButton />
+        <ModalContent minW="700px">
             <ModalBody>
-                <Auth
-                    supabaseClient={supaClient}
-                    providers={['google', 'github']}
-                    appearance={{ theme: ThemeSupa }}
-                    redirectTo="/events"
-                />
+                <Flex justifyContent="space-between">
+                    <Flex flexDir="column" p="4" w="full">
+                        <Heading>Welcome !</Heading>
+                         <Text ml="20px">Sign in to continue</Text>
+                         <VStack mt="40px" justifyContent="center">
+                         <Button variant="outline" colorScheme='red'>Continue with Google</Button>
+                         <Button variant="solid" colorScheme="facebook">Continue with Github</Button>
+                         </VStack>
+                    </Flex>
+                   <Image src="/event.jpg" alt="a rave image" width="50%"/>
+                </Flex>
             </ModalBody>
         </ModalContent>
     </Modal>
