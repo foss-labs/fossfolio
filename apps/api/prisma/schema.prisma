@@ -36,3 +36,45 @@ model Account {
 
   @@unique([provider, providerAccountId], name: "verify_provider_account")
 }
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+
+  members   OrganizationMember[]
+  invites   OrganizationInvite[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model OrganizationMember {
+  id      String   @id @default(cuid())
+  
+  userUid String
+  role    Role
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userUid, organizationId], name: "verify_organization_member")
+}
+
+model OrganizationInvite {
+  id      String   @id @default(cuid())
+  inviteeEmail String
+  inviteeRole  Role
+
+  inviterUid   String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([inviteeEmail, organizationId])
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}

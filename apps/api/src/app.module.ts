@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { OrganizationModule } from './organization/organization.module';
 
 @Module({
     imports: [
@@ -19,6 +20,10 @@ import { PrismaModule } from './prisma/prisma.module';
                 GITHUB_SCOPE: Joi.string(),
                 ACCESS_TOKEN_VALIDITY: Joi.string(),
                 API_BASE_URL: Joi.string(),
+                GOOGLE_CLIENT_ID: Joi.string(),
+                GOOGLE_CLIENT_SECRET: Joi.string(),
+                GOOGLE_CALLBACK_URL: Joi.string(),
+                GOOGLE_SCOPE: Joi.string(),
             }),
             validationOptions: {
                 allowUnknown: true,
@@ -35,6 +40,7 @@ import { PrismaModule } from './prisma/prisma.module';
         AuthModule,
         PrismaModule,
         UserModule,
+        OrganizationModule,
     ],
     controllers: [AppController],
     providers: [],
