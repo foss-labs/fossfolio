@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
 import { PageLoader } from '@app/components/loader';
+import "../theme/style.css"
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
