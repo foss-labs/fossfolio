@@ -9,6 +9,7 @@ import { UserService } from 'src/user/user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { RefreshStrategy } from './strategy/refresh.strategy';
+import { GoogleStrategy } from './strategy/google.strategy';
 
 @Module({
     imports: [
@@ -21,6 +22,13 @@ import { RefreshStrategy } from './strategy/refresh.strategy';
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, GithubStrategy, UserService, JwtStrategy, RefreshStrategy],
+    providers: [
+        AuthService,
+        GithubStrategy,
+        GoogleStrategy,
+        UserService,
+        JwtStrategy,
+        RefreshStrategy,
+    ],
 })
 export class AuthModule {}

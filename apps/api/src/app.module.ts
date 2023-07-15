@@ -20,6 +20,10 @@ import { OrganizationModule } from './organization/organization.module';
                 GITHUB_SCOPE: Joi.string(),
                 ACCESS_TOKEN_VALIDITY: Joi.string(),
                 API_BASE_URL: Joi.string(),
+                GOOGLE_CLIENT_ID: Joi.string(),
+                GOOGLE_CLIENT_SECRET: Joi.string(),
+                GOOGLE_CALLBACK_URL: Joi.string(),
+                GOOGLE_SCOPE: Joi.string(),
             }),
             validationOptions: {
                 allowUnknown: true,

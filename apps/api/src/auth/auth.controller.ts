@@ -3,6 +3,7 @@ import { GithubAuthGuard } from './guards/github-oauth.guard';
 import { AuthService } from './auth.service';
 import { cookieHandler } from './cookieHandler';
 import { RefreshGuard } from './guards/refresh.guard';
+import { GoogleAuthGuard } from './guards/google-oauth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +18,17 @@ export class AuthController {
     @Get('/github/callback')
     @UseGuards(GithubAuthGuard)
     async githubOAuthCallback(@Request() req, @Response() res) {
+        const authToken = await this.authService.generateAuthToken(req.user.uid);
+        cookieHandler(res, authToken, true);
+    }
+
+    @Get('/google')
+    @UseGuards(GoogleAuthGuard)
+    async googleOAuth() {}
+
+    @Get('/google/callback')
+    @UseGuards(GoogleAuthGuard)
+    async googleOAuthCallback(@Request() req, @Response() res) {
         const authToken = await this.authService.generateAuthToken(req.user.uid);
         cookieHandler(res, authToken, true);
     }
