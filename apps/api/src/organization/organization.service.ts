@@ -78,4 +78,25 @@ export class OrganizationService {
 
         return orgs;
     }
+
+    async getMembers(organizationId: string) {
+        const members = await this.prismaService.organizationMember.findMany({
+            where: {
+                organizationId,
+            },
+            select: {
+                user: {
+                    select: {
+                        uid: true,
+                        email: true,
+                        displayName: true,
+                        slug: true,
+                    },
+                },
+                role: true,
+            },
+        });
+
+        return members;
+    }
 }
