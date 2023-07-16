@@ -1,16 +1,4 @@
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalBody,
-    Flex,
-    Image,
-    Heading,
-    Text,
-    Button,
-    VStack,
-} from '@chakra-ui/react';
-import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -30,7 +18,7 @@ type IModal = {
 
 export const AuthModal = ({ isOpen, onClose }: IModal) => (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white">
             <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>

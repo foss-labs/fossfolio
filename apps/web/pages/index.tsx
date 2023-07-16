@@ -1,9 +1,10 @@
 /* eslint-disable react/no-array-index-key */
 import { HomeLayout } from '@app/layout';
-import { Box, Button, Center, Flex, HStack, Image } from '@chakra-ui/react';
+import { Box, Center, Flex, Image } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { AnimatedCharacters } from '@app/views/home';
 import { NextPageWithLayout } from 'next';
+import { Button } from '@app/ui/components/button';
 
 const container = {
     visible: {
@@ -16,14 +17,8 @@ const container = {
 const Head = ['Discover,host and manage Events,Hackathons all in one place.'];
 
 const Home: NextPageWithLayout = () => (
-    <Flex
-        maxH="90vh"
-        flexDir={{ base: 'column-reverse', md: 'row' }}
-        justifyContent={{ base: 'space-around', md: 'space-between' }}
-        p="7"
-        flex="1"
-    >
-        <Center>
+    <div className="flex min-h-[90vh] p-7 sm:justify-around md:row space-between">
+        <div className="flex justify-center items-center">
             <Box w={{ base: '300px', md: '600px' }}>
                 <motion.div
                     className="App"
@@ -36,18 +31,16 @@ const Home: NextPageWithLayout = () => (
                         <AnimatedCharacters text={el} key={key + 5} />
                     ))}
                 </motion.div>
-                <HStack mt="40px">
-                    <Button colorScheme="purple">Join Event</Button>
-                    <Button colorScheme="purple" variant="outline">
-                        Create Events
-                    </Button>
-                </HStack>
+                <div className="flex gap-4">
+                    <Button className="bg-grey-900">Join Event</Button>
+                    <Button variant="outline">Create Events</Button>
+                </div>
             </Box>
-        </Center>
+        </div>
         <Center>
             <Image src="/main.png" width="800px" />
         </Center>
-    </Flex>
+    </div>
 );
 
 Home.Layout = HomeLayout;

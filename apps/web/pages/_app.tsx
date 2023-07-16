@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { ChakraProvider } from '@chakra-ui/react';
 import Router from 'next/router';
 import { DefaultSeo } from 'next-seo';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
-import { PageLoader } from '@app/components/loader';
 import { ThemeProvider } from '@app/ui/components/ThemeProvider';
 import '../theme/style.css';
 
@@ -37,16 +35,14 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                         title="FossFolio"
                         description="Discover,host and manage Events,Hackathons all in one place. "
                     />
-                    <ChakraProvider>
-                        <PageLoader isOpen={isPageLoading} />
-                        {Component.Layout ? (
-                            <Component.Layout>
-                                <Component {...pageProps} />
-                            </Component.Layout>
-                        ) : (
+                    {/* <PageLoader isOpen={isPageLoading} /> */}
+                    {Component.Layout ? (
+                        <Component.Layout>
                             <Component {...pageProps} />
-                        )}
-                    </ChakraProvider>
+                        </Component.Layout>
+                    ) : (
+                        <Component {...pageProps} />
+                    )}
                 </ThemeProvider>
             </QueryClientProvider>
         );
@@ -58,16 +54,14 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                     title="FossFolio"
                     description="Discover,host and manage Events,Hackathons all in one place. "
                 />
-                <ChakraProvider>
-                    <PageLoader isOpen={isPageLoading} />
-                    {Component.Layout ? (
-                        <Component.Layout>
-                            <Component {...pageProps} />
-                        </Component.Layout>
-                    ) : (
+                {/* <PageLoader isOpen={isPageLoading} /> */}
+                {Component.Layout ? (
+                    <Component.Layout>
                         <Component {...pageProps} />
-                    )}
-                </ChakraProvider>
+                    </Component.Layout>
+                ) : (
+                    <Component {...pageProps} />
+                )}
             </ThemeProvider>
         </QueryClientProvider>
     );
