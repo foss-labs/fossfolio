@@ -8,10 +8,14 @@ import { UpdateOrgDto } from './dto/update-org.dto';
 import { AuthUser } from 'src/auth/decorators/user.decorator';
 import { User } from '@prisma/client';
 import { GenericOrgDto } from './dto/generic-org.dto';
+import { OrganizationMemberService } from 'src/org-member/org-member.service';
 
 @Controller('org')
 export class OrganizationController {
-    constructor(private readonly organizationService: OrganizationService) {}
+    constructor(
+        private readonly organizationService: OrganizationService,
+        private readonly orgMemberService: OrganizationMemberService,
+    ) {}
 
     @Post('/')
     @UseGuards(AuthGuard('jwt'))
@@ -35,6 +39,6 @@ export class OrganizationController {
     @Roles('ADMIN')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getMembers(@Body() orgDto: GenericOrgDto) {
-        return this.organizationService.getMembers(orgDto.organizationId);
+        return this.orgMemberService.getMembers(orgDto.organizationId);
     }
 }
