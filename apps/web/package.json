@@ -27,7 +27,6 @@
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
     "framer-motion": "^10.0.1",
-    "lucide-react": "^0.260.0",
     "next": "^13.2.3",
     "next-seo": "^5.15.0",
     "next-themes": "^0.2.1",

@@ -1,34 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
 import { HomeLayout } from '@app/layout';
 import { Card } from '@app/views/events';
-import { apiHandler } from '@app/config/handler';
 import { NextPageWithLayout } from 'next';
+import { useAllEvents } from '@app/hooks/api/Events';
 
 const Events: NextPageWithLayout = () => {
-    const [data, setData] = useState<any>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    const getData = async () => {
-        try {
-            setIsLoading(true);
-            const { data: apiData } = await apiHandler.get('/user/ViewAllEvents');
-            if (!apiData.ok) {
-                throw new Error();
-            }
-            setData(data);
-        } catch {
-            // render a error ui in same page
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        (async () => {
-            await getData();
-        })();
-    }, []);
+    const { isLoading, data } = useAllEvents();
 
     if (isLoading) {
         <h1>loading</h1>;
