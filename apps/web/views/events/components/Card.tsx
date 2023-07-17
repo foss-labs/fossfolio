@@ -1,5 +1,4 @@
 import React from 'react';
-import { RegisterHack } from '@app/views/profile/components/Modal';
 import { Badge, Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
 import { useToggle } from '@app/hooks';
 
@@ -16,7 +15,6 @@ export const Card = () => {
             borderEndRadius="0px 12px 12px 0px"
             onClick={changeOpenState.on}
         >
-            <RegisterHack isOpen={isOpen} onClose={changeOpenState.off} />
             <Image
                 src="/foss.png"
                 alt="foss"
