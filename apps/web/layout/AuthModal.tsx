@@ -3,10 +3,10 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from '@app/ui/components/dialog';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 type IModal = {
@@ -14,21 +14,36 @@ type IModal = {
     onClose: () => void;
 };
 
-export const AuthModal = ({ isOpen, onClose }: IModal) => (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-                <DialogTitle className="mb-4">Login/SignUp</DialogTitle>
-                <DialogDescription>
-                    Login With
-                    <div className="flex flex-col gap-3 mt-4">
-                        <Button type="submit" className="bg-red-700">
-                            Google
-                        </Button>
-                        <Button type="submit">Github</Button>
-                    </div>
-                </DialogDescription>
-            </DialogHeader>
-        </DialogContent>
-    </Dialog>
-);
+export const AuthModal = ({ isOpen, onClose }: IModal) => {
+    const router = useRouter();
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="w-[325px] md:w-auto">
+                <DialogHeader>
+                    <DialogTitle className="mb-4">Login</DialogTitle>
+                    <DialogDescription>
+                        By Signing in, you agree to our Terms and Services
+                        <div className="flex flex-col gap-3 mt-4">
+                            <Button
+                                className="bg-[#4889f4]"
+                                onClick={() => {
+                                    router.push(process.env.NEXT_PUBLIC_API_URL + '/auth/google');
+                                }}
+                            >
+                                Google
+                            </Button>
+                            <Button
+                                className="bg-[#2b3034]"
+                                onClick={() => {
+                                    router.push(process.env.NEXT_PUBLIC_API_URL + '/auth/github');
+                                }}
+                            >
+                                Github
+                            </Button>
+                        </div>
+                    </DialogDescription>
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
+    );
+};
