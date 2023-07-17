@@ -1,12 +1,20 @@
 import { apiHandler } from '@app/config';
 import { Child, User } from '@app/types';
 import { useRouter } from 'next/router';
-import React, { useMemo, useState, createContext, useEffect } from 'react';
+import React, {
+    useMemo,
+    useState,
+    createContext,
+    useEffect,
+    Dispatch,
+    SetStateAction,
+} from 'react';
 
 interface IAuthTypes {
     logOut: () => Promise<void>;
     user: User | null;
     login: () => Promise<void>;
+    setUser: Dispatch<SetStateAction<User | null>>;
 }
 export const AuthCtx = createContext({} as IAuthTypes);
 
@@ -29,6 +37,7 @@ export const AuthContext = ({ children }: Child) => {
                 }
             },
             user,
+            setUser,
         }),
         [user],
     );

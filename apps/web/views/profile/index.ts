@@ -1,1 +1,1 @@
-export { Card } from './components/Card';
+export { ProfileModal } from './components/ProfileModal';

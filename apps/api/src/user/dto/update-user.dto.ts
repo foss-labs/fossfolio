@@ -2,16 +2,14 @@ import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 
 export class UpdateUserDto {
     @IsString()
-    @IsNotEmpty()
     uid: string;
 
     @IsString()
     displayName?: string;
 
     @IsString()
+    @IsNotEmpty()
     slug?: string;
 
-    @IsNotEmpty()
-    @IsUrl()
     photoUrl?: string;
 }
