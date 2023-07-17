@@ -17,7 +17,7 @@ const Head = ['Discover, host and manage Events, Hackathons all in one place.'];
 
 const Home: NextPageWithLayout = () => {
     return (
-        <div className="flex flex-col-reverse p-4 sm:justify-around sm:flex-row space-between">
+        <div className="flex flex-col-reverse p-4 sm:justify-around sm:flex-row space-between h-full">
             <div className="flex justify-center items-center">
                 <div className="">
                     <motion.div
