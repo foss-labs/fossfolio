@@ -22,8 +22,8 @@ export const AuthContext = ({ children }: Child) => {
             },
             login: async () => {
                 try {
-                    const user: User | null = await apiHandler.get('/user');
-                    setUser(user);
+                    const { data } = await apiHandler.get('/user');
+                    setUser(data);
                 } catch (error) {
                     console.log(error);
                 }

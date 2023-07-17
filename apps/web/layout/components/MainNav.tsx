@@ -4,6 +4,7 @@ import { AuthModal } from '../AuthModal';
 import { useAuth, useToggle } from '@app/hooks';
 import { Button } from '@app/ui/components/button';
 import { useRouter } from 'next/router';
+import { UserNav } from './UserNav';
 export const MainNav = () => {
     const [isOpen, triggerModal] = useToggle(false);
 
@@ -33,13 +34,7 @@ export const MainNav = () => {
                     </Link>
                 </div>
                 {user ? (
-                    <Button
-                        onClick={async () => {
-                            await logOut();
-                        }}
-                    >
-                        Logout
-                    </Button>
+                    <UserNav />
                 ) : (
                     <Button
                         variant="ghost"

@@ -4,7 +4,8 @@ export interface Child {
 
 export interface User {
     uid: string;
-    name: string;
+    displayName: string;
     email: string;
     slug: string;
+    photoURL: string;
 }
