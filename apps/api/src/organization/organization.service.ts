@@ -64,4 +64,18 @@ export class OrganizationService {
 
         return updatedOrg;
     }
+
+    async findOrgsByUser(uid: string) {
+        const orgs = await this.prismaService.organizationMember.findMany({
+            where: {
+                userUid: uid,
+            },
+            select: {
+                organization: true,
+                role: true,
+            },
+        });
+
+        return orgs;
+    }
 }

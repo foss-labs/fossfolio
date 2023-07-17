@@ -11,12 +11,12 @@ export const cookieHandler = (
     res.cookie('access_token', authToken.accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60, // 1 hour
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
     });
     res.cookie('refresh_token', authToken.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 6, // 6 hours
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
     });
 
     if (!redirect) {

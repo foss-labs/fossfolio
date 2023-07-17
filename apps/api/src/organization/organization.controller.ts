@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { OrganizationService } from './organization.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateOrgDto } from './dto/create-org.dto';
 import { Roles } from './decorators/roles.decorator';
 import { RbacGuard } from './guards/rbac-member.guard';
 import { UpdateOrgDto } from './dto/update-org.dto';
+import { AuthUser } from 'src/auth/decorators/user.decorator';
+import { User } from '@prisma/client';
 
 @Controller('org')
 export class OrganizationController {
@@ -12,17 +14,16 @@ export class OrganizationController {
 
     @Post('/')
     @UseGuards(AuthGuard('jwt'))
-    async createOrganization(@Body() createOrgDto: CreateOrgDto, @Request() req) {
-        const uid = req.user.uid;
-        return this.organizationService.create(createOrgDto, uid);
+    async createOrganization(@Body() createOrgDto: CreateOrgDto, @AuthUser() user: User) {
+        return this.organizationService.create(createOrgDto, user.uid);
     }
 
-    @Get(':slug')
+    @Get('/find/:slug')
     async findOrgBySlug(@Param('slug') slug: string) {
         return this.organizationService.findOrgBySlug(slug);
     }
 
-    @Post('/update')
+    @Patch('/')
     @Roles('ADMIN')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async updateOrganization(@Body() updateOrgDto: UpdateOrgDto) {

@@ -17,6 +17,7 @@ model User {
   refreshToken String?
   createdAt DateTime @default(now())
 
+  organizationMember OrganizationMember[]
   providerAccounts Account[]
 }
 
@@ -51,14 +52,15 @@ model Organization {
 
 model OrganizationMember {
   id      String   @id @default(cuid())
-  
-  userUid String
   role    Role
+
+  userUid String
+  user   User @relation(fields: [userUid], references: [uid])
 
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  @@unique([userUid, organizationId], name: "verify_organization_member")
+  @@unique([userUid, organizationId])
 }
 
 model OrganizationInvite {

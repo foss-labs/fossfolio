@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Profile } from 'passport';
+import { USER_UPDATE_ERROR } from 'src/error';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -69,6 +72,26 @@ export class UserService {
             return user;
         } catch (error) {
             return null;
+        }
+    }
+
+    async updateUser(authUser: User, updateUserDto: UpdateUserDto) {
+        try {
+            const user = await this.prismaService.user.update({
+                where: {
+                    uid: authUser.uid,
+                },
+                data: {
+                    slug: updateUserDto.slug ? updateUserDto.slug : authUser.slug,
+                    photoURL: updateUserDto.photoUrl ? updateUserDto.photoUrl : authUser.photoURL,
+                    displayName: updateUserDto.displayName
+                        ? updateUserDto.displayName
+                        : authUser.displayName,
+                },
+            });
+            return user;
+        } catch (error) {
+            return USER_UPDATE_ERROR;
         }
     }
 }

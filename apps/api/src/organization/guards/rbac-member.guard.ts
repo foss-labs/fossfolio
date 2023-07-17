@@ -20,10 +20,12 @@ export class RbacGuard implements CanActivate {
 
         const organizationId = request.body.organizationId;
 
-        const organizationMember = await this.prisma.organizationMember.findFirst({
+        const organizationMember = await this.prisma.organizationMember.findUnique({
             where: {
-                userUid: user.uid,
-                organizationId,
+                userUid_organizationId: {
+                    userUid: user.uid,
+                    organizationId,
+                },
             },
         });
 
