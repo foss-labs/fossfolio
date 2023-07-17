@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Profile } from 'passport';
+import { USER_NOT_FOUND } from 'src/error';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -15,7 +16,7 @@ export class UserService {
             });
             return user;
         } catch (error) {
-            return null;
+            return USER_NOT_FOUND;
         }
     }
 
@@ -68,7 +69,7 @@ export class UserService {
 
             return user;
         } catch (error) {
-            return null;
+            return USER_NOT_FOUND;
         }
     }
 }

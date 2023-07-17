@@ -16,3 +16,8 @@ export const ROLE_UPDATE_FAILED = {
     message: 'Failed to update role',
     error: 'ROLE_UPDATE_FAILED',
 };
+
+export const USER_NOT_FOUND = {
+    message: 'User Doesnt Exist',
+    error: 'USER_NOT_FOUND',
+};
