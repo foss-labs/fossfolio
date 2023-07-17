@@ -1,13 +1,12 @@
+import { Button } from '@app/ui/components/button';
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from '@app/ui/components/alert-dialog';
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@app/ui/components/dialog';
 import React from 'react';
 
 type IModal = {
@@ -16,19 +15,20 @@ type IModal = {
 };
 
 export const AuthModal = ({ isOpen, onClose }: IModal) => (
-    <AlertDialog open={isOpen} onOpenChange={onClose}>
-        <AlertDialogContent className="bg-white">
-            <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your account and
-                    remove your data from our servers.
-                </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Continue</AlertDialogAction>
-            </AlertDialogFooter>
-        </AlertDialogContent>
-    </AlertDialog>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+                <DialogTitle className="mb-4">Login/SignUp</DialogTitle>
+                <DialogDescription>
+                    Login With
+                    <div className="flex flex-col gap-3 mt-4">
+                        <Button type="submit" className="bg-red-700">
+                            Google
+                        </Button>
+                        <Button type="submit">Github</Button>
+                    </div>
+                </DialogDescription>
+            </DialogHeader>
+        </DialogContent>
+    </Dialog>
 );

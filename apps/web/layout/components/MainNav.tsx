@@ -49,7 +49,9 @@ export const MainNav = () => {
                         Logout
                     </Button>
                 ) : ( */}
-                <Button className="mr-[30px] text-[15px] text-[#667085]">Login</Button>
+                <Button className="mr-[30px] text-[15px] text-[#667085]" onClick={login}>
+                    Login
+                </Button>
             </div>
         </div>
     );
