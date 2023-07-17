@@ -1,25 +1,17 @@
-import { Button, Flex, Heading, useDisclosure, Link, forwardRef } from '@chakra-ui/react';
+import { Button, Flex, Heading, forwardRef } from '@chakra-ui/react';
 import React, { useImperativeHandle } from 'react';
 import { useRouter } from 'next/router';
-import { useSelector, useDispatch } from 'react-redux';
-import { BsGithub } from 'react-icons/bs';
+import Link from 'next/link';
 import { AiOutlineLogout } from 'react-icons/ai';
-import { authActions } from '@app/slices';
-import { AuthModal } from './AuthModal';
+import { AuthModal } from '../AuthModal';
+import { useToggle } from '@app/hooks';
 
 export const MainNav = forwardRef((_props, ref) => {
     const router = useRouter();
-    const { isOpen, onOpen, onClose } = useDisclosure();
-
-    const authState = useSelector((state: any) => state.auth.isLoggedIn);
-
-    const dispatch = useDispatch();
+    const [isOpen, triggerModal] = useToggle(false);
 
     const login = () => {
-        onOpen();
-    };
-    const logout = () => {
-        dispatch(authActions.setLoggedOut());
+        triggerModal.on();
     };
 
     useImperativeHandle(ref, () => ({
@@ -36,7 +28,7 @@ export const MainNav = forwardRef((_props, ref) => {
             justifyContent="space-between"
         >
             <Flex alignItems="center">
-                <AuthModal isOpen={isOpen} onClose={onClose} />
+                <AuthModal isOpen={isOpen} onClose={triggerModal.off} />
                 <Heading fontSize="29px">FossFolio</Heading>
                 <Flex
                     ml={{ sm: '0', md: '60px' }}
@@ -74,20 +66,10 @@ export const MainNav = forwardRef((_props, ref) => {
                             Dashboard
                         </Heading>
                     </Link>
-                    <Link href="/pricing">
-                        <Heading
-                            as="nav"
-                            fontSize="15px"
-                            _hover={{ cursor: 'pointer' }}
-                            color="#667085"
-                        >
-                            Pricing
-                        </Heading>
-                    </Link>
                 </Flex>
             </Flex>
             <Flex alignItems="center">
-                {authState ? (
+                {/* {authState ? (
                     <Button
                         mr="30px"
                         fontSize="15px"
@@ -102,22 +84,20 @@ export const MainNav = forwardRef((_props, ref) => {
                     >
                         Logout
                     </Button>
-                ) : (
-                    <Button
-                        mr="30px"
-                        fontSize="15px"
-                        _hover={{ cursor: 'pointer' }}
-                        color="#667085"
-                        colorScheme="purple"
-                        variant="outline"
-                        rightIcon={<AiOutlineLogout />}
-                        onClick={async () => {
-                            await login();
-                        }}
-                    >
-                        Login
-                    </Button>
-                )}
+                ) : ( */}
+                <Button
+                    mr="30px"
+                    fontSize="15px"
+                    _hover={{ cursor: 'pointer' }}
+                    color="#667085"
+                    colorScheme="purple"
+                    variant="outline"
+                    rightIcon={<AiOutlineLogout />}
+                    onClick={login}
+                >
+                    Login
+                </Button>
+                {/* )} */}
             </Flex>
         </Flex>
     );

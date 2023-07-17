@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { HomeLayout } from '@app/layout';
 import { Card } from '@app/views/events';
-import { useRouter } from 'next/router';
 import { Flex, Heading } from '@chakra-ui/react';
 import { apiHandler } from '@app/config/handler';
 import { NextPageWithLayout } from 'next';
@@ -10,7 +9,6 @@ import { NextPageWithLayout } from 'next';
 const Events: NextPageWithLayout = () => {
     const [data, setData] = useState<any>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const router = useRouter();
 
     const getData = async () => {
         try {
@@ -21,7 +19,7 @@ const Events: NextPageWithLayout = () => {
             }
             setData(data);
         } catch {
-            router.push('/404');
+            // render a error ui in same page
         } finally {
             setIsLoading(false);
         }
@@ -52,5 +50,6 @@ const Events: NextPageWithLayout = () => {
 };
 
 Events.Layout = HomeLayout;
+Events.RequireAuth = false;
 
 export default Events;

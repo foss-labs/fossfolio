@@ -1,4 +1,4 @@
-import { api } from '@app/config';
+import { apiHandler } from '@app/config/handler';
 import { debounce } from '@app/utils';
 import * as Yup from 'yup';
 
@@ -13,7 +13,7 @@ export const EventValidator = Yup.object({
             async (value) =>
                 new Promise((resolve) => {
                     debounce(async () => {
-                        const { data } = await api.get(`/events/slug/${value}`);
+                        const { data } = await apiHandler.get(`/events/slug/${value}`);
                         resolve(data.data.success);
                     }, 1000);
                 }) as boolean | Promise<boolean> | Promise<Yup.ValidationError>,

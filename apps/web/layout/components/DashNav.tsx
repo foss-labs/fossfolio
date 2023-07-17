@@ -1,7 +1,7 @@
 import { Flex, Heading, Icon } from '@chakra-ui/react';
 import Image from 'next/image';
+
 import Link from 'next/link';
-import React from 'react';
 import { FiArrowLeft, FiHome, FiUser } from 'react-icons/fi';
 
 export const DashNav = () => (
@@ -23,29 +23,47 @@ export const DashNav = () => (
             mt="20px"
             rowGap="26px"
         >
-            <Heading
-                fontWeight="500"
-                display="flex"
-                fontSize="15px"
-                color="#6941C6"
-                _hover={{ cursor: 'pointer', color: '#42307D' }}
-            >
-                <Icon as={FiHome} mr="9px" fontSize="16px" />
-                DashBoard
-            </Heading>
-            <Heading
-                alignSelf="flex-start"
-                fontWeight="500"
-                display="flex"
-                fontSize="15px"
-                color="#6941C6"
-                _hover={{ cursor: 'pointer', color: '#42307D' }}
-            >
-                <Icon as={FiUser} mr="9px" fontSize="16px" />
-                Teams
-            </Heading>
+            <Link href="/dashboard">
+                <Heading
+                    fontWeight="500"
+                    display="flex"
+                    fontSize="15px"
+                    color="#6941C6"
+                    _hover={{ cursor: 'pointer', color: '#42307D' }}
+                >
+                    <Icon as={FiHome} mr="9px" fontSize="16px" />
+                    Dashboard
+                </Heading>
+            </Link>
+
+            <Link href="/dashboard/profile">
+                <Heading
+                    fontWeight="500"
+                    display="flex"
+                    fontSize="15px"
+                    color="#6941C6"
+                    _hover={{ cursor: 'pointer', color: '#42307D' }}
+                >
+                    <Icon as={FiHome} mr="9px" fontSize="16px" />
+                    My Profile
+                </Heading>
+            </Link>
+
+            <Link href="/dashboard/tickets">
+                <Heading
+                    alignSelf="flex-start"
+                    fontWeight="500"
+                    display="flex"
+                    fontSize="15px"
+                    color="#6941C6"
+                    _hover={{ cursor: 'pointer', color: '#42307D' }}
+                >
+                    <Icon as={FiUser} mr="9px" fontSize="16px" />
+                    My Tickets
+                </Heading>
+            </Link>
         </Flex>
-        <Link href="/dashboard">
+        <Link href="/events">
             <Heading
                 fontSize="12px"
                 mt="64px"
@@ -53,7 +71,7 @@ export const DashNav = () => (
                 color="#42307D"
             >
                 <Icon as={FiArrowLeft} mr="9px" />
-                Your Hackthons
+                back
             </Heading>
         </Link>
     </Flex>
