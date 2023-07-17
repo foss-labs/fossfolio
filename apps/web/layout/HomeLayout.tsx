@@ -22,7 +22,7 @@ export const HomeLayout = ({ children }: Child) => {
 
     return (
         <>
-            <MainNav ref={mainNavRef} />
+            <MainNav />
             {children}
         </>
     );

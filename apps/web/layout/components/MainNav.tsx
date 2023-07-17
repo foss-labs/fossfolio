@@ -1,25 +1,17 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
-import { useRouter } from 'next/router';
+import React, { useImperativeHandle } from 'react';
 import Link from 'next/link';
-import { AiOutlineLogout } from 'react-icons/ai';
 import { AuthModal } from '../AuthModal';
 import { useToggle } from '@app/hooks';
 import { Button } from '@app/ui/components/button';
-
-// eslint-disable-next-line react/display-name
-export const MainNav = forwardRef((_props, ref) => {
-    const router = useRouter();
+import { useRouter } from 'next/router';
+export const MainNav = () => {
     const [isOpen, triggerModal] = useToggle(false);
+
+    const router = useRouter();
 
     const login = () => {
         triggerModal.on();
     };
-
-    useImperativeHandle(ref, () => ({
-        redirectLogin() {
-            login();
-        },
-    }));
 
     return (
         <div className="flex justify-between items-center p-4 w-full">
@@ -61,4 +53,4 @@ export const MainNav = forwardRef((_props, ref) => {
             </div>
         </div>
     );
-});
+};
