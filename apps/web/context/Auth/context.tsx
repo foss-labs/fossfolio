@@ -1,50 +1,37 @@
 import { apiHandler } from '@app/config';
 import { Child, User } from '@app/types';
+import { useUser } from '@app/hooks/api/Auth';
+import React, { useMemo, createContext, useContext } from 'react';
 import { useRouter } from 'next/router';
-import React, {
-    useMemo,
-    useState,
-    createContext,
-    useEffect,
-    Dispatch,
-    SetStateAction,
-} from 'react';
 
 interface IAuthTypes {
     logOut: () => Promise<void>;
     user: User | null;
     login: () => Promise<void>;
-    setUser: Dispatch<SetStateAction<User | null>>;
+    isLoading: boolean;
 }
 export const AuthCtx = createContext({} as IAuthTypes);
 
 export const AuthContext = ({ children }: Child) => {
+    const { data, isLoading } = useUser();
+    const logOut = async () => {
+        await apiHandler.post('/auth/logOut');
+    };
+    const login = async () => {
+        await apiHandler.get('/auth/user');
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const response = useMemo(() => ({ logOut, user: data, isLoading, login }), []);
+
+    return <AuthCtx.Provider value={response}> {children}</AuthCtx.Provider>;
+};
+
+export const AuthGuard = ({ children }: Child): JSX.Element => {
     const router = useRouter();
-    const [user, setUser] = useState<User | null>(null);
-    const data = useMemo(
-        () => ({
-            logOut: async () => {
-                setUser(null);
-                apiHandler.post('/auth/logout');
-                router.push('/');
-            },
-            login: async () => {
-                try {
-                    const { data } = await apiHandler.get('/user');
-                    setUser(data);
-                } catch (error) {
-                    console.log(error);
-                }
-            },
-            user,
-            setUser,
-        }),
-        [user],
-    );
-
-    useEffect(() => {
-        data.login();
-    }, []);
-
-    return <AuthCtx.Provider value={data}> {children}</AuthCtx.Provider>;
+    const ctx = useContext(AuthCtx);
+    if (!ctx.user) {
+        router.push('/?authreq=true');
+    }
+    return <>{children}</>;
 };
