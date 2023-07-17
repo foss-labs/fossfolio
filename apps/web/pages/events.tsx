@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { HomeLayout } from '@app/layout';
 import { Card } from '@app/views/events';
-import { Flex, Heading } from '@chakra-ui/react';
 import { apiHandler } from '@app/config/handler';
 import { NextPageWithLayout } from 'next';
 
@@ -36,16 +35,14 @@ const Events: NextPageWithLayout = () => {
     }
 
     return (
-        <Flex p="6" flexDir="column">
-            <Heading textAlign="center" fontSize="48px">
-                Find Hackathons
-            </Heading>
-            <Flex columnGap="25px" flexWrap="wrap">
+        <div className="p-6 flex flex-col">
+            <h1 className="text-center text-[48px]">Find Hackathons</h1>
+            <div className="flex flex-wrap gap-[25px]">
                 <Card />
                 <Card />
                 <Card />
-            </Flex>
-        </Flex>
+            </div>
+        </div>
     );
 };
 
