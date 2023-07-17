@@ -22,9 +22,8 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                 <AuthContext>
                     <DefaultSeo
                         title="FossFolio"
-                        description="Discover,host and manage Events,Hackathons all in one place. "
+                        description="Discover, host and manage Events, all in one place."
                     />
-                    {/* <PageLoader isOpen={isPageLoading} /> */}
                     {Component.Layout ? (
                         <Component.Layout>
                             <Component {...pageProps} />
@@ -43,7 +42,6 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                     title="FossFolio"
                     description="Discover,host and manage Events,Hackathons all in one place. "
                 />
-                {/* <PageLoader isOpen={isPageLoading} /> */}
                 {Component.Layout ? (
                     <Component.Layout>
                         <Component {...pageProps} />
