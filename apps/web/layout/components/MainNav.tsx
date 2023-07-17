@@ -1,11 +1,12 @@
-import { Button, Flex, Heading, forwardRef } from '@chakra-ui/react';
-import React, { useImperativeHandle } from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { AuthModal } from '../AuthModal';
 import { useToggle } from '@app/hooks';
+import { Button } from '@app/ui/components/button';
 
+// eslint-disable-next-line react/display-name
 export const MainNav = forwardRef((_props, ref) => {
     const router = useRouter();
     const [isOpen, triggerModal] = useToggle(false);
@@ -21,54 +22,25 @@ export const MainNav = forwardRef((_props, ref) => {
     }));
 
     return (
-        <Flex
-            p="4"
-            alignItems="center
-    "
-            justifyContent="space-between"
-        >
-            <Flex alignItems="center">
+        <div className="flex justify-between items-center p-4 w-full">
+            <div className="flex items-center justify-between">
+                <h2 className=" text-[29px]">FossFolio</h2>
                 <AuthModal isOpen={isOpen} onClose={triggerModal.off} />
-                <Heading fontSize="29px">FossFolio</Heading>
-                <Flex
-                    ml={{ sm: '0', md: '60px' }}
-                    w={{ sm: 'none', md: '300px' }}
-                    justifyContent="space-around"
-                >
+                <div className="flex justify-around w-[300px]">
                     <Link href="/">
-                        <Heading
-                            as="nav"
-                            fontSize="15px"
-                            _hover={{ cursor: 'pointer' }}
-                            color="#667085"
-                            onClick={() => router.push('/')}
-                        >
+                        <h4 className="text-[15px] text-[#667085]" onClick={() => router.push('/')}>
                             Home
-                        </Heading>
+                        </h4>
                     </Link>
                     <Link href="/events">
-                        <Heading
-                            as="nav"
-                            fontSize="15px"
-                            _hover={{ cursor: 'pointer' }}
-                            color="#667085"
-                        >
-                            Events
-                        </Heading>
+                        <h4 className="text-[15px] text-[#667085]">Events</h4>
                     </Link>
                     <Link href="/dashboard">
-                        <Heading
-                            as="nav"
-                            fontSize="15px"
-                            _hover={{ cursor: 'pointer' }}
-                            color="#667085"
-                        >
-                            Dashboard
-                        </Heading>
+                        <h4 className="text-[15px] text-[#667085]">Dashboard</h4>
                     </Link>
-                </Flex>
-            </Flex>
-            <Flex alignItems="center">
+                </div>
+            </div>
+            <div className="flex items-center">
                 {/* {authState ? (
                     <Button
                         mr="30px"
@@ -85,20 +57,8 @@ export const MainNav = forwardRef((_props, ref) => {
                         Logout
                     </Button>
                 ) : ( */}
-                <Button
-                    mr="30px"
-                    fontSize="15px"
-                    _hover={{ cursor: 'pointer' }}
-                    color="#667085"
-                    colorScheme="purple"
-                    variant="outline"
-                    rightIcon={<AiOutlineLogout />}
-                    onClick={login}
-                >
-                    Login
-                </Button>
-                {/* )} */}
-            </Flex>
-        </Flex>
+                <Button className="mr-[30px] text-[15px] text-[#667085]">Login</Button>
+            </div>
+        </div>
     );
 });

@@ -2,14 +2,11 @@
 import React, { useId } from 'react';
 import { motion } from 'framer-motion';
 import { Child } from '@app/types';
-import { Box, Heading } from '@chakra-ui/react';
 
 // Word wrapper
 const Wrapper = ({ children }: Child) => (
     // We'll do this to prevent wrapping of words using CSS
-    <Box as="span" whiteSpace="nowrap">
-        {children}
-    </Box>
+    <span style={{ whiteSpace: 'nowrap' }}>{children}</span>
 );
 
 type Animate = {
@@ -51,7 +48,7 @@ export const AnimatedCharacters = ({ text }: Animate) => {
     words.map((word: any) => word.push('\u00A0'));
 
     return (
-        <Heading fontSize={{ base: '30px', md: '48px' }}>
+        <h1 style={{ width: '400px' }}>
             {words.map((data: any, index: number) => (
                 // Wrap each word in the Wrapper component
                 <Wrapper key={data + randomId + index}>
@@ -63,13 +60,16 @@ export const AnimatedCharacters = ({ text }: Animate) => {
                             }}
                             key={element + randomId + indexs}
                         >
-                            <motion.span style={{ display: 'inline-block' }} variants={item}>
+                            <motion.span
+                                style={{ display: 'inline-block', fontSize: '35px' }}
+                                variants={item}
+                            >
                                 {element}
                             </motion.span>
                         </span>
                     ))}
                 </Wrapper>
             ))}
-        </Heading>
+        </h1>
     );
 };
