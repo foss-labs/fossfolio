@@ -48,20 +48,17 @@ export const AnimatedCharacters = ({ text }: Animate) => {
     words.map((word: any) => word.push('\u00A0'));
 
     return (
-        <h1 style={{ width: '400px' }}>
+        <h1 className="max-w-[350px] md:w-auto">
             {words.map((data: any, index: number) => (
                 // Wrap each word in the Wrapper component
                 <Wrapper key={data + randomId + index}>
                     {words[index].flat().map((element: string, indexs: number) => (
                         <span
-                            style={{
-                                overflow: 'hidden',
-                                display: 'inline-block',
-                            }}
+                            className="overflow-hidden inline-block"
                             key={element + randomId + indexs}
                         >
                             <motion.span
-                                style={{ display: 'inline-block', fontSize: '35px' }}
+                                className="inline-block text-3xl font-bold"
                                 variants={item}
                             >
                                 {element}
