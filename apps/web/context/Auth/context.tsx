@@ -1,21 +1,41 @@
-import { Child } from '@app/types';
-import React, { useMemo } from 'react';
-import { createContext } from 'vm';
+import { apiHandler } from '@app/config';
+import { Child, User } from '@app/types';
+import { useRouter } from 'next/router';
+import React, { useMemo, useState, createContext, useEffect } from 'react';
 
 interface IAuthTypes {
     logOut: () => Promise<void>;
-    logIn: () => Promise<Record<string, any>>;
+    user: User | null;
+    login: () => Promise<void>;
 }
 export const AuthCtx = createContext({} as IAuthTypes);
 
-export const Authcontext = ({ children }: Child) => {
+export const AuthContext = ({ children }: Child) => {
+    const router = useRouter();
+    const [user, setUser] = useState<User | null>(null);
     const data = useMemo(
         () => ({
-            logOut: () => {},
-            logIn: () => {},
+            logOut: async () => {
+                setUser(null);
+                apiHandler.post('/auth/logout');
+                router.push('/');
+            },
+            login: async () => {
+                try {
+                    const user: User | null = await apiHandler.get('/user');
+                    setUser(user);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            user,
         }),
-        [],
+        [user],
     );
+
+    useEffect(() => {
+        data.login();
+    }, []);
 
     return <AuthCtx.Provider value={data}> {children}</AuthCtx.Provider>;
 };

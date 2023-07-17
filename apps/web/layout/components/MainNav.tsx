@@ -1,13 +1,14 @@
-import React, { useImperativeHandle } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { AuthModal } from '../AuthModal';
-import { useToggle } from '@app/hooks';
+import { useAuth, useToggle } from '@app/hooks';
 import { Button } from '@app/ui/components/button';
 import { useRouter } from 'next/router';
 export const MainNav = () => {
     const [isOpen, triggerModal] = useToggle(false);
 
     const router = useRouter();
+    const { user, logOut } = useAuth();
 
     const login = () => {
         triggerModal.on();
@@ -31,29 +32,23 @@ export const MainNav = () => {
                         <h4 className="text-md text-[#667085]">Dashboard</h4>
                     </Link>
                 </div>
-                {/* {authState ? (
-                <Button
-                mr="30px"
-                fontSize="15px"
-                _hover={{ cursor: 'pointer' }}
-                color="#667085"
-                colorScheme="purple"
-                variant="outline"
-                rightIcon={<BsGithub />}
-                onClick={async () => {
-                    await logout();
-                }}
-                >
-                Logout
-                </Button>
-            ) : ( */}
-                <Button
-                    variant="ghost"
-                    className="px-8 text-md text-white hover:text-[#7F56D9] hover:bg-[#F9F5FF] bg-[#7F56D9] hover"
-                    onClick={login}
-                >
-                    Login
-                </Button>
+                {user ? (
+                    <Button
+                        onClick={async () => {
+                            await logOut();
+                        }}
+                    >
+                        Logout
+                    </Button>
+                ) : (
+                    <Button
+                        variant="ghost"
+                        className="px-8 text-md text-white hover:text-[#7F56D9] hover:bg-[#F9F5FF] bg-[#7F56D9] hover"
+                        onClick={login}
+                    >
+                        Login
+                    </Button>
+                )}
             </div>
         </div>
     );

@@ -13,19 +13,19 @@ export class UserController {
         private readonly userService: UserService,
     ) {}
 
-    @Get('orgs')
+    @Get('/orgs')
     @UseGuards(AuthGuard('jwt'))
     async findOrgs(@AuthUser() user: User) {
         return this.organizationService.findOrgsByUser(user.uid);
     }
 
-    @Get()
+    @Get('/')
     @UseGuards(AuthGuard('jwt'))
     async getUser(@AuthUser() user: User) {
         return this.userService.findUserById(user.uid);
     }
 
-    @Patch()
+    @Patch('/')
     @UseGuards(AuthGuard('jwt'))
     async updateUser(@Body() updateUserDto: UpdateUserDto, @AuthUser() user: User) {
         return this.userService.updateUser(user, updateUserDto);
