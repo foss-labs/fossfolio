@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
 import '../theme/style.css';
-import { AuthContext } from '@app/context/Auth';
+import { AuthContext, AuthGuard } from '@app/context/Auth';
 
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
@@ -20,17 +20,19 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
         return (
             <QueryClientProvider client={queryClient}>
                 <AuthContext>
-                    <DefaultSeo
-                        title="FossFolio"
-                        description="Discover, host and manage Events, all in one place."
-                    />
-                    {Component.Layout ? (
-                        <Component.Layout>
+                    <AuthGuard>
+                        <DefaultSeo
+                            title="FossFolio"
+                            description="Discover, host and manage Events, all in one place."
+                        />
+                        {Component.Layout ? (
+                            <Component.Layout>
+                                <Component {...pageProps} />
+                            </Component.Layout>
+                        ) : (
                             <Component {...pageProps} />
-                        </Component.Layout>
-                    ) : (
-                        <Component {...pageProps} />
-                    )}
+                        )}
+                    </AuthGuard>
                 </AuthContext>
             </QueryClientProvider>
         );
