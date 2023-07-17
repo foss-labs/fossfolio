@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Router from 'next/router';
+import React from 'react';
 import { DefaultSeo } from 'next-seo';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import type { AppProps } from 'next/app';
@@ -17,16 +16,6 @@ type ComponentWithPageLayout = AppProps & {
 const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
-    const [isPageLoading, setPageLoading] = useState<boolean>(false);
-    // listening for route change events
-    Router.events.on('routeChangeStart', () => {
-        // when route change loading screen popup
-        setPageLoading(true);
-    });
-    Router.events.on('routeChangeComplete', () => {
-        setPageLoading(false);
-    });
-
     if (Component.RequireAuth) {
         return (
             <QueryClientProvider client={queryClient}>
