@@ -4,6 +4,7 @@ import { USER_UPDATE_ERROR } from 'src/error';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
+import { fakerEN } from '@faker-js/faker';
 
 @Injectable()
 export class UserService {
@@ -22,15 +23,37 @@ export class UserService {
         }
     }
 
+    async findUserBySlug(slug: string) {
+        try {
+            const user = await this.prismaService.user.findUnique({
+                where: {
+                    slug,
+                },
+            });
+            return user;
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
+    }
+
     async createOAuthUser(accessToken: string, refreshToken: string, profile: Profile) {
         const userDisplayName = profile.displayName ? profile.displayName : null;
         const userPhotoURL = profile.photos ? profile.photos[0].value : null;
 
+        let slug: string;
+        while (true) {
+            slug = this.generateSlug();
+            const user = await this.findUserBySlug(slug);
+            if (user) continue;
+            break;
+        }
         const createdUser = await this.prismaService.user.create({
             data: {
                 displayName: userDisplayName,
                 email: profile.emails[0].value,
                 photoURL: userPhotoURL,
+                slug,
                 providerAccounts: {
                     create: {
                         provider: profile.provider,
@@ -93,5 +116,12 @@ export class UserService {
         } catch (error) {
             return USER_UPDATE_ERROR;
         }
+    }
+
+    generateSlug() {
+        return fakerEN.lorem.slug({
+            min: 1,
+            max: 2,
+        });
     }
 }
