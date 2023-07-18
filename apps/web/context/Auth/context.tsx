@@ -14,11 +14,13 @@ export const AuthCtx = createContext({} as IAuthTypes);
 
 export const AuthContext = ({ children }: Child) => {
     const { data, isLoading } = useUser();
+    localStorage.setItem('access_token', data.access);
+    localStorage.setItem('refresh_token', data.refresh);
     const logOut = async () => {
         await apiHandler.post('/auth/logOut');
     };
     const login = async () => {
-        await apiHandler.get('/auth/user');
+        await apiHandler.get('/user');
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
