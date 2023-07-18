@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { EventService } from './event.service';
+import { EventService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
-import { CreateEventException } from './exception/create-event.exceptions';
+// import { CreateEventException } from './exception/create-event.exceptions';
 
 @Controller('user')
 export class EventController {
@@ -10,25 +10,25 @@ export class EventController {
     @Post('/createEvent')
     async createEvent(@Body() createEventDto: CreateEventDto) {
         try {
-            return await this.eventService.createEvent(createEventDto);
+            // return await this.eventService.createEvent(createEventDto);
         } catch (error) {
             // eslint-disable-next-line @typescript-eslint/no-throw-literal
-            throw new CreateEventException(error);
+            // throw new CreateEventException(error);
         }
     }
 
     @Get('/viewEvents')
     async getEventbySlug(@Query('search') search: string) {
-        return this.eventService.getEventBySlug(search);
+        // return this.eventService.getEventBySlug(search);
     }
 
     @Get('/viewAllEvents')
     async viewEvent() {
         try {
-            return await this.eventService.viewAllEvents();
+            // return await this.eventService.viewAllEvents();
         } catch (error) {
             // eslint-disable-next-line @typescript-eslint/no-throw-literal
-            throw new CreateEventException(error);
+            // throw new CreateEventException(error);
         }
     }
 
@@ -37,10 +37,10 @@ export class EventController {
     @Get('/viewMyEvents')
     async viewMyEvents() {
         try {
-            return await this.eventService.viewMyEvents();
+            // return await this.eventService.viewMyEvents();
         } catch (error) {
             // eslint-disable-next-line @typescript-eslint/no-throw-literal
-            throw new CreateEventException(error);
+            // throw new CreateEventException(error);
         }
     }
 }
