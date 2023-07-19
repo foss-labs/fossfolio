@@ -1,3 +1,5 @@
+'use client';
+
 import { apiHandler } from '@app/config';
 import { Child, User } from '@app/types';
 import { useUser } from '@app/hooks/api/Auth';
@@ -14,8 +16,10 @@ export const AuthCtx = createContext({} as IAuthTypes);
 
 export const AuthContext = ({ children }: Child) => {
     const { data, isLoading } = useUser();
-    localStorage.setItem('access_token', data.access);
-    localStorage.setItem('refresh_token', data.refresh);
+    if (typeof window !== undefined) {
+        // localStorage.setItem('access_token', data.access);
+        // localStorage.setItem('refresh_token', data.refresh);
+    }
     const logOut = async () => {
         await apiHandler.post('/auth/logOut');
     };

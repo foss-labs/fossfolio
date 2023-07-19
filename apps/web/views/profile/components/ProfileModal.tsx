@@ -11,8 +11,7 @@ import {
 } from '@app/ui/components/dialog';
 import { Input } from '@app/ui/components/input';
 import { Label } from '@app/ui/components/label';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 type IModal = {
     isOpen: boolean;
@@ -21,6 +20,8 @@ type IModal = {
 
 export const ProfileModal = ({ isOpen, onClose }: IModal) => {
     const { user, setUser } = useAuth();
+    // TODO
+    // MOVE TO HOOK FORM ?
     const [name, setName] = useState(user?.displayName);
     const [slug, setSlug] = useState(user?.slug);
 
