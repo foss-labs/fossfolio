@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 interface IAuthTypes {
     logOut: () => Promise<void>;
     user: User | null;
-    login: () => Promise<void>;
     isLoading: boolean;
 }
 export const AuthCtx = createContext({} as IAuthTypes);
@@ -23,12 +22,9 @@ export const AuthContext = ({ children }: Child) => {
     const logOut = async () => {
         await apiHandler.post('/auth/logOut');
     };
-    const login = async () => {
-        await apiHandler.get('/user');
-    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const response = useMemo(() => ({ logOut, user: data, isLoading, login }), []);
+    const response = useMemo(() => ({ logOut, user: data, isLoading }), []);
 
     return <AuthCtx.Provider value={response}> {children}</AuthCtx.Provider>;
 };
