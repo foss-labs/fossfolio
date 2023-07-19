@@ -1,6 +1,4 @@
-import { apiHandler } from '@app/config';
-import { useAuth } from '@app/hooks';
-import { Button } from '@app/ui/components/button';
+import { useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -9,9 +7,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@app/ui/components/dialog';
-import { Input } from '@app/ui/components/input';
+import { useAuth } from '@app/hooks';
 import { Label } from '@app/ui/components/label';
-import { useState } from 'react';
+import { Input } from '@app/ui/components/input';
+import { Button } from '@app/ui/components/button';
+import { useProfileUpdate } from '@app/hooks/api/Profile';
 
 type IModal = {
     isOpen: boolean;
@@ -19,25 +19,19 @@ type IModal = {
 };
 
 export const ProfileModal = ({ isOpen, onClose }: IModal) => {
-    const { user, setUser } = useAuth();
+    const { user } = useAuth();
+    const handleProfileUpdates = useProfileUpdate();
     // TODO
     // MOVE TO HOOK FORM ?
-    const [name, setName] = useState(user?.displayName);
-    const [slug, setSlug] = useState(user?.slug);
+    const [name, setName] = useState<string>(user?.displayName as string);
+    const [slug, setSlug] = useState<string>(user?.slug as string);
 
-    const updateProfile = async () => {
-        try {
-            const { data } = await apiHandler.patch('/user', {
-                displayName: name,
-                slug: slug,
-                uid: user?.uid,
-            });
-            setUser(data);
-        } catch (err) {
-            console.log(err);
-        } finally {
-            onClose();
-        }
+    const handleUpdates = () => {
+        handleProfileUpdates.mutate({
+            uid: user?.uid as string,
+            name: name,
+            slug: slug,
+        });
     };
 
     return (
@@ -74,7 +68,7 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button onClick={updateProfile}>Save changes</Button>
+                    <Button onClick={handleUpdates}>Save changes</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
