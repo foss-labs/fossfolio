@@ -5,17 +5,16 @@
 [![MIT License][license-shield]][license-url]
 
 <!-- PROJECT LOGO -->
+<h1 align="center">FossFolio</h>
 <br/>
 
-![Empty Dash](https://github.com/DarkPhoenix2704/fossfolio/assets/64391274/c884a122-4156-447e-b314-cf795c57d4fe)
+![Empty Dash](./apps/web/public/banner.png)
 
-<h1 align="center">FossFolio</h>
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
 FossFolio is and open source web application for people to Find, Host and Manage Hackathons.
-
 
 <!-- TABLE OF CONTENTS -->
 <br/>
