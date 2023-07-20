@@ -5,7 +5,6 @@
 [![MIT License][license-shield]][license-url]
 
 <!-- PROJECT LOGO -->
-<h1 align="center">FossFolio</h>
 <br/>
 
 ![Empty Dash](./apps/web/public/banner.png)
