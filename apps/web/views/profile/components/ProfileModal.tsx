@@ -12,6 +12,7 @@ import { Label } from '@app/ui/components/label';
 import { Input } from '@app/ui/components/input';
 import { Button } from '@app/ui/components/button';
 import { useProfileUpdate } from '@app/hooks/api/Profile';
+import { useToast } from '@app/ui/components/use-toast';
 
 type IModal = {
     isOpen: boolean;
@@ -26,12 +27,20 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
     const [name, setName] = useState<string>(user?.displayName as string);
     const [slug, setSlug] = useState<string>(user?.slug as string);
 
+    const { toast } = useToast();
+
     const handleUpdates = () => {
         handleProfileUpdates.mutate({
             uid: user?.uid as string,
             name: name,
             slug: slug,
         });
+        if (handleProfileUpdates.isSuccess) {
+            toast({
+                title: 'Profile updated successfully',
+            });
+        }
+        onClose();
     };
 
     return (

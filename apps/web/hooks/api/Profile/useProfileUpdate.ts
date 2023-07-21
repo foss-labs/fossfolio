@@ -19,8 +19,12 @@ export const useProfileUpdate = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: updateProfile,
-        onSuccess: (data) => {
-            queryClient.setQueryData(['user'], data);
+        onSuccess: (_result, variables) => {
+            queryClient.setQueryData(['user'], (old) => ({
+                // @ts-ignore
+                ...old,
+                slug: variables.slug,
+            }));
         },
     });
 };
