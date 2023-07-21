@@ -1,6 +1,7 @@
 import React from 'react';
 import { DefaultSeo } from 'next-seo';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Toaster } from '@app/ui/components/toaster';
 import type { AppProps } from 'next/app';
 import { Child } from '@app/types';
 import '../theme/style.css';
@@ -20,6 +21,7 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
         return (
             <QueryClientProvider client={queryClient}>
                 <AuthContext>
+                    <Toaster />
                     <AuthGuard>
                         <DefaultSeo
                             title="FossFolio"
@@ -40,6 +42,7 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
     return (
         <QueryClientProvider client={queryClient}>
             <AuthContext>
+                <Toaster />
                 <DefaultSeo
                     title="FossFolio"
                     description="Discover,host and manage Events,Hackathons all in one place. "

@@ -3,10 +3,10 @@ import Link from 'next/link';
 import { FiArrowLeft, FiHome, FiUser } from 'react-icons/fi';
 
 export const DashNav = () => (
-    <div className="flex flex-col items-center bg-[#f9f5ff] w-[220px] p-9 pt-[64px] min-h-full">
+    <div className="flex flex-col items-center bg-[#f9f5ff] w-[220px] p-9 pt-[64px] h-[100vh]">
         <Image src="/logo.svg" alt="LOGO" width="150" height="150" />
 
-        <div className="flex flex-col items-center mt-[20px] gap-[26px]">
+        <div className="flex flex-col items-center mt-[20px] gap-[26px] h-[200px]">
             <Link href="/dashboard">
                 <h3 className="font-500 flex text-md text-[#6941C6] hover:cursor-pointer hover:text-[#42307D]">
                     <FiHome className="mr-[9px] text-md" />

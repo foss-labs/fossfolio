@@ -15,16 +15,12 @@ export const AuthCtx = createContext({} as IAuthTypes);
 
 export const AuthContext = ({ children }: Child) => {
     const { data, isLoading } = useUser();
-    if (typeof window !== undefined) {
-        // localStorage.setItem('access_token', data.access);
-        // localStorage.setItem('refresh_token', data.refresh);
-    }
     const logOut = async () => {
         await apiHandler.post('/auth/logOut');
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const response = useMemo(() => ({ logOut, user: data, isLoading }), []);
+    const response = useMemo(() => ({ logOut, user: data, isLoading }), [isLoading, data]);
 
     return <AuthCtx.Provider value={response}> {children}</AuthCtx.Provider>;
 };

@@ -5,7 +5,7 @@ import { NextPageWithLayout } from 'next';
 import { useAllEvents } from '@app/hooks/api/Events';
 
 const Events: NextPageWithLayout = () => {
-    const { isLoading, data } = useAllEvents();
+    const { isLoading } = useAllEvents();
 
     if (isLoading) {
         <h1>loading</h1>;
