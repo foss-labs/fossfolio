@@ -28,7 +28,7 @@ export const AuthModal = ({ isOpen, onClose }: IModal) => {
                             <Button
                                 className="bg-[#4889f4]"
                                 onClick={() => {
-                                    router.push(ENV.api_base + '/api/auth/google');
+                                    router.push(ENV.api_base + '/auth/google');
                                 }}
                             >
                                 Google
@@ -36,7 +36,7 @@ export const AuthModal = ({ isOpen, onClose }: IModal) => {
                             <Button
                                 className="bg-[#2b3034]"
                                 onClick={() => {
-                                    router.push(ENV.api_base + '/api/auth/github');
+                                    router.push(ENV.api_base + '/auth/github');
                                 }}
                             >
                                 Github
