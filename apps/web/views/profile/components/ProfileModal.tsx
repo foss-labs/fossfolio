@@ -31,7 +31,6 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
 
     const handleUpdates = () => {
         handleProfileUpdates.mutate({
-            uid: user?.uid as string,
             name: name,
             slug: slug,
         });

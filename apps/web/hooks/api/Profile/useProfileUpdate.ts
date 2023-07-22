@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from 'react-query';
 
 interface IInfo {
     slug: string;
-    uid: string;
     name: string;
 }
 
@@ -11,7 +10,6 @@ const updateProfile = async (info: IInfo) => {
     return await apiHandler.patch('/user', {
         displayName: info.name,
         slug: info.slug,
-        uid: info.uid,
     });
 };
 
