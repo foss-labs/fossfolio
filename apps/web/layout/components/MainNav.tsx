@@ -45,7 +45,7 @@ export const MainNav = forwardRef((_props, ref) => {
                 ) : (
                     <Button
                         variant="ghost"
-                        className="px-8 text-md text-white hover:text-[#7F56D9] hover:bg-[#F9F5FF] bg-[#7F56D9] border-[1.4px] hover:border-[#7F56D9] border-transparent"
+                        className="px-8 text-md text-[white] hover:text-[#7F56D9] hover:bg-[#F9F5FF] bg-[#7F56D9] border-[1.4px] hover:border-[#7F56D9] border-transparent"
                         onClick={login}
                     >
                         Login

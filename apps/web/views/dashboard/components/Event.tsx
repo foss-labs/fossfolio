@@ -14,7 +14,7 @@ export const Event = () => {
             onClick={() => router.push('/dashboard/1')}
             _hover={{ cursor: 'pointer' }}
         >
-            <Image src="/placeholder.png" borderTopRadius="12px" />
+            <Image src="/placeholder.png" borderTopRadius="12px" alt="placeholder" />
             <VStack width="100%" paddingInline="8px">
                 <HStack width="100%" justifyContent="space-between">
                     <Text lineHeight="28px" fontSize="18px" fontWeight="600">

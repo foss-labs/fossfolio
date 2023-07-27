@@ -1,19 +1,16 @@
 import React from 'react';
 import { DashLayout } from '@app/layout';
-import { Flex, Heading } from '@chakra-ui/react';
 import { Card } from '@app/views/events';
 import { NextPageWithLayout } from 'next';
 
 const Tickets: NextPageWithLayout = () => (
-    <Flex columnGap="25px" flexWrap="wrap" flexDir="column" p="10">
-        <Heading textAlign="start" fontSize="38px">
-            Your Tickets
-        </Heading>
-        <Flex columnGap="25px" flexWrap="wrap">
+    <div className="flex flex-wrap flex-col p-[10px] gap-[25px]">
+        <h2 className="text-center text-[38px]">Your Tickets</h2>
+        <div className="flex gap-[25px] flex-wrap">
             <Card />
             <Card />
-        </Flex>
-    </Flex>
+        </div>
+    </div>
 );
 Tickets.Layout = DashLayout;
 Tickets.RequireAuth = true;
