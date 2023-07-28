@@ -39,7 +39,7 @@ const Home: NextPageWithLayout = () => {
                             variant="outline"
                             className="bg-[#F9F5FF] px-5 py-2 rounded-sm text-[#7F56D9] border-1 hover:text-[#7F56D9] hover:bg-[#F9F5FF]  border-[1.4px] hover:border-[#7F56D9]"
                         >
-                            <Link href="/">Create Events</Link>
+                            <Link href="/org">Create Events</Link>
                         </Button>
                     </div>
                 </div>
