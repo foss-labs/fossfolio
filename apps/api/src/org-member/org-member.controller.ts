@@ -1,4 +1,4 @@
-import { Body, Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { OrganizationMemberService } from './org-member.service';
 import { Roles } from 'src/organization/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,10 +9,10 @@ import { GenericOrgDto } from 'src/organization/dto/generic-org.dto';
 export class OrgMemberController {
     constructor(private readonly orgMemberService: OrganizationMemberService) {}
 
-    @Get('')
+    @Get('/:orgID')
     @Roles('')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getMembers(@Body() genericOrgDto: GenericOrgDto) {
-        return this.orgMemberService.getMembers(genericOrgDto.organizationId);
+    async getMembers(@Param('orgID') orgID: string) {
+        return this.orgMemberService.getMembers(orgID);
     }
 }
