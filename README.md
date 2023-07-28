@@ -13,7 +13,7 @@
 
 ## About The Project
 
-FossFolio is and open source web application for people to Find, Host and Manage Hackathons.
+FossFolio is an open source web application for people to Find, Host and Manage Hackathons.
 
 <!-- TABLE OF CONTENTS -->
 <br/>
