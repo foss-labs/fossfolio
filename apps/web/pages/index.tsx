@@ -19,7 +19,7 @@ const Head = ['Discover, host and manage Events, Hackathons all in one place.'];
 const Home: NextPageWithLayout = () => {
     return (
         <div className="flex flex-col-reverse p-4 sm:justify-around md:flex-row space-between h-full">
-            <div className="flex justify-center items-center flex-col">
+            <div className="flex justify-center flex-col">
                 <motion.div className="App" initial="hidden" animate="visible" variants={container}>
                     {Head.map((el, key) => (
                         <AnimatedCharacters text={el} key={key + 5} />
