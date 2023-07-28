@@ -13,7 +13,7 @@
 
 ## About The Project
 
-FossFolio is and open source web application for people to Find, Host and Manage Hackathons.
+FossFolio is an open source web application for people to Find, Host and Manage Hackathons.
 
 <!-- TABLE OF CONTENTS -->
 <br/>
@@ -96,13 +96,13 @@ You need to install
 4. Start the web application dev server and open `http://localhost:3000`
 
     ```sh
-    pnpm --filter  web dev
+    pnpm web dev
     ```
 
-5. Start the api server and open `http://localhost:3001`
+5. Start the api server at `http://localhost:3001` and prisma studio at `http://localhost:5555`
 
     ```sh
-    pnpm --filter  api dev
+    pnpm api dev
     ```
 
 6. Start the database `http://localhost:5432`

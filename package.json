@@ -11,7 +11,9 @@
         "dev": "turbo run dev --parallel",
         "lint": "turbo run lint",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "turbo": "turbo"
+        "turbo": "turbo",
+        "api-dev": "pnpm --filter api dev",
+        "web-dev": "pnpm --filter web dev"
     },
     "devDependencies": {
         "eslint-config-custom": "*",

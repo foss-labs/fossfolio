@@ -18,7 +18,8 @@ export class RbacGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
-        const organizationId = request.body.organizationId;
+        const organizationId =
+            request.method === 'GET' ? request.params.orgID : request.body.organizationId;
 
         const organizationMember = await this.prisma.organizationMember.findUnique({
             where: {
