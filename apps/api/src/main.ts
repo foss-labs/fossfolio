@@ -37,7 +37,7 @@ async function bootstrap() {
     SwaggerModule.setup('api/docs', app, document);
 
     await app.listen(
-        (process.env.PORT as string) || 8000,
+        (process.env.PORT as string) || 3001,
         (process.env.HOST as string) || '0.0.0.0',
     );
 }
