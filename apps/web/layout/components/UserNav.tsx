@@ -11,6 +11,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@app/ui/components/avatar';
 import { Button } from '@app/ui/components/button';
 import { useAuth, useToggle } from '@app/hooks';
 import { ProfileModal } from '@app/views/profile';
+import Link from 'next/link';
 
 export const UserNav = () => {
     const { user, logOut } = useAuth();
@@ -40,7 +41,9 @@ export const UserNav = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <DropdownMenuItem onClick={triggerModal.on}>Profile</DropdownMenuItem>
-                        <DropdownMenuItem>Organize Events</DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link href="/org">Organize Events</Link>
+                        </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={logOut}>Log out</DropdownMenuItem>

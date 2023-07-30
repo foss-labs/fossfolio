@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { Button } from '@app/ui/components/button';
 import {
     Dialog,
@@ -6,9 +7,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@app/ui/components/dialog';
-import { useRouter } from 'next/router';
 import { ENV } from '@app/config';
-import React from 'react';
 
 type IModal = {
     isOpen: boolean;

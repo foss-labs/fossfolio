@@ -25,27 +25,28 @@ export const MainNav = forwardRef((_props, ref) => {
     return (
         <div className="flex justify-between items-center p-4 w-full">
             <div className="flex items-center justify-between w-full">
-                <h2 className="text-3xl font-semibold">FossFolio</h2>
-                <AuthModal isOpen={isOpen} onClose={triggerModal.off} />
-                <div className="md:flex gap-4 hidden">
-                    <Link href="/">
-                        <h4 className="text-md text-[#667085]" onClick={() => router.push('/')}>
-                            Home
-                        </h4>
-                    </Link>
-                    <Link href="/events">
-                        <h4 className="text-md text-[#667085]">Events</h4>
-                    </Link>
-                    <Link href="/dashboard">
-                        <h4 className="text-md text-[#667085]">Dashboard</h4>
-                    </Link>
+                <div className="flex items-center justify-between w-[300px]">
+                    <h2 className="text-2xl font-mono">
+                        <Link href="/">fossfolio</Link>
+                    </h2>
+                    <AuthModal isOpen={isOpen} onClose={triggerModal.off} />
+                    <div className="md:flex gap-4 hidden">
+                        <Link href="/">
+                            <h4 className="text-md text-[#667085]" onClick={() => router.push('/')}>
+                                Home
+                            </h4>
+                        </Link>
+                        <Link href="/events">
+                            <h4 className="text-md text-[#667085]">Events</h4>
+                        </Link>
+                    </div>
                 </div>
                 {user ? (
                     <UserNav />
                 ) : (
                     <Button
                         variant="ghost"
-                        className="px-8 text-md text-white hover:text-[#7F56D9] hover:bg-[#F9F5FF] bg-[#7F56D9] border-[1.4px] hover:border-[#7F56D9] border-transparent"
+                        className="px-8 text-md text-[white] hover:text-[#7F56D9] hover:bg-[#F9F5FF] bg-[#7F56D9] border-[1.4px] hover:border-[#7F56D9] border-transparent"
                         onClick={login}
                     >
                         Login
