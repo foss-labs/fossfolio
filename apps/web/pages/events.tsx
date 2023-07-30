@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { HomeLayout } from '@app/layout';
-import { Card } from '@app/views/events';
+import { EventCard } from '@app/components/events';
 import { NextPageWithLayout } from 'next';
 import { useAllEvents } from '@app/hooks/api/Events';
 
@@ -15,9 +15,9 @@ const Events: NextPageWithLayout = () => {
         <div className="p-6 flex flex-col ">
             <h1 className="text-center text-[48px]">Find Hackathons</h1>
             <div className="flex flex-wrap gap-[25px] justify-center lg:justify-start">
-                <Card />
-                <Card />
-                <Card />
+                <EventCard />
+                <EventCard />
+                <EventCard />
             </div>
         </div>
     );

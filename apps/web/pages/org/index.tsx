@@ -14,10 +14,10 @@ const index: NextPageWithLayout = () => {
             </Button>
             <h4 className="text-[25px] text-start mt-6">Sreehari&apos;s org</h4>
             <div className="flex flex-wrap mt-3 gap-5 justify-around lg:justify-between">
-                <OrgCard />
-                <OrgCard />
-                <OrgCard />
-                <OrgCard />
+                <OrgCard name="fossfolio" />
+                <OrgCard name="foss-hack" />
+                <OrgCard name="girls hack" />
+                <OrgCard name="cusat hack" />
             </div>
         </div>
     );
