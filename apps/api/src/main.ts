@@ -29,7 +29,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
         .setTitle('FOSSFOLIO')
         .setDescription(
-            'An open source web application for people to Find, Host and Manage Hackathons.',
+            'An open source web application for people to Find, Host and Manage Events,Hackathons.',
         )
         .setVersion('1.0')
         .build();

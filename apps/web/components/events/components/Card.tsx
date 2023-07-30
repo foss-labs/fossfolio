@@ -7,7 +7,7 @@ import { Separator } from '@app/ui/components/separator';
 
 export function EventCard() {
     return (
-        <Card className="w-[400px] mt-6 hover:cursor-pointer hover:outline-double hover:outline-[#7F56D9]">
+        <Card className="w-[400px]  mt-6 hover:cursor-pointer hover:outline-double hover:outline-[#7F56D9]">
             <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
                 <div className="space-y-2">
                     <CardTitle>girlhack</CardTitle>

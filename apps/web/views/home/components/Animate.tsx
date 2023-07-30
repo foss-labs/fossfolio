@@ -58,7 +58,7 @@ export const AnimatedCharacters = ({ text }: Animate) => {
                             key={element + randomId + indexs}
                         >
                             <motion.span
-                                className="inline-block text-3xl font-bold"
+                                className="inline-block text-4xl font-bold"
                                 variants={item}
                             >
                                 {element}

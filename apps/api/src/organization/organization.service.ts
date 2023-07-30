@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrgDto } from './dto/create-org.dto';
 import { ORG_EXISTS, ORG_NOT_FOUND } from 'src/error';
 import { UpdateOrgDto } from './dto/update-org.dto';
+import { apiResponse } from '../utils/response';
 
 @Injectable()
 export class OrganizationService {
@@ -76,6 +77,6 @@ export class OrganizationService {
             },
         });
 
-        return orgs;
+        return apiResponse(orgs, 'org found successfully');
     }
 }
