@@ -5,7 +5,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
 import { fakerEN } from '@faker-js/faker';
-import { apiResponse } from '../utils/response';
 
 @Injectable()
 export class UserService {
@@ -18,7 +17,7 @@ export class UserService {
                     email: email,
                 },
             });
-            return apiResponse(user, 'user found successfully');
+            return user;
         } catch (error) {
             return null;
         }
