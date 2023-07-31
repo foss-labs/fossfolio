@@ -18,7 +18,9 @@ const Events: NextPageWithLayout = () => {
                 <div className="flex items-center justify-center">
                     <TabsList>
                         {TabName.map((el) => (
-                            <TabsTrigger value={el.value}>{el.title} </TabsTrigger>
+                            <TabsTrigger value={el.value} key={el.title}>
+                                {el.title}{' '}
+                            </TabsTrigger>
                         ))}
                     </TabsList>
                 </div>

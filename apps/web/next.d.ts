@@ -5,6 +5,7 @@ import { Child } from './types';
 declare module 'next' {
     type NextLayoutComponentType<P = {}> = NextComponentType<NextPageContext, any, P> & {
         Layout?: (page: ReactNode) => ReactNode;
+        RequireAuth: boolean;
     };
 
     type NextPageWithLayout = NextPage & {

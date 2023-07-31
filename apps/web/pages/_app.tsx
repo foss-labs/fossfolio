@@ -10,7 +10,7 @@ import { AuthContext, AuthGuard } from '@app/context/Auth';
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
         Layout?: (arg: Child) => JSX.Element;
-        RequireAuth?: boolean;
+        RequireAuth: boolean;
     };
 };
 
