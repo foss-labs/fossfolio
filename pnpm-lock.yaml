@@ -150,6 +150,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^2.9.11
         version: 2.9.11(react-hook-form@7.43.4)
+      '@next/font':
+        specifier: ^13.4.12
+        version: 13.4.12
       '@radix-ui/react-alert-dialog':
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@18.0.11)(@types/react@18.0.28)(react-dom@18.2.0)(react@18.2.0)
@@ -2022,6 +2025,10 @@ packages:
     resolution: {integrity: sha512-YJqyq6vk39JQfvaNtN83t/p5Jy45+bazRL+V4QI8FPd3FBqFYMEsULiwRLgSJMgFqkk4t4JbeZurz+gILEAFpA==}
     dependencies:
       glob: 7.1.7
+    dev: false
+
+  /@next/font@13.4.12:
+    resolution: {integrity: sha512-w/ygNFuscvvFKFTMoIqhU8Kaq1wM6x4XEu9bwzJaj8G7aloH866TUPeCgiKf+M/ACpMKfRahQa06REcg6T3CyA==}
     dev: false
 
   /@next/swc-android-arm-eabi@13.2.3:

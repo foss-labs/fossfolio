@@ -45,7 +45,7 @@ type ISchema = yup.InferType<typeof Schema>;
 export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
     const { mutate } = useAddOrg()
     const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<ISchema>({
-        mode: "all",
+        mode: "onSubmit",
         resolver: yupResolver(Schema)
     });
 
@@ -58,7 +58,7 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-md">
+            <DialogContent className="w-[400px] md:w-md-auto">
                 <DialogHeader>
                     <DialogTitle className="mb-4">New Org</DialogTitle>
                     <DialogDescription>

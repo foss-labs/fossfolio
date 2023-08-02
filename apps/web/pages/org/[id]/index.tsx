@@ -2,7 +2,8 @@ import React from 'react';
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
-import { Members, DeleteOrg } from '@app/views/org';
+import { DeleteOrg } from '@app/views/org';
+import { Members } from "@app/components/table"
 import { EventCard } from '@app/components/events';
 
 const TabName = [
