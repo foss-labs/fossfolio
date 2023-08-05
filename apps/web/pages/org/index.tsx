@@ -48,4 +48,6 @@ const Index: NextPageWithLayout = () => {
 };
 
 Index.Layout = HomeLayout;
+Index.RequireAuth = true;
+
 export default Index;
