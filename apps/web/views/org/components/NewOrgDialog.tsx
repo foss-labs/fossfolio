@@ -20,11 +20,26 @@ type IModal = {
     onClose: () => void;
 };
 
+
+// add page names here when ever 
+// new pages are created
+const excludedSlug = [
+    "org",
+    "events"
+]
+
+
 const Schema = yup.object().shape({
     name: yup.string().required(),
     slug: yup.string().test("checkslug", "a url with same name already exist", (val) => {
         return new Promise((resolve, _reject) => {
             apiHandler.get(`/org/find/${val}`).then((el) => {
+                const isPartOfDefaultPages = excludedSlug.some(el => el === val)
+                // this is used to prevent user from saving the org name as same
+                // as the default page names
+                if (isPartOfDefaultPages) {
+                    throw new Error()
+                }
                 if (!el.data.ok) {
                     resolve(true)
                 }
