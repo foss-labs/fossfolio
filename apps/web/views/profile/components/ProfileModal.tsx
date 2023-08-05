@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -8,77 +7,90 @@ import {
     DialogTitle,
 } from '@app/ui/components/dialog';
 import { useAuth } from '@app/hooks';
+import { toast } from "sonner"
 import { Label } from '@app/ui/components/label';
 import { Input } from '@app/ui/components/input';
 import { Button } from '@app/ui/components/button';
 import { useProfileUpdate } from '@app/hooks/api/Profile';
-import { useToast } from '@app/ui/components/use-toast';
+import * as yup from "yup"
+import { useForm, SubmitHandler } from 'react-hook-form';
+
 
 type IModal = {
     isOpen: boolean;
     onClose: () => void;
 };
 
+const ProfileSchema = yup.object().shape({
+    name: yup.string().required(),
+    slug: yup.string().required()
+})
+
+type IProfile = yup.InferType<typeof ProfileSchema>
+
 export const ProfileModal = ({ isOpen, onClose }: IModal) => {
     const { user } = useAuth();
     const handleProfileUpdates = useProfileUpdate();
-    // TODO
-    // MOVE TO HOOK FORM ?
-    const [name, setName] = useState<string>(user?.displayName as string);
-    const [slug, setSlug] = useState<string>(user?.slug as string);
 
-    const { toast } = useToast();
+    const { register, handleSubmit, } = useForm<IProfile>({
+        defaultValues: {
+            name: user?.displayName,
+            slug: user?.slug
+        }
+    })
 
-    const handleUpdates = () => {
+    const handleUpdates: SubmitHandler<IProfile> = (data) => {
         handleProfileUpdates.mutate({
-            name: name,
-            slug: slug,
+            name: data.name,
+            slug: data.slug,
         });
         if (handleProfileUpdates.isSuccess) {
-            toast({
-                title: 'Profile updated successfully',
-            });
+            toast.success(
+                'Profile updated successfully',
+            );
         }
         onClose();
     };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-[325px] md:w-auto">
-                <DialogHeader>
-                    <DialogTitle className="mb-4">Update Profile</DialogTitle>
-                    <DialogDescription>
-                        Make changes to your profile here. Click save once done
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                            Full Name
-                        </Label>
-                        <Input
-                            id="name"
-                            defaultValue={user?.displayName}
-                            className="col-span-3"
-                            onChange={(e) => setName(e.target.value)}
-                        />
+            <form onSubmit={handleSubmit(handleUpdates)}>
+                <DialogContent className="w-[325px] md:w-auto">
+                    <DialogHeader>
+                        <DialogTitle className="mb-4">Update Profile</DialogTitle>
+                        <DialogDescription>
+                            Make changes to your profile here. Click save once done
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="name" className="text-right">
+                                Full Name
+                            </Label>
+                            <Input
+                                id="name"
+                                defaultValue={user?.displayName}
+                                className="col-span-3"
+                                {...register("name")}
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="username" className="text-right">
+                                Username
+                            </Label>
+                            <Input
+                                id="username"
+                                defaultValue={user?.slug}
+                                className="col-span-3"
+                                {...register("slug")}
+                            />
+                        </div>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="username" className="text-right">
-                            Username
-                        </Label>
-                        <Input
-                            id="username"
-                            defaultValue={user?.slug}
-                            className="col-span-3"
-                            onChange={(e) => setSlug(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <DialogFooter>
-                    <Button onClick={handleUpdates}>Save changes</Button>
-                </DialogFooter>
-            </DialogContent>
+                    <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </form>
         </Dialog>
     );
 };
