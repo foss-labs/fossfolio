@@ -7,7 +7,7 @@ import { Members } from "@app/components/table"
 import { EventCard } from '@app/components/events';
 
 const TabName = [
-    { value: 'events', title: 'My Events' },
+    { value: 'events', title: 'All Events' },
     { value: 'teams', title: 'Members' },
     { value: 'settings', title: 'Settings' },
 ];

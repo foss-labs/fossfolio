@@ -15,6 +15,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAddOrg } from '@app/hooks/api/org';
 
+
 type IModal = {
     isOpen: boolean;
     onClose: () => void;
@@ -34,13 +35,13 @@ const Schema = yup.object().shape({
     slug: yup.string().test("checkslug", "a url with same name already exist", (val) => {
         return new Promise((resolve, _reject) => {
             apiHandler.get(`/org/find/${val}`).then((el) => {
-                const isPartOfDefaultPages = excludedSlug.some(el => el === val)
+                const isPartOfDefaultPages = excludedSlug.some(elm => elm === val)
                 // this is used to prevent user from saving the org name as same
                 // as the default page names
                 if (isPartOfDefaultPages) {
                     throw new Error()
                 }
-                if (!el.data.ok) {
+                if (!el.data.id) {
                     resolve(true)
                 }
                 throw new Error()
@@ -61,14 +62,16 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
     const { mutate } = useAddOrg()
     const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<ISchema>({
         mode: "onSubmit",
-        resolver: yupResolver(Schema)
+        resolver: yupResolver(Schema),
+        defaultValues: {
+            slug: "",
+            name: ""
+        }
     });
 
     const onUserSubMit: SubmitHandler<ISchema> = async (val) => {
-        setTimeout(() => {
-
-        }, 20000)
         mutate(val)
+        onClose()
     }
 
     return (

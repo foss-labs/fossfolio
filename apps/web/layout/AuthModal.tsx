@@ -25,7 +25,7 @@ export const AuthModal = ({ isOpen, onClose }: IModal) => {
                         By Signing in, you agree to our Terms and Services
                         <div className="flex flex-col gap-3 mt-4">
                             <Button
-                                className="text-[#7F56D9] bg-[#F9F5FF]  border-[1.4px] border-[#7F56D9]"
+                                className="text-[#7F56D9] bg-[#F9F5FF]  border-[1.4px] border-[#7F56D9] hover:text-[white] hover:bg-btn"
                                 onClick={() => {
                                     router.push(ENV.api_base + '/auth/google');
                                 }}
@@ -33,7 +33,7 @@ export const AuthModal = ({ isOpen, onClose }: IModal) => {
                                 Google
                             </Button>
                             <Button
-                                className="bg-btn  text-[white] hover:text-[#7F56D9]   border-[1.4px] "
+                                className="bg-btn  text-[white] border-[1.4px] hover:text-[#7F56D9] hover:bg-[#F9F5FF] hover:border-[#7F56D9]"
                                 onClick={() => {
                                     router.push(ENV.api_base + '/auth/github');
                                 }}

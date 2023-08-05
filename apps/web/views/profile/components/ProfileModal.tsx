@@ -32,12 +32,13 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
     const { user } = useAuth();
     const handleProfileUpdates = useProfileUpdate();
 
-    const { register, handleSubmit, } = useForm<IProfile>({
+    const { register, handleSubmit, formState: { errors } } = useForm<IProfile>({
         defaultValues: {
             name: user?.displayName,
             slug: user?.slug
         }
     })
+
 
     const handleUpdates: SubmitHandler<IProfile> = (data) => {
         handleProfileUpdates.mutate({
@@ -54,8 +55,8 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <form onSubmit={handleSubmit(handleUpdates)}>
-                <DialogContent className="w-[325px] md:w-auto">
+            <DialogContent className="w-[325px] md:w-auto">
+                <form onSubmit={handleSubmit(handleUpdates)}>
                     <DialogHeader>
                         <DialogTitle className="mb-4">Update Profile</DialogTitle>
                         <DialogDescription>
@@ -89,8 +90,8 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
                     <DialogFooter>
                         <Button type="submit">Save changes</Button>
                     </DialogFooter>
-                </DialogContent>
-            </form>
+                </form>
+            </DialogContent>
         </Dialog>
     );
 };

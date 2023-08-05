@@ -14,7 +14,18 @@ const getAllOrg = async () => {
     }
 };
 
+type IOrg = {
+    organization: {
+        id: string;
+        name: string;
+        slug: string;
+        createdAt: Date;
+        updatedAt: Date;
+    };
+    role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+};
+
 export const useOrgs = () => {
-    const orgs= useQuery('orgs', getAllOrg);
+    const orgs = useQuery<Array<IOrg>>('orgs', getAllOrg);
     return orgs;
 };

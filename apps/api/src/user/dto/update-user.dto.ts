@@ -4,10 +4,6 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class UpdateUserDto {
     @ApiProperty()
     @IsString()
-    uid: string;
-
-    @ApiProperty()
-    @IsString()
     displayName?: string;
 
     @ApiProperty()
