@@ -6,7 +6,7 @@ import { Separator } from '@app/ui/components/separator';
 import { OrgCard, NewOrgDialog } from '@app/views/org';
 import { useAuth, useToggle } from '@app/hooks';
 import { useOrgs } from '@app/hooks/api/org';
-import { OrgLoader } from "@app/components/preloaders"
+import { OrgLoader } from '@app/components/preloaders';
 
 const Index: NextPageWithLayout = () => {
     const [isOpen, setOpen] = useToggle(false);
@@ -37,7 +37,7 @@ const Index: NextPageWithLayout = () => {
                         <OrgCard name={el.organization.name} id={el.organization.id} />
                     ))
                 ) : (
-                    <div className='flex flex-col'>
+                    <div className="flex flex-col">
                         <h3>No Org Found </h3>
                         <Button
                             onClick={setOpen.on}
