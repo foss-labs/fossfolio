@@ -19,6 +19,8 @@ model User {
 
   organizationMember OrganizationMember[]
   providerAccounts Account[]
+
+  registeredEventsId  Events[]
 }
 
 model Account {
@@ -45,6 +47,7 @@ model Organization {
 
   members   OrganizationMember[]
   invites   OrganizationInvite[]
+  events    Events[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -74,6 +77,20 @@ model OrganizationInvite {
 
   @@unique([inviteeEmail, organizationId])
 }
+
+model Events {
+  id              String  @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+  name            String
+  description     String
+  website         String?
+  location        String
+  createdAt       DateTime @default(now())
+  lastDate        DateTime
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  registeredUsers User[]
+}
+
 
 enum Role {
   ADMIN
