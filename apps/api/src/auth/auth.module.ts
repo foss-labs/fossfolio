@@ -1,42 +1,34 @@
-import { Module, DynamicModule } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
-import { ConfigInjectionToken, AuthModuleConfig } from './config.interface';
-import { SupertokensService } from './supertokens/supertokens.service';
-import { ProfileModule } from '../profile/profile.module';
+import { Module } from '@nestjs/common';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { GithubStrategy } from './strategy/github.strategy';
+import { UserModule } from 'src/user/user.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { PassportModule } from '@nestjs/passport';
+import { UserService } from 'src/user/user.service';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './strategy/jwt.strategy';
+import { RefreshStrategy } from './strategy/refresh.strategy';
+import { GoogleStrategy } from './strategy/google.strategy';
 
 @Module({
-    providers: [SupertokensService],
-    exports: [],
-    controllers: [],
-    imports: [HttpModule, ProfileModule],
+    imports: [
+        UserModule,
+        PrismaModule,
+        PassportModule,
+        JwtModule.register({
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: process.env.ACCESS_TOKEN_VALIDITY },
+        }),
+    ],
+    controllers: [AuthController],
+    providers: [
+        AuthService,
+        GithubStrategy,
+        GoogleStrategy,
+        UserService,
+        JwtStrategy,
+        RefreshStrategy,
+    ],
 })
-export class AuthModule {
-    static forRoot({
-        connectionURI,
-        apiKey,
-        appInfo,
-        githubClientId,
-        githubClientSecret,
-        DashboardApiKey,
-    }: AuthModuleConfig): DynamicModule {
-        return {
-            providers: [
-                {
-                    useValue: {
-                        appInfo,
-                        connectionURI,
-                        apiKey,
-                        githubClientId,
-                        githubClientSecret,
-                        DashboardApiKey,
-                    },
-                    provide: ConfigInjectionToken,
-                },
-                SupertokensService,
-            ],
-            exports: [],
-            imports: [],
-            module: AuthModule,
-        };
-    }
-}
+export class AuthModule {}

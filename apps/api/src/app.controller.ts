@@ -1,11 +1,12 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { AuthGuard } from './auth/auth.guard';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AppController {
     @Get()
-    @UseGuards(new AuthGuard())
-    getHello(): string {
-        return 'Hello World!';
+    getTest() {
+        return {
+            ok: true,
+            message: 'Server running successfully',
+        };
     }
 }

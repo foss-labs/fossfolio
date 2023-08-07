@@ -18,5 +18,6 @@
         "dev": {
             "outputs": []
         }
-    }
+    },
+    "globalEnv": ["NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_WEBSITE_DOMAIN"]
 }

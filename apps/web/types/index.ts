@@ -3,8 +3,9 @@ export interface Child {
 }
 
 export interface User {
-    id: string;
-    name: string;
+    uid: string;
+    displayName: string;
     email: string;
-    githubId: string;
+    slug: string;
+    photoURL: string;
 }

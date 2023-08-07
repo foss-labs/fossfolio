@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,95 +8,92 @@ datasource db {
 }
 
 model User {
-  id                  String          @unique @id
-  email               String          @unique
-  githubID            String          @unique
-  name                String?
-  mobile              String?
+  uid      String   @id @default(cuid())
+  email    String?  @unique
+  displayName String?
+  slug     String?  @unique
+  photoURL String?
 
-  bio                 String?
-  avatar              String
+  refreshToken String?
+  createdAt DateTime @default(now())
 
-  student             Boolean @default(true)
-  organized           Event[]
-  participated        TeamMember[]
+  organizationMember OrganizationMember[]
+  providerAccounts Account[]
+
+  registeredEventsId  Events[]
 }
 
-model Event {
-  id                      String          @id @unique @db.Uuid @default(uuid())
-  slug                    String @unique
-  title                   String
-  image                   String
-  description             String
-  guidelines              String
-  status                  EventStatus @default(PENDING)
+model Account {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [uid])
 
-  mode                    Mode @default(ONLINE)
-  venue                   String?
+  provider  String
+  providerAccountId String
 
-  registrationStart       DateTime
-  registrationEnd         DateTime
-  eventStarting           DateTime
-  eventEnding             DateTime
+  providerAccessToken String?
+  providerRefreshToken String?
 
-  twitter                 String?
-  email                   String?
-  website                 String?
-  instagram               String?
-  linkedin                String?
-  discord                 String?
-  teams                   Team[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  organizerId             String
-  organizer               User @relation(fields: [organizerId], references: [id])
-  tags                    Tag[]
-
-  participants            TeamMember[]
+  @@unique([provider, providerAccountId], name: "verify_provider_account")
 }
 
-model Team {
-  id                  String          @id @unique @db.Uuid @default(uuid())
-  name                String
-  repo                String
-  inviteCode          String?         @default(cuid()) @unique
-  event               Event           @relation(fields: [eventId], references: [id])
-  eventId             String          @db.Uuid
-  members             TeamMember[]
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+
+  members   OrganizationMember[]
+  invites   OrganizationInvite[]
+  events    Events[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }
 
-model TeamMember{
-  id                  String          @unique @db.Uuid @default(uuid())
-  role                Role            @default(MEMBER)
-  team                Team            @relation(fields: [teamId], references: [id])
-  teamId              String          @db.Uuid
-  user                User            @relation(fields: [userId], references: [id])
-  userId              String
-  event               Event           @relation(fields: [eventId], references: [id])
-  eventId             String          @db.Uuid
-  @@unique([userId, eventId])
-  @@unique([userId, teamId])
-  @@id([userId, eventId])
+model OrganizationMember {
+  id      String   @id @default(cuid())
+  role    Role
+
+  userUid String
+  user   User @relation(fields: [userUid], references: [uid])
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userUid, organizationId])
 }
 
-model Tag{
-  id        String @id @default(dbgenerated("gen_random_uuid()::TEXT"))
-  name      String @unique
-  events    Event[]
+model OrganizationInvite {
+  id      String   @id @default(cuid())
+  inviteeEmail String
+  inviteeRole  Role
+
+  inviterUid   String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([inviteeEmail, organizationId])
 }
+
+model Events {
+  id              String  @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+  name            String
+  description     String
+  website         String?
+  location        String
+  createdAt       DateTime @default(now())
+  lastDate        DateTime
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  registeredUsers User[]
+}
+
 
 enum Role {
-  MEMBER
-  LEADER
-}
-
-enum Mode {
-  OFFLINE
-  ONLINE
-  HYBRID
-}
-
-enum EventStatus {
-  PENDING
-  LISTED
-  UPDATION
+  ADMIN
+  EDITOR
+  VIEWER
 }

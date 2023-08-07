@@ -1,9 +1,10 @@
-/* eslint-disable react/no-array-index-key */
 import { HomeLayout } from '@app/layout';
-import { Box, Button, Center, Flex, HStack, Image } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
 import { AnimatedCharacters } from '@app/views/home';
 import { NextPageWithLayout } from 'next';
+import { Button } from '@app/ui/components/button';
 
 const container = {
     visible: {
@@ -13,46 +14,36 @@ const container = {
     },
 };
 
-const Head = ['Discover,host and manage Events,Hackathons all in one place.'];
+const Head = ['Discover, host and manage Events, Hackathons all in one place.'];
 
-const Home: NextPageWithLayout = () => (
-    <Flex
-        minH="90vh"
-        flexDir={{ base: 'column-reverse', md: 'row' }}
-        justifyContent={{ base: 'space-around', md: 'space-between' }}
-        p="7"
-        flex="1"
-    >
-        <Center>
-            <Box w={{ base: '300px', md: '600px' }}>
-                <motion.div
-                    className="App"
-                    initial="hidden"
-                    // animate="visible"
-                    animate="visible"
-                    variants={container}
-                >
+const Home: NextPageWithLayout = () => {
+    return (
+        <div className="flex flex-col-reverse p-4 sm:justify-around md:flex-row space-between h-full">
+            <div className="flex justify-center flex-col">
+                <motion.div className="App" initial="hidden" animate="visible" variants={container}>
                     {Head.map((el, key) => (
                         <AnimatedCharacters text={el} key={key + 5} />
                     ))}
                 </motion.div>
-                <HStack mt="40px">
-                    <Button
-                        colorScheme="purple"
-                        onClick={() => {
-                            window.location.href = 'https://rebrand.ly/fossfolio';
-                        }}
-                    >
-                        Get Notified
+                <div className="flex gap-4 mt-3 ">
+                    <Button className="bg-[#7F56D9] px-5 py-2 rounded-sm text-[white] hover:text-[#7F56D9] hover:bg-[#F9F5FF]  border-[1.4px] hover:border-[#7F56D9]">
+                        <Link href="/events">Join Event</Link>
                     </Button>
-                </HStack>
-            </Box>
-        </Center>
-        <Center>
-            <Image src="/main.png" width="800px" />
-        </Center>
-    </Flex>
-);
+                    <Button
+                        variant="outline"
+                        className="bg-[#F9F5FF] px-5 py-2 rounded-sm text-[#7F56D9] border-1 hover:text-[#7F56D9] hover:bg-[#F9F5FF]  border-[1.4px] hover:border-[#7F56D9]"
+                    >
+                        <Link href="/org">Create Events</Link>
+                    </Button>
+                </div>
+            </div>
+            <div className="flex justify-center items-center">
+                <Image src="/main.png" width="800" alt="an event card image" height="800" />
+            </div>
+        </div>
+    );
+};
 
 Home.Layout = HomeLayout;
+Home.RequireAuth = false;
 export default Home;

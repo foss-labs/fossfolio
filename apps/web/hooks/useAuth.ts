@@ -1,10 +1,11 @@
 import { useContext } from 'react';
-import { AuthContext } from '@app/contexts';
+import { AuthCtx } from '@app/context/Auth';
 
 export const useAuth = () => {
-    const auth = useContext(AuthContext);
-    if (auth === null) {
-        throw new Error('Unable to use auth context outside of AuthProvider');
+    const ctx = useContext(AuthCtx);
+    if (ctx === null) {
+        throw new Error('Unable to access the auth context');
     }
-    return auth;
+
+    return ctx;
 };

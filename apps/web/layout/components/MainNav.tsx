@@ -1,87 +1,58 @@
-import { Button, Flex, Heading } from '@chakra-ui/react';
+import React, { forwardRef, useImperativeHandle } from 'react';
+import Link from 'next/link';
+import { AuthModal } from '../AuthModal';
+import { useAuth, useToggle } from '@app/hooks';
+import { Button } from '@app/ui/components/button';
+import { useRouter } from 'next/router';
+import { UserNav } from './UserNav';
+// eslint-disable-next-line react/display-name
+export const MainNav = forwardRef((_props, ref) => {
+    const [isOpen, triggerModal] = useToggle(false);
 
-// import Link from 'next/link';
-import React from 'react';
-// import { useRouter } from 'next/router';
-// import { useAuth } from '@app/hooks';
+    const router = useRouter();
+    const { user } = useAuth();
 
-export const MainNav = () => (
-    // const router = useRouter();
-    // const { login } = useAuth();
+    const login = () => {
+        triggerModal.on();
+    };
 
-    <Flex
-        p="4"
-        alignItems="center
-    "
-        justifyContent="space-between"
-        _hover={{ cursor: 'not-allowed' }}
-    >
-        <Flex alignItems="center">
-            {/* <Image src="/logo.svg" alt="fossfolio" width="150" height="150" /> */}
-            <Heading fontSize="29px">FossFolio</Heading>
-            <Flex
-                ml={{ sm: '0', md: '60px' }}
-                w={{ sm: 'none', md: '300px' }}
-                justifyContent="space-around"
-            >
-                {/* <Link href="/">
-                        <Heading
-                            as="nav"
-                            fontSize="15px"
-                            _hover={{ cursor: 'pointer' }}
-                            color="#667085"
-                            onClick={() => router.push('/')}
-                        >
-                            Home
-                        </Heading>
-                    </Link>
-                    <Heading
-                        as="nav"
-                        fontSize="15px"
-                        _hover={{ cursor: 'pointer' }}
-                        color="#667085"
+    useImperativeHandle(ref, () => ({
+        redirectLogin() {
+            login();
+        },
+    }));
+
+    return (
+        <div className="flex justify-between items-center p-4 w-full">
+            <div className="flex items-center justify-between w-full">
+                <div className="flex items-center justify-between w-[300px]">
+                    <h2 className="text-2xl font-mono">
+                        <Link href="/">fossfolio</Link>
+                    </h2>
+                    <AuthModal isOpen={isOpen} onClose={triggerModal.off} />
+                    <div className="md:flex gap-4 hidden">
+                        <Link href="/">
+                            <h4 className="text-md text-[#667085]" onClick={() => router.push('/')}>
+                                Home
+                            </h4>
+                        </Link>
+                        <Link href="/events">
+                            <h4 className="text-md text-[#667085]">Events</h4>
+                        </Link>
+                    </div>
+                </div>
+                {user ? (
+                    <UserNav />
+                ) : (
+                    <Button
+                        variant="ghost"
+                        className="px-8 text-md text-[white] hover:text-[#7F56D9] hover:bg-[#F9F5FF] bg-[#7F56D9] border-[1.4px] hover:border-[#7F56D9] border-transparent"
+                        onClick={login}
                     >
-                        Events
-                        <Link href="/events">Events</Link>
-                    </Heading>
-                    <Link href="/dashboard">
-                        <Heading
-                            as="nav"
-                            fontSize="15px"
-                            _hover={{ cursor: 'pointer' }}
-                            color="#667085"
-                        >
-                            Dashboard
-                        </Heading>
-                    </Link>
-                    <Link href="/pricing">
-                        <Heading
-                            as="nav"
-                            fontSize="15px"
-                            _hover={{ cursor: 'pointer' }}
-                            color="#667085"
-                        >
-                            Pricing
-                        </Heading>
-                    </Link> */}
-            </Flex>
-        </Flex>
-        <Flex alignItems="center">
-            {/* <Button
-                mr="30px"
-                as="nav"
-                fontSize="15px"
-                _hover={{ cursor: 'pointer' }}
-                color="#667085"
-                // onClick={login}
-                colorScheme="purple"
-                variant="outline"
-            >
-                Login
-            </Button> */}
-            <Button colorScheme="purple" _hover={{ cursor: 'not-allowed' }}>
-                Coming soon
-            </Button>
-        </Flex>
-    </Flex>
-);
+                        Login
+                    </Button>
+                )}
+            </div>
+        </div>
+    );
+});
