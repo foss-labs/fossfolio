@@ -12,9 +12,9 @@ const Events: NextPageWithLayout = () => {
     }
 
     return (
-        <div className="p-6 flex flex-col ">
+        <div className="p-6 flex flex-col items-center">
             <h1 className="text-center text-[48px]">Find Hackathons</h1>
-            <div className="flex flex-wrap gap-[25px] justify-center lg:justify-start">
+            <div className="flex flex-wrap flex-col gap-[25px] justify-center p-4  md:justify-start lg:flex-row">
                 <EventCard />
                 <EventCard />
                 <EventCard />

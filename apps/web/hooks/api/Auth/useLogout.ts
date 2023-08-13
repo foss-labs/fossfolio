@@ -2,7 +2,7 @@ import { apiHandler } from '@app/config';
 import { useMutation, useQueryClient } from 'react-query';
 
 const logout = async () => {
-    const { data } = await apiHandler.post('/auth/logOut');
+    const { data } = await apiHandler.get('/auth/logout');
     return data;
 };
 
@@ -11,7 +11,7 @@ export const useLogOut = () => {
     return useMutation({
         mutationFn: logout,
         onSuccess: () => {
-            queryClient.invalidateQueries(['user']);
+            queryClient.invalidateQueries(['user', 'all-events', 'orgs']);
         },
     });
 };

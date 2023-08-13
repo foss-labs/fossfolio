@@ -1,5 +1,6 @@
 import { NextPageWithLayout } from 'next';
 import React from 'react';
+import { GoOrganization } from "react-icons/go"
 import { HomeLayout } from '@app/layout';
 import { Button } from '@app/ui/components/button';
 import { Separator } from '@app/ui/components/separator';
@@ -27,25 +28,21 @@ const Index: NextPageWithLayout = () => {
                     New Organisation
                 </Button>
             </div>
-            <div className="flex flex-wrap mt-10 gap-5 justify-around lg:justify-between">
+            <div className="flex flex-wrap mt-10 gap-5">
                 {isLoading ? (
                     <div className="flex flex-col flex-wrap gap-5 md:flex-row">
                         <OrgLoader />
                     </div>
-                ) : data && data?.length > 0 ? (
-                    data?.map((el) => (
-                        <OrgCard name={el.organization.name} id={el.organization.id} />
-                    ))
                 ) : (
-                    <div className="flex flex-col">
-                        <h3>No Org Found </h3>
-                        <Button
-                            onClick={setOpen.on}
-                            className="bg-[#7F56D9] px-3 py-2 rounded-md text-[white] hover:text-[#7F56D9] hover:bg-[#F9F5FF]  border-[1.4px] hover:border-[#7F56D9]"
-                        >
-                            New Organisation
-                        </Button>
-                    </div>
+                    <>
+                        <div className="w-[300px] h-[150px] border-2 flex justify-center items-center border-dotted flex-col hover:cursor-pointer" onClick={setOpen.on}>
+                            <GoOrganization className='border-black border-2 rounded-full text-3xl p-1' />
+                            Create a new organisation
+                        </div>
+                        {data?.map((el) => (
+                            <OrgCard name={el.organization.name} id={el.organization.id} />
+                        ))}
+                    </>
                 )}
             </div>
         </div>
