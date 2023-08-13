@@ -12,9 +12,11 @@ import { Button } from '@app/ui/components/button';
 import { useAuth, useToggle } from '@app/hooks';
 import { ProfileModal } from '@app/views/profile';
 import Link from 'next/link';
+import { useLogOut } from '@app/hooks/api/Auth/useLogout';
 
 export const UserNav = () => {
-    const { user, logOut } = useAuth();
+    const { user } = useAuth();
+    const { mutate } = useLogOut()
     const [isOpen, triggerModal] = useToggle(false);
 
     return (
@@ -46,7 +48,7 @@ export const UserNav = () => {
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={logOut}>Log out</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => mutate()}>Log out</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </>
