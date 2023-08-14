@@ -11,7 +11,8 @@ export const useLogOut = () => {
     return useMutation({
         mutationFn: logout,
         onSuccess: () => {
-            queryClient.invalidateQueries(['user', 'all-events', 'orgs']);
+            console.log('removing queries');
+            queryClient.removeQueries();
         },
     });
 };
