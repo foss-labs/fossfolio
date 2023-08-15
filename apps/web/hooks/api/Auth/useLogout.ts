@@ -1,15 +1,26 @@
 import { apiHandler } from '@app/config';
-import { useQueryClient } from 'react-query';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
-export const useLogOut = () => {
+type LogOut = {
+    isLoading: boolean;
+    logOut: () => Promise<void>;
+};
+
+export const useLogOut = (): LogOut => {
+    const [isLoading, setLoading] = useState(false);
     const queryClient = useQueryClient();
     const logOut = async (): Promise<void> => {
-        queryClient.invalidateQueries();
         try {
+            setLoading(true);
+            // clearing all the disk cache
+            queryClient.clear();
             await apiHandler.get('/auth/logout');
         } catch (e) {
             console.log(e);
+        } finally {
+            setLoading(false);
         }
     };
-    return { logOut };
+    return { logOut, isLoading };
 };

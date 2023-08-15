@@ -1,20 +1,12 @@
 import { apiHandler } from '@app/config';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const getUser = async () => {
-    try {
-        const { data, status } = await apiHandler.get('/user');
-        // handling unauth
-        if (status === 401) {
-            throw new Error('Unauthrized user');
-        }
-        return data;
-    } catch {
-        console.error('Login failed');
-    }
+    const { data } = await apiHandler.get('/user');
+    return data;
 };
 
 export const useUser = () => {
-    const user = useQuery('user', getUser);
+    const user = useQuery({ queryKey: ['user'], queryFn: getUser });
     return user;
 };

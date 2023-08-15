@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from "next/router"
 import { DefaultSeo } from 'next-seo';
 import "nprogress/nprogress.css";
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google'
 import { Toaster } from "sonner"

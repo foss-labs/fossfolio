@@ -1,5 +1,5 @@
 import { apiHandler } from '@app/config';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const getAllEvents = async () => {
     const { data } = await apiHandler.get('/user');
@@ -7,6 +7,6 @@ const getAllEvents = async () => {
 };
 
 export const useAllEvents = () => {
-    const events = useQuery('all-events', getAllEvents);
+    const events = useQuery({ queryKey: ['all-events'], queryFn: getAllEvents });
     return events;
 };
