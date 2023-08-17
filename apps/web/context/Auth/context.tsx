@@ -3,14 +3,18 @@ import React, { useMemo, createContext, useContext, useEffect, useState } from '
 import { useRouter } from 'next/router';
 import { Child, User } from '@app/types';
 import { apiHandler } from '@app/config';
+import { useLogOut } from '@app/hooks/api/Auth';
 
 interface IAuthTypes {
     user: User | null;
     isLoading: boolean;
+    setData: React.Dispatch<User | null>;
+    logOut: () => Promise<void>
 }
 export const AuthCtx = createContext({} as IAuthTypes);
 
 export const AuthContext = ({ children }: Child) => {
+    const { logOut } = useLogOut()
     const [isLoading, setLoading] = useState(false)
     const [data, setData] = useState<User | null>(null)
     const router = useRouter()
@@ -35,7 +39,7 @@ export const AuthContext = ({ children }: Child) => {
         getUser()
     }, [])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const response = useMemo(() => ({ user: data, isLoading }), [isLoading]);
+    const response = useMemo(() => ({ user: data, isLoading, setData, logOut }), [isLoading]);
 
     return <AuthCtx.Provider value={response}> {children}</AuthCtx.Provider>;
 };

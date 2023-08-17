@@ -15,8 +15,7 @@ import Link from 'next/link';
 import { useLogOut } from '@app/hooks/api/Auth/useLogout';
 
 export const UserNav = () => {
-    const { user } = useAuth();
-    const { logOut } = useLogOut()
+    const { user, logOut } = useAuth();
     const [isOpen, triggerModal] = useToggle(false);
 
     return (
