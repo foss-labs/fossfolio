@@ -18,6 +18,8 @@
         "dev": "concurrently \"pnpm --filter api nest:dev\" \"pnpm --filter api db:studio\""
     },
     "dependencies": {
+        "@casl/ability": "^6.5.0",
+        "@casl/prisma": "^1.4.1",
         "@nestjs/common": "^10.0.5",
         "@nestjs/config": "^3.0.0",
         "@nestjs/core": "^10.0.5",
