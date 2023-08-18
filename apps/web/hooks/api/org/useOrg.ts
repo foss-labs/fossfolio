@@ -1,5 +1,5 @@
 import { apiHandler } from '@app/config';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const getAllOrg = async () => {
     try {
@@ -26,6 +26,6 @@ type IOrg = {
 };
 
 export const useOrgs = () => {
-    const orgs = useQuery<Array<IOrg>>('orgs', getAllOrg);
+    const orgs = useQuery<Array<IOrg>>({ queryKey: ['orgs]'], queryFn: getAllOrg });
     return orgs;
 };

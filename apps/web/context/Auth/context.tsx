@@ -1,20 +1,45 @@
-import { apiHandler } from '@app/config';
-import { Child, User } from '@app/types';
-import { useUser } from '@app/hooks/api/Auth';
-import React, { useMemo, createContext, useContext, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useMemo, createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { Child, User } from '@app/types';
+import { apiHandler } from '@app/config';
+import { useLogOut } from '@app/hooks/api/Auth';
 
 interface IAuthTypes {
     user: User | null;
     isLoading: boolean;
+    setData: React.Dispatch<User | null>;
+    logOut: () => Promise<void>
 }
 export const AuthCtx = createContext({} as IAuthTypes);
 
 export const AuthContext = ({ children }: Child) => {
-    const { data, isLoading } = useUser();
+    const { logOut } = useLogOut()
+    const [isLoading, setLoading] = useState(false)
+    const [data, setData] = useState<User | null>(null)
+    const router = useRouter()
 
+    const getUser = async () => {
+        try {
+            setLoading(true)
+            const { data } = await apiHandler.get('/user');
+            setData(data)
+        } catch {
+            console.error("Error Authenticating user")
+            router.push("/")
+        } finally {
+            setLoading(false)
+        }
+    };
+
+    // todo
+    // @sreehari2003 
+    // convert this to react query by fixing the caching problem 
+    useEffect(() => {
+        getUser()
+    }, [])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const response = useMemo(() => ({ user: data, isLoading }), [isLoading]);
+    const response = useMemo(() => ({ user: data, isLoading, setData, logOut }), [isLoading]);
 
     return <AuthCtx.Provider value={response}> {children}</AuthCtx.Provider>;
 };

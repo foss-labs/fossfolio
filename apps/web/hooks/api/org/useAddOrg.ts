@@ -1,6 +1,6 @@
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 type IOrgPayload = {

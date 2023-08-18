@@ -1,17 +1,30 @@
 import { apiHandler } from '@app/config';
-import { useMutation, useQueryClient } from 'react-query';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@app/hooks/useAuth';
 
-const logout = async () => {
-    const { data } = await apiHandler.get('/auth/logout');
-    return data;
+type LogOut = {
+    isLoading: boolean;
+    logOut: () => Promise<void>;
 };
 
-export const useLogOut = () => {
+export const useLogOut = (): LogOut => {
+    const [isLoading, setLoading] = useState(false);
     const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: logout,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['user', 'all-events', 'orgs']);
-        },
-    });
+    const { setData } = useAuth();
+    const logOut = async (): Promise<void> => {
+        try {
+            setLoading(true);
+            // clearing user context
+            setData(null);
+            // clearing all the disk cache
+            queryClient.clear();
+            await apiHandler.get('/auth/logout');
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setLoading(false);
+        }
+    };
+    return { logOut, isLoading };
 };
