@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { OrganizationModule } from './organization/organization.module';
 import { OrganizationMemberModule } from './org-member/org-member.module';
 import { OrganizationInviteModule } from './org-invite/org-invite.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
     imports: [
@@ -45,6 +46,7 @@ import { OrganizationInviteModule } from './org-invite/org-invite.module';
         OrganizationModule,
         OrganizationMemberModule,
         OrganizationInviteModule,
+        EventsModule,
     ],
     controllers: [AppController],
     providers: [],
