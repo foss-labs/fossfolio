@@ -11,12 +11,12 @@ type LogOut = {
 export const useLogOut = (): LogOut => {
     const [isLoading, setLoading] = useState(false);
     const queryClient = useQueryClient();
-    const { setData } = useAuth();
+    const { clearData } = useAuth();
     const logOut = async (): Promise<void> => {
         try {
             setLoading(true);
             // clearing user context
-            setData(null);
+            clearData();
             // clearing all the disk cache
             queryClient.clear();
             await apiHandler.get('/auth/logout');

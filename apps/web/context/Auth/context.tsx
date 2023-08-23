@@ -3,20 +3,22 @@ import React, { useMemo, createContext, useContext, useEffect, useState } from '
 import { useRouter } from 'next/router';
 import { Child, User } from '@app/types';
 import { apiHandler } from '@app/config';
-import { useLogOut } from '@app/hooks/api/Auth';
+import { useToggle } from '@app/hooks';
+import type { Toggle } from "@app/hooks/useToggle"
 
 interface IAuthTypes {
     user: User | null;
     isLoading: boolean;
-    setData: React.Dispatch<User | null>;
-    logOut: () => Promise<void>;
+    clearData: () => void
+    isAuthModalOpen: boolean;
+    toggleModal: Toggle
 }
 export const AuthCtx = createContext({} as IAuthTypes);
 
-export const AuthContext = ({ children }: Child) => {
-    const { logOut } = useLogOut();
+export const AuthContext = ({ children }: Child): JSX.Element => {
     const [isLoading, setLoading] = useState(false);
     const [data, setData] = useState<User | null>(null);
+    const [isAuthModalOpen, toggleModal] = useToggle()
     const router = useRouter();
 
     const getUser = async () => {
@@ -32,6 +34,9 @@ export const AuthContext = ({ children }: Child) => {
         }
     };
 
+    const clearData = () => {
+        setData(null)
+    }
     // todo
     // @sreehari2003
     // convert this to react query by fixing the caching problem
@@ -39,7 +44,10 @@ export const AuthContext = ({ children }: Child) => {
         getUser();
     }, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const response = useMemo(() => ({ user: data, isLoading, setData, logOut }), [isLoading]);
+    const response = useMemo(
+        () => ({ user: data, clearData, isLoading, isAuthModalOpen, toggleModal }),
+        [isLoading, toggleModal, data],
+    );
 
     return <AuthCtx.Provider value={response}> {children}</AuthCtx.Provider>;
 };
@@ -49,7 +57,8 @@ export const AuthGuard = ({ children }: Child): JSX.Element => {
     const ctx = useContext(AuthCtx);
     useEffect(() => {
         if (!ctx.user) {
-            router.push('/?authreq=true');
+            ctx.toggleModal.on()
+            router.push('/');
         }
     }, [router, ctx.user]);
 

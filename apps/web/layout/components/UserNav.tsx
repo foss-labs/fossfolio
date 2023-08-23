@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,11 +12,11 @@ import { Avatar, AvatarImage, AvatarFallback } from '@app/ui/components/avatar';
 import { Button } from '@app/ui/components/button';
 import { useAuth, useToggle } from '@app/hooks';
 import { ProfileModal } from '@app/views/profile';
-import Link from 'next/link';
-import { useLogOut } from '@app/hooks/api/Auth/useLogout';
+import { useLogOut } from "@app/hooks/api/Auth"
 
 export const UserNav = () => {
-    const { user, logOut } = useAuth();
+    const { logOut } = useLogOut()
+    const { user } = useAuth()
     const [isOpen, triggerModal] = useToggle(false);
 
     return (
