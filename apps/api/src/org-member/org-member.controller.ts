@@ -9,7 +9,6 @@ export class OrgMemberController {
     constructor(private readonly orgMemberService: OrganizationMemberService) {}
 
     @Get('/:orgID')
-    @Roles('')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getMembers(@Param('orgID') orgID: string) {
         return this.orgMemberService.getMembers(orgID);

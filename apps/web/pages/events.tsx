@@ -20,7 +20,6 @@ const Events: NextPageWithLayout = () => {
         <EventCard />
         <EventCard />
         <EventCard />
-
       </div>
     </div>
   );

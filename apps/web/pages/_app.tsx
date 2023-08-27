@@ -58,6 +58,7 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                                 title="fossfolio"
                                 description="Discover, host and manage Events, all in one place."
                             />
+                            <Toaster position="bottom-right" richColors />
                             {Component.Layout ? (
                                 <Component.Layout>
                                     <Component {...pageProps} />
@@ -75,7 +76,7 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
         <main className={inter.className}>
             <QueryClientProvider client={queryClient}>
                 <AuthContext>
-                    <Toaster position="bottom-right" />
+                    <Toaster position="bottom-right" richColors />
                     <DefaultSeo
                         title="fossfolio"
                         description="Discover,host and manage Events,Hackathons all in one place. "
