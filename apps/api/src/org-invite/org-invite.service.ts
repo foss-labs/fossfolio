@@ -15,13 +15,22 @@ export class OrganizationInviteService {
                 organizationId: orgId,
                 inviteeRole: role,
             },
+            include: {
+                organization: true,
+            },
+        });
+        const invitee = await this.prismaService.user.findUnique({
+            where: {
+                uid: inviterid,
+            },
         });
 
-        // need to send more data
         const inviteInfo = {
             inviteId: data.id,
-            from: email.split('@')[0],
+            from: invitee.displayName,
+            orgName: data.organization.name,
+            fromEmail: invitee.email,
         };
-        await sendInvite(email);
+        await sendInvite(email, inviteInfo);
     }
 }
