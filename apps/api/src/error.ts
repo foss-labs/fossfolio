@@ -32,3 +32,15 @@ export const USER_UPDATE_ERROR = {
     message: 'Cant Update User',
     error: 'USER_UPDATE_ERROR',
 };
+
+export const ORG_ID_NOT_FOUND = {
+    ok: false,
+    message: "couldn't find the org",
+    error: 'please provide an organizationId',
+};
+
+export const NO_ROLE_ACCESS = {
+    ok: false,
+    message: 'you are not authorized to visit the page',
+    error: 'insufficent role access',
+};
