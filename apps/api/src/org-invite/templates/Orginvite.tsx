@@ -28,7 +28,7 @@ const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : '';
 
-export const VercelInviteUserEmail = ({
+export const InviteUserEmail = ({
     username = 'zenorocha',
     userImage = `${baseUrl}/static/vercel-user.png`,
     invitedByUsername = 'bukinoshita',
@@ -98,4 +98,3 @@ export const VercelInviteUserEmail = ({
     );
 };
 
-export default VercelInviteUserEmail;
