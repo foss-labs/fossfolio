@@ -18,9 +18,9 @@ import { AiOutlineDelete } from 'react-icons/ai';
 
 export const Members = () => {
     return (
-        <div className='p-none md:p-[20px]'>
-            <Table className='border-[1px] border-[#E9D7FE] rounded-full'>
-                <TableHeader className='bg-[#F9FAFB] rounded-lg'>
+        <div className="p-none md:p-[20px]">
+            <Table className="border-[1px] border-[#E9D7FE] rounded-full">
+                <TableHeader className="bg-[#F9FAFB] rounded-lg">
                     <TableRow>
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
@@ -47,7 +47,7 @@ export const Members = () => {
                             </Select>
                         </TableCell>
                         <TableCell className="text-right">
-                            <AiOutlineDelete className="hover:cursor-pointer text-lg " />
+                            <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
                         </TableCell>
                     </TableRow>
                     <TableRow>
@@ -68,7 +68,7 @@ export const Members = () => {
                             </Select>
                         </TableCell>
                         <TableCell className="text-right">
-                            <AiOutlineDelete className="hover:cursor-pointer text-lg " />
+                            <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
                         </TableCell>
                     </TableRow>
                     <TableRow>
@@ -89,7 +89,7 @@ export const Members = () => {
                             </Select>
                         </TableCell>
                         <TableCell className="text-right">
-                            <AiOutlineDelete className="hover:cursor-pointer text-lg " />
+                            <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
                         </TableCell>
                     </TableRow>
                     <TableRow>
@@ -110,10 +110,9 @@ export const Members = () => {
                             </Select>
                         </TableCell>
                         <TableCell className="text-right">
-                            <AiOutlineDelete className="hover:cursor-pointer text-lg " />
+                            <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
                         </TableCell>
                     </TableRow>
-
                 </TableBody>
             </Table>
         </div>

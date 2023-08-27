@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from 'next';
 import React from 'react';
-import { GoOrganization } from "react-icons/go"
+import { GoOrganization } from 'react-icons/go';
 import { HomeLayout } from '@app/layout';
 import { Button } from '@app/ui/components/button';
 import { Separator } from '@app/ui/components/separator';
@@ -35,8 +35,11 @@ const Index: NextPageWithLayout = () => {
                     </div>
                 ) : (
                     <>
-                        <div className="w-[300px] h-[150px] border-2 flex justify-center items-center border-dotted flex-col hover:cursor-pointer" onClick={setOpen.on}>
-                            <GoOrganization className='border-black border-2 rounded-full text-3xl p-1' />
+                        <div
+                            className="w-[300px] h-[150px] border-2 flex justify-center items-center border-dotted flex-col hover:cursor-pointer"
+                            onClick={setOpen.on}
+                        >
+                            <GoOrganization className="border-black border-2 rounded-full text-3xl p-1" />
                             Create a new organisation
                         </div>
                         {data?.map((el) => (

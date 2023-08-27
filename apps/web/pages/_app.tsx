@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { useRouter } from "next/router"
+import { useRouter } from 'next/router';
 import { DefaultSeo } from 'next-seo';
-import "nprogress/nprogress.css";
+import 'nprogress/nprogress.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
-import { Inter } from 'next/font/google'
-import { Toaster } from "sonner"
+import { Inter } from 'next/font/google';
+import { Toaster } from 'sonner';
 import NProgress from 'nprogress';
 import { Child } from '@app/types';
 import '../theme/style.css';
@@ -18,8 +18,7 @@ type ComponentWithPageLayout = AppProps & {
     };
 };
 
-const inter = Inter({ subsets: ['latin'] })
-
+const inter = Inter({ subsets: ['latin'] });
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -31,21 +30,21 @@ const queryClient = new QueryClient({
 });
 
 const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
-    const router = useRouter()
+    const router = useRouter();
 
     useEffect(() => {
         const handleStart = () => NProgress.start();
 
         const handleStop = () => NProgress.done();
 
-        router.events.on("routeChangeStart", handleStart);
-        router.events.on("routeChangeComplete", handleStop);
-        router.events.on("routeChangeError", handleStop);
+        router.events.on('routeChangeStart', handleStart);
+        router.events.on('routeChangeComplete', handleStop);
+        router.events.on('routeChangeError', handleStop);
 
         return () => {
-            router.events.off("routeChangeStart", handleStart);
-            router.events.off("routeChangeComplete", handleStop);
-            router.events.off("routeChangeError", handleStop);
+            router.events.off('routeChangeStart', handleStart);
+            router.events.off('routeChangeComplete', handleStop);
+            router.events.off('routeChangeError', handleStop);
         };
     }, [router]);
 
