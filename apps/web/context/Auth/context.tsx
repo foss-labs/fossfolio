@@ -9,35 +9,35 @@ interface IAuthTypes {
     user: User | null;
     isLoading: boolean;
     setData: React.Dispatch<User | null>;
-    logOut: () => Promise<void>
+    logOut: () => Promise<void>;
 }
 export const AuthCtx = createContext({} as IAuthTypes);
 
 export const AuthContext = ({ children }: Child) => {
-    const { logOut } = useLogOut()
-    const [isLoading, setLoading] = useState(false)
-    const [data, setData] = useState<User | null>(null)
-    const router = useRouter()
+    const { logOut } = useLogOut();
+    const [isLoading, setLoading] = useState(false);
+    const [data, setData] = useState<User | null>(null);
+    const router = useRouter();
 
     const getUser = async () => {
         try {
-            setLoading(true)
+            setLoading(true);
             const { data } = await apiHandler.get('/user');
-            setData(data)
+            setData(data);
         } catch {
-            console.error("Error Authenticating user")
-            router.push("/")
+            console.error('Error Authenticating user');
+            router.push('/');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
     // todo
-    // @sreehari2003 
-    // convert this to react query by fixing the caching problem 
+    // @sreehari2003
+    // convert this to react query by fixing the caching problem
     useEffect(() => {
-        getUser()
-    }, [])
+        getUser();
+    }, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const response = useMemo(() => ({ user: data, isLoading, setData, logOut }), [isLoading]);
 

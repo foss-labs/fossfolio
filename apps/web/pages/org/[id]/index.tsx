@@ -3,7 +3,7 @@ import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
 import { DeleteOrg } from '@app/views/org';
-import { Members } from "@app/components/table"
+import { Members } from '@app/components/table';
 import { EventCard } from '@app/components/events';
 
 const TabName = [
@@ -46,6 +46,5 @@ const Events: NextPageWithLayout = () => {
 
 Events.Layout = HomeLayout;
 Events.RequireAuth = true;
-
 
 export default Events;
