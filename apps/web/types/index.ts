@@ -9,3 +9,24 @@ export interface User {
     slug: string;
     photoURL: string;
 }
+
+export type Member = {
+    user: {
+        uid: string;
+        email: string;
+        displayName: string;
+        slug: string;
+    };
+    role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+};
+
+export type IOrg = {
+    organization: {
+        id: string;
+        name: string;
+        slug: string;
+        createdAt: Date;
+        updatedAt: Date;
+    };
+    role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+};

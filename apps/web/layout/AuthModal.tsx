@@ -8,16 +8,14 @@ import {
     DialogTitle,
 } from '@app/ui/components/dialog';
 import { ENV } from '@app/config';
+import { useAuth } from '@app/hooks';
 
-type IModal = {
-    isOpen: boolean;
-    onClose: () => void;
-};
 
-export const AuthModal = ({ isOpen, onClose }: IModal) => {
+export const AuthModal = () => {
     const router = useRouter();
+    const { isAuthModalOpen, toggleModal } = useAuth()
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isAuthModalOpen} onOpenChange={toggleModal.off}>
             <DialogContent className="w-[325px] md:w-auto">
                 <DialogHeader>
                     <DialogTitle className="mb-4">Login</DialogTitle>

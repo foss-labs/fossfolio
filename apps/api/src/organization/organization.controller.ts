@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards, Delete } from '@nestjs/common';
 import { OrganizationService } from './organization.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateOrgDto } from './dto/create-org.dto';
+import { DeleteOrgDto } from './dto/delete-org.dto';
 import { Roles } from './decorators/roles.decorator';
 import { RbacGuard } from './guards/rbac-member.guard';
 import { UpdateOrgDto } from './dto/update-org.dto';
@@ -28,5 +29,12 @@ export class OrganizationController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async updateOrganization(@Body() updateOrgDto: UpdateOrgDto) {
         return this.organizationService.update(updateOrgDto);
+    }
+
+    @Delete('/delete')
+    @Roles('ADMIN')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async deleteOrganization(@Body() data: DeleteOrgDto) {
+        return this.organizationService.deleteOrg(data.organizationId);
     }
 }

@@ -1,5 +1,6 @@
 import { apiHandler } from '@app/config';
 import { useQuery } from '@tanstack/react-query';
+import type { IOrg } from '@app/types';
 
 const getAllOrg = async () => {
     try {
@@ -12,17 +13,6 @@ const getAllOrg = async () => {
     } catch {
         console.error('Login failed');
     }
-};
-
-type IOrg = {
-    organization: {
-        id: string;
-        name: string;
-        slug: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
-    role: 'ADMIN' | 'EDITOR' | 'VIEWER';
 };
 
 export const useOrgs = () => {

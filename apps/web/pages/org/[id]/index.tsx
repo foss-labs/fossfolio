@@ -3,8 +3,8 @@ import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
 import { DeleteOrg } from '@app/views/org';
-import { Members } from '@app/components/table';
-import { EventCard } from '@app/components/events';
+import { Members } from "@app/components/table"
+import { Events } from "@app/views/org"
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -12,7 +12,7 @@ const TabName = [
     { value: 'settings', title: 'Settings' },
 ];
 
-const Events: NextPageWithLayout = () => {
+const Org: NextPageWithLayout = () => {
     return (
         <div className="mt-4 p-4">
             <Tabs defaultValue="events">
@@ -29,9 +29,7 @@ const Events: NextPageWithLayout = () => {
                     value="events"
                     className="flex md:flex-row flex-wrap gap-5 sm:justify-center "
                 >
-                    <EventCard />
-                    <EventCard />
-                    <EventCard />
+                    <Events />
                 </TabsContent>
                 <TabsContent value="teams">
                     <Members />
@@ -44,7 +42,8 @@ const Events: NextPageWithLayout = () => {
     );
 };
 
-Events.Layout = HomeLayout;
-Events.RequireAuth = true;
+Org.Layout = HomeLayout;
+Org.RequireAuth = true;
 
-export default Events;
+
+export default Org;

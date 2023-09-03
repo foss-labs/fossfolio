@@ -15,7 +15,8 @@
         "db:migrate-deploy": "prisma migrate deploy --schema ./prisma/schema.prisma",
         "db:studio": "prisma studio",
         "db:migrate": "prisma migrate dev",
-        "dev": "concurrently \"pnpm --filter api nest:dev\" \"pnpm --filter api db:studio\""
+        "dev": "concurrently \"pnpm --filter api nest:dev\" \"pnpm --filter api db:studio\"",
+        "email": "email dev"
     },
     "dependencies": {
         "@nestjs/common": "^10.0.5",
@@ -41,12 +42,14 @@
         "pino-http": "^8.3.3",
         "pino-pretty": "^10.0.1",
         "reflect-metadata": "^0.1.13",
+        "resend": "^1.0.0",
         "rimraf": "^5.0.1",
         "rxjs": "^7.8.1"
     },
     "devDependencies": {
         "@faker-js/faker": "^8.0.2",
         "@nestjs/cli": "^10.1.8",
+        "@react-email/components": "^0.0.7",
         "@types/cookie-parser": "^1.4.3",
         "@types/express": "^4.17.17",
         "@types/node": "^20.4.2",
@@ -54,8 +57,10 @@
         "@types/passport-github2": "^1.2.5",
         "@types/passport-google-oauth20": "^2.0.11",
         "@types/passport-jwt": "^3.0.9",
+        "@types/react": "^18.2.21",
         "concurrently": "^8.2.0",
         "prisma": "^5.0.0",
+        "react": "^18.2.0",
         "ts-node": "^10.9.1",
         "typescript": "^5.1.6"
     }

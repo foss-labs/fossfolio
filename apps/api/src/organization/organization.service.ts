@@ -78,4 +78,16 @@ export class OrganizationService {
 
         return orgs;
     }
+
+    async deleteOrg(id: string) {
+        await this.prismaService.organization.delete({
+            where: {
+                id,
+            },
+        });
+        return {
+            ok: true,
+            message: 'org was deleted successfully',
+        };
+    }
 }

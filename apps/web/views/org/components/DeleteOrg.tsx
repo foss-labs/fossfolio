@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent } from '@app/ui/components/card';
 import { Button } from '@app/ui/components/button';
 import { useToggle } from '@app/hooks';
