@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Child, User } from '@app/types';
-import { apiHandler } from '@app/config';
-import { useToggle } from '@app/hooks';
 import type { Toggle } from '@app/hooks/useToggle';
+import { apiHandler } from '@app/config';
+import { Child, User } from '@app/types';
+import { useToggle } from '@app/hooks';
+import { PageLoader } from "@app/components/preloaders"
 
 interface IAuthTypes {
     user: User | null;
@@ -16,7 +17,7 @@ interface IAuthTypes {
 export const AuthCtx = createContext({} as IAuthTypes);
 
 export const AuthContext = ({ children }: Child): JSX.Element => {
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState<User | null>(null);
     const [isAuthModalOpen, toggleModal] = useToggle();
     const router = useRouter();
@@ -60,11 +61,17 @@ export const AuthGuard = ({ children }: Child): JSX.Element => {
     const router = useRouter();
     const ctx = useContext(AuthCtx);
     useEffect(() => {
-        if (!ctx.user) {
+        if (!ctx.isLoading && !ctx.user) {
             ctx.toggleModal.on();
+            console.log("calling from here")
             router.push('/');
         }
-    }, [router, ctx.user]);
+    }, [router, ctx.user, ctx.isLoading]);
 
-    return <>{children}</>;
+    return (
+        ctx.isLoading ? (
+            <PageLoader />
+        ) : <>{children}</>
+
+    )
 };

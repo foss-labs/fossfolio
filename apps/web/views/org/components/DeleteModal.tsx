@@ -11,17 +11,18 @@ type IModal = {
 
 export const DeleteModal = ({ isOpen, onClose }: IModal) => {
     const router = useRouter();
-    console.log(router);
+
     const handleDeleteClick = async () => {
         try {
             const { data } = await apiHandler.delete('/org/delete', {
                 data: { organizationId: router.query?.id },
             });
-            console.log(data);
             if (!data.ok) {
                 throw new Error();
             }
+            onClose()
             toast.success('org has been deleted');
+            router.push("/org")
         } catch {
             toast.error('could not delete org');
         }
@@ -33,7 +34,7 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
                 <DialogHeader>
                     Delete Org
                     <DialogDescription className="mt-3">
-                        Are you sure? you can't undo this action afterwards.
+                        Are you sure You want to delete the organisation ? you can&apos;t undo this action afterwards.
                         <div className="flex justify-end space-x-2 mt-5">
                             <Button
                                 className="text-[black] bg-[#F9F5FF]  border-[1.4px]  hover:text-[white] hover:bg-btn"
