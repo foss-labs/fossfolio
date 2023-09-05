@@ -16,6 +16,6 @@ export class OrgInviteController {
     @Roles('ADMIN')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async sendInvite(@AuthUser() user: User, @Body() data: OrgInvie) {
-        this.service.inviteToOrg(data.email, user.uid, data.organizationId, data.role);
+        return this.service.inviteToOrg(data.email, user.uid, data.organizationId, data.role);
     }
 }
