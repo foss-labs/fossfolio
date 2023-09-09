@@ -1,5 +1,6 @@
 import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react";
 import { cva, VariantProps } from "class-variance-authority";
+import { BiLoader } from "react-icons/bi"
 import { twMerge } from "tailwind-merge";
 
 type Props = {
@@ -16,10 +17,9 @@ const buttonVariants = cva(
     {
         variants: {
             variant: {
-                default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+                default: 'bg-primary text-primary-foreground hover:bg-primary/95',
                 destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-                outline:
-                    'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+                outline: 'border border-1 bg-[#ffff] hover:bg-accent hover:text-accent-foreground',
                 secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
                 ghost: 'hover:bg-accent hover:text-accent-foreground',
                 link: 'text-primary underline-offset-4 hover:underline',
@@ -49,7 +49,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             isDisabled = false,
             className = "",
             size = "sm",
-            variant = "solid",
+            variant = 'default',
             leftIcon,
             rightIcon,
             isLoading,
@@ -74,13 +74,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 {...props}
             >
                 {isLoading && (
-                    <img
-                        src="/images/loading/loading.gif"
-                        width={36}
-                        alt="loading animation"
-                        className="absolute rounded-xl opacity-80"
-                    />
-                )}
+                    <BiLoader className="animate-spin" />
+                )
+                }
                 {leftIcon && (
                     <div
                         className={twMerge(
@@ -97,19 +93,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         loadingToggleClass
                     )}
                 >
-                    {children}
+                    {!isLoading && children}
                 </span>
-                {rightIcon && (
-                    <div
-                        className={twMerge(
-                            "inline-flex shrink-0 cursor-pointer items-center justify-center transition-all",
-                            loadingToggleClass
-                        )}
-                    >
-                        {rightIcon}
-                    </div>
-                )}
-            </button>
+                {
+                    rightIcon && (
+                        <div
+                            className={twMerge(
+                                "inline-flex shrink-0 cursor-pointer items-center justify-center transition-all",
+                                loadingToggleClass
+                            )}
+                        >
+                            {rightIcon}
+                        </div>
+                    )
+                }
+            </button >
         );
     }
 );

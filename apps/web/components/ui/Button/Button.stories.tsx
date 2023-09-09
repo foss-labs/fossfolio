@@ -25,10 +25,10 @@ export const Secondary: Story = {
     }
 };
 
-export const Star: Story = {
+export const Ghost: Story = {
     args: {
         children: "Hello Fossfolio",
-        variant: "outline"
+        variant: "ghost"
 
     }
 };
@@ -36,15 +36,7 @@ export const Star: Story = {
 export const Danger: Story = {
     args: {
         children: "Hello Fossfolio",
-        variant: "outline"
-
-    }
-};
-
-export const Plain: Story = {
-    args: {
-        children: "Hello Fossfolio",
-        variant: "outline"
+        variant: "secondary"
     }
 };
 
@@ -52,12 +44,6 @@ export const Disabled: Story = {
     args: {
         children: "Hello Fossfolio",
         disabled: true
-    }
-};
-
-export const FullWidth: Story = {
-    args: {
-        children: "Hello Fossfolio",
     }
 };
 
