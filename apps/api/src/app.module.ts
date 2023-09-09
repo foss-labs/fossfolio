@@ -28,6 +28,7 @@ import { EventsModule } from './events/events.module';
                 GOOGLE_CALLBACK_URL: Joi.string(),
                 GOOGLE_SCOPE: Joi.string(),
                 WEB_URL: Joi.string(),
+                RESEND_KEY: Joi.string(),
             }),
             validationOptions: {
                 allowUnknown: true,

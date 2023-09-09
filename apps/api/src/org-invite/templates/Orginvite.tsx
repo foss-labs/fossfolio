@@ -24,7 +24,7 @@ export const InviteUserEmail = ({
     from,
     fromEmail,
     orgName,
-    inviteId = 'https://vercel.com/teams/invite/foo',
+    inviteId,
 }: IData) => {
     const previewText = `Join ${orgName} on Fossfolio`;
 
