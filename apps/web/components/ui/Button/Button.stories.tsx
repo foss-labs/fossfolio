@@ -18,27 +18,13 @@ export const Primary: Story = {
     }
 };
 
-export const Secondary: Story = {
+export const Outline: Story = {
     args: {
         children: "Hello Fossfolio",
         variant: "outline"
     }
 };
 
-export const Ghost: Story = {
-    args: {
-        children: "Hello Fossfolio",
-        variant: "ghost"
-
-    }
-};
-
-export const Danger: Story = {
-    args: {
-        children: "Hello Fossfolio",
-        variant: "secondary"
-    }
-};
 
 export const Disabled: Story = {
     args: {

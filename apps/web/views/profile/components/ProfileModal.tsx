@@ -10,7 +10,7 @@ import { useAuth } from '@app/hooks';
 import { toast } from "sonner"
 import { Label } from '@app/ui/components/label';
 import { Input } from '@app/ui/components/input';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui';
 import { useProfileUpdate } from '@app/hooks/api/Profile';
 import * as yup from "yup"
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -88,7 +88,7 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button type="submit">Save changes</Button>
+                        <Button type="submit" isLoading={handleProfileUpdates.isLoading}>Save changes</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

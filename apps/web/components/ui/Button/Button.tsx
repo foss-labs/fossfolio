@@ -18,11 +18,8 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default: 'bg-primary text-primary-foreground hover:bg-primary/95',
-                destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-                outline: 'border border-1 bg-[#ffff] hover:bg-accent hover:text-accent-foreground',
-                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                ghost: 'hover:bg-accent hover:text-accent-foreground',
-                link: 'text-primary underline-offset-4 hover:underline',
+                outline: 'bg-[#F9F5FF] text-primary border-1 hover:text-primary hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary'
+
             },
             size: {
                 default: 'h-10 px-4 py-2',
@@ -74,7 +71,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 {...props}
             >
                 {isLoading && (
-                    <BiLoader className="animate-spin" />
+                    <BiLoader className="animate-spin w-[90px]" />
                 )
                 }
                 {leftIcon && (
