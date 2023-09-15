@@ -52,8 +52,8 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
         return (
             <main className={inter.className}>
                 <QueryClientProvider client={queryClient}>
-                    <AuthContext>
-                        <AuthGuard>
+                    
+
                             <DefaultSeo
                                 title="fossfolio"
                                 description="Discover, host and manage Events, all in one place."
@@ -66,8 +66,8 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                             ) : (
                                 <Component {...pageProps} />
                             )}
-                        </AuthGuard>
-                    </AuthContext>
+                        
+                   
                 </QueryClientProvider>
             </main>
         );
