@@ -1,6 +1,5 @@
 import { NextPageWithLayout } from 'next';
 import { DashboardLayout } from "@app/layout";
-import React from 'react';
 import {
     Table,
     TableBody,
@@ -11,12 +10,13 @@ import {
 } from '@app/ui/components/table';
 import { AiOutlineDelete } from 'react-icons/ai'; 
 import{ FiEdit2 }from 'react-icons/fi';
+
 export const Members = () => {
     return (
-        <div className="p-none md:p-[64px]"style={{ width: '158%' }}>
-            <Table className="border-[1px] border-[#E9D7FE] rounded-full">
-                <TableHeader className="bg-[#F9FAFB] rounded-lg">
-                <TableRow style={{ background: 'white', height: '67px' }}>
+        <div className="p-0 md:p-[64px] flex justify-center items-center">
+            <Table className="border border-purple-200 rounded-full w-full">
+                <TableHeader className="bg-gray-100 rounded-lg">
+                    <TableRow>
                         <TableCell className="font-medium">
                             Participants
                         </TableCell>
@@ -144,14 +144,7 @@ export const Members = () => {
                         </TableCell>
                     </TableRow>
                 </TableBody>
-            </Table>
-            
-               <TableRow>
-                  <TableCell>
-
-                  </TableCell>
-               </TableRow>
-            
+            </Table>    
         </div>
     );
 };
