@@ -61,7 +61,18 @@ module.exports = {
                         100: '#F9F5FF',
                     },
                 },
+                bg: {
+                    gray: {
+                        100: '#F9FAFB',
+                    },
+                },
+                boarder: {
+                    purple: {
+                        200: '#E9D7FE',
+                    },
+                },
             },
+            
             borderRadius: {
                 lg: 'var(--radius)',
                 md: 'calc(var(--radius) - 2px)',
