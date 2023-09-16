@@ -42,13 +42,13 @@ export const UserNav = () => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <DropdownMenuItem onClick={triggerModal.on}>Profile</DropdownMenuItem>
+                        <DropdownMenuItem onClick={triggerModal.on} className="hover:cursor-pointer">Profile</DropdownMenuItem>
                         <DropdownMenuItem>
                             <Link href="/org">Organize Events</Link>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={logOut}>Log out</DropdownMenuItem>
+                    <DropdownMenuItem onClick={logOut} className="hover:cursor-pointer">Log out</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

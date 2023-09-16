@@ -18,9 +18,6 @@ module.exports = {
                 '2xl': '1400px',
             },
         },
-        colors: {
-            btn: '#6941C6',
-        },
         extend: {
             colors: {
                 border: 'hsl(var(--border))',
