@@ -23,7 +23,7 @@ export const AuthModal = () => {
                         By Signing in, you agree to our Terms and Services
                         <div className="flex flex-col gap-3 mt-4">
                             <Button
-                                className="text-[#7F56D9] bg-[#F9F5FF]  border-[1.4px] border-[#7F56D9] hover:text-[white] hover:bg-btn"
+                                className="text-[#7F56D9] bg-[#F9F5FF]  border-[1.4px] border-[#7F56D9]  hover:bg-[#7F56D9] hover:text-white"
                                 onClick={() => {
                                     router.push(ENV.api_base + '/auth/google');
                                 }}
@@ -31,7 +31,7 @@ export const AuthModal = () => {
                                 Google
                             </Button>
                             <Button
-                                className="bg-btn  text-[white] border-[1.4px] hover:text-[#7F56D9] hover:bg-[#F9F5FF] hover:border-[#7F56D9]"
+                                className=" text-white border-[1.4px] hover:text-[#7F56D9] hover:bg-[#F9F5FF] hover:border-[#7F56D9]"
                                 onClick={() => {
                                     router.push(ENV.api_base + '/auth/github');
                                 }}
