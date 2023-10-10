@@ -3,8 +3,8 @@ import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
 import { DeleteOrg } from '@app/views/org';
-import { Members } from "@app/components/table"
-import { Events } from "@app/views/org"
+import { Members } from '@app/components/table';
+import { Events } from '@app/views/org';
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -20,7 +20,7 @@ const Org: NextPageWithLayout = () => {
                     <TabsList>
                         {TabName.map((el) => (
                             <TabsTrigger value={el.value} key={el.title}>
-                                {el.title}{' '}
+                                {el.title}
                             </TabsTrigger>
                         ))}
                     </TabsList>
@@ -44,6 +44,5 @@ const Org: NextPageWithLayout = () => {
 
 Org.Layout = HomeLayout;
 Org.RequireAuth = true;
-
 
 export default Org;
