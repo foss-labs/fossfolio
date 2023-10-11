@@ -23,15 +23,7 @@ import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
-import {
-    FormField,
-    FormItem,
-    FormLabel,
-    FormControl,
-    FormDescription,
-    FormMessage,
-    Form,
-} from '@app/ui/components/form';
+import { FormField, FormItem, FormControl, FormMessage, Form } from '@app/ui/components/form';
 import Link from 'next/link';
 
 const invite = yup.object({
