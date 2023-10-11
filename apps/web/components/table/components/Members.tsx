@@ -24,11 +24,17 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
 import { FormField, FormItem, FormControl, FormMessage, Form } from '@app/ui/components/form';
-import Link from 'next/link';
+import { useAuth } from '@app/hooks';
 
-const invite = yup.object({
+enum Roles {
+    Admin = 'ADMIN',
+    Editor = 'EDITOR',
+    Viewer = 'VIEWER',
+}
+
+const invite = yup.object().shape({
     email: yup.string().email(),
-    role: yup.string(),
+    role: yup.mixed<Roles>().oneOf(Object.values(Roles)).required(),
 });
 
 type Invite = yup.InferType<typeof invite>;
@@ -39,7 +45,7 @@ export const Members = () => {
         resolver: yupResolver(invite),
         defaultValues: {
             email: '',
-            role: undefined,
+            role: Roles.Viewer,
         },
     });
 
@@ -50,8 +56,10 @@ export const Members = () => {
             await apiHandler.post('/org/invite', {
                 email: data.email,
                 organizationId: router.query?.id,
+                role: data.role,
             });
             toast.success('Email was sent');
+            form.reset();
         } catch {
             toast.error('Couldnt send email please try again later');
         }
@@ -94,9 +102,9 @@ export const Members = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="light">Admin</SelectItem>
-                                            <SelectItem value="dark">viewer</SelectItem>
-                                            <SelectItem value="system">editor</SelectItem>
+                                            <SelectItem value={Roles.Admin}>Admin</SelectItem>
+                                            <SelectItem value={Roles.Editor}>editor</SelectItem>
+                                            <SelectItem value={Roles.Viewer}>viewer</SelectItem>
                                         </SelectContent>
                                     </Select>
 

@@ -47,7 +47,8 @@ export class OrganizationInviteService {
                     const res = await sendInvite(email, inviteInfo);
                     return res;
                 } else {
-                    const inviteURL = `${process.env.CLIENT_URL}/invite?id=${inviteId}`;
+                    const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
+                    const inviteURL = `${localPort}/invite?id=${inviteId}`;
                     return {
                         ok: true,
                         message: 'invite send successfully',
