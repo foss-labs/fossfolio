@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { Role } from '@prisma/client';
-import { sendInvite } from './sendEmail';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
+import { sendInvite } from './sendEmail';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class OrganizationInviteService {
@@ -75,6 +75,49 @@ export class OrganizationInviteService {
             return {
                 ok: false,
                 message: 'email sending failed, please try again later',
+            };
+        }
+    }
+
+    async verifyEmailInvite(id: string, ownerId: string) {
+        // TODO
+        // convert to transaction
+        try {
+            const data = await this.prismaService.organizationInvite.findUniqueOrThrow({
+                where: {
+                    id: id,
+                },
+            });
+            const orgData = await this.prismaService.organization.update({
+                where: {
+                    id: data.organizationId,
+                },
+                data: {
+                    members: {
+                        create: {
+                            role: data.inviteeRole,
+                            userUid: ownerId,
+                        },
+                    },
+                },
+            });
+            await this.prismaService.organizationInvite.delete({
+                where: {
+                    id: id,
+                },
+            });
+            if (orgData) {
+                return {
+                    ok: true,
+                    message: 'invite verifcation successfull',
+                    data: orgData,
+                };
+            }
+            throw new Error();
+        } catch {
+            return {
+                ok: false,
+                message: 'couldnt verify the invite',
             };
         }
     }
