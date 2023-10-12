@@ -22,7 +22,7 @@ type IModal = {
 
 // add page names here when ever
 // new pages are created
-const excludedSlug = ['org', 'events'];
+const excludedSlug = ['org', 'events', 'invite'];
 
 const Schema = yup.object().shape({
     name: yup.string().required(),
