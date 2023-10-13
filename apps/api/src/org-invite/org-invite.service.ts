@@ -48,7 +48,7 @@ export class OrganizationInviteService {
                     return res;
                 } else {
                     const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
-                    const inviteURL = `${localPort}/invite?id=${inviteId}`;
+                    const inviteURL = `${localPort}/verify?id=${inviteId}`;
                     return {
                         ok: true,
                         message: 'invite send successfully',

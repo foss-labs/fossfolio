@@ -1,4 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { toast } from 'sonner';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import {
     Table,
     TableBody,
@@ -7,9 +12,6 @@ import {
     TableHeader,
     TableRow,
 } from '@app/ui/components/table';
-import { Input } from '@app/ui/components/input';
-import { Button } from '@app/ui/components/button';
-import { yupResolver } from '@hookform/resolvers/yup';
 import {
     Select,
     SelectContent,
@@ -17,14 +19,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@app/ui/components/select';
-import { toast } from 'sonner';
-import { AiOutlineDelete } from 'react-icons/ai';
-import * as yup from 'yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { apiHandler } from '@app/config';
-import { useRouter } from 'next/router';
 import { FormField, FormItem, FormControl, FormMessage, Form } from '@app/ui/components/form';
+import { Input } from '@app/ui/components/input';
+import { Button } from '@app/ui/components/button';
+import { useMembers } from '@app/hooks/api/org';
+import { apiHandler } from '@app/config';
 import { useAuth } from '@app/hooks';
+import * as yup from 'yup';
 
 enum Roles {
     Admin = 'ADMIN',
@@ -49,7 +50,18 @@ export const Members = () => {
         },
     });
 
+    const { data, isLoading } = useMembers();
+    const { user } = useAuth();
     const router = useRouter();
+
+    // only admin or editor can change members rule
+    const isEditorOrAdmin = useMemo(() => {
+        return (
+            data?.find((el) => el.user.email === user?.email)?.role === 'ADMIN' ||
+            data?.find((el) => el.user.email === user?.email)?.role === 'EDITOR'
+        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
 
     const sendEmailInvite: SubmitHandler<Invite> = async (data) => {
         try {
@@ -117,102 +129,45 @@ export const Members = () => {
                     </div>
                 </form>
             </Form>
-            <Table className="border-2 border-[#E9D7FE] rounded-full">
-                <TableHeader className="bg-[#F9FAFB] rounded-lg">
-                    <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead></TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    <TableRow>
-                        <TableCell className="font-medium">
-                            <h5>sreehari jayaraj</h5>
-                        </TableCell>
-                        <TableCell>sreeharivijaya2003@gmail.com</TableCell>
-                        <TableCell>
-                            <Select>
-                                <SelectTrigger className="w-44">
-                                    <SelectValue placeholder="role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="light">Admin</SelectItem>
-                                    <SelectItem value="dark">viewer</SelectItem>
-                                    <SelectItem value="system">editor</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-medium">
-                            <h5>sreehari jayaraj</h5>
-                        </TableCell>
-                        <TableCell>sreeharivijaya2003@gmail.com</TableCell>
-                        <TableCell>
-                            <Select>
-                                <SelectTrigger className="w-44">
-                                    <SelectValue placeholder="role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="light">Admin</SelectItem>
-                                    <SelectItem value="dark">viewer</SelectItem>
-                                    <SelectItem value="system">editor</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-medium">
-                            <h5>sreehari jayaraj</h5>
-                        </TableCell>
-                        <TableCell>sreeharivijaya2003@gmail.com</TableCell>
-                        <TableCell>
-                            <Select>
-                                <SelectTrigger className="w-44">
-                                    <SelectValue placeholder="role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="light">Admin</SelectItem>
-                                    <SelectItem value="dark">viewer</SelectItem>
-                                    <SelectItem value="system">editor</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-medium">
-                            <h5>sreehari jayaraj</h5>
-                        </TableCell>
-                        <TableCell>sreeharivijaya2003@gmail.com</TableCell>
-                        <TableCell>
-                            <Select>
-                                <SelectTrigger className="w-44">
-                                    <SelectValue placeholder="role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="light">Admin</SelectItem>
-                                    <SelectItem value="dark">viewer</SelectItem>
-                                    <SelectItem value="system">editor</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
+            {isLoading ? (
+                <h1>Loading</h1>
+            ) : (
+                <Table className="border-2 border-[#E9D7FE] rounded-full">
+                    <TableHeader className="bg-[#F9FAFB] rounded-lg">
+                        <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Role</TableHead>
+                            <TableHead></TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {data?.map((el) => (
+                            <TableRow>
+                                <TableCell className="font-medium">
+                                    <h5>{el.user.slug}</h5>
+                                </TableCell>
+                                <TableCell>{el.user.email}</TableCell>
+                                <TableCell>
+                                    <Select disabled={!isEditorOrAdmin}>
+                                        <SelectTrigger className="w-44">
+                                            <SelectValue placeholder={el.role} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="light">Admin</SelectItem>
+                                            <SelectItem value="dark">viewer</SelectItem>
+                                            <SelectItem value="system">editor</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                    <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            )}
         </div>
     );
 };

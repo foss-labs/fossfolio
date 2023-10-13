@@ -11,16 +11,16 @@ type Prop = {
 const Verify = ({ orgId }: Prop) => {
     const router = useRouter();
     useEffect(() => {
-        const time = setTimeout(() => {
+        setTimeout(() => {
             router.push(`/org/${orgId}`);
         }, 2500);
-        clearTimeout(time);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        <div>
-            <h1>EMAIL VERIFICATION SUCCESFULL</h1>
-            <h3>redirecting you to organisation</h3>
+        <div className="flex justify-center items-center flex-col h-[90vh] p-7">
+            <h1 className="font-extrabold text-transparent text-6xl bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                EMAIL VERIFICATION SUCCESFULL
+            </h1>
         </div>
     );
 };
@@ -47,7 +47,7 @@ export async function getServerSideProps(ctx: any) {
     return {
         props: {
             ok: true,
-            orgId: data.data,
+            orgId: data.data.id,
         },
     };
 }
