@@ -36,7 +36,7 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
                         Are you sure You want to remove the user?
                         <div className="flex justify-end space-x-2 mt-5">
                             <Button
-                                className="text-[black] bg-[#F9F5FF]  border-[1.4px]  hover:bg-btn hover:border-primary"
+                                className="text-[black] bg-[#F9F5FF]  border-1.5  hover:bg-btn hover:border-primary"
                                 onClick={onClose}
                             >
                                 Cancel
