@@ -32,7 +32,7 @@ export const MainNav = () => {
                 ) : (
                     <Button
                         variant="ghost"
-                        className="px-8 text-md text-[white] hover:text-[#7F56D9] hover:bg-[#F9F5FF] bg-[#7F56D9] border-[1.4px] hover:border-[#7F56D9] border-transparent"
+                        className="px-8 text-md text-[white] hover:text-primary hover:bg-[#F9F5FF] bg-primary border-[1.4px] hover:border-primary border-transparent"
                         onClick={toggleModal.on}
                     >
                         Login

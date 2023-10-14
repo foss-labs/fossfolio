@@ -34,7 +34,7 @@ enum Roles {
 }
 
 const invite = yup.object().shape({
-    email: yup.string().email(),
+    email: yup.string().email().required(),
     role: yup.mixed<Roles>().oneOf(Object.values(Roles)).required(),
 });
 
@@ -82,22 +82,24 @@ export const Members = () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(sendEmailInvite)}>
                     <div className="flex gap-2 justify-end items-center mb-10">
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter the email to send invite"
-                                            {...field}
-                                            className="w-60"
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div>
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter the email to send invite"
+                                                {...field}
+                                                className="w-60"
+                                            />
+                                        </FormControl>
+                                        <FormMessage className="text-xs text-red-500" />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
                         <FormField
                             control={form.control}
@@ -143,7 +145,7 @@ export const Members = () => {
                     </TableHeader>
                     <TableBody>
                         {data?.map((el) => (
-                            <TableRow>
+                            <TableRow key={el.user.uid}>
                                 <TableCell className="font-medium">
                                     <h5>{el.user.slug}</h5>
                                 </TableCell>

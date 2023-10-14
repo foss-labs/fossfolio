@@ -30,3 +30,9 @@ export type IOrg = {
     };
     role: 'ADMIN' | 'EDITOR' | 'VIEWER';
 };
+
+export enum Roles {
+    Admin = 'ADMIN',
+    Editor = 'EDITOR',
+    Viewer = 'VIEWER',
+}

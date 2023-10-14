@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
@@ -12,9 +12,15 @@ const TabName = [
 ];
 
 const Org: NextPageWithLayout = () => {
+    const [activeTab, setTab] = useState('events');
     return (
-        <div className="mt-4 p-4">
-            <Tabs defaultValue="events">
+        <div className="mt-4 p-4 h-[92vh]">
+            <Tabs
+                value={activeTab}
+                defaultValue="events"
+                className="h-full"
+                onValueChange={(el: string) => setTab(el)}
+            >
                 <div className="flex items-center justify-center">
                     <TabsList>
                         {TabName.map((el) => (
@@ -35,7 +41,9 @@ const Org: NextPageWithLayout = () => {
                 </TabsContent>
                 <TabsContent
                     value="settings"
-                    className="mb-4 flex justify-center items-center flex-col gap-3"
+                    className={`flex justify-end items-center flex-col gap-3 ${
+                        activeTab === 'settings' ? 'h-[calc(100%-7rem)]' : ''
+                    }`}
                 >
                     <LeaveOrg />
                     <DeleteOrg />

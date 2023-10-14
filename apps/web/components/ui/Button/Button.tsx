@@ -1,7 +1,7 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react";
-import { cva, VariantProps } from "class-variance-authority";
-import { BiLoader } from "react-icons/bi"
-import { twMerge } from "tailwind-merge";
+import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react';
+import { cva, VariantProps } from 'class-variance-authority';
+import { BiLoader } from 'react-icons/bi';
+import { twMerge } from 'tailwind-merge';
 
 type Props = {
     children: ReactNode;
@@ -17,7 +17,8 @@ const buttonVariants = cva(
     {
         variants: {
             variant: {
-                default: 'bg-primary text-primary-foreground hover:text-primary hover:bg-brand-pink-100 border-[1.4px] hover:border-[#7F56D9]',
+                default:
+                    'bg-primary text-primary-foreground hover:text-primary hover:bg-brand-pink-100 border-[1.4px] hover:border-primary',
                 destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
                 outline: 'border border-1 bg-[#ffff] hover:bg-accent hover:text-accent-foreground',
                 secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
@@ -47,17 +48,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {
             children,
             isDisabled = false,
-            className = "",
-            size = "sm",
+            className = '',
+            size = 'sm',
             variant = 'default',
             leftIcon,
             rightIcon,
             isLoading,
             ...props
         },
-        ref
+        ref,
     ): JSX.Element => {
-        const loadingToggleClass = isLoading ? "opacity-0" : "opacity-100";
+        const loadingToggleClass = isLoading ? 'opacity-0' : 'opacity-100';
 
         return (
             <button
@@ -67,49 +68,39 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 className={twMerge(
                     buttonVariants({
                         size,
-                        className
-                    })
+                        className,
+                    }),
                 )}
                 disabled={isDisabled}
                 {...props}
             >
-                {isLoading && (
-                    <BiLoader className="animate-spin" />
-                )
-                }
+                {isLoading && <BiLoader className="animate-spin" />}
                 {leftIcon && (
                     <div
                         className={twMerge(
-                            "inline-flex shrink-0 cursor-pointer items-center justify-center transition-all",
+                            'inline-flex shrink-0 cursor-pointer items-center justify-center transition-all',
                             loadingToggleClass,
                         )}
                     >
                         {leftIcon}
                     </div>
                 )}
-                <span
-                    className={twMerge(
-                        "transition-all",
-                        loadingToggleClass
-                    )}
-                >
+                <span className={twMerge('transition-all', loadingToggleClass)}>
                     {!isLoading && children}
                 </span>
-                {
-                    rightIcon && (
-                        <div
-                            className={twMerge(
-                                "inline-flex shrink-0 cursor-pointer items-center justify-center transition-all",
-                                loadingToggleClass
-                            )}
-                        >
-                            {rightIcon}
-                        </div>
-                    )
-                }
-            </button >
+                {rightIcon && (
+                    <div
+                        className={twMerge(
+                            'inline-flex shrink-0 cursor-pointer items-center justify-center transition-all',
+                            loadingToggleClass,
+                        )}
+                    >
+                        {rightIcon}
+                    </div>
+                )}
+            </button>
         );
-    }
+    },
 );
 
-Button.displayName = "Button";
+Button.displayName = 'Button';

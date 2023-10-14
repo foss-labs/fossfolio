@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@app/ui/components/car
 export const Teams = () => {
     return (
         <div className="flex justify-between space-x-1 ">
-            <Card className="w-[320px] h-[280px] bg-brand-pink-100 hover:cursor-pointer hover:outline-double hover:outline-[#7F56D9]">
+            <Card className="w-[320px] h-[280px] bg-brand-pink-100 hover:cursor-pointer hover:outline-double hover:outline-primary">
                 <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0 ">
                     <div className="space-y-0">
                         <div className="text-xs  ">TEAM</div>

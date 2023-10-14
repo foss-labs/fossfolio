@@ -7,7 +7,7 @@ import { Separator } from '@app/ui/components/separator';
 
 export function EventCard() {
     return (
-        <Card className="w-[400px]  mt-6 hover:cursor-pointer hover:outline-double hover:outline-[#7F56D9]">
+        <Card className="w-[360px]  md:w-[400px] mt-6 hover:cursor-pointer hover:outline-double hover:outline-primary">
             <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
                 <div className="space-y-2">
                     <CardTitle>girlhack</CardTitle>
@@ -38,7 +38,7 @@ export function EventCard() {
                 </div>
                 <Button
                     variant="outline"
-                    className="bg-[#F9F5FF] mt-4 px-5 py-2 rounded-sm text-[#7F56D9] border-1 hover:text-[#7F56D9] hover:bg-[#F9F5FF]  border-[1.4px] hover:border-[#7F56D9]"
+                    className="bg-[#F9F5FF] mt-4 px-5 py-2 rounded-sm text-primary border-1 hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary"
                 >
                     Apply
                 </Button>
