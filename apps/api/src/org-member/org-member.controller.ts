@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { OrganizationMemberService } from './org-member.service';
-import { Roles } from 'src/organization/decorators/roles.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RbacGuard } from 'src/organization/guards/rbac-member.guard';
 

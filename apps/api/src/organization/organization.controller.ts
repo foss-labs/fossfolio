@@ -8,6 +8,7 @@ import { RbacGuard } from './guards/rbac-member.guard';
 import { UpdateOrgDto } from './dto/update-org.dto';
 import { AuthUser } from 'src/auth/decorators/user.decorator';
 import { User } from '@prisma/client';
+import { LeaveOrg } from './dto/leave-org.dto';
 
 @Controller('org')
 export class OrganizationController {
@@ -36,5 +37,10 @@ export class OrganizationController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async deleteOrganization(@Body() data: DeleteOrgDto) {
         return this.organizationService.deleteOrg(data.organizationId);
+    }
+    @Delete('/leave')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async leaveOrg(@AuthUser() user: User, @Body() body: LeaveOrg) {
+        return this.organizationService.leaveOrg(body.organizationId, user.uid);
     }
 }

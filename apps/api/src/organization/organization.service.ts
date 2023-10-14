@@ -90,4 +90,37 @@ export class OrganizationService {
             message: 'org was deleted successfully',
         };
     }
+
+    /*  
+  
+  *  if there is only one admin and he is the one leaving the org we should tranfer the org to the first 
+     person who joined the org
+
+  *  if the person is the last person to leave the org we should delete the org completly
+ 
+  *  if there is multiple admins just make user leave the org
+   
+  */
+
+    async leaveOrg(orgId: string, userId: string) {
+        try {
+            await this.prismaService.organizationMember.delete({
+                where: {
+                    userUid_organizationId: {
+                        userUid: userId,
+                        organizationId: orgId,
+                    },
+                },
+            });
+            return {
+                ok: true,
+                message: 'successfully left the organization',
+            };
+        } catch {
+            return {
+                ok: false,
+                message: 'Unable to leave the org please try again later',
+            };
+        }
+    }
 }
