@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'sonner';
 import { AiOutlineDelete } from 'react-icons/ai';
@@ -26,12 +26,18 @@ import { useMembers } from '@app/hooks/api/org';
 import { apiHandler } from '@app/config';
 import { useAuth } from '@app/hooks';
 import * as yup from 'yup';
+import { isProd } from '@app/utils';
 
 enum Roles {
     Admin = 'ADMIN',
     Editor = 'EDITOR',
     Viewer = 'VIEWER',
 }
+
+type IProp = {
+    setLink: React.Dispatch<string>;
+    onInviteModal: VoidFunction;
+};
 
 const invite = yup.object().shape({
     email: yup.string().email().required(),
@@ -40,7 +46,7 @@ const invite = yup.object().shape({
 
 type Invite = yup.InferType<typeof invite>;
 
-export const Members = () => {
+export const Members = ({ setLink, onInviteModal }: IProp) => {
     const form = useForm<Invite>({
         mode: 'onChange',
         resolver: yupResolver(invite),
@@ -65,11 +71,20 @@ export const Members = () => {
 
     const sendEmailInvite: SubmitHandler<Invite> = async (data) => {
         try {
-            await apiHandler.post('/org/invite', {
+            const { data: response } = await apiHandler.post('/org/invite', {
                 email: data.email,
                 organizationId: router.query?.id,
                 role: data.role,
             });
+            /* 
+            in DEV setup we dont send email
+            so instead  a modal open with the invite link
+            */
+            if (!isProd) {
+                onInviteModal();
+                setLink(response.data);
+            }
+
             toast.success('Email was sent');
             form.reset();
         } catch {

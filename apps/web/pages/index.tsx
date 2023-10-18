@@ -26,7 +26,7 @@ const Home: NextPageWithLayout = () => {
                     ))}
                 </motion.div>
                 <div className="flex gap-4 mt-3 ">
-                    <Button className="bg-primarypx-5 py-2 rounded-sm text-[white] hover:text-primaryhover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary">
+                    <Button className="bg-primary px-5 py-2 rounded-sm text-white hover:text-primary hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary">
                         <Link href="/events">Join Event</Link>
                     </Button>
                     <Button

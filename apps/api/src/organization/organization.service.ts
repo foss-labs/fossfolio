@@ -71,14 +71,27 @@ export class OrganizationService {
                 userUid: uid,
             },
             select: {
-                organization: true,
+                organization: {
+                    include: {
+                        _count: {
+                            select: {
+                                members: true,
+                                events: true,
+                            },
+                        },
+                    },
+                },
                 role: true,
             },
         });
 
-        return orgs;
-    }
+        const count = await this.prismaService.organizationMember.count();
 
+        return {
+            count,
+            orgs,
+        };
+    }
     async deleteOrg(id: string) {
         await this.prismaService.organization.delete({
             where: {

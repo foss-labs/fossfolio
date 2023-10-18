@@ -29,7 +29,17 @@ const Verify = ({ orgId }: Prop) => {
 export async function getServerSideProps(ctx: any) {
     const accesToken = ctx.req.cookies['access_token'];
     const refreshToken = ctx.req.cookies['refresh_token'];
-    const { data } = await apiHandler.get(`/org/invite/verify?id=${ctx.query.id}`, {
+
+    if (!accesToken) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
+
+    const { data, status } = await apiHandler.get(`/org/invite/verify?id=${ctx.query.id}`, {
         headers: {
             Cookie: `access_token=${accesToken}; refresh_token=${refreshToken};`,
         },

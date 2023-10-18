@@ -20,16 +20,21 @@ export type Member = {
     role: 'ADMIN' | 'EDITOR' | 'VIEWER';
 };
 
-export type IOrg = {
-    organization: {
-        id: string;
-        name: string;
-        slug: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
-    role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+type Organization = {
+    id: string;
+    name: string;
+    slug: string;
+    createdAt: Date;
+    updatedAt: Date;
 };
+
+export interface IOrg {
+    count: number;
+    orgs: {
+        organization: Organization;
+        role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+    }[];
+}
 
 export enum Roles {
     Admin = 'ADMIN',

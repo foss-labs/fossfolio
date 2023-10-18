@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
 import { Members } from '@app/components/table';
-import { Events, DeleteOrg, LeaveOrg } from '@app/views/org';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
+import { Events, DeleteOrg, LeaveOrg, InviteModal } from '@app/views/org';
+import { useToggle } from '@app/hooks';
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -13,6 +14,9 @@ const TabName = [
 
 const Org: NextPageWithLayout = () => {
     const [activeTab, setTab] = useState('events');
+    const [inviteLink, setInviteLink] = useState('');
+    const [isOpen, toggleOpen] = useToggle();
+
     return (
         <div className="mt-4 p-4 h-[92vh]">
             <Tabs
@@ -37,7 +41,8 @@ const Org: NextPageWithLayout = () => {
                     <Events />
                 </TabsContent>
                 <TabsContent value="teams">
-                    <Members />
+                    <Members setLink={setInviteLink} onInviteModal={toggleOpen.on} />
+                    <InviteModal isOpen={isOpen} onClose={toggleOpen.off} link={inviteLink} />
                 </TabsContent>
                 <TabsContent
                     value="settings"

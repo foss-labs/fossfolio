@@ -42,8 +42,12 @@ const Index: NextPageWithLayout = () => {
                             <GoOrganization className="border-black border-2 rounded-full text-3xl p-1" />
                             Create a new organisation
                         </div>
-                        {data?.map((el) => (
-                            <OrgCard name={el.organization.name} id={el.organization.id} />
+                        {data?.orgs.map((el) => (
+                            <OrgCard
+                                name={el.organization.name}
+                                id={el.organization.id}
+                                key={el.organization.id}
+                            />
                         ))}
                     </>
                 )}
