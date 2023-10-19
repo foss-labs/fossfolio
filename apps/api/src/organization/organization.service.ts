@@ -136,4 +136,20 @@ export class OrganizationService {
             };
         }
     }
+
+    async getAllEvents(id: string) {
+        try {
+            return this.prismaService.events.findMany({
+                where: {
+                    organizationId: id,
+                },
+            });
+        } catch (e) {
+            return {
+                ok: false,
+                message: 'could not find the events',
+                ERROR: e,
+            };
+        }
+    }
 }

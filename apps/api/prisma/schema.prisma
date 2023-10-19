@@ -8,30 +8,30 @@ datasource db {
 }
 
 model User {
-  uid      String   @id @default(cuid())
-  email    String?  @unique
+  uid         String  @id @default(cuid())
+  email       String? @unique
   displayName String?
-  slug     String?  @unique
-  photoURL String?
+  slug        String? @unique
+  photoURL    String?
 
   refreshToken String?
-  createdAt DateTime @default(now())
+  createdAt    DateTime @default(now())
 
   organizationMember OrganizationMember[]
-  providerAccounts Account[]
+  providerAccounts   Account[]
 
-  registeredEventsId  Events[]
+  registeredEventsId Events[]
 }
 
 model Account {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [uid])
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [uid])
 
-  provider  String
+  provider          String
   providerAccountId String
 
-  providerAccessToken String?
+  providerAccessToken  String?
   providerRefreshToken String?
 
   createdAt DateTime @default(now())
@@ -41,24 +41,23 @@ model Account {
 }
 
 model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
 
   members   OrganizationMember[]
   invites   OrganizationInvite[]
   events    Events[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
 }
 
 model OrganizationMember {
-  id      String   @id @default(cuid())
-  role    Role
+  id   String @id @default(cuid())
+  role Role
 
   userUid String
-  user   User @relation(fields: [userUid], references: [uid])
+  user    User   @relation(fields: [userUid], references: [uid])
 
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -67,11 +66,11 @@ model OrganizationMember {
 }
 
 model OrganizationInvite {
-  id      String   @id @default(cuid())
+  id           String @id @default(cuid())
   inviteeEmail String
   inviteeRole  Role
 
-  inviterUid   String
+  inviterUid     String
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
@@ -79,18 +78,18 @@ model OrganizationInvite {
 }
 
 model Events {
-  id              String  @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+  id              String       @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
   name            String
-  description     String
   website         String?
   location        String
-  createdAt       DateTime @default(now())
+  createdAt       DateTime     @default(now())
   lastDate        DateTime
   organizationId  String
+  isPublished     Boolean      @default(false)
+  description     Json?
   organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   registeredUsers User[]
 }
-
 
 enum Role {
   ADMIN

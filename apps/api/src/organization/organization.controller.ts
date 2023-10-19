@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards, Delete } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Patch,
+    Post,
+    UseGuards,
+    Delete,
+    Query,
+} from '@nestjs/common';
 import { OrganizationService } from './organization.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateOrgDto } from './dto/create-org.dto';
@@ -7,7 +17,7 @@ import { Roles } from './decorators/roles.decorator';
 import { RbacGuard } from './guards/rbac-member.guard';
 import { UpdateOrgDto } from './dto/update-org.dto';
 import { AuthUser } from 'src/auth/decorators/user.decorator';
-import { User } from '@prisma/client';
+import { User, Role } from '@prisma/client';
 import { LeaveOrg } from './dto/leave-org.dto';
 
 @Controller('org')
@@ -23,6 +33,13 @@ export class OrganizationController {
     @Get('/find/:slug')
     async findOrgBySlug(@Param('slug') slug: string) {
         return this.organizationService.findOrgBySlug(slug);
+    }
+
+    @Get('/events/:orgID')
+    @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getAllEvents(@Param('orgID') orgID: string) {
+        return this.organizationService.getAllEvents(orgID);
     }
 
     @Patch('/')

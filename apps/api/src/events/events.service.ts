@@ -7,12 +7,12 @@ import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
 @Injectable()
 export class EventsService {
     constructor(private readonly prismaService: PrismaService) {}
-    // TODO
-    // Auth guard
-    // rbac access to admin and editor
+
     async createEvent(d: CreateEventDto) {
+        const date = new Date(d.lastDate);
+
         try {
-            return await this.prismaService.organization.update({
+            const data = await this.prismaService.organization.update({
                 where: {
                     id: d.organizationId,
                 },
@@ -20,16 +20,24 @@ export class EventsService {
                     events: {
                         create: {
                             name: d.name,
-                            description: d.description,
                             website: d.website,
                             location: d.location,
-                            lastDate: d.lastDate,
+                            lastDate: date,
                         },
                     },
                 },
             });
-        } catch {
-            return null;
+            return {
+                ok: true,
+                message: 'event created successfully',
+                data,
+            };
+        } catch (e) {
+            return {
+                ok: false,
+                message: 'could not create event',
+                ERROR: e,
+            };
         }
     }
 
