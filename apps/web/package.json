@@ -10,7 +10,8 @@
         "format": "prettier --write .",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
-        "test:e2e": "playwright test"
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "npx playwright test --ui"
     },
     "keywords": [
         "react",
