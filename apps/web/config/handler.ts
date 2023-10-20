@@ -12,29 +12,23 @@ export const apiHandler = Axios.create({
 
 apiHandler.interceptors.request.use(
     (response) => {
-      return response;
+        return response;
     },
     (error) => {
-      const request = error.config;
-      if (
-        error.response.status === 401 &&
-        request.url === ENV.api_base + '/auth/refresh'
-      ) {
-        window.location.href = '/?authReq=true';
-      } else if ((error.response.status = 401)) {
-        return apiHandler
-          .get('/auth/refresh')
-          .then(() => {
-            return apiHandler(request);
-          })
-          .catch((err) => {
-            console.log(err);
+        const request = error.config;
+        if (error.response.status === 401 && request.url === ENV.api_base + '/auth/refresh') {
             window.location.href = '/?authReq=true';
-          });
-      } else {
-        return Promise.reject(error);
-      }
+        } else if ((error.response.status = 401)) {
+            return apiHandler
+                .get('/auth/refresh')
+                .then(() => {
+                    return apiHandler(request);
+                })
+                .catch((err) => {
+                    window.location.href = '/?authReq=true';
+                });
+        } else {
+            return Promise.reject(error);
+        }
     },
-  );
-  
- 
+);

@@ -5,7 +5,7 @@ import type { Toggle } from '@app/hooks/useToggle';
 import { apiHandler } from '@app/config';
 import { Child, User } from '@app/types';
 import { useToggle } from '@app/hooks';
-import { PageLoader } from "@app/components/preloaders"
+import { PageLoader } from '@app/components/preloaders';
 
 interface IAuthTypes {
     user: User | null;
@@ -63,15 +63,9 @@ export const AuthGuard = ({ children }: Child): JSX.Element => {
     useEffect(() => {
         if (!ctx.isLoading && !ctx.user) {
             ctx.toggleModal.on();
-            console.log("calling from here")
             router.push('/');
         }
     }, [router, ctx.user, ctx.isLoading]);
 
-    return (
-        ctx.isLoading ? (
-            <PageLoader />
-        ) : <>{children}</>
-
-    )
+    return ctx.isLoading ? <PageLoader /> : <>{children}</>;
 };

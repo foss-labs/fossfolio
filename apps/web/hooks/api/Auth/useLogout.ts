@@ -21,7 +21,7 @@ export const useLogOut = (): LogOut => {
             queryClient.clear();
             await apiHandler.get('/auth/logout');
         } catch (e) {
-            console.log(e);
+            console.error(e);
         } finally {
             setLoading(false);
         }

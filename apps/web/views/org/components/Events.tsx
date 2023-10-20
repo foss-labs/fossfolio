@@ -9,8 +9,6 @@ export const Events = () => {
     const { isLoading, data } = useOrgEvents();
     const [isOpen, toggleOpen] = useToggle();
 
-    console.log(data);
-
     if (isLoading) {
         return <PreLoader />;
     }
