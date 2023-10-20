@@ -41,3 +41,14 @@ export enum Roles {
     Editor = 'EDITOR',
     Viewer = 'VIEWER',
 }
+
+export interface OrgEvents {
+    id: string;
+    name: string;
+    website: string;
+    location: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isPublished: boolean;
+    description: JSON | null;
+}
