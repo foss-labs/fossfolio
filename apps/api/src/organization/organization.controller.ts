@@ -1,14 +1,4 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Param,
-    Patch,
-    Post,
-    UseGuards,
-    Delete,
-    Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards, Delete } from '@nestjs/common';
 import { OrganizationService } from './organization.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateOrgDto } from './dto/create-org.dto';

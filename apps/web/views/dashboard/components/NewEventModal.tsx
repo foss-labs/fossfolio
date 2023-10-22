@@ -22,9 +22,11 @@ import {
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
 
+// TODO - DEFINE THE TYPE OF REFETCH
 type IModal = {
     isOpen: boolean;
     onClose: () => void;
+    refetch: any;
 };
 
 const Schema = yup.object().shape({
@@ -36,7 +38,7 @@ const Schema = yup.object().shape({
 
 type ISchema = yup.InferType<typeof Schema>;
 
-export const NewEventDialog = ({ isOpen, onClose }: IModal) => {
+export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
     const router = useRouter();
 
     const form = useForm<ISchema>({
@@ -66,6 +68,8 @@ export const NewEventDialog = ({ isOpen, onClose }: IModal) => {
             onClose();
         } catch {
             toast.error('Couldnt create event , please try again later');
+        } finally {
+            refetch();
         }
     };
 

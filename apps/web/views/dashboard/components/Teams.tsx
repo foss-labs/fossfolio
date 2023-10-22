@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@app/ui/components/card';
+import Image from 'next/image';
 
 export const Teams = () => {
     return (
-        <div className="flex justify-between space-x-1 ">
+        <div className="flex justify-between space-x-1">
             <Card className="w-[320px] h-[280px] bg-brand-pink-100 hover:cursor-pointer hover:outline-double hover:outline-primary">
                 <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0 ">
                     <div className="space-y-0">
@@ -12,10 +13,12 @@ export const Teams = () => {
                 </CardHeader>{' '}
                 <CardContent className="space-y-2">
                     <div className="flex items-center space-x-2">
-                        <img
+                        <Image
                             src="https://img.freepik.com/free-photo/beautiful-woman-street_23-2147654273.jpg?w=2000"
                             alt="Member 1"
                             className=" object-cover w-8 h-8 rounded-full"
+                            width={300}
+                            height={300}
                         />
                         <div>
                             <div className="font-semibold text-sm">Surya</div>
@@ -24,10 +27,12 @@ export const Teams = () => {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                        <img
+                        <Image
                             src="https://img.freepik.com/free-photo/beautiful-woman-street_23-2147654273.jpg?w=2000"
                             alt="Member 2"
                             className="object-cover w-8 h-8 rounded-full"
+                            width={300}
+                            height={300}
                         />
                         <div>
                             <div className="font-semibold text-sm">Surya</div>
@@ -36,10 +41,12 @@ export const Teams = () => {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                        <img
+                        <Image
                             src="https://img.freepik.com/free-photo/beautiful-woman-street_23-2147654273.jpg?w=2000"
                             alt="Member 3"
                             className=" object-cover w-8 h-8 rounded-full"
+                            width={300}
+                            height={300}
                         />
                         <div>
                             <div className="font-semibold text-sm">Surya</div>
@@ -48,10 +55,12 @@ export const Teams = () => {
                     </div>
 
                     <div className="flex items-center space-x-2 ">
-                        <img
+                        <Image
                             src="https://img.freepik.com/free-photo/beautiful-woman-street_23-2147654273.jpg?w=2000"
                             alt="Member 4"
                             className="object-cover w-8 h-8 rounded-full"
+                            width={300}
+                            height={300}
                         />
                         <div>
                             <div className="font-semibold text-sm">Surya</div>

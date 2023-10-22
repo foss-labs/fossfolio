@@ -4,9 +4,10 @@ import { PreLoader, EventCard } from '@app/components/events';
 import { useToggle } from '@app/hooks';
 import { useOrgEvents } from '@app/hooks/api/org';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export const Events = () => {
-    const { isLoading, data } = useOrgEvents();
+    const { isLoading, data, refetch } = useOrgEvents();
     const [isOpen, toggleOpen] = useToggle();
     const router = useRouter();
     const { id } = router.query;
@@ -18,9 +19,9 @@ export const Events = () => {
         return <PreLoader />;
     }
     return (
-        <div className="flex flex-wrap flex-col gap-[25px] justify-center items-center p-4  md:justify-start lg:flex-row lg:items-center lg:justify-normal lg:w-[90%] ">
+        <div className="flex flex-wrap gap-4 lg:w-[90%] ">
             <div
-                className="h-[260px] border-2 flex justify-center items-center border-dotted flex-col  w-[360px] md:w-[400px] mt-6 hover:cursor-pointer hover:outline-double hover:outline-primary"
+                className="h-[260px] w-[360px] rounded-md border-2 flex justify-center items-center border-dotted  md:w-[400px] mt-6 hover:cursor-pointer hover:outline-double hover:outline-primary"
                 onClick={toggleOpen.on}
             >
                 <BsCalendarEvent className="text-3xl p-1" />
@@ -37,7 +38,7 @@ export const Events = () => {
                 </div>
             ))}
 
-            <NewEventDialog isOpen={isOpen} onClose={toggleOpen.off} />
+            <NewEventDialog isOpen={isOpen} onClose={toggleOpen.off} refetch={refetch} />
         </div>
     );
 };
