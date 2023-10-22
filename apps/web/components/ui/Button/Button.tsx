@@ -1,4 +1,5 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { ButtonHTMLAttributes, forwardRef, ReactNode, useMemo } from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import { BiLoader } from 'react-icons/bi';
 import { twMerge } from 'tailwind-merge';
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const buttonVariants = cva(
-    'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex items-center justify-center rounded-md text-sm font-medium  transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
     {
         variants: {
             variant: {
@@ -59,11 +60,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref,
     ): JSX.Element => {
         const loadingToggleClass = isLoading ? 'opacity-0' : 'opacity-100';
+        const isNotActive = useMemo(() => {
+            if (isDisabled) return true;
+            if (isLoading) return true;
+
+            return false;
+        }, [isDisabled, isLoading]);
 
         return (
             <button
                 ref={ref}
-                aria-disabled={isDisabled}
+                aria-disabled={isNotActive}
                 type="button"
                 className={twMerge(
                     buttonVariants({
@@ -71,10 +78,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         className,
                     }),
                 )}
-                disabled={isDisabled}
+                disabled={isNotActive}
                 {...props}
             >
-                {isLoading && <BiLoader className="animate-spin" />}
+                {isLoading && <BiLoader className={twMerge('animate-spin w-10')} />}
                 {leftIcon && (
                     <div
                         className={twMerge(

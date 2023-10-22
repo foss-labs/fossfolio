@@ -107,7 +107,7 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
                                 <Button
                                     type="submit"
                                     disabled={isSubmitting ? true : false}
-                                    className="bg-primary px-5 py-2 rounded-md text-white  hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary"
+                                    className="bg-primary  border-[1.4px] px-5 py-2 rounded-md text-white  hover:bg-brand-pink-100   hover:border-primary hover:text-primary"
                                 >
                                     {isSubmitting ? '...' : 'Create organisation'}
                                 </Button>

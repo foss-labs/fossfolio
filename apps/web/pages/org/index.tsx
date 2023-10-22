@@ -23,7 +23,7 @@ const Index: NextPageWithLayout = () => {
                 </h4>
                 <Button
                     onClick={setOpen.on}
-                    className="bg-primary px-3 py-2 rounded-md text-[white] hover:text-primary hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary"
+                    className="bg-primary px-3 py-2 rounded-md text-white hover:text-primary hover:bg-brand-pink-100  border-[1.4px] hover:border-primary"
                 >
                     New Organisation
                 </Button>

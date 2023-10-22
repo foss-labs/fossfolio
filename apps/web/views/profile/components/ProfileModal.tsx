@@ -7,14 +7,13 @@ import {
     DialogTitle,
 } from '@app/ui/components/dialog';
 import { useAuth } from '@app/hooks';
-import { toast } from "sonner"
+import { toast } from 'sonner';
 import { Label } from '@app/ui/components/label';
 import { Input } from '@app/ui/components/input';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import { useProfileUpdate } from '@app/hooks/api/Profile';
-import * as yup from "yup"
+import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
-
 
 type IModal = {
     isOpen: boolean;
@@ -23,22 +22,25 @@ type IModal = {
 
 const ProfileSchema = yup.object().shape({
     name: yup.string().required(),
-    slug: yup.string().required()
-})
+    slug: yup.string().required(),
+});
 
-type IProfile = yup.InferType<typeof ProfileSchema>
+type IProfile = yup.InferType<typeof ProfileSchema>;
 
 export const ProfileModal = ({ isOpen, onClose }: IModal) => {
     const { user } = useAuth();
     const handleProfileUpdates = useProfileUpdate();
 
-    const { register, handleSubmit, formState: { errors } } = useForm<IProfile>({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<IProfile>({
         defaultValues: {
             name: user?.displayName,
-            slug: user?.slug
-        }
-    })
-
+            slug: user?.slug,
+        },
+    });
 
     const handleUpdates: SubmitHandler<IProfile> = (data) => {
         handleProfileUpdates.mutate({
@@ -46,9 +48,7 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
             slug: data.slug,
         });
         if (handleProfileUpdates.isSuccess) {
-            toast.success(
-                'Profile updated successfully',
-            );
+            toast.success('Profile updated successfully');
         }
         onClose();
     };
@@ -72,7 +72,7 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
                                 id="name"
                                 defaultValue={user?.displayName}
                                 className="col-span-3"
-                                {...register("name")}
+                                {...register('name')}
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
@@ -83,7 +83,7 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
                                 id="username"
                                 defaultValue={user?.slug}
                                 className="col-span-3"
-                                {...register("slug")}
+                                {...register('slug')}
                             />
                         </div>
                     </div>
