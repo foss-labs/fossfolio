@@ -1,7 +1,7 @@
-import { HomeLayout } from '@app/layout';
-import { apiHandler } from '@app/config';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { HomeLayout } from '@app/layout';
+import { apiHandler } from '@app/config';
 
 type Prop = {
     ok: boolean;
@@ -13,6 +13,7 @@ const Verify = ({ orgId }: Prop) => {
     useEffect(() => {
         setTimeout(() => {
             router.push(`/org/${orgId}`);
+            // redirect back to org page after 2.5 seconds
         }, 2500);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

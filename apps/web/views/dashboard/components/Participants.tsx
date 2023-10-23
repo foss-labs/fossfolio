@@ -7,14 +7,13 @@ import {
     TableHeader,
     TableRow,
 } from '@app/ui/components/table';
-import { DeleteModal } from "./DeleteModal"
+import { DeleteModal } from './DeleteModal';
 import { AiOutlineDelete } from 'react-icons/ai';
 
-
 export const Participants = () => {
-    const [isModapOpen, toggleModal] = useToggle()
+    const [isModapOpen, toggleModal] = useToggle();
     return (
-        <Table className="border-[1px] border-[#E9D7FE] rounded-full">
+        <Table className="border-1/4 border-brand-purple-200 rounded-full">
             <DeleteModal isOpen={isModapOpen} onClose={toggleModal.off} />
             <TableHeader className="bg-[#F9FAFB] rounded-lg">
                 <TableRow style={{ background: 'white', height: '67px' }}>
@@ -38,10 +37,10 @@ export const Participants = () => {
                     <TableCell>9745644798</TableCell>
                     <TableCell>sreeharivijaya2003@gmail.com</TableCell>
                     <TableCell className="text-right" onClick={toggleModal.on}>
-                        <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
+                        <AiOutlineDelete className="hover:text-red-500 cursor-pointer text-lg" />
                     </TableCell>
                 </TableRow>
             </TableBody>
         </Table>
     );
-}
+};
