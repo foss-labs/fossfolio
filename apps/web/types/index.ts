@@ -17,7 +17,7 @@ export type Member = {
         displayName: string;
         slug: string;
     };
-    role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+    role: Roles;
 };
 
 type Organization = {
@@ -32,7 +32,7 @@ export interface IOrg {
     count: number;
     orgs: {
         organization: Organization;
-        role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+        role: Roles;
     }[];
 }
 

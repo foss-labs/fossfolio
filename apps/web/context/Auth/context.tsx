@@ -3,7 +3,7 @@ import React, { useMemo, createContext, useContext, useEffect, useState } from '
 import { useRouter } from 'next/router';
 import type { Toggle } from '@app/hooks/useToggle';
 import { apiHandler } from '@app/config';
-import { Child, User } from '@app/types';
+import { Child, Roles, User } from '@app/types';
 import { useToggle } from '@app/hooks';
 import { PageLoader } from '@app/components/preloaders';
 
@@ -13,6 +13,8 @@ interface IAuthTypes {
     clearData: () => void;
     isAuthModalOpen: boolean;
     toggleModal: Toggle;
+    role: Roles | undefined;
+    setRole: React.Dispatch<Roles>;
 }
 export const AuthCtx = createContext({} as IAuthTypes);
 
@@ -20,6 +22,9 @@ export const AuthContext = ({ children }: Child): JSX.Element => {
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState<User | null>(null);
     const [isAuthModalOpen, toggleModal] = useToggle();
+
+    // this will change based on the event the user is in
+    const [role, setRole] = useState<Roles | undefined>(undefined);
     const router = useRouter();
 
     const getUser = async () => {
@@ -46,8 +51,8 @@ export const AuthContext = ({ children }: Child): JSX.Element => {
     }, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const response = useMemo(
-        () => ({ user: data, clearData, isLoading, isAuthModalOpen, toggleModal }),
-        [isLoading, toggleModal, data],
+        () => ({ user: data, clearData, isLoading, isAuthModalOpen, toggleModal, role, setRole }),
+        [isLoading, toggleModal, data, role],
     );
 
     return (

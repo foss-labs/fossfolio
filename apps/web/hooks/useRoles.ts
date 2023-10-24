@@ -31,8 +31,22 @@ const Properties = {
         canChangeParticipantStatus: true,
         canSeeRevenue: false,
     },
+    NO_ACCESS: {
+        canDeleteOrg: false,
+        canEditEvent: false,
+        canCreateEvent: false,
+        canSendInvite: false,
+        canRemoveOrgUser: false,
+        canViewDashboard: true,
+        canChangeParticipantStatus: false,
+        canSeeRevenue: false,
+    },
 };
 
 export const useRoles = (role: Roles) => {
+    if (!role) {
+        return Properties['NO_ACCESS'];
+    }
+
     return Properties[role];
 };
