@@ -61,6 +61,9 @@ module.exports = {
                     purple: {
                         200: '#E9D7FE',
                     },
+                    white: {
+                        100: '#F9F5FF',
+                    },
                 },
                 bg: {
                     gray: {

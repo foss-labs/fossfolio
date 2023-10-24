@@ -1,27 +1,38 @@
-import { useAuth } from './useAuth';
+import type { Roles } from '@app/types';
 
-export const useRoles = (): boolean => {
-    const { user } = useAuth();
+const Properties = {
+    ADMIN: {
+        canDeleteOrg: true,
+        canSendInvite: true,
+        canCreateEvent: true,
+        canEditEvent: true,
+        canRemoveOrgUser: true,
+        canViewDashboard: true,
+        canChangeParticipantStatus: true,
+        canSeeRevenue: true,
+    },
+    EDITOR: {
+        canDeleteOrg: false,
+        canEditEvent: true,
+        canCreateEvent: true,
+        canViewDashboard: true,
+        canSendInvite: false,
+        canRemoveOrgUser: false,
+        canChangeParticipantStatus: true,
+        canSeeRevenue: false,
+    },
+    VIEWER: {
+        canDeleteOrg: false,
+        canEditEvent: false,
+        canCreateEvent: false,
+        canSendInvite: false,
+        canRemoveOrgUser: false,
+        canViewDashboard: true,
+        canChangeParticipantStatus: true,
+        canSeeRevenue: false,
+    },
+};
 
-    const haveAccess = false;
-
-    /* 
-    ADMIN
-  
-     * only admins can delete the org
-     * can send invite to others
-     * inherits all the features of both editor and viewer
-     * can only create event
-
-    EDITOR
-
-     * can edit the event info 
-     * inherits all the features  of viewers
-
-    VIEWER
-      * have access to admin dashboard
-      * have access to change the participants status
- 
-     */
-    return haveAccess;
+export const useRoles = (role: Roles) => {
+    return Properties[role];
 };

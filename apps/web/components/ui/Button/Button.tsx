@@ -9,7 +9,6 @@ type Props = {
     isDisabled?: boolean;
     leftIcon?: JSX.Element;
     rightIcon?: JSX.Element;
-    // loading state
     isLoading?: boolean;
 };
 
@@ -19,12 +18,9 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-                    'bg-primary text-primary-foreground hover:text-primary hover:bg-brand-pink-100 border-[1.4px] hover:border-primary',
-                destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-                outline: 'border border-1 bg-[#ffff] hover:bg-accent hover:text-accent-foreground',
-                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                ghost: 'hover:bg-accent hover:text-accent-foreground',
-                link: 'text-primary underline-offset-4 hover:underline',
+                    'bg-primary text-primary-foreground hover:text-primary hover:bg-brand-pink-100 border-[1.4px] hover:border-primary ',
+                outline:
+                    'border border-[1.4px] bg-brand-white-100 text-primary hover:border-primary hover:bg-brand-pink-100',
             },
             size: {
                 default: 'h-10 px-4 py-2',
@@ -76,6 +72,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     buttonVariants({
                         size,
                         className,
+                        variant,
                     }),
                 )}
                 disabled={isNotActive}
@@ -85,7 +82,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 {leftIcon && (
                     <div
                         className={twMerge(
-                            'inline-flex shrink-0 cursor-pointer items-center justify-center transition-all',
+                            'inline-flex shrink-0 cursor-pointer items-center justify-center transition-all gap-2',
                             loadingToggleClass,
                         )}
                     >
@@ -98,7 +95,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 {rightIcon && (
                     <div
                         className={twMerge(
-                            'inline-flex shrink-0 cursor-pointer items-center justify-center transition-all',
+                            'inline-flex shrink-0 cursor-pointer items-center justify-center transition-all gap-2',
                             loadingToggleClass,
                         )}
                     >

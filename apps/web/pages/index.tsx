@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedCharacters } from '@app/views/home';
 import { NextPageWithLayout } from 'next';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 
 const container = {
     visible: {
@@ -26,13 +26,10 @@ const Home: NextPageWithLayout = () => {
                     ))}
                 </motion.div>
                 <div className="flex gap-4 mt-3 ">
-                    <Button className="bg-primary px-5 py-2 rounded-sm text-white hover:text-primary hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary">
+                    <Button>
                         <Link href="/events">Join Event</Link>
                     </Button>
-                    <Button
-                        variant="outline"
-                        className="bg-[#F9F5FF] px-5 py-2 rounded-sm text-primaryborder-1 hover:text-primaryhover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary"
-                    >
+                    <Button variant="outline" className="rounded-sm">
                         <Link href="/org">Create Events</Link>
                     </Button>
                 </div>
