@@ -42,6 +42,8 @@ export enum Roles {
     Viewer = 'VIEWER',
 }
 
+export type Role = 'ADMIN' | 'EDITOR' | 'VIEWER';
+
 export interface OrgEvents {
     id: string;
     name: string;

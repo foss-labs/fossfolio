@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrgDto } from './dto/create-org.dto';
 import { ORG_EXISTS, ORG_NOT_FOUND } from 'src/error';
 import { UpdateOrgDto } from './dto/update-org.dto';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class OrganizationService {
@@ -139,11 +140,13 @@ export class OrganizationService {
 
     async getAllEvents(id: string) {
         try {
-            return this.prismaService.events.findMany({
+            const event = await this.prismaService.events.findMany({
                 where: {
                     organizationId: id,
                 },
             });
+
+            return event;
         } catch (e) {
             return {
                 ok: false,
@@ -151,5 +154,30 @@ export class OrganizationService {
                 ERROR: e,
             };
         }
+    }
+
+    async getOrgRole(orgId: string, user: string) {
+        try {
+            return await this.prismaService.organizationMember.findUnique({
+                where: {
+                    userUid_organizationId: {
+                        userUid: user,
+                        organizationId: orgId,
+                    },
+                },
+                select: {
+                    role: true,
+                },
+            });
+        } catch {}
+    }
+
+    // return the role of the user in current org
+    getRoleOrg(role: Role) {
+        return {
+            ok: true,
+            message: 'found role successfully',
+            role,
+        };
     }
 }

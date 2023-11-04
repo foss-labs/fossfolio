@@ -96,25 +96,23 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
         <div className="p-none md:p-5">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(sendEmailInvite)}>
-                    <div className="flex gap-2 justify-end items-center mb-10">
-                        <div>
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Enter the email to send invite"
-                                                {...field}
-                                                className="w-60"
-                                            />
-                                        </FormControl>
-                                        <FormMessage className="text-xs text-red-500" />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                    <div className="flex gap-2 justify-end items-center mb-10 flex-wrap">
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Enter the email to send invite"
+                                            {...field}
+                                            className="w-60"
+                                        />
+                                    </FormControl>
+                                    <FormMessage className="text-xs text-red-500" />
+                                </FormItem>
+                            )}
+                        />
 
                         <FormField
                             control={form.control}

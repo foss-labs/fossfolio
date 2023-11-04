@@ -9,6 +9,7 @@ import { UpdateOrgDto } from './dto/update-org.dto';
 import { AuthUser } from 'src/auth/decorators/user.decorator';
 import { User, Role } from '@prisma/client';
 import { LeaveOrg } from './dto/leave-org.dto';
+import { UserRole } from 'src/auth/decorators/role.decorator';
 
 @Controller('org')
 export class OrganizationController {
@@ -30,6 +31,13 @@ export class OrganizationController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getAllEvents(@Param('orgID') orgID: string) {
         return this.organizationService.getAllEvents(orgID);
+    }
+
+    @Get('/:orgID/role')
+    @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getOrgRole(@UserRole() role: Role) {
+        return this.organizationService.getRoleOrg(role);
     }
 
     @Patch('/')

@@ -42,7 +42,7 @@ export class EventsService {
     }
 
     // TODO
-    // Autg guard
+    // Auth guard
     // rbac access to admin and editor
     async updateEvent(payload: UpdateEventDto) {
         try {
@@ -85,9 +85,7 @@ export class EventsService {
             return null;
         }
     }
-    // TODO
-    // Auth guard
-    // rbac access to  all members in org
+
     async getEventByOrgsId(payload: GetEventByOrgIdDto) {
         try {
             return await this.prismaService.organization.findMany({
