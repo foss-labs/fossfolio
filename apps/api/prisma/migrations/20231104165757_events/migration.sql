@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Events" ADD COLUMN     "collegeName" TEXT,
+ADD COLUMN     "isCollegeEvent" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "isTeamEvent" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "maxTeamSize" INTEGER NOT NULL DEFAULT 1,
+ADD COLUMN     "minTeamSize" INTEGER NOT NULL DEFAULT 1;

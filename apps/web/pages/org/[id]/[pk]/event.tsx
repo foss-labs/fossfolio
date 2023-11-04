@@ -1,6 +1,7 @@
 import { Editor } from 'novel';
 import { DashboardLayout } from '@app/layout';
 import { ENV } from '@app/config';
+import { Button } from '@app/components/ui/Button';
 
 const defaultEditorContent = {
     type: 'doc',
@@ -13,16 +14,29 @@ const defaultEditorContent = {
     ],
 };
 
-const event = () => {
+const Event = () => {
+    const onPublish = () => {
+        // novel store the data in local storage
+        const data = localStorage.getItem('novel__content');
+    };
+
     return (
-        <Editor
-            className="w-full"
-            defaultValue={defaultEditorContent}
-            completionApi={`${ENV.api_base}/ai/generate`}
-        />
+        <div>
+            <div className="flex justify-end">
+                <Button size="lg" onClick={onPublish}>
+                    Publish Event
+                </Button>
+            </div>
+            <Editor
+                onDebouncedUpdate={(e) => console.log(e)}
+                className="w-full"
+                defaultValue={defaultEditorContent}
+                completionApi={`${ENV.api_base}/ai/generate`}
+            />
+        </div>
     );
 };
 
-event.Layout = DashboardLayout;
-event.RequireAuth = true;
-export default event;
+Event.Layout = DashboardLayout;
+Event.RequireAuth = true;
+export default Event;

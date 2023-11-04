@@ -14,6 +14,7 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
 
     const handleDeleteClick = async () => {
         try {
+            // todo route is diffrent
             const { data } = await apiHandler.delete('/org/delete', {
                 data: { organizationId: router.query?.id },
             });
@@ -33,7 +34,7 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
                 <DialogHeader>
                     Remove User
                     <DialogDescription className="mt-3">
-                        Are you sure You want to remove the user?
+                        <p>Are you sure You want to remove the user?</p>
                         <div className="flex justify-end space-x-2 mt-5">
                             <Button
                                 className="text-[black] bg-[#F9F5FF]  border-1.5  hover:bg-btn hover:border-primary"

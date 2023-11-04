@@ -89,6 +89,11 @@ model Events {
   description     Json?
   organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   registeredUsers User[]
+  isTeamEvent     Boolean      @default(false)
+  maxTeamSize     Int          @default(1)
+  minTeamSize     Int          @default(1)
+  isCollegeEvent  Boolean      @default(true)
+  collegeName     String?
 }
 
 enum Role {
