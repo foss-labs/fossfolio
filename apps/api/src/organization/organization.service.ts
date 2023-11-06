@@ -138,7 +138,7 @@ export class OrganizationService {
         }
     }
 
-    async getAllEvents(id: string) {
+    async getAllEvents(id: string, role: Role) {
         try {
             const event = await this.prismaService.events.findMany({
                 where: {
@@ -146,7 +146,10 @@ export class OrganizationService {
                 },
             });
 
-            return event;
+            return {
+                event,
+                role,
+            };
         } catch (e) {
             return {
                 ok: false,
@@ -170,14 +173,5 @@ export class OrganizationService {
                 },
             });
         } catch {}
-    }
-
-    // return the role of the user in current org
-    getRoleOrg(role: Role) {
-        return {
-            ok: true,
-            message: 'found role successfully',
-            role,
-        };
     }
 }

@@ -65,7 +65,7 @@ export class EventsService {
 
     async getAllEvents() {
         try {
-            return await this.prismaService.events.findMany();
+            await this.prismaService.events.findMany();
         } catch {
             return null;
         }

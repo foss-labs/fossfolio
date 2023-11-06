@@ -92,7 +92,7 @@ model Events {
   isTeamEvent     Boolean      @default(false)
   maxTeamSize     Int          @default(1)
   minTeamSize     Int          @default(1)
-  isCollegeEvent  Boolean      @default(true)
+  isCollegeEvent  Boolean      @default(false)
   collegeName     String?
 }
 

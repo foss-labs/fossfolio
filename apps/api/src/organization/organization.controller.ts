@@ -29,15 +29,8 @@ export class OrganizationController {
     @Get('/events/:orgID')
     @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
     @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getAllEvents(@Param('orgID') orgID: string) {
-        return this.organizationService.getAllEvents(orgID);
-    }
-
-    @Get('/:orgID/role')
-    @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getOrgRole(@UserRole() role: Role) {
-        return this.organizationService.getRoleOrg(role);
+    async getAllEvents(@Param('orgID') orgID: string, @UserRole() role: Role) {
+        return this.organizationService.getAllEvents(orgID, role);
     }
 
     @Patch('/')

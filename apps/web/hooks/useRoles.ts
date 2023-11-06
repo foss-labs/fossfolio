@@ -1,4 +1,4 @@
-import type { Roles } from '@app/types';
+import { useAuth } from './useAuth';
 
 const Properties = {
     ADMIN: {
@@ -43,7 +43,9 @@ const Properties = {
     },
 };
 
-export const useRoles = (role: Roles) => {
+export const useRoles = () => {
+    const { role } = useAuth();
+
     if (!role) {
         return Properties['NO_ACCESS'];
     }

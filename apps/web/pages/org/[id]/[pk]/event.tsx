@@ -23,7 +23,7 @@ const Event = () => {
     return (
         <div>
             <div className="flex justify-end">
-                <Button size="lg" onClick={onPublish}>
+                <Button size="sm" onClick={onPublish}>
                     Publish Event
                 </Button>
             </div>

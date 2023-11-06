@@ -20,7 +20,7 @@ type ComponentWithPageLayout = AppProps & {
 
 const inter = Inter({ subsets: ['latin'] });
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: false,

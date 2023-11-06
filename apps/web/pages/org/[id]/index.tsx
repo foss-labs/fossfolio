@@ -4,8 +4,7 @@ import { HomeLayout } from '@app/layout';
 import { Members } from '@app/components/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
 import { Events, DeleteOrg, LeaveOrg, InviteModal } from '@app/views/org';
-import { useToggle } from '@app/hooks';
-import { useOrgRole } from '@app/hooks/api/org';
+import { useRoles, useToggle } from '@app/hooks';
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -17,7 +16,7 @@ const Org: NextPageWithLayout = () => {
     const [activeTab, setTab] = useState('events');
     const [inviteLink, setInviteLink] = useState('');
     const [isOpen, toggleOpen] = useToggle();
-    useOrgRole();
+    const { canDeleteOrg } = useRoles();
 
     return (
         <div className="mt-4 p-4 h-[92vh]">
@@ -53,7 +52,7 @@ const Org: NextPageWithLayout = () => {
                     }`}
                 >
                     <LeaveOrg />
-                    <DeleteOrg />
+                    {canDeleteOrg && <DeleteOrg />}
                 </TabsContent>
             </Tabs>
         </div>

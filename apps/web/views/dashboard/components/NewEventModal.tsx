@@ -77,7 +77,7 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="w-[400px] md:w-md-auto">
                 <DialogHeader>
-                    <DialogTitle className="mb-4">New Event</DialogTitle>
+                    <DialogTitle className="mb-4 flex items-center">New Event</DialogTitle>
                     <DialogDescription>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onUserSubMit)}>
