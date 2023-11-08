@@ -8,11 +8,13 @@ datasource db {
 }
 
 model User {
-  uid         String  @id @default(cuid())
-  email       String? @unique
+  uid         String   @id @default(cuid())
+  email       String?  @unique
   displayName String?
-  slug        String? @unique
+  slug        String?  @unique
   photoURL    String?
+  isStudent   Boolean?
+  collegeName String?
 
   refreshToken String?
   createdAt    DateTime @default(now())
@@ -82,7 +84,6 @@ model Events {
   name            String
   website         String?
   location        String
-  createdAt       DateTime     @default(now())
   lastDate        DateTime
   organizationId  String
   isPublished     Boolean      @default(false)
@@ -93,7 +94,8 @@ model Events {
   maxTeamSize     Int          @default(1)
   minTeamSize     Int          @default(1)
   isCollegeEvent  Boolean      @default(false)
-  collegeName     String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 }
 
 enum Role {

@@ -19,7 +19,7 @@ apiHandler.interceptors.response.use(
         const request = error.config;
 
         if (error.response?.status === 400 && request?.url === '/auth/refresh') {
-            console.log('UnAuthorzed User, Forwarding user to Login Page');
+            console.error('UnAuthorzed User, Forwarding user to Login Page');
             return;
         } else if (error.response?.status === 401) {
             const refreshTokenResponse = await apiHandler.get('/auth/refresh');

@@ -8,6 +8,8 @@ export interface User {
     email: string;
     slug: string;
     photoURL: string;
+    isStudent: boolean;
+    collegeName?: string;
 }
 
 export type Member = {
