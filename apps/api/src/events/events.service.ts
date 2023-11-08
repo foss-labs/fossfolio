@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
@@ -99,6 +99,38 @@ export class EventsService {
             });
         } catch {
             return null;
+        }
+    }
+
+    async publishEvent(eventId: string) {
+        try {
+            const data = await this.prismaService.events.findUnique({
+                where: {
+                    id: eventId,
+                },
+            });
+            const { description } = data;
+            if (!description) {
+                throw new UnprocessableEntityException({
+                    ok: false,
+                    message: 'please provide a description to the event',
+                });
+            }
+            await this.prismaService.events.update({
+                where: {
+                    id: eventId,
+                },
+                data: {
+                    isPublished: true,
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'event was published successfully',
+            };
+        } catch (e) {
+            return e;
         }
     }
 }

@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
 import { ENV } from './ENV';
 
 export const apiHandler = Axios.create({
@@ -10,23 +11,19 @@ export const apiHandler = Axios.create({
     },
 });
 
-apiHandler.interceptors.request.use(
-    (response) => {
+apiHandler.interceptors.response.use(
+    (response: AxiosResponse) => {
         return response;
     },
-    (error) => {
+    async (error: AxiosError) => {
         const request = error.config;
-        if (error.response.status === 401 && request.url === ENV.api_base + '/auth/refresh') {
-            window.location.href = '/?authReq=true';
-        } else if ((error.response.status = 401)) {
-            return apiHandler
-                .get('/auth/refresh')
-                .then(() => {
-                    return apiHandler(request);
-                })
-                .catch((err) => {
-                    window.location.href = '/?authReq=true';
-                });
+
+        if (error.response?.status === 400 && request?.url === '/auth/refresh') {
+            console.log('UnAuthorzed User, Forwarding user to Login Page');
+            return;
+        } else if (error.response?.status === 401) {
+            const refreshTokenResponse = await apiHandler.get('/auth/refresh');
+            return apiHandler(refreshTokenResponse.request);
         } else {
             return Promise.reject(error);
         }

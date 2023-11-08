@@ -11,8 +11,9 @@ const getAllMembers = async (id: string): Promise<Member[]> => {
 export const useMembers = () => {
     const router = useRouter();
     const { id } = router.query;
+    const queryKey = ['org-members', id];
     const members = useQuery({
-        queryKey: ['org-members]'],
+        queryKey: queryKey,
         queryFn: () => getAllMembers(id as string),
     });
     return members;
