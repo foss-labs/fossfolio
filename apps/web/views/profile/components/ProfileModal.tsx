@@ -34,10 +34,17 @@ type IModal = {
     onClose: () => void;
 };
 
+type Description = 'true' | 'false';
+
 const ProfileSchema = yup.object().shape({
     name: yup.string().required(),
     slug: yup.string().required(),
     description: yup.string(),
+    collegeName: yup.string().when('description', {
+        is: (val: Description) => Boolean(val),
+        then: (schema) => schema.required(),
+        otherwise: (schema) => schema.notRequired(),
+    }),
 });
 
 type IProfile = yup.InferType<typeof ProfileSchema>;
@@ -50,14 +57,20 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
         defaultValues: {
             name: user?.displayName,
             slug: user?.slug,
-            description: String(user?.isStudent),
+            description: String(user?.isStudent) || '',
+            collegeName: user?.collegeName,
         },
     });
 
+    const isCollegeStudent = form.watch('description') === 'true';
+
     const handleUpdates: SubmitHandler<IProfile> = (data) => {
+        const isCollegeStudent = Boolean(data.description);
         handleProfileUpdates.mutate({
             name: data.name,
             slug: data.slug,
+            isCollegeStudent,
+            collegeName: data.collegeName,
         });
         if (handleProfileUpdates.isSuccess) {
             toast.success('Profile updated successfully');
@@ -134,6 +147,21 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
                                     </FormItem>
                                 )}
                             />
+                            {isCollegeStudent && (
+                                <FormField
+                                    control={form.control}
+                                    name="collegeName"
+                                    render={({ field }) => (
+                                        <FormItem className="items-center ">
+                                            <FormLabel>College Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="College" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
                         </div>
 
                         <DialogFooter>

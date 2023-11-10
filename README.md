@@ -55,6 +55,10 @@ Users who are hosting hackathons will get a detailed dashboard that displays the
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+
+
+<video src='./packages//media//demo.mov' width="180"/>
+
 ### Built With
 
 -   [React Js](https://reactjs.org/)

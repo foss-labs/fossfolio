@@ -2,7 +2,7 @@ import { NextPageWithLayout } from 'next';
 import React from 'react';
 import { GoOrganization } from 'react-icons/go';
 import { HomeLayout } from '@app/layout';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import { Separator } from '@app/ui/components/separator';
 import { OrgCard, NewOrgDialog } from '@app/views/org';
 import { useAuth, useToggle } from '@app/hooks';
@@ -21,12 +21,7 @@ const Index: NextPageWithLayout = () => {
                 <h4 className="text-xl font-semibold md:text-[40px]">
                     {user?.displayName.split(' ')[0]}&apos;s organisations
                 </h4>
-                <Button
-                    onClick={setOpen.on}
-                    className="bg-primary px-3 py-2 rounded-md text-white hover:text-primary hover:bg-brand-pink-100  border-[1.4px] hover:border-primary"
-                >
-                    New Organisation
-                </Button>
+                <Button onClick={setOpen.on}>New Organisation</Button>
             </div>
             <div className="flex flex-wrap mt-10 gap-5">
                 {isLoading ? (

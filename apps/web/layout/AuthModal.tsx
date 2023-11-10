@@ -19,7 +19,7 @@ export const AuthModal = () => {
                 <DialogHeader>
                     <DialogTitle className="mb-4">Login</DialogTitle>
                     <DialogDescription>
-                        By Signing in, you agree to our Terms and Services
+                        <div> By Signing in, you agree to our Terms and Services</div>
                         <div className="flex flex-col gap-3 mt-4">
                             <Button
                                 className="text-primary bg-[#F9F5FF]  border-[1.4px] border-primary  hover:bg-primary hover:text-white"

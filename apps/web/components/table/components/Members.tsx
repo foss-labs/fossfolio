@@ -47,6 +47,8 @@ const invite = yup.object().shape({
 type Invite = yup.InferType<typeof invite>;
 
 export const Members = ({ setLink, onInviteModal }: IProp) => {
+    const { canRemoveOrgUser } = useRoles();
+
     const form = useForm<Invite>({
         mode: 'onChange',
         resolver: yupResolver(invite),
@@ -175,9 +177,11 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                         </SelectContent>
                                     </Select>
                                 </TableCell>
-                                <TableCell className="text-right">
-                                    <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
-                                </TableCell>
+                                {canRemoveOrgUser && (
+                                    <TableCell className="text-right">
+                                        <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))}
                     </TableBody>

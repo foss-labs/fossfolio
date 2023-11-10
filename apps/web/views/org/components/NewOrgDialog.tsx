@@ -7,7 +7,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@app/ui/components/dialog';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import { Input } from '@app/ui/components/input';
 import { ENV, apiHandler } from '@app/config';
 import * as yup from 'yup';
@@ -104,11 +104,7 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
                                 )}`}</label>
                             </div>
                             <div className="flex flex-col gap-3 mt-4">
-                                <Button
-                                    type="submit"
-                                    disabled={isSubmitting ? true : false}
-                                    className="bg-primary  border-[1.4px] px-5 py-2 rounded-md text-white  hover:bg-brand-pink-100   hover:border-primary hover:text-primary"
-                                >
+                                <Button type="submit" disabled={isSubmitting ? true : false}>
                                     {isSubmitting ? '...' : 'Create organisation'}
                                 </Button>
                             </div>

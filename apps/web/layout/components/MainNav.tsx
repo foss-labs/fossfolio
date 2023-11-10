@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import { useAuth } from '@app/hooks';
 import { AuthModal } from '../AuthModal';
 import { UserNav } from './UserNav';
@@ -30,11 +30,7 @@ export const MainNav = () => {
                 {user ? (
                     <UserNav />
                 ) : (
-                    <Button
-                        variant="ghost"
-                        className="px-8 text-md text-[white] hover:text-primary hover:bg-[#F9F5FF] bg-primary border-[1.4px] hover:border-primary border-transparent"
-                        onClick={toggleModal.on}
-                    >
+                    <Button onClick={toggleModal.on} size="sm">
                         Login
                     </Button>
                 )}
