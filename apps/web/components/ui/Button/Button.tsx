@@ -1,33 +1,31 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react";
-import { cva, VariantProps } from "class-variance-authority";
-import { BiLoader } from "react-icons/bi"
-import { twMerge } from "tailwind-merge";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { ButtonHTMLAttributes, forwardRef, ReactNode, useMemo } from 'react';
+import { cva, VariantProps } from 'class-variance-authority';
+import { BiLoader } from 'react-icons/bi';
+import { twMerge } from 'tailwind-merge';
 
 type Props = {
     children: ReactNode;
     isDisabled?: boolean;
     leftIcon?: JSX.Element;
     rightIcon?: JSX.Element;
-    // loading state
     isLoading?: boolean;
 };
 
 const buttonVariants = cva(
-    'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex items-center justify-center rounded-md text-sm font-medium  transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
     {
         variants: {
             variant: {
-                default: 'bg-primary text-primary-foreground hover:text-primary hover:bg-brand-pink-100 border-[1.4px] hover:border-[#7F56D9]',
-                destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-                outline: 'border border-1 bg-[#ffff] hover:bg-accent hover:text-accent-foreground',
-                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                ghost: 'hover:bg-accent hover:text-accent-foreground',
-                link: 'text-primary underline-offset-4 hover:underline',
+                default:
+                    '!bg-primary text-primary-foreground hover:bg-brand-pink-100 border-[1.4px] hover:border-primary ',
+                outline:
+                    'border border-[1.4px] bg-brand-white-100 text-primary hover:border-primary hover:bg-brand-pink-100',
             },
             size: {
                 default: 'h-10 px-4 py-2',
                 sm: 'h-9 rounded-md px-3',
-                lg: 'h-11 rounded-md px-8',
+                lg: 'h-11 rounded-md px-8 text-lg',
                 icon: 'h-10 w-10',
             },
         },
@@ -47,69 +45,66 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {
             children,
             isDisabled = false,
-            className = "",
-            size = "sm",
+            className = '',
+            size = 'sm',
             variant = 'default',
             leftIcon,
             rightIcon,
             isLoading,
             ...props
         },
-        ref
+        ref,
     ): JSX.Element => {
-        const loadingToggleClass = isLoading ? "opacity-0" : "opacity-100";
+        const loadingToggleClass = isLoading ? 'opacity-0' : 'opacity-100';
+        const isNotActive = useMemo(() => {
+            if (isDisabled) return true;
+            if (isLoading) return true;
+
+            return false;
+        }, [isDisabled, isLoading]);
 
         return (
             <button
                 ref={ref}
-                aria-disabled={isDisabled}
+                aria-disabled={isNotActive}
                 type="button"
                 className={twMerge(
                     buttonVariants({
                         size,
-                        className
-                    })
+                        className,
+                        variant,
+                    }),
                 )}
-                disabled={isDisabled}
+                disabled={isNotActive}
                 {...props}
             >
-                {isLoading && (
-                    <BiLoader className="animate-spin" />
-                )
-                }
+                {isLoading && <BiLoader className={twMerge('animate-spin w-10')} />}
                 {leftIcon && (
                     <div
                         className={twMerge(
-                            "inline-flex shrink-0 cursor-pointer items-center justify-center transition-all",
+                            'inline-flex shrink-0 cursor-pointer items-center justify-center transition-all gap-2',
                             loadingToggleClass,
                         )}
                     >
                         {leftIcon}
                     </div>
                 )}
-                <span
-                    className={twMerge(
-                        "transition-all",
-                        loadingToggleClass
-                    )}
-                >
+                <span className={twMerge('transition-all', loadingToggleClass)}>
                     {!isLoading && children}
                 </span>
-                {
-                    rightIcon && (
-                        <div
-                            className={twMerge(
-                                "inline-flex shrink-0 cursor-pointer items-center justify-center transition-all",
-                                loadingToggleClass
-                            )}
-                        >
-                            {rightIcon}
-                        </div>
-                    )
-                }
-            </button >
+                {rightIcon && (
+                    <div
+                        className={twMerge(
+                            'inline-flex shrink-0 cursor-pointer items-center justify-center transition-all gap-2',
+                            loadingToggleClass,
+                        )}
+                    >
+                        {rightIcon}
+                    </div>
+                )}
+            </button>
         );
-    }
+    },
 );
 
-Button.displayName = "Button";
+Button.displayName = 'Button';

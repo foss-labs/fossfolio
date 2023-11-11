@@ -14,7 +14,7 @@ export class EventsController {
         return await this.events.getAllEvents();
     }
     @Post('/create')
-    @Roles('ADMIN')
+    @Roles('ADMIN', 'EDITOR')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async createNewEvent(@Body() data: CreateEventDto) {
         return this.events.createEvent(data);

@@ -9,6 +9,7 @@ module.exports = {
         './components/**/*.{ts,tsx}',
         './app/**/*.{ts,tsx}',
         './src/**/*.{ts,tsx}',
+        './components/ui/*.{ts,tsx}',
     ],
     theme: {
         container: {
@@ -59,6 +60,9 @@ module.exports = {
                     },
                     purple: {
                         200: '#E9D7FE',
+                    },
+                    white: {
+                        100: '#F9F5FF',
                     },
                 },
                 bg: {

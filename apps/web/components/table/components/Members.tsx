@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'sonner';
 import { AiOutlineDelete } from 'react-icons/ai';
@@ -24,8 +24,9 @@ import { Input } from '@app/ui/components/input';
 import { Button } from '@app/ui/components/button';
 import { useMembers } from '@app/hooks/api/org';
 import { apiHandler } from '@app/config';
-import { useAuth } from '@app/hooks';
+import { useAuth, useRoles } from '@app/hooks';
 import * as yup from 'yup';
+import { isProd } from '@app/utils';
 
 enum Roles {
     Admin = 'ADMIN',
@@ -33,14 +34,21 @@ enum Roles {
     Viewer = 'VIEWER',
 }
 
+type IProp = {
+    setLink: React.Dispatch<string>;
+    onInviteModal: VoidFunction;
+};
+
 const invite = yup.object().shape({
-    email: yup.string().email(),
+    email: yup.string().email().required(),
     role: yup.mixed<Roles>().oneOf(Object.values(Roles)).required(),
 });
 
 type Invite = yup.InferType<typeof invite>;
 
-export const Members = () => {
+export const Members = ({ setLink, onInviteModal }: IProp) => {
+    const { canRemoveOrgUser } = useRoles();
+
     const form = useForm<Invite>({
         mode: 'onChange',
         resolver: yupResolver(invite),
@@ -65,11 +73,20 @@ export const Members = () => {
 
     const sendEmailInvite: SubmitHandler<Invite> = async (data) => {
         try {
-            await apiHandler.post('/org/invite', {
+            const { data: response } = await apiHandler.post('/org/invite', {
                 email: data.email,
                 organizationId: router.query?.id,
                 role: data.role,
             });
+            /* 
+            in DEV setup we dont send email
+            so instead  a modal open with the invite link
+            */
+            if (!isProd) {
+                onInviteModal();
+                setLink(response.data);
+            }
+
             toast.success('Email was sent');
             form.reset();
         } catch {
@@ -81,7 +98,7 @@ export const Members = () => {
         <div className="p-none md:p-5">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(sendEmailInvite)}>
-                    <div className="flex gap-2 justify-end items-center mb-10">
+                    <div className="flex gap-2 justify-end items-center mb-10 flex-wrap">
                         <FormField
                             control={form.control}
                             name="email"
@@ -94,7 +111,7 @@ export const Members = () => {
                                             className="w-60"
                                         />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-xs text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -143,7 +160,7 @@ export const Members = () => {
                     </TableHeader>
                     <TableBody>
                         {data?.map((el) => (
-                            <TableRow>
+                            <TableRow key={el.user.uid}>
                                 <TableCell className="font-medium">
                                     <h5>{el.user.slug}</h5>
                                 </TableCell>
@@ -160,9 +177,11 @@ export const Members = () => {
                                         </SelectContent>
                                     </Select>
                                 </TableCell>
-                                <TableCell className="text-right">
-                                    <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
-                                </TableCell>
+                                {canRemoveOrgUser && (
+                                    <TableCell className="text-right">
+                                        <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))}
                     </TableBody>

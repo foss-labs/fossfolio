@@ -1,9 +1,10 @@
-import React from 'react';
+import { useState } from 'react';
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
 import { Members } from '@app/components/table';
-import { Events, DeleteOrg, LeaveOrg } from '@app/views/org';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tabs';
+import { Events, DeleteOrg, LeaveOrg, InviteModal } from '@app/views/org';
+import { useRoles, useToggle } from '@app/hooks';
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -12,9 +13,19 @@ const TabName = [
 ];
 
 const Org: NextPageWithLayout = () => {
+    const [activeTab, setTab] = useState('events');
+    const [inviteLink, setInviteLink] = useState('');
+    const [isOpen, toggleOpen] = useToggle();
+    const { canDeleteOrg } = useRoles();
+
     return (
-        <div className="mt-4 p-4">
-            <Tabs defaultValue="events">
+        <div className="mt-4 p-4 h-[92vh]">
+            <Tabs
+                value={activeTab}
+                defaultValue="events"
+                className="h-full"
+                onValueChange={(el: string) => setTab(el)}
+            >
                 <div className="flex items-center justify-center">
                     <TabsList>
                         {TabName.map((el) => (
@@ -31,14 +42,17 @@ const Org: NextPageWithLayout = () => {
                     <Events />
                 </TabsContent>
                 <TabsContent value="teams">
-                    <Members />
+                    <Members setLink={setInviteLink} onInviteModal={toggleOpen.on} />
+                    <InviteModal isOpen={isOpen} onClose={toggleOpen.off} link={inviteLink} />
                 </TabsContent>
                 <TabsContent
                     value="settings"
-                    className="mb-4 flex justify-center items-center flex-col gap-3"
+                    className={`flex justify-end items-center flex-col gap-3 ${
+                        activeTab === 'settings' ? 'h-[calc(100%-7rem)]' : ''
+                    }`}
                 >
                     <LeaveOrg />
-                    <DeleteOrg />
+                    {canDeleteOrg && <DeleteOrg />}
                 </TabsContent>
             </Tabs>
         </div>

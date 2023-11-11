@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+    CanActivate,
+    ExecutionContext,
+    Injectable,
+    ForbiddenException,
+    NotFoundException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ORG_ID_NOT_FOUND, NO_ROLE_ACCESS } from '../../error';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -17,13 +23,14 @@ export class RbacGuard implements CanActivate {
         }
 
         const request = context.switchToHttp().getRequest();
+
         const user = request.user;
 
         const organizationId =
             request.method === 'GET' ? request.params.orgID : request.body.organizationId;
 
         if (!organizationId) {
-            throw new UnauthorizedException(ORG_ID_NOT_FOUND);
+            throw new NotFoundException(ORG_ID_NOT_FOUND);
         }
 
         const organizationMember = await this.prisma.organizationMember.findUnique({
@@ -36,8 +43,11 @@ export class RbacGuard implements CanActivate {
         });
 
         if (!organizationMember) {
-            throw new UnauthorizedException(NO_ROLE_ACCESS);
+            throw new ForbiddenException(NO_ROLE_ACCESS);
         }
+
+        // setting role in request so that we can access the role via decorator
+        request.role = organizationMember.role;
 
         return roles.includes(organizationMember.role);
     }

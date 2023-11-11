@@ -32,7 +32,6 @@ export class UserService {
             });
             return user;
         } catch (e) {
-            console.log(e);
             return null;
         }
     }
@@ -110,6 +109,8 @@ export class UserService {
                     displayName: updateUserDto.displayName
                         ? updateUserDto.displayName
                         : authUser.displayName,
+                    isStudent: updateUserDto.isCollegeStudent || authUser.isStudent,
+                    collegeName: updateUserDto.collegeName || authUser.collegeName,
                 },
             });
             return user;

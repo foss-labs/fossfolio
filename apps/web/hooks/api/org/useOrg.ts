@@ -16,6 +16,6 @@ const getAllOrg = async () => {
 };
 
 export const useOrgs = () => {
-    const orgs = useQuery<Array<IOrg>>({ queryKey: ['orgs]'], queryFn: getAllOrg });
+    const orgs = useQuery<IOrg>({ queryKey: ['orgs]'], queryFn: getAllOrg });
     return orgs;
 };

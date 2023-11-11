@@ -7,7 +7,9 @@ import { Roles } from './decorators/roles.decorator';
 import { RbacGuard } from './guards/rbac-member.guard';
 import { UpdateOrgDto } from './dto/update-org.dto';
 import { AuthUser } from 'src/auth/decorators/user.decorator';
-import { User } from '@prisma/client';
+import { User, Role } from '@prisma/client';
+import { LeaveOrg } from './dto/leave-org.dto';
+import { UserRole } from 'src/auth/decorators/role.decorator';
 
 @Controller('org')
 export class OrganizationController {
@@ -24,6 +26,13 @@ export class OrganizationController {
         return this.organizationService.findOrgBySlug(slug);
     }
 
+    @Get('/events/:orgID')
+    @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getAllEvents(@Param('orgID') orgID: string, @UserRole() role: Role) {
+        return this.organizationService.getAllEvents(orgID, role);
+    }
+
     @Patch('/')
     @Roles('ADMIN')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -36,5 +45,10 @@ export class OrganizationController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async deleteOrganization(@Body() data: DeleteOrgDto) {
         return this.organizationService.deleteOrg(data.organizationId);
+    }
+    @Delete('/leave')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async leaveOrg(@AuthUser() user: User, @Body() body: LeaveOrg) {
+        return this.organizationService.leaveOrg(body.organizationId, user.uid);
     }
 }

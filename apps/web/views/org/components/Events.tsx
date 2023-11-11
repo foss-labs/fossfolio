@@ -1,21 +1,48 @@
+import { BsCalendarEvent } from 'react-icons/bs';
+import { NewEventDialog } from '@app/views/dashboard';
 import { PreLoader, EventCard } from '@app/components/events';
+import { useRoles, useToggle } from '@app/hooks';
+import { useOrgEvents } from '@app/hooks/api/org';
+import { useRouter } from 'next/router';
 
 export const Events = () => {
-    // api call to get all events of a org
-    const isLoading = true
+    const { isLoading, data, refetch } = useOrgEvents();
+    const [isOpen, toggleOpen] = useToggle();
 
+    const { canCreateEvent } = useRoles();
+
+    const router = useRouter();
+    const { id } = router.query;
+    const moveToDashBoard = (pk: string) => {
+        router.push(`/org/${id}/${pk}/event`);
+    };
 
     if (isLoading) {
-        return (
-            <PreLoader />
-        );
+        return <PreLoader />;
     }
     return (
-        <div className="flex flex-wrap flex-col gap-[25px] justify-center items-center p-4  md:justify-start lg:flex-row lg:items-center lg:justify-center">
-            <EventCard />
-            <EventCard />
-            <EventCard />
-            <EventCard />
+        <div className="flex flex-wrap gap-4 lg:w-[90%] ">
+            {canCreateEvent && (
+                <div
+                    className="h-[230px] w-[330px] rounded-md border-2 flex justify-center items-center border-dotted  md:w-[400px] mt-6 hover:cursor-pointer hover:outline-double hover:outline-primary"
+                    onClick={toggleOpen.on}
+                >
+                    <BsCalendarEvent className="text-3xl p-1" />
+                    Create New Event
+                </div>
+            )}
+            {data?.event.map((el) => (
+                <div onClick={() => moveToDashBoard(id as string)}>
+                    <EventCard
+                        name={el.name}
+                        id={el.id}
+                        location={el.location}
+                        website={el.website}
+                    />
+                </div>
+            ))}
+
+            <NewEventDialog isOpen={isOpen} onClose={toggleOpen.off} refetch={refetch} />
         </div>
-    )
-}
+    );
+};

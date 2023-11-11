@@ -8,6 +8,8 @@ export interface User {
     email: string;
     slug: string;
     photoURL: string;
+    isStudent: boolean;
+    collegeName?: string;
 }
 
 export type Member = {
@@ -17,16 +19,40 @@ export type Member = {
         displayName: string;
         slug: string;
     };
-    role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+    role: Roles;
 };
 
-export type IOrg = {
-    organization: {
-        id: string;
-        name: string;
-        slug: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
-    role: 'ADMIN' | 'EDITOR' | 'VIEWER';
+type Organization = {
+    id: string;
+    name: string;
+    slug: string;
+    createdAt: Date;
+    updatedAt: Date;
 };
+
+export interface IOrg {
+    count: number;
+    orgs: {
+        organization: Organization;
+        role: Roles;
+    }[];
+}
+
+export enum Roles {
+    Admin = 'ADMIN',
+    Editor = 'EDITOR',
+    Viewer = 'VIEWER',
+}
+
+export type Role = 'ADMIN' | 'EDITOR' | 'VIEWER';
+
+export interface OrgEvents {
+    id: string;
+    name: string;
+    website: string;
+    location: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isPublished: boolean;
+    description: JSON | null;
+}

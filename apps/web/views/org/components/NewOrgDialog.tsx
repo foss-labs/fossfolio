@@ -7,11 +7,10 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@app/ui/components/dialog';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import { Input } from '@app/ui/components/input';
 import { ENV, apiHandler } from '@app/config';
 import * as yup from 'yup';
-
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAddOrg } from '@app/hooks/api/org';
 
@@ -22,7 +21,7 @@ type IModal = {
 
 // add page names here when ever
 // new pages are created
-const excludedSlug = ['org', 'events', 'invite'];
+const excludedSlug = ['org', 'events', 'verify'];
 
 const Schema = yup.object().shape({
     name: yup.string().required(),
@@ -96,7 +95,7 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
                                 </label>
                                 <Input type="slug" {...register('slug')} />
                                 {errors.slug && (
-                                    <span className="text-[red] text-start">
+                                    <span className="text-red-500 text-start text-xs">
                                         An org with same name already exist
                                     </span>
                                 )}
@@ -105,11 +104,7 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
                                 )}`}</label>
                             </div>
                             <div className="flex flex-col gap-3 mt-4">
-                                <Button
-                                    type="submit"
-                                    disabled={isSubmitting ? true : false}
-                                    className="bg-[#7F56D9] px-5 py-2 rounded-md text-[white] hover:text-[#7F56D9] hover:bg-[#F9F5FF]  border-[1.4px] hover:border-[#7F56D9]"
-                                >
+                                <Button type="submit" disabled={isSubmitting ? true : false}>
                                     {isSubmitting ? '...' : 'Create organisation'}
                                 </Button>
                             </div>

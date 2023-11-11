@@ -33,7 +33,7 @@ const teams = () => {
             <div className=" w-[250px] mt-6 mb-2">
                 <Input type="search" placeholder="Find team or person" />
             </div>
-            <div className="flex flex-wrap flex-col gap-y-[25px] gap-x-[75px] justify-center items-center p-4  md:justify-start lg:flex-row lg:items-center ">
+            <div className="flex flex-wrap gap-10  justify-center mt-5">
                 <Teams />
                 <Teams />
                 <Teams />

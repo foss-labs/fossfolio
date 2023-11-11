@@ -1,7 +1,7 @@
-import { HomeLayout } from '@app/layout';
-import { apiHandler } from '@app/config';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { HomeLayout } from '@app/layout';
+import { apiHandler } from '@app/config';
 
 type Prop = {
     ok: boolean;
@@ -13,6 +13,7 @@ const Verify = ({ orgId }: Prop) => {
     useEffect(() => {
         setTimeout(() => {
             router.push(`/org/${orgId}`);
+            // redirect back to org page after 2.5 seconds
         }, 2500);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -29,7 +30,17 @@ const Verify = ({ orgId }: Prop) => {
 export async function getServerSideProps(ctx: any) {
     const accesToken = ctx.req.cookies['access_token'];
     const refreshToken = ctx.req.cookies['refresh_token'];
-    const { data } = await apiHandler.get(`/org/invite/verify?id=${ctx.query.id}`, {
+
+    if (!accesToken) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
+
+    const { data, status } = await apiHandler.get(`/org/invite/verify?id=${ctx.query.id}`, {
         headers: {
             Cookie: `access_token=${accesToken}; refresh_token=${refreshToken};`,
         },

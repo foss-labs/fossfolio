@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
@@ -7,12 +7,12 @@ import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
 @Injectable()
 export class EventsService {
     constructor(private readonly prismaService: PrismaService) {}
-    // TODO
-    // Auth guard
-    // rbac access to admin and editor
+
     async createEvent(d: CreateEventDto) {
+        const date = new Date(d.lastDate);
+
         try {
-            return await this.prismaService.organization.update({
+            const data = await this.prismaService.organization.update({
                 where: {
                     id: d.organizationId,
                 },
@@ -20,21 +20,29 @@ export class EventsService {
                     events: {
                         create: {
                             name: d.name,
-                            description: d.description,
                             website: d.website,
                             location: d.location,
-                            lastDate: d.lastDate,
+                            lastDate: date,
                         },
                     },
                 },
             });
-        } catch {
-            return null;
+            return {
+                ok: true,
+                message: 'event created successfully',
+                data,
+            };
+        } catch (e) {
+            return {
+                ok: false,
+                message: 'could not create event',
+                ERROR: e,
+            };
         }
     }
 
     // TODO
-    // Autg guard
+    // Auth guard
     // rbac access to admin and editor
     async updateEvent(payload: UpdateEventDto) {
         try {
@@ -57,7 +65,7 @@ export class EventsService {
 
     async getAllEvents() {
         try {
-            return await this.prismaService.events.findMany();
+            await this.prismaService.events.findMany();
         } catch {
             return null;
         }
@@ -77,9 +85,7 @@ export class EventsService {
             return null;
         }
     }
-    // TODO
-    // Auth guard
-    // rbac access to  all members in org
+
     async getEventByOrgsId(payload: GetEventByOrgIdDto) {
         try {
             return await this.prismaService.organization.findMany({
@@ -93,6 +99,38 @@ export class EventsService {
             });
         } catch {
             return null;
+        }
+    }
+
+    async publishEvent(eventId: string) {
+        try {
+            const data = await this.prismaService.events.findUnique({
+                where: {
+                    id: eventId,
+                },
+            });
+            const { description } = data;
+            if (!description) {
+                throw new UnprocessableEntityException({
+                    ok: false,
+                    message: 'please provide a description to the event',
+                });
+            }
+            await this.prismaService.events.update({
+                where: {
+                    id: eventId,
+                },
+                data: {
+                    isPublished: true,
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'event was published successfully',
+            };
+        } catch (e) {
+            return e;
         }
     }
 }

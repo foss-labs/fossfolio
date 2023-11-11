@@ -9,6 +9,38 @@ export class OrganizationInviteService {
 
     async inviteToOrg(email: string, inviterid: string, orgId: string, role: Role) {
         try {
+            // if there is already invite send no need of transaction
+            const isAlreadySent = await this.prismaService.organizationInvite.findUnique({
+                where: {
+                    inviteeEmail_organizationId: {
+                        inviteeEmail: email,
+                        organizationId: orgId,
+                    },
+                },
+                select: {
+                    id: true,
+                },
+            });
+            // if user already exist in db
+            if (isAlreadySent) {
+                const isProd = process.env.NODE_ENV === 'production';
+
+                const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
+                const inviteURL = `${localPort}/verify?id=${isAlreadySent.id}`;
+                if (!isProd) {
+                    return {
+                        ok: true,
+                        message: 'user is already invited, please check your mailbox',
+                        data: inviteURL,
+                    };
+                }
+
+                return {
+                    ok: true,
+                    message: 'user is already invited, please check your mailbox',
+                };
+            }
+
             // transaction
             const transactionStatus = await this.prismaService.$transaction(async (db) => {
                 const data = await db.organization.update({

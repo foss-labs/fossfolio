@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrgDto } from './dto/create-org.dto';
 import { ORG_EXISTS, ORG_NOT_FOUND } from 'src/error';
 import { UpdateOrgDto } from './dto/update-org.dto';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class OrganizationService {
@@ -71,14 +72,27 @@ export class OrganizationService {
                 userUid: uid,
             },
             select: {
-                organization: true,
+                organization: {
+                    include: {
+                        _count: {
+                            select: {
+                                members: true,
+                                events: true,
+                            },
+                        },
+                    },
+                },
                 role: true,
             },
         });
 
-        return orgs;
-    }
+        const count = await this.prismaService.organizationMember.count();
 
+        return {
+            count,
+            orgs,
+        };
+    }
     async deleteOrg(id: string) {
         await this.prismaService.organization.delete({
             where: {
@@ -89,5 +103,75 @@ export class OrganizationService {
             ok: true,
             message: 'org was deleted successfully',
         };
+    }
+
+    /*  
+  
+  *  if there is only one admin and he is the one leaving the org we should tranfer the org to the first 
+     person who joined the org
+
+  *  if the person is the last person to leave the org we should delete the org completly
+ 
+  *  if there is multiple admins just make user leave the org
+   
+  */
+
+    async leaveOrg(orgId: string, userId: string) {
+        try {
+            await this.prismaService.organizationMember.delete({
+                where: {
+                    userUid_organizationId: {
+                        userUid: userId,
+                        organizationId: orgId,
+                    },
+                },
+            });
+            return {
+                ok: true,
+                message: 'successfully left the organization',
+            };
+        } catch {
+            return {
+                ok: false,
+                message: 'Unable to leave the org please try again later',
+            };
+        }
+    }
+
+    async getAllEvents(id: string, role: Role) {
+        try {
+            const event = await this.prismaService.events.findMany({
+                where: {
+                    organizationId: id,
+                },
+            });
+
+            return {
+                event,
+                role,
+            };
+        } catch (e) {
+            return {
+                ok: false,
+                message: 'could not find the events',
+                ERROR: e,
+            };
+        }
+    }
+
+    async getOrgRole(orgId: string, user: string) {
+        try {
+            return await this.prismaService.organizationMember.findUnique({
+                where: {
+                    userUid_organizationId: {
+                        userUid: user,
+                        organizationId: orgId,
+                    },
+                },
+                select: {
+                    role: true,
+                },
+            });
+        } catch {}
     }
 }
