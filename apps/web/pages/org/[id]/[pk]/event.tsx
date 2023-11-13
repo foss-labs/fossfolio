@@ -1,7 +1,8 @@
 import { Editor } from 'novel';
 import { DashboardLayout } from '@app/layout';
-import { ENV } from '@app/config';
+import { ENV, apiHandler } from '@app/config';
 import { Button } from '@app/components/ui/Button';
+import { useRouter } from 'next/router';
 
 const defaultEditorContent = {
     type: 'doc',
@@ -15,15 +16,17 @@ const defaultEditorContent = {
 };
 
 const Event = () => {
-    const onPublish = () => {
-        // novel store the data in local storage
-        const data = localStorage.getItem('novel__content');
+    const router = useRouter();
+    const { id, pk } = router.query;
+
+    const publishEvent = async () => {
+        return await apiHandler.get(`/events/publish/${id}/${pk}`);
     };
 
     return (
         <div>
             <div className="flex justify-end">
-                <Button size="sm" onClick={onPublish}>
+                <Button size="sm" onClick={publishEvent}>
                     Publish Event
                 </Button>
             </div>

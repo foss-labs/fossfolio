@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
@@ -65,9 +65,19 @@ export class EventsService {
 
     async getAllEvents() {
         try {
-            await this.prismaService.events.findMany();
+            // only need events that are not expired last date
+            return await this.prismaService.events.findMany({
+                where: {
+                    lastDate: {
+                        lte: new Date(),
+                    },
+                },
+            });
         } catch {
-            return null;
+            return {
+                ok: false,
+                message: 'could not get events',
+            };
         }
     }
 
@@ -109,11 +119,15 @@ export class EventsService {
                     id: eventId,
                 },
             });
-            const { description } = data;
-            if (!description) {
+
+            if (!data) {
+                throw new NotFoundException();
+            }
+
+            const { description, maxTicketCount, eventDate } = data;
+            if (!description || !maxTicketCount || !eventDate) {
                 throw new UnprocessableEntityException({
-                    ok: false,
-                    message: 'please provide a description to the event',
+                    message: 'please provide all required information for event',
                 });
             }
             await this.prismaService.events.update({
@@ -130,7 +144,20 @@ export class EventsService {
                 message: 'event was published successfully',
             };
         } catch (e) {
-            return e;
+            // Use exception filters to handle exceptions and return appropriate responses
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException({
+                    ok: false,
+                    message: e.message,
+                });
+            } else if (e instanceof UnprocessableEntityException) {
+                throw new UnprocessableEntityException({
+                    ok: false,
+                    message: e.message,
+                });
+            } else {
+                throw e; // Rethrow other exceptions
+            }
         }
     }
 }

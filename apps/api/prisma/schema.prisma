@@ -96,6 +96,8 @@ model Events {
   isCollegeEvent  Boolean      @default(false)
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
+  maxTicketCount  Int?
+  eventDate       DateTime?
 }
 
 enum Role {
