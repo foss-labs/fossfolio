@@ -32,7 +32,7 @@ export const Events = () => {
                 </div>
             )}
             {data?.event.map((el) => (
-                <div onClick={() => moveToDashBoard(el.id as string)}>
+                <div onClick={() => moveToDashBoard(el.id as string)} key={el.id}>
                     <EventCard
                         name={el.name}
                         id={el.id}

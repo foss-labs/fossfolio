@@ -21,7 +21,7 @@ import {
 } from '@app/ui/components/select';
 import { FormField, FormItem, FormControl, FormMessage, Form } from '@app/ui/components/form';
 import { Input } from '@app/ui/components/input';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import { useMembers } from '@app/hooks/api/org';
 import { apiHandler } from '@app/config';
 import { useAuth, useRoles } from '@app/hooks';
@@ -47,7 +47,7 @@ const invite = yup.object().shape({
 type Invite = yup.InferType<typeof invite>;
 
 export const Members = ({ setLink, onInviteModal }: IProp) => {
-    const { canRemoveOrgUser } = useRoles();
+    const { canRemoveOrgUser, canSendInvite } = useRoles();
 
     const form = useForm<Invite>({
         mode: 'onChange',
@@ -59,17 +59,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
     });
 
     const { data, isLoading } = useMembers();
-    const { user } = useAuth();
     const router = useRouter();
-
-    // only admin or editor can change members rule
-    const isEditorOrAdmin = useMemo(() => {
-        return (
-            data?.find((el) => el.user.email === user?.email)?.role === 'ADMIN' ||
-            data?.find((el) => el.user.email === user?.email)?.role === 'EDITOR'
-        );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data]);
 
     const sendEmailInvite: SubmitHandler<Invite> = async (data) => {
         try {
@@ -166,7 +156,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                 </TableCell>
                                 <TableCell>{el.user.email}</TableCell>
                                 <TableCell>
-                                    <Select disabled={!isEditorOrAdmin}>
+                                    <Select disabled={!canSendInvite}>
                                         <SelectTrigger className="w-44">
                                             <SelectValue placeholder={el.role} />
                                         </SelectTrigger>

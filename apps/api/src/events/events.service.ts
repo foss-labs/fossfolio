@@ -71,6 +71,7 @@ export class EventsService {
                     lastDate: {
                         lte: new Date(),
                     },
+                    isPublished: true,
                 },
             });
         } catch {

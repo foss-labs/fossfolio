@@ -37,7 +37,7 @@ export class OrganizationInviteService {
 
                 return {
                     ok: true,
-                    message: 'user is already invited, please check your mailbox',
+                    message: 'user is already invited, please check your mailbox for old mails',
                 };
             }
 
@@ -68,8 +68,11 @@ export class OrganizationInviteService {
                 });
                 const inviteId = data.invites.find((el) => el.inviteeEmail === email).id;
                 //  finding the id of new invite
+                const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
+                const inviteURL = `${localPort}/verify?id=${inviteId}`;
+
                 const inviteInfo = {
-                    inviteId: inviteId,
+                    inviteUrl: inviteURL,
                     from: inviter.displayName,
                     orgName: data.name,
                     fromEmail: inviter.email,
@@ -79,8 +82,6 @@ export class OrganizationInviteService {
                     const res = await sendInvite(email, inviteInfo);
                     return res;
                 } else {
-                    const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
-                    const inviteURL = `${localPort}/verify?id=${inviteId}`;
                     return {
                         ok: true,
                         message: 'invite send successfully',
