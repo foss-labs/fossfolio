@@ -10,7 +10,6 @@ import { useAuth } from '@app/hooks';
 import { toast } from 'sonner';
 import { Input } from '@app/ui/components/input';
 import { Button } from '@app/components/ui/Button';
-import { useProfileUpdate } from '@app/hooks/api/Profile';
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
@@ -28,19 +27,37 @@ import {
     FormLabel,
     FormMessage,
 } from '@app/ui/components/form';
+import { apiHandler } from '@app/config';
+import { Popover, PopoverTrigger } from '@app/ui/components/popover';
+import { cn } from '@app/ui/lib/utils';
+import { PopoverContent } from '@radix-ui/react-popover';
+import { Calendar } from '@app/ui/components/calendar';
+import { format } from 'date-fns';
 
 type IModal = {
     isOpen: boolean;
     onClose: () => void;
 };
 
+interface IInfo {
+    slug: string;
+    name: string;
+    isCollegeStudent?: boolean;
+    collegeName?: string;
+}
+
 type Description = 'true' | 'false';
 
 const ProfileSchema = yup.object().shape({
     ticketCount: yup.number().required(),
-    slug: yup.string().required(),
-    description: yup.string(),
-    collegeName: yup.string().when('description', {
+    endDate: yup.date().required(),
+    team: yup.string().required(),
+    minTeam: yup.number().when('team', {
+        is: (val: Description) => Boolean(val),
+        then: (schema) => schema.required(),
+        otherwise: (schema) => schema.notRequired(),
+    }),
+    maxTeam: yup.number().when('team', {
         is: (val: Description) => Boolean(val),
         then: (schema) => schema.required(),
         otherwise: (schema) => schema.notRequired(),
@@ -51,18 +68,23 @@ type IProfile = yup.InferType<typeof ProfileSchema>;
 
 export const PublishModal = ({ isOpen, onClose }: IModal) => {
     const { user } = useAuth();
-    const handleProfileUpdates = useProfileUpdate();
 
+    const handlePublish = async (info: IInfo) => {
+        return await apiHandler.patch('/user', {
+            displayName: info.name,
+            slug: info.slug,
+            isCollegeStudent: info.isCollegeStudent,
+            collegeName: info.collegeName,
+        });
+    };
     const form = useForm<IProfile>({
         defaultValues: {
             ticketCount: 0,
-            slug: user?.slug,
-            description: String(user?.isStudent) || '',
-            collegeName: user?.collegeName,
+            team: String(user?.isStudent) || '',
         },
     });
 
-    const isCollegeStudent = form.watch('description') === 'true';
+    const isCollegeEvent = form.watch('team') === 'true';
 
     const handleUpdates: SubmitHandler<IProfile> = (data) => {
         onClose();
@@ -95,28 +117,51 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                             />
                             <FormField
                                 control={form.control}
-                                name="slug"
+                                name="endDate"
                                 render={({ field }) => (
-                                    <FormItem className=" items-center">
-                                        <FormLabel>Username</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                id="username"
-                                                defaultValue={user?.slug}
-                                                className="col-span-3"
-                                                {...field}
-                                            />
-                                        </FormControl>
+                                    <FormItem className="items-start flex flex-col">
+                                        <FormLabel>Registration end date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        className={cn(
+                                                            'w-full  text-start font-normal text-black',
+                                                            !field.value && 'text-muted-foreground',
+                                                        )}
+                                                    >
+                                                        {field.value ? (
+                                                            format(field.value, 'PPP')
+                                                        ) : (
+                                                            <span>Pick a date</span>
+                                                        )}
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0 bg-white shadow-md">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={field.onChange}
+                                                    disabled={(date) =>
+                                                        date > new Date() ||
+                                                        date < new Date('1900-01-01')
+                                                    }
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
-                                name="description"
+                                name="team"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Description about you</FormLabel>
+                                        <FormLabel>Is this is team event?</FormLabel>
 
                                         <Select
                                             onValueChange={field.onChange}
@@ -124,12 +169,12 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="description" />
+                                                    <SelectValue placeholder="Team Event" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="true">Student</SelectItem>
-                                                <SelectItem value="false">Professional</SelectItem>
+                                                <SelectItem value="true">Yes</SelectItem>
+                                                <SelectItem value="false">No</SelectItem>
                                             </SelectContent>
                                         </Select>
 
@@ -137,20 +182,43 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                                     </FormItem>
                                 )}
                             />
-                            {isCollegeStudent && (
-                                <FormField
-                                    control={form.control}
-                                    name="collegeName"
-                                    render={({ field }) => (
-                                        <FormItem className="items-center ">
-                                            <FormLabel>College Name</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="College" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            {isCollegeEvent && (
+                                <>
+                                    <FormField
+                                        control={form.control}
+                                        name="minTeam"
+                                        render={({ field }) => (
+                                            <FormItem className="items-center ">
+                                                <FormLabel>Minimum Team Size</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="0"
+                                                        {...field}
+                                                        type="number"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="maxTeam"
+                                        render={({ field }) => (
+                                            <FormItem className="items-center ">
+                                                <FormLabel>Maximum Team Size</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="0"
+                                                        {...field}
+                                                        type="number"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </>
                             )}
                         </div>
 

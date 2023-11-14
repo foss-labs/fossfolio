@@ -27,17 +27,21 @@ const Event = () => {
     const publishEvent = async () => {
         try {
             setPublishing.on();
-            const { data, status } = await apiHandler.get(`/events/publish/${id}/${pk}`);
+            const { status } = await apiHandler.get(`/events/publish/${id}/${pk}`);
+            if (status === 200) {
+                toast.success('Event was published successfully');
+            } else {
+                throw new Error();
+            }
         } catch (e: any) {
             if (e.response.status === 422) {
                 // open the more info of event modal
                 triggerModal.on();
-                return;
             } else if (e.response.status === 404) {
                 toast.error(e.response.data.message);
-                return;
+            } else {
+                toast.error('something went wrong');
             }
-            toast.error('something went wrong');
         } finally {
             setPublishing.off();
         }
