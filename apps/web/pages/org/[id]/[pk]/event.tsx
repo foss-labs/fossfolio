@@ -5,8 +5,7 @@ import { Button } from '@app/components/ui/Button';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
 import { useToggle } from '@app/hooks';
-import { AxiosError } from 'axios';
-
+import { PublishModal } from '@app/views/dashboard';
 const defaultEditorContent = {
     type: 'doc',
     content: [
@@ -20,6 +19,7 @@ const defaultEditorContent = {
 
 const Event = () => {
     const [isPublishing, setPublishing] = useToggle(false);
+    const [isOpen, triggerModal] = useToggle(false);
 
     const router = useRouter();
     const { id, pk } = router.query;
@@ -31,7 +31,7 @@ const Event = () => {
         } catch (e: any) {
             if (e.response.status === 422) {
                 // open the more info of event modal
-                toast.error('Required fields are missing');
+                triggerModal.on();
                 return;
             } else if (e.response.status === 404) {
                 toast.error(e.response.data.message);
@@ -45,6 +45,7 @@ const Event = () => {
 
     return (
         <div>
+            <PublishModal isOpen={isOpen} onClose={triggerModal.off} />
             <div className="flex justify-end">
                 <Button size="sm" onClick={publishEvent} isLoading={isPublishing}>
                     Publish Event
