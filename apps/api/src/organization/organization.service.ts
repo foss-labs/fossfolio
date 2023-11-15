@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrgDto } from './dto/create-org.dto';
 import { ORG_EXISTS, ORG_NOT_FOUND } from 'src/error';
@@ -173,5 +173,32 @@ export class OrganizationService {
                 },
             });
         } catch {}
+    }
+
+    async getOrgById(orgId: string) {
+        try {
+            const data = await this.prismaService.organization.findUnique({
+                where: {
+                    id: orgId,
+                },
+            });
+
+            if (!data) {
+                throw new NotFoundException();
+            }
+
+            return {
+                ok: true,
+                message: 'org found successfully',
+                data,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException({
+                    ok: false,
+                    message: e.message || 'error loading organization',
+                });
+            }
+        }
     }
 }

@@ -26,6 +26,13 @@ export class OrganizationController {
         return this.organizationService.findOrgBySlug(slug);
     }
 
+    @Get('/:orgID')
+    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getOrgInfo(@Param('orgID') info) {
+        return await this.organizationService.getOrgById(info);
+    }
+
     @Get('/events/:orgID')
     @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
     @UseGuards(AuthGuard('jwt'), RbacGuard)
