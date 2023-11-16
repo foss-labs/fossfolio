@@ -17,8 +17,9 @@ import {
     FormDescription,
 } from '@app/ui/components/form';
 import { Input } from '@app/ui/components/input';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
+import { Button } from '@app/components/ui/Button';
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -38,6 +39,7 @@ const Org: NextPageWithLayout = () => {
     const [inviteLink, setInviteLink] = useState('');
     const [isOpen, toggleOpen] = useToggle();
     const { canDeleteOrg } = useRoles();
+    // api is only called when tab becomes settings
     const { data, isLoading } = useOrgInfo(activeTab === 'settings');
     const form = useForm<IOrgVal>({
         defaultValues: {
@@ -45,6 +47,11 @@ const Org: NextPageWithLayout = () => {
             slug: data?.data.slug,
         },
     });
+
+    const handleOrgUpdate: SubmitHandler<IOrgVal> = (changes) => {
+        // handle update with api call
+        console.log(changes);
+    };
 
     return (
         <div className="mt-4 p-4 h-[92vh]">
@@ -85,7 +92,10 @@ const Org: NextPageWithLayout = () => {
                     {data && (
                         <div className="flex gap-4 py-4 w-full">
                             <Form {...form}>
-                                <form className="border-red-400 w-full flex flex-col items-center">
+                                <form
+                                    className="border-red-400 w-full flex flex-col items-center"
+                                    onSubmit={form.handleSubmit(handleOrgUpdate)}
+                                >
                                     <FormField
                                         control={form.control}
                                         name="orgName"
@@ -104,6 +114,11 @@ const Org: NextPageWithLayout = () => {
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
+                                                <div className="flex w-full max-w-2xl justify-end">
+                                                    <Button className="p-3 mt-3" type="submit">
+                                                        Update
+                                                    </Button>
+                                                </div>
                                             </FormItem>
                                         )}
                                     />
@@ -124,6 +139,11 @@ const Org: NextPageWithLayout = () => {
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
+                                                <div className="flex w-full max-w-2xl justify-end">
+                                                    <Button className="p-3 mt-3" type="submit">
+                                                        Update
+                                                    </Button>
+                                                </div>
                                             </FormItem>
                                         )}
                                     />

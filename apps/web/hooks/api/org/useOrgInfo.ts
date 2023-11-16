@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
-import type { OrgEvents, Roles } from '@app/types';
 
 type IData = {
     ok: boolean;

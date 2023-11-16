@@ -6,7 +6,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@app/ui/components/dialog';
-import { useAuth } from '@app/hooks';
+import { useAuth, useToggle } from '@app/hooks';
 import { toast } from 'sonner';
 import { Input } from '@app/ui/components/input';
 import { Button } from '@app/components/ui/Button';
@@ -32,7 +32,8 @@ import { Popover, PopoverTrigger } from '@app/ui/components/popover';
 import { cn } from '@app/ui/lib/utils';
 import { PopoverContent } from '@radix-ui/react-popover';
 import { Calendar } from '@app/ui/components/calendar';
-import { format } from 'date-fns';
+import { format, isBefore } from 'date-fns';
+import { useRouter } from 'next/router';
 
 type IModal = {
     isOpen: boolean;
@@ -48,46 +49,64 @@ interface IInfo {
 
 type Description = 'true' | 'false';
 
-const ProfileSchema = yup.object().shape({
-    ticketCount: yup.number().required(),
-    endDate: yup.date().required(),
+const EventSchema = yup.object().shape({
+    maxTicketCount: yup.number().required(),
+    lastDate: yup.date().required(),
+    eventDate: yup.date().required(),
     team: yup.string().required(),
-    minTeam: yup.number().when('team', {
+    minTeamSize: yup.number().when('team', {
         is: (val: Description) => Boolean(val),
         then: (schema) => schema.required(),
         otherwise: (schema) => schema.notRequired(),
     }),
-    maxTeam: yup.number().when('team', {
+    maxTeamSize: yup.number().when('team', {
         is: (val: Description) => Boolean(val),
         then: (schema) => schema.required(),
         otherwise: (schema) => schema.notRequired(),
     }),
 });
 
-type IProfile = yup.InferType<typeof ProfileSchema>;
+type IProfile = yup.InferType<typeof EventSchema>;
 
 export const PublishModal = ({ isOpen, onClose }: IModal) => {
     const { user } = useAuth();
+    const [isUpdating, setUpdating] = useToggle(false);
+    const router = useRouter();
+    const { id, pk } = router.query;
 
-    const handlePublish = async (info: IInfo) => {
-        return await apiHandler.patch('/user', {
-            displayName: info.name,
-            slug: info.slug,
-            isCollegeStudent: info.isCollegeStudent,
-            collegeName: info.collegeName,
-        });
-    };
     const form = useForm<IProfile>({
         defaultValues: {
-            ticketCount: 0,
+            maxTicketCount: 0,
             team: String(user?.isStudent) || '',
         },
     });
 
     const isCollegeEvent = form.watch('team') === 'true';
 
-    const handleUpdates: SubmitHandler<IProfile> = (data) => {
-        onClose();
+    const handleUpdates: SubmitHandler<IProfile> = async (payload) => {
+        try {
+            setUpdating.on();
+            // if event date is before end date
+            const isEventDateWrong = isBefore(payload.eventDate, payload.lastDate);
+            if (isEventDateWrong) {
+                toast.message('Date mismatch', {
+                    description: 'Registration end date should not be after event date',
+                });
+                return;
+            }
+            const { data } = await apiHandler.patch(`/events/edit`, {
+                ...payload,
+                organizationId: id,
+                eventId: pk,
+                maxTicketCount: Number(payload.maxTicketCount),
+                isPublished: true,
+            });
+        } catch {
+            toast.error('Error updating the event');
+        } finally {
+            setUpdating.off();
+            onClose();
+        }
     };
 
     return (
@@ -104,7 +123,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                         <div className="grid gap-4 py-4">
                             <FormField
                                 control={form.control}
-                                name="ticketCount"
+                                name="maxTicketCount"
                                 render={({ field }) => (
                                     <FormItem className="items-center ">
                                         <FormLabel>Maximum Ticket Count</FormLabel>
@@ -117,7 +136,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                             />
                             <FormField
                                 control={form.control}
-                                name="endDate"
+                                name="lastDate"
                                 render={({ field }) => (
                                     <FormItem className="items-start flex flex-col">
                                         <FormLabel>Registration end date</FormLabel>
@@ -144,10 +163,43 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                                                     mode="single"
                                                     selected={field.value}
                                                     onSelect={field.onChange}
-                                                    disabled={(date) =>
-                                                        date > new Date() ||
-                                                        date < new Date('1900-01-01')
-                                                    }
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="eventDate"
+                                render={({ field }) => (
+                                    <FormItem className="items-start flex flex-col">
+                                        <FormLabel>Event Date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        className={cn(
+                                                            'w-full  text-start font-normal text-black',
+                                                            !field.value && 'text-muted-foreground',
+                                                        )}
+                                                    >
+                                                        {field.value ? (
+                                                            format(field.value, 'PPP')
+                                                        ) : (
+                                                            <span>Pick a date</span>
+                                                        )}
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0 bg-white shadow-md">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={field.onChange}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
@@ -186,7 +238,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                                 <>
                                     <FormField
                                         control={form.control}
-                                        name="minTeam"
+                                        name="minTeamSize"
                                         render={({ field }) => (
                                             <FormItem className="items-center ">
                                                 <FormLabel>Minimum Team Size</FormLabel>
@@ -203,7 +255,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="maxTeam"
+                                        name="maxTeamSize"
                                         render={({ field }) => (
                                             <FormItem className="items-center ">
                                                 <FormLabel>Maximum Team Size</FormLabel>
@@ -223,7 +275,9 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                         </div>
 
                         <DialogFooter>
-                            <Button type="submit">Publish event</Button>
+                            <Button type="submit" isLoading={isUpdating}>
+                                Publish event
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>

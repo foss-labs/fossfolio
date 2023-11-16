@@ -41,35 +41,70 @@ export class EventsService {
         }
     }
 
-    // TODO
-    // Auth guard
-    // rbac access to admin and editor
     async updateEvent(payload: UpdateEventDto) {
         try {
-            return await this.prismaService.events.update({
+            const event = await this.prismaService.events.findUnique({
                 where: {
-                    id: payload.id,
-                },
-                data: {
-                    name: payload.name,
-                    website: payload.website,
-                    description: payload.description,
-                    lastDate: payload.lastDate,
-                    location: payload.location,
+                    organizationId: payload.organizationId,
+                    id: payload.eventId,
                 },
             });
-        } catch {
-            return null;
+
+            if (!event) {
+                throw new NotFoundException();
+            }
+
+            const data = await this.prismaService.events.update({
+                where: {
+                    organizationId: payload.organizationId,
+                    id: payload.eventId,
+                },
+                data: {
+                    name: payload.name || event.name,
+                    website: payload.website || event.website,
+                    location: payload.location || event.location,
+                    description: payload.description || event.description,
+                    lastDate: payload.lastDate || event.lastDate,
+                    isPublished: payload.isPublished || event.isPublished,
+                    maxTeamSize: payload.maxTeamSize || event.maxTeamSize,
+                    minTeamSize: payload.minTeamSize || event.minTeamSize,
+                    isCollegeEvent: payload.isCollegeEvent || event.isCollegeEvent,
+                    maxTicketCount: payload.maxTicketCount || event.maxTicketCount,
+                },
+            });
+
+            if (!data) {
+                throw new UnprocessableEntityException();
+            }
+
+            return {
+                ok: true,
+                message: 'Event was updated successfully',
+                data,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException({
+                    ok: false,
+                    message: e.message,
+                });
+            } else if (e instanceof UnprocessableEntityException) {
+                throw new UnprocessableEntityException({
+                    ok: false,
+                    message: e.message,
+                });
+            } else {
+                throw e; // Rethrow other exceptions
+            }
         }
     }
 
     async getAllEvents() {
         try {
-            // only need events that are not expired last date
             return await this.prismaService.events.findMany({
                 where: {
                     lastDate: {
-                        lte: new Date(),
+                        gte: new Date(),
                     },
                     isPublished: true,
                 },
@@ -125,8 +160,8 @@ export class EventsService {
                 throw new NotFoundException();
             }
 
-            const { description, maxTicketCount, eventDate } = data;
-            if (!description || !maxTicketCount || !eventDate) {
+            const { maxTicketCount, eventDate, lastDate } = data;
+            if (!maxTicketCount || !eventDate || !lastDate) {
                 throw new UnprocessableEntityException({
                     message: 'please provide all required information for event',
                 });
