@@ -1,7 +1,8 @@
+import { PageLoader } from '@app/components/preloaders';
 import { HomeLayout } from '@app/layout';
 
 export const Index = () => {
-    return <h1>Loading</h1>;
+    return <PageLoader />;
 };
 export async function getServerSideProps(ctx: any) {
     const accesToken = ctx.req.cookies['access_token'];

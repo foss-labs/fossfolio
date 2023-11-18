@@ -39,14 +39,6 @@ type IModal = {
     isOpen: boolean;
     onClose: () => void;
 };
-
-interface IInfo {
-    slug: string;
-    name: string;
-    isCollegeStudent?: boolean;
-    collegeName?: string;
-}
-
 type Description = 'true' | 'false';
 
 const EventSchema = yup.object().shape({
@@ -94,13 +86,14 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                 });
                 return;
             }
-            const { data } = await apiHandler.patch(`/events/edit`, {
+            await apiHandler.patch(`/events/edit`, {
                 ...payload,
                 organizationId: id,
                 eventId: pk,
                 maxTicketCount: Number(payload.maxTicketCount),
                 isPublished: true,
             });
+            toast.success('Event was published successfully');
         } catch {
             toast.error('Error updating the event');
         } finally {

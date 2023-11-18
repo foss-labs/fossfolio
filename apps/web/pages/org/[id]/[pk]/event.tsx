@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { toast } from 'sonner';
 import { useToggle } from '@app/hooks';
 import { PublishModal } from '@app/views/dashboard';
+import { useEffect } from 'react';
 const defaultEditorContent = {
     type: 'doc',
     content: [
@@ -47,6 +48,26 @@ const Event = () => {
         }
     };
 
+    useEffect(() => {
+        // removel description when ever component unmounts
+        () => localStorage.removeItem('novel_content');
+    }, []);
+
+    const handleUpdate = async () => {
+        try {
+            const input = localStorage.getItem('novel__content');
+            // if event date is before end date
+            const { data } = await apiHandler.patch(`/events/edit`, {
+                description: input,
+                organizationId: id,
+                eventId: pk,
+            });
+            localStorage.setItem(data.data.description, 'novel__content');
+        } catch {
+            console.warn('error updating event description');
+        }
+    };
+
     return (
         <div>
             <PublishModal isOpen={isOpen} onClose={triggerModal.off} />
@@ -56,10 +77,10 @@ const Event = () => {
                 </Button>
             </div>
             <Editor
-                onDebouncedUpdate={(e) => console.log(e)}
                 className="w-full"
                 defaultValue={defaultEditorContent}
                 completionApi={`${ENV.api_base}/ai/generate`}
+                onDebouncedUpdate={handleUpdate}
             />
         </div>
     );

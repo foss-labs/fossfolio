@@ -38,6 +38,9 @@ export const Events = () => {
                         id={el.id}
                         location={el.location}
                         website={el.website}
+                        lastDate={el.lastDate}
+                        eventDate={el.eventDate}
+                        isOrg
                     />
                 </div>
             ))}

@@ -196,4 +196,37 @@ export class EventsService {
             }
         }
     }
+
+    async getEventById(id) {
+        try {
+            const data = await this.prismaService.events.findUnique({
+                where: {
+                    id,
+                },
+            });
+
+            if (!data) {
+                throw new NotFoundException();
+            }
+            return {
+                ok: true,
+                message: 'event found successfully',
+                data,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException({
+                    ok: false,
+                    message: e.message,
+                });
+            } else if (e instanceof UnprocessableEntityException) {
+                throw new UnprocessableEntityException({
+                    ok: false,
+                    message: e.message,
+                });
+            } else {
+                throw e; // Rethrow other exceptions
+            }
+        }
+    }
 }

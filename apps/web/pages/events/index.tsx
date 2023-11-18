@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
-import { EventCard, PreLoader } from '@app/components/events';
+import { EventCard, PreLoader, NoData } from '@app/components/events';
 import { useAllEvents } from '@app/hooks/api/Events';
 
 const Events: NextPageWithLayout = () => {
@@ -15,7 +15,7 @@ const Events: NextPageWithLayout = () => {
             <div className="p-6 flex flex-col items-center">
                 <h1 className="text-center text-5xl">Find Events</h1>
                 <div className="flex justify-center items-center h-[70vh]">
-                    <h3 className="text-2xl">No Events Yet</h3>
+                    <NoData />
                 </div>
             </div>
         );
@@ -31,6 +31,8 @@ const Events: NextPageWithLayout = () => {
                         id={el.id}
                         location={el.location}
                         website={el.website}
+                        lastDate={el.lastDate}
+                        eventDate={el.eventDate}
                     />
                 ))}
             </div>

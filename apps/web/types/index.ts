@@ -31,8 +31,9 @@ type Organization = {
 };
 
 export interface IOrg {
-    count: number;
-    orgs: {
+    ok: boolean;
+    message: string;
+    data: {
         organization: Organization;
         role: Roles;
     }[];
@@ -55,4 +56,6 @@ export interface OrgEvents {
     updatedAt: Date;
     isPublished: boolean;
     description: JSON | null;
+    lastDate: Date;
+    eventDate: Date;
 }

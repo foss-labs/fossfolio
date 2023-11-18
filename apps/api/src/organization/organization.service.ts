@@ -67,7 +67,7 @@ export class OrganizationService {
     }
 
     async findOrgsByUser(uid: string) {
-        const orgs = await this.prismaService.organizationMember.findMany({
+        const data = await this.prismaService.organizationMember.findMany({
             where: {
                 userUid: uid,
             },
@@ -86,11 +86,10 @@ export class OrganizationService {
             },
         });
 
-        const count = await this.prismaService.organizationMember.count();
-
         return {
-            count,
-            orgs,
+            ok: true,
+            message: 'orgs found successfully',
+            data,
         };
     }
     async deleteOrg(id: string) {

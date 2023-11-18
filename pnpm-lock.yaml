@@ -245,8 +245,8 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1(next@13.2.3)(react-dom@18.2.0)(react@18.2.0)
       novel:
-        specifier: ^0.1.20
-        version: 0.1.20(@babel/core@7.22.15)(react@18.2.0)(solid-js@1.7.11)(svelte@4.2.0)(vue@3.3.4)
+        specifier: ^0.1.22
+        version: 0.1.22(@babel/core@7.22.15)(react@18.2.0)(solid-js@1.7.11)(svelte@4.2.0)(vue@3.3.4)
       nprogress:
         specifier: ^0.2.0
         version: 0.2.0
@@ -15318,8 +15318,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /novel@0.1.20(@babel/core@7.22.15)(react@18.2.0)(solid-js@1.7.11)(svelte@4.2.0)(vue@3.3.4):
-    resolution: {integrity: sha512-L5p9hzdOgPx7V4tR+Uvwu34u5/l+2Iuqrd8AoxQAOxJjTzy4RgB4Yy0Pv729PByQbDflc4bIOCuPRHx+FA4yWw==}
+  /novel@0.1.22(@babel/core@7.22.15)(react@18.2.0)(solid-js@1.7.11)(svelte@4.2.0)(vue@3.3.4):
+    resolution: {integrity: sha512-hdZ3iV4kvCISNjRNXqQk6fRVkMZmvzWjA3zXM1bU2SXVEufBxZL+77qsdEK/XETkJkeEdQl0mk8ERwLiL0BvRg==}
     peerDependencies:
       react: ^18.2.0
     dependencies:

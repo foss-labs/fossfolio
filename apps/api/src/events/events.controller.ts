@@ -16,6 +16,12 @@ export class EventsController {
     async getAllEvents() {
         return await this.events.getAllEvents();
     }
+    @Get('/:eventId')
+    @ApiOperation({ summary: 'returns all upcoming events' })
+    async getEventByID(@Param('eventId') id: string) {
+        return await this.events.getEventById(id);
+    }
+
     @Post('/create')
     @ApiOperation({ summary: 'create new events' })
     @Roles('ADMIN', 'EDITOR')
