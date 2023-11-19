@@ -28,6 +28,10 @@ type Organization = {
     slug: string;
     createdAt: Date;
     updatedAt: Date;
+    _count: {
+        members: number;
+        events: number;
+    };
 };
 
 export interface IOrg {

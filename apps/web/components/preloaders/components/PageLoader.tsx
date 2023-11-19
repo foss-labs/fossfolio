@@ -1,4 +1,3 @@
-import React from 'react';
 import { MainNav } from '@app/layout/components/MainNav';
 import dynamic from 'next/dynamic';
 const Lottie = dynamic(() => import('react-lottie'), { ssr: false });

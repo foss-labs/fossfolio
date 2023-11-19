@@ -65,7 +65,6 @@ const Event = () => {
                 organizationId: id,
                 eventId: pk,
             });
-            localStorage.setItem('novel__content', data.data.description);
         } catch {
             console.warn('error updating event description');
         }

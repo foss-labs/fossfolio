@@ -1,4 +1,3 @@
-import React from 'react';
 import { Skeleton } from '@app/ui/components/skeleton';
 
 export const OrgLoader = () => {

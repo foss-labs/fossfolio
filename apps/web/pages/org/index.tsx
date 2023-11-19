@@ -42,6 +42,8 @@ const Index: NextPageWithLayout = () => {
                                 name={el.organization.name}
                                 id={el.organization.id}
                                 key={el.organization.id}
+                                events={el.organization._count.events}
+                                members={el.organization._count.members}
                             />
                         ))}
                     </>

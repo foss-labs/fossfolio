@@ -45,9 +45,6 @@ export const useEvent = (type: Fetch = 'event') => {
         queryFn: () => getEvent(Id),
         // query is disabled until the query param is available
         enabled: !!Id,
-        initialData: () => {
-            return queryClient.getQueryData(['events', Id]);
-        },
     });
 
     return events;
