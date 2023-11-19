@@ -17,7 +17,7 @@ const Event: NextPageWithLayout = () => {
                 </section>
                 <Editor
                     className="w-full"
-                    defaultValue={data.data.description as JSON}
+                    defaultValue={JSON.parse(data.data.description as string)}
                     completionApi={`${ENV.api_base}/ai/generate`}
                     editorProps={{
                         editable: () => false,

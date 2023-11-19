@@ -52,7 +52,7 @@ export function EventCard({
 
                     <div className="flex items-center">
                         <BsCalendarDate className="mr-1 h-3 w-3" />
-                        Last date: {format(new Date(lastDate), 'MM/dd/yyyy')}
+                        Last date: {format(new Date(lastDate), 'dd/MM/yyyy')}
                     </div>
                 </div>
                 {!isOrg ? (

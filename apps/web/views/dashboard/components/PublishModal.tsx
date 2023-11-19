@@ -41,7 +41,7 @@ type IModal = {
 };
 type Description = 'true' | 'false';
 
-const EventSchema = yup.object().shape({
+export const EventSchema = yup.object().shape({
     maxTicketCount: yup.number().required(),
     lastDate: yup.date().required(),
     eventDate: yup.date().required(),
@@ -58,7 +58,7 @@ const EventSchema = yup.object().shape({
     }),
 });
 
-type IProfile = yup.InferType<typeof EventSchema>;
+export type IProfile = yup.InferType<typeof EventSchema>;
 
 export const PublishModal = ({ isOpen, onClose }: IModal) => {
     const { user } = useAuth();
@@ -85,6 +85,14 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                     description: 'Registration end date should not be after event date',
                 });
                 return;
+            } else if (
+                isBefore(payload.eventDate, new Date()) ||
+                isBefore(payload.lastDate, new Date())
+            ) {
+                toast.message('Date mismatch', {
+                    description: 'Registration end date or event date should be after todays date',
+                });
+                return;
             }
             await apiHandler.patch(`/events/edit`, {
                 ...payload,
@@ -92,6 +100,8 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                 eventId: pk,
                 maxTicketCount: Number(payload.maxTicketCount),
                 isPublished: true,
+                maxTeamSize: Number(payload.maxTeamSize),
+                minTeamSize: Number(payload.minTeamSize),
             });
             toast.success('Event was published successfully');
         } catch {

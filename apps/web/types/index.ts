@@ -55,7 +55,10 @@ export interface OrgEvents {
     createdAt: Date;
     updatedAt: Date;
     isPublished: boolean;
-    description: JSON | null;
+    description: string | null;
     lastDate: Date;
     eventDate: Date;
+    maxTickerCount?: number;
+    minTicketCount?: number;
+    isCollegeEvent?: boolean;
 }

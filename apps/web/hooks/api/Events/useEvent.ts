@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, QueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
-import type { OrgEvents, Roles } from '@app/types';
+import type { OrgEvents } from '@app/types';
 
 type IData = {
     data: OrgEvents;
@@ -15,14 +15,27 @@ const getEvent = async (id: string) => {
     return data;
 };
 
-export const useEvent = () => {
+type Fetch = 'event' | 'org';
+
+export const useEvent = (type: Fetch = 'event') => {
     const router = useRouter();
     const [Id, setId] = useState('');
     const orgEventQueryKey = ['events', Id];
+
+    const queryClient = new QueryClient();
     useEffect(() => {
+        // id is the primary key of event in events page
+        // pk is the primary key of event in org dashboard page
+
         if (router.isReady) {
-            const { id } = router.query;
-            setId(id as string);
+            // this is done to reuse same function event info page and org dashboard
+            const { id, pk } = router.query;
+            if (type === 'event') {
+                setId(id as string);
+            }
+            if (type === 'org') {
+                setId(pk as string);
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.isReady]);
@@ -32,6 +45,9 @@ export const useEvent = () => {
         queryFn: () => getEvent(Id),
         // query is disabled until the query param is available
         enabled: !!Id,
+        initialData: () => {
+            return queryClient.getQueryData(['events', Id]);
+        },
     });
 
     return events;
