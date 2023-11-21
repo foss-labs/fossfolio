@@ -6,6 +6,9 @@ import { RbacGuard } from 'src/organization/guards/rbac-member.guard';
 import { Roles } from 'src/organization/decorators/roles.decorator';
 import { ApiOperation } from '@nestjs/swagger';
 import { UpdateEventDto } from './dto/updtate-event.dto';
+import { RegisterEventDto } from './dto/register-event.dto';
+import { AuthUser } from 'src/auth/decorators/user.decorator';
+import { User } from '@prisma/client';
 
 @Controller('events')
 export class EventsController {
@@ -43,5 +46,12 @@ export class EventsController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async updateNewEvent(@Body() data: UpdateEventDto) {
         return await this.events.updateEvent(data);
+    }
+
+    @Post('/register')
+    @ApiOperation({ summary: 'Register for specific event' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async registerEvent(@Body() data: RegisterEventDto, @AuthUser() user: User) {
+        return await this.events.registerEvent(data.eventId, user.uid);
     }
 }

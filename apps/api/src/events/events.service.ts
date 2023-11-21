@@ -65,10 +65,14 @@ export class EventsService {
                     location: payload.location || event.location,
                     description: payload.description || event.description,
                     lastDate: payload.lastDate || event.lastDate,
-                    isPublished: payload.isPublished || event.isPublished,
+                    isPublished: payload.hasOwnProperty('isPublished')
+                        ? payload.isPublished
+                        : event.isPublished,
                     maxTeamSize: payload.maxTeamSize || event.maxTeamSize,
                     minTeamSize: payload.minTeamSize || event.minTeamSize,
-                    isCollegeEvent: payload.isCollegeEvent || event.isCollegeEvent,
+                    isCollegeEvent: payload.hasOwnProperty('isCollegeEvent')
+                        ? payload.isCollegeEvent
+                        : event.isCollegeEvent,
                     maxTicketCount: payload.maxTicketCount || event.maxTicketCount,
                 },
             });
@@ -226,6 +230,31 @@ export class EventsService {
                 });
             } else {
                 throw e; // Rethrow other exceptions
+            }
+        }
+    }
+
+    async registerEvent(eventId, userId) {
+        try {
+            const data = await this.prismaService.events.update({
+                where: {
+                    id: eventId,
+                },
+                data: {
+                    registeredUsers: {
+                        create: userId,
+                    },
+                },
+            });
+
+            if (!data) {
+                throw new NotFoundException();
+            }
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                throw e;
             }
         }
     }

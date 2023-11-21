@@ -5,9 +5,17 @@ import { HomeLayout } from '@app/layout';
 import { NextPageWithLayout } from 'next';
 import { Editor } from 'novel';
 import { RiLoaderFill } from 'react-icons/ri';
+import { toast } from 'sonner';
 
 const Event: NextPageWithLayout = () => {
     const { data } = useEvent();
+
+    const registerEvent = async () => {
+        try {
+        } catch {
+            toast.error('Error registering event please try again later');
+        }
+    };
 
     if (data) {
         return (

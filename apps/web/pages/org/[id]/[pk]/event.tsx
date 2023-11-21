@@ -1,14 +1,15 @@
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { Editor } from 'novel';
+import { toast } from 'sonner';
+import { RiLoaderFill } from 'react-icons/ri';
+import { useMutation, QueryClient } from '@tanstack/react-query';
+import { useToggle } from '@app/hooks';
 import { DashboardLayout } from '@app/layout';
 import { ENV, apiHandler } from '@app/config';
-import { Button } from '@app/components/ui/Button';
-import { useRouter } from 'next/router';
-import { toast } from 'sonner';
-import { useToggle } from '@app/hooks';
 import { PublishModal } from '@app/views/dashboard';
-import { useEffect } from 'react';
 import { useEvent } from '@app/hooks/api/Events';
-import { RiLoaderFill } from 'react-icons/ri';
+import { Button } from '@app/components/ui/Button';
 
 const defaultEditorContent = {
     type: 'doc',
@@ -22,18 +23,18 @@ const defaultEditorContent = {
 };
 
 const Event = () => {
-    const [isPublishing, setPublishing] = useToggle(false);
     const [isOpen, triggerModal] = useToggle(false);
-    const { data, isLoading } = useEvent('org');
+    const { data, isLoading, refetch } = useEvent('org');
     const router = useRouter();
+    const queryClient = new QueryClient();
     const { id, pk } = router.query;
 
     const publishEvent = async () => {
         try {
-            setPublishing.on();
-            const { status } = await apiHandler.get(`/events/publish/${id}/${pk}`);
+            const { status, data } = await apiHandler.get(`/events/publish/${id}/${pk}`);
             if (status === 200) {
                 toast.success('Event was published successfully');
+                return data;
             } else {
                 throw new Error();
             }
@@ -46,8 +47,6 @@ const Event = () => {
             } else {
                 toast.error('something went wrong');
             }
-        } finally {
-            setPublishing.off();
         }
     };
 
@@ -60,7 +59,7 @@ const Event = () => {
         try {
             const input = localStorage.getItem('novel__content');
             // if event date is before end date
-            const { data } = await apiHandler.patch(`/events/edit`, {
+            await apiHandler.patch(`/events/edit`, {
                 description: input,
                 organizationId: id,
                 eventId: pk,
@@ -68,6 +67,44 @@ const Event = () => {
         } catch {
             console.warn('error updating event description');
         }
+    };
+
+    const unPublishEvent = async () => {
+        try {
+            const response = await apiHandler.patch(`/events/edit`, {
+                isPublished: false,
+                organizationId: id,
+                eventId: pk,
+            });
+
+            return response.data || null;
+        } catch (error) {
+            console.error('Error unpublishing event');
+            throw error;
+        }
+    };
+
+    const { mutate: unPublish, isLoading: isUnPublishing } = useMutation(unPublishEvent, {
+        onSuccess: () => {
+            refetch();
+            toast.success('event was UnPublished successfully');
+        },
+        onError: () => {
+            toast.error('Error unpublishing event');
+        },
+    });
+    const { mutate: publish, isLoading: isPublishing } = useMutation(publishEvent, {
+        onSuccess: () => {
+            refetch();
+        },
+    });
+
+    const handleUnPublishClick = () => {
+        unPublish();
+    };
+
+    const handlePublishClick = () => {
+        publish();
     };
 
     if (isLoading) {
@@ -83,11 +120,11 @@ const Event = () => {
             <PublishModal isOpen={isOpen} onClose={triggerModal.off} />
             <div className="flex justify-end">
                 {!data?.data.isPublished ? (
-                    <Button size="sm" onClick={publishEvent} isLoading={isPublishing}>
+                    <Button size="sm" onClick={handlePublishClick} isLoading={isPublishing}>
                         Publish Event
                     </Button>
                 ) : (
-                    <Button size="sm" onClick={publishEvent} isLoading={isPublishing}>
+                    <Button size="sm" onClick={handleUnPublishClick} isLoading={isUnPublishing}>
                         UnPublish Event
                     </Button>
                 )}

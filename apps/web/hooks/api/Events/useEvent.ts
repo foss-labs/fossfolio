@@ -45,6 +45,9 @@ export const useEvent = (type: Fetch = 'event') => {
         queryFn: () => getEvent(Id),
         // query is disabled until the query param is available
         enabled: !!Id,
+        onSuccess: (data) => {
+            localStorage.setItem('novel__content', data.data.description as string);
+        },
     });
 
     return events;
