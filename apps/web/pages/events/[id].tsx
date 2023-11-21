@@ -1,20 +1,35 @@
 import { Button } from '@app/components/ui/Button';
-import { ENV } from '@app/config';
+import { ENV, apiHandler } from '@app/config';
 import { useEvent } from '@app/hooks/api/Events';
 import { HomeLayout } from '@app/layout';
+import { useMutation } from '@tanstack/react-query';
 import { NextPageWithLayout } from 'next';
+import { useRouter } from 'next/router';
 import { Editor } from 'novel';
 import { RiLoaderFill } from 'react-icons/ri';
 import { toast } from 'sonner';
 
 const Event: NextPageWithLayout = () => {
-    const { data } = useEvent();
+    const { data, refetch } = useEvent();
+    const router = useRouter();
+    // pk of event
+    const { id } = router.query;
 
     const registerEvent = async () => {
-        try {
-        } catch {
-            toast.error('Error registering event please try again later');
-        }
+        return await apiHandler.patch('/events/register', {
+            eventId: id,
+        });
+    };
+
+    const { isLoading, mutate } = useMutation(registerEvent, {
+        onSuccess: () => {
+            toast.success('successfully registered for event');
+            refetch();
+        },
+    });
+
+    const register = () => {
+        mutate();
     };
 
     if (data) {
@@ -31,7 +46,9 @@ const Event: NextPageWithLayout = () => {
                         editable: () => false,
                     }}
                 />
-                <Button className="ml-10 px-6">Register</Button>
+                <Button className="ml-10 px-6" isLoading={isLoading} onClick={register}>
+                    Register
+                </Button>
             </div>
         );
     } else {
