@@ -30,4 +30,10 @@ export class UserController {
     async updateUser(@Body() updateUserDto: UpdateUserDto, @AuthUser() user: User) {
         return this.userService.updateUser(user, updateUserDto);
     }
+
+    @Get('/tickets')
+    @UseGuards(AuthGuard('jwt'))
+    async getUserTickets(@AuthUser() user: User) {
+        return this.userService.getReservedTickets(user.uid);
+    }
 }
