@@ -54,4 +54,19 @@ export class EventsController {
     async registerEvent(@Body() data: RegisterEventDto, @AuthUser() user: User) {
         return await this.events.registerEvent(data.eventId, user.uid);
     }
+
+    @Get('/participants/:orgID/:id')
+    @Roles('ADMIN', 'EDITOR', 'VIEWER')
+    @ApiOperation({ summary: 'Get all participants of events' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getregisterDParticipants(@Param('id') id: string, @AuthUser() user: User) {
+        return await this.events.getEventParticipants(id);
+    }
+
+    @Get('/status/:id')
+    @ApiOperation({ summary: 'Get if participant is registerd for event or not' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getUserEventStatus(@Param('id') id: string, @AuthUser() user: User) {
+        return await this.events.getEventRegistartionStatus(id, user.uid);
+    }
 }

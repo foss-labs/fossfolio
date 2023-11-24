@@ -48,9 +48,16 @@ export const UserNav = () => {
                         >
                             Profile
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <Link href="/org">Organize Events</Link>
-                        </DropdownMenuItem>
+                        <Link href="/org" className="!hover:cursor-pointer">
+                            <DropdownMenuItem className="!hover:cursor-pointer">
+                                Organize Events
+                            </DropdownMenuItem>
+                        </Link>
+                        <Link href="/tickets" className="!hover:cursor-pointer">
+                            <DropdownMenuItem className="!hover:cursor-pointer">
+                                My Tickets
+                            </DropdownMenuItem>
+                        </Link>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={logOut} className="hover:cursor-pointer">

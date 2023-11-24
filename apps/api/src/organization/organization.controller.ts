@@ -58,4 +58,10 @@ export class OrganizationController {
     async leaveOrg(@AuthUser() user: User, @Body() body: LeaveOrg) {
         return this.organizationService.leaveOrg(body.organizationId, user.uid);
     }
+
+    @Patch('/update')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async UpdateOrg(@Body() data: UpdateOrgDto) {
+        return await this.organizationService.UpdateOrg(data.organizationId, data);
+    }
 }

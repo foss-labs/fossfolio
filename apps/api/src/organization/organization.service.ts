@@ -4,6 +4,7 @@ import { CreateOrgDto } from './dto/create-org.dto';
 import { ORG_EXISTS, ORG_NOT_FOUND } from 'src/error';
 import { UpdateOrgDto } from './dto/update-org.dto';
 import { Role } from '@prisma/client';
+import { date } from 'joi';
 
 @Injectable()
 export class OrganizationService {
@@ -200,4 +201,37 @@ export class OrganizationService {
             }
         }
     }
+    async UpdateOrg(id: string, payload: Data) {
+        try {
+            const data = await this.prismaService.organization.update({
+                where: {
+                    id,
+                },
+                data: {
+                    name: payload.name,
+                    slug: payload.slug,
+                },
+            });
+
+            if (!data) {
+                throw new NotFoundException();
+            }
+            return {
+                ok: true,
+                message: 'Org was updated successfully',
+                data,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
 }
+
+type Data = {
+    slug: string;
+    name: string;
+};

@@ -1,4 +1,4 @@
-import { useQuery, QueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
@@ -22,7 +22,6 @@ export const useEvent = (type: Fetch = 'event') => {
     const [Id, setId] = useState('');
     const orgEventQueryKey = ['events', Id];
 
-    const queryClient = new QueryClient();
     useEffect(() => {
         // id is the primary key of event in events page
         // pk is the primary key of event in org dashboard page

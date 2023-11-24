@@ -27,6 +27,7 @@ import { apiHandler } from '@app/config';
 import { useAuth, useRoles } from '@app/hooks';
 import * as yup from 'yup';
 import { isProd } from '@app/utils';
+import { RiLoaderFill } from 'react-icons/ri';
 
 enum Roles {
     Admin = 'ADMIN',
@@ -101,7 +102,6 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                             className="w-60"
                                         />
                                     </FormControl>
-                                    <FormMessage className="text-xs text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -137,7 +137,9 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                 </form>
             </Form>
             {isLoading ? (
-                <h1>Loading</h1>
+                <div className="h-[50vh] flex justify-center items-center">
+                    <RiLoaderFill className="animate-spin h-8 w-8" />
+                </div>
             ) : (
                 <Table className="border-2 border-[#E9D7FE] rounded-full">
                     <TableHeader className="bg-[#F9FAFB] rounded-lg">

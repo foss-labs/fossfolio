@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Editor } from 'novel';
 import { toast } from 'sonner';
 import { RiLoaderFill } from 'react-icons/ri';
-import { useMutation, QueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useToggle } from '@app/hooks';
 import { DashboardLayout } from '@app/layout';
 import { ENV, apiHandler } from '@app/config';
@@ -26,7 +26,6 @@ const Event = () => {
     const [isOpen, triggerModal] = useToggle(false);
     const { data, isLoading, refetch } = useEvent('org');
     const router = useRouter();
-    const queryClient = new QueryClient();
     const { id, pk } = router.query;
 
     const publishEvent = async () => {

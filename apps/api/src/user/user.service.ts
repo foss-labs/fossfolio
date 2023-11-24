@@ -109,7 +109,9 @@ export class UserService {
                     displayName: updateUserDto.displayName
                         ? updateUserDto.displayName
                         : authUser.displayName,
-                    isStudent: updateUserDto.isCollegeStudent || authUser.isStudent,
+                    isStudent: updateUserDto.hasOwnProperty('isCollegeStudent')
+                        ? updateUserDto.isCollegeStudent
+                        : authUser.isStudent,
                     collegeName: updateUserDto.collegeName || authUser.collegeName,
                 },
             });

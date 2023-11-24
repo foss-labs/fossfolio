@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    ServiceUnavailableException,
+    UnprocessableEntityException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
@@ -201,7 +206,7 @@ export class EventsService {
         }
     }
 
-    async getEventById(id) {
+    async getEventById(id: string) {
         try {
             const data = await this.prismaService.events.findUnique({
                 where: {
@@ -234,15 +239,26 @@ export class EventsService {
         }
     }
 
-    async registerEvent(eventId, userId) {
+    async registerEvent(eventId: string, userId: string) {
         try {
+            const eventInfo = await this.prismaService.events.findUnique({
+                where: {
+                    id: eventId,
+                },
+            });
+
+            if (eventInfo.maxTicketCount <= 0) {
+                throw new ServiceUnavailableException();
+            }
             const data = await this.prismaService.events.update({
                 where: {
                     id: eventId,
                 },
                 data: {
                     registeredUsers: {
-                        create: userId,
+                        connect: {
+                            uid: userId,
+                        },
                     },
                 },
             });
@@ -253,8 +269,78 @@ export class EventsService {
         } catch (e) {
             if (e instanceof NotFoundException) {
                 throw new NotFoundException();
+            } else if (e instanceof ServiceUnavailableException) {
+                throw new ServiceUnavailableException();
             } else {
                 throw e;
+            }
+        }
+    }
+
+    async getEventParticipants(id: string) {
+        try {
+            const data = await this.prismaService.events.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    registeredUsers: {
+                        select: {
+                            uid: true,
+                            displayName: true,
+                            collegeName: true,
+                            photoURL: true,
+                            isStudent: true,
+                            email: true,
+                        },
+                    },
+                },
+            });
+            if (!data) {
+                throw new NotFoundException();
+            }
+            return {
+                ok: true,
+                message: 'members found successfully',
+                data: data.registeredUsers,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
+    async getEventRegistartionStatus(eventId, userId) {
+        try {
+            const data = await this.prismaService.events.findUnique({
+                where: {
+                    id: eventId,
+                },
+                select: {
+                    registeredUsers: {
+                        where: {
+                            uid: userId,
+                        },
+                    },
+                },
+            });
+
+            if (!data || !data.registeredUsers.length) {
+                throw new NotFoundException();
+            }
+
+            return {
+                ok: true,
+                message: 'User found successfully',
+                isRegistred: true,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                return e;
             }
         }
     }

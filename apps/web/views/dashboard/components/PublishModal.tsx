@@ -9,6 +9,7 @@ import {
 import { useAuth, useToggle } from '@app/hooks';
 import { toast } from 'sonner';
 import { Input } from '@app/ui/components/input';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@app/components/ui/Button';
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -71,6 +72,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
             maxTicketCount: 0,
             team: String(user?.isStudent) || '',
         },
+        resolver: yupResolver(EventSchema),
     });
 
     const isCollegeEvent = form.watch('team') === 'true';

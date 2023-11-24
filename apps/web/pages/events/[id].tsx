@@ -1,6 +1,6 @@
 import { Button } from '@app/components/ui/Button';
 import { ENV, apiHandler } from '@app/config';
-import { useEvent } from '@app/hooks/api/Events';
+import { useEvent, useUserRegistartionStatus } from '@app/hooks/api/Events';
 import { HomeLayout } from '@app/layout';
 import { useMutation } from '@tanstack/react-query';
 import { NextPageWithLayout } from 'next';
@@ -11,12 +11,13 @@ import { toast } from 'sonner';
 
 const Event: NextPageWithLayout = () => {
     const { data, refetch } = useEvent();
+    const { data: dt, refetch: refetchStatus } = useUserRegistartionStatus();
     const router = useRouter();
     // pk of event
     const { id } = router.query;
 
     const registerEvent = async () => {
-        return await apiHandler.patch('/events/register', {
+        return await apiHandler.post('/events/register', {
             eventId: id,
         });
     };
@@ -25,6 +26,7 @@ const Event: NextPageWithLayout = () => {
         onSuccess: () => {
             toast.success('successfully registered for event');
             refetch();
+            refetchStatus();
         },
     });
 
@@ -46,9 +48,11 @@ const Event: NextPageWithLayout = () => {
                         editable: () => false,
                     }}
                 />
-                <Button className="ml-10 px-6" isLoading={isLoading} onClick={register}>
-                    Register
-                </Button>
+                {!dt?.isRegistred && (
+                    <Button className="ml-10 px-6" isLoading={isLoading} onClick={register}>
+                        Register
+                    </Button>
+                )}
             </div>
         );
     } else {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Members } from '@app/components/table';
@@ -20,6 +20,10 @@ import { Input } from '@app/ui/components/input';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
 import { Button } from '@app/components/ui/Button';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { apiHandler } from '@app/config';
+import { useRouter } from 'next/router';
+import { toast } from 'sonner';
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -39,6 +43,8 @@ const Org: NextPageWithLayout = () => {
     const [inviteLink, setInviteLink] = useState('');
     const [isOpen, toggleOpen] = useToggle();
     const { canDeleteOrg } = useRoles();
+    const router = useRouter();
+    const { id } = router.query;
     // api is only called when tab becomes settings
     const { data, isLoading } = useOrgInfo(activeTab === 'settings');
     const form = useForm<IOrgVal>({
@@ -46,11 +52,29 @@ const Org: NextPageWithLayout = () => {
             orgName: data?.data.name,
             slug: data?.data.slug,
         },
+        resolver: yupResolver(orgValidator),
     });
 
-    const handleOrgUpdate: SubmitHandler<IOrgVal> = (changes) => {
+    useEffect(() => {
+        if (data) {
+            form.setValue('orgName', data?.data.name as string);
+            form.setValue('slug', data?.data.slug as string);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
+
+    const handleOrgUpdate: SubmitHandler<IOrgVal> = async (changes) => {
         // handle update with api call
-        console.log(changes);
+        try {
+            await apiHandler.patch('/org/update', {
+                organizationId: id,
+                name: changes.orgName,
+                slug: changes.slug,
+            });
+            toast.success('Org was updated successfully');
+        } catch {
+            toast.error('Couldnt update org');
+        }
     };
 
     return (
