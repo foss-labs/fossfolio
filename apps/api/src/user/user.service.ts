@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Profile } from 'passport';
 import { USER_UPDATE_ERROR } from 'src/error';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -109,13 +109,49 @@ export class UserService {
                     displayName: updateUserDto.displayName
                         ? updateUserDto.displayName
                         : authUser.displayName,
-                    isStudent: updateUserDto.isCollegeStudent || authUser.isStudent,
+                    isStudent: updateUserDto.hasOwnProperty('isCollegeStudent')
+                        ? updateUserDto.isCollegeStudent
+                        : authUser.isStudent,
                     collegeName: updateUserDto.collegeName || authUser.collegeName,
                 },
             });
             return user;
         } catch (error) {
             return USER_UPDATE_ERROR;
+        }
+    }
+
+    async getReservedTickets(id: string) {
+        try {
+            const data = await this.prismaService.user.findUnique({
+                where: {
+                    uid: id,
+                },
+                select: {
+                    registeredEventsId: {
+                        select: {
+                            name: true,
+                            eventDate: true,
+                            location: true,
+                            id: true,
+                        },
+                    },
+                },
+            });
+            if (!data) {
+                throw new NotFoundException();
+            }
+            return {
+                ok: true,
+                message: 'Ticket found successfully',
+                data,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                return e;
+            }
         }
     }
 

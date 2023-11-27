@@ -5,16 +5,40 @@ export class UpdateEventDto {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    id: string;
+    organizationId: string;
 
     @ApiProperty()
-    name?: string;
+    @IsString()
+    @IsNotEmpty()
+    eventId: string;
+
     @ApiProperty()
-    description?: string;
+    name: string;
+
     @ApiProperty()
-    website?: string;
+    description?: Record<string, string>;
+
     @ApiProperty()
-    location?: string;
+    website: string;
+
     @ApiProperty()
-    lastDate?: Date;
+    location: string;
+
+    @ApiProperty()
+    lastDate: Date;
+
+    @ApiProperty()
+    isPublished: boolean;
+
+    @ApiProperty()
+    maxTeamSize: number;
+
+    @ApiProperty()
+    minTeamSize: number;
+
+    @ApiProperty()
+    isCollegeEvent: boolean;
+
+    @ApiProperty()
+    maxTicketCount: number;
 }

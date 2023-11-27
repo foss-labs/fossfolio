@@ -28,11 +28,16 @@ type Organization = {
     slug: string;
     createdAt: Date;
     updatedAt: Date;
+    _count: {
+        members: number;
+        events: number;
+    };
 };
 
 export interface IOrg {
-    count: number;
-    orgs: {
+    ok: boolean;
+    message: string;
+    data: {
         organization: Organization;
         role: Roles;
     }[];
@@ -54,5 +59,10 @@ export interface OrgEvents {
     createdAt: Date;
     updatedAt: Date;
     isPublished: boolean;
-    description: JSON | null;
+    description: string | null;
+    lastDate: Date;
+    eventDate: Date;
+    maxTickerCount?: number;
+    minTicketCount?: number;
+    isCollegeEvent?: boolean;
 }

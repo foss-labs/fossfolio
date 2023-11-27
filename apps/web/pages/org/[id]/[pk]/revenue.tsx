@@ -1,9 +1,10 @@
 import { DashboardLayout } from '@app/layout';
+import { ComingSoon } from '@app/views/dashboard';
 
 const revenue = () => {
     return (
-        <div className="flex justify-center items-center h-screen">
-            <h1 className="text-2xl">COMING SOON</h1>
+        <div className="flex justify-center items-center h-screen ">
+            <ComingSoon />
         </div>
     );
 };

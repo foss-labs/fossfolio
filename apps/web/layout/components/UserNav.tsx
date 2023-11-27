@@ -12,11 +12,11 @@ import { Avatar, AvatarImage, AvatarFallback } from '@app/ui/components/avatar';
 import { Button } from '@app/ui/components/button';
 import { useAuth, useToggle } from '@app/hooks';
 import { ProfileModal } from '@app/views/profile';
-import { useLogOut } from "@app/hooks/api/Auth"
+import { useLogOut } from '@app/hooks/api/Auth';
 
 export const UserNav = () => {
-    const { logOut } = useLogOut()
-    const { user } = useAuth()
+    const { logOut } = useLogOut();
+    const { user } = useAuth();
     const [isOpen, triggerModal] = useToggle(false);
 
     return (
@@ -42,13 +42,27 @@ export const UserNav = () => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <DropdownMenuItem onClick={triggerModal.on} className="hover:cursor-pointer">Profile</DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <Link href="/org">Organize Events</Link>
+                        <DropdownMenuItem
+                            onClick={triggerModal.on}
+                            className="hover:cursor-pointer"
+                        >
+                            Profile
                         </DropdownMenuItem>
+                        <Link href="/org" className="!hover:cursor-pointer">
+                            <DropdownMenuItem className="!hover:cursor-pointer">
+                                Organize Events
+                            </DropdownMenuItem>
+                        </Link>
+                        <Link href="/tickets" className="!hover:cursor-pointer">
+                            <DropdownMenuItem className="!hover:cursor-pointer">
+                                My Tickets
+                            </DropdownMenuItem>
+                        </Link>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={logOut} className="hover:cursor-pointer">Log out</DropdownMenuItem>
+                    <DropdownMenuItem onClick={logOut} className="hover:cursor-pointer">
+                        Log out
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </>

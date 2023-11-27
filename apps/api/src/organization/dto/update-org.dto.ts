@@ -11,4 +11,9 @@ export class UpdateOrgDto {
     @IsString()
     @IsNotEmpty()
     name: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    slug: string;
 }

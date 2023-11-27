@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrgDto } from './dto/create-org.dto';
 import { ORG_EXISTS, ORG_NOT_FOUND } from 'src/error';
 import { UpdateOrgDto } from './dto/update-org.dto';
 import { Role } from '@prisma/client';
+import { date } from 'joi';
 
 @Injectable()
 export class OrganizationService {
@@ -67,7 +68,7 @@ export class OrganizationService {
     }
 
     async findOrgsByUser(uid: string) {
-        const orgs = await this.prismaService.organizationMember.findMany({
+        const data = await this.prismaService.organizationMember.findMany({
             where: {
                 userUid: uid,
             },
@@ -86,11 +87,10 @@ export class OrganizationService {
             },
         });
 
-        const count = await this.prismaService.organizationMember.count();
-
         return {
-            count,
-            orgs,
+            ok: true,
+            message: 'orgs found successfully',
+            data,
         };
     }
     async deleteOrg(id: string) {
@@ -174,4 +174,64 @@ export class OrganizationService {
             });
         } catch {}
     }
+
+    async getOrgById(orgId: string) {
+        try {
+            const data = await this.prismaService.organization.findUnique({
+                where: {
+                    id: orgId,
+                },
+            });
+
+            if (!data) {
+                throw new NotFoundException();
+            }
+
+            return {
+                ok: true,
+                message: 'org found successfully',
+                data,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException({
+                    ok: false,
+                    message: e.message || 'error loading organization',
+                });
+            }
+        }
+    }
+    async UpdateOrg(id: string, payload: Data) {
+        try {
+            const data = await this.prismaService.organization.update({
+                where: {
+                    id,
+                },
+                data: {
+                    name: payload.name,
+                    slug: payload.slug,
+                },
+            });
+
+            if (!data) {
+                throw new NotFoundException();
+            }
+            return {
+                ok: true,
+                message: 'Org was updated successfully',
+                data,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
 }
+
+type Data = {
+    slug: string;
+    name: string;
+};

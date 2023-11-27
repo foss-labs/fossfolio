@@ -26,6 +26,13 @@ export class OrganizationController {
         return this.organizationService.findOrgBySlug(slug);
     }
 
+    @Get('/:orgID')
+    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getOrgInfo(@Param('orgID') info) {
+        return await this.organizationService.getOrgById(info);
+    }
+
     @Get('/events/:orgID')
     @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
     @UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -50,5 +57,11 @@ export class OrganizationController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async leaveOrg(@AuthUser() user: User, @Body() body: LeaveOrg) {
         return this.organizationService.leaveOrg(body.organizationId, user.uid);
+    }
+
+    @Patch('/update')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async UpdateOrg(@Body() data: UpdateOrgDto) {
+        return await this.organizationService.UpdateOrg(data.organizationId, data);
     }
 }

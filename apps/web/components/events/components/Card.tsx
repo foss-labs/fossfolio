@@ -1,9 +1,11 @@
 import { BiLink, BiLocationPlus } from 'react-icons/bi';
-import { BsPeople, BsCalendarDate } from 'react-icons/bs';
+import { BsCalendarDate } from 'react-icons/bs';
 
 import { Button } from '@app/ui/components/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@app/ui/components/card';
 import { OrgEvents } from '@app/types';
+import { format } from 'date-fns';
+import { useRouter } from 'next/router';
 
 type DescriptionExcluded = Omit<
     OrgEvents,
@@ -12,9 +14,23 @@ type DescriptionExcluded = Omit<
 
 interface Prop extends DescriptionExcluded {
     description?: string;
+    isOrg?: boolean;
 }
 
-export function EventCard({ name, description, website, location }: Prop): JSX.Element {
+export function EventCard({
+    name,
+    description,
+    website,
+    location,
+    lastDate,
+    isOrg = false,
+    id,
+}: Prop): JSX.Element {
+    const router = useRouter();
+
+    const goToEventInfo = () => {
+        router.push(`/events/${id}`);
+    };
     return (
         <Card className="w-[330px] md:w-[400px] mt-6 hover:cursor-pointer hover:outline-double hover:outline-primary">
             <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
@@ -33,21 +49,28 @@ export function EventCard({ name, description, website, location }: Prop): JSX.E
                         <BiLocationPlus className="mr-1 h-3 w-3 fill-sky-400 text-sky-400" />
                         {location}
                     </div>
-                    <div className="flex items-center">
-                        <BsPeople className="mr-1 h-3 w-3" />
-                        particpents:20k
-                    </div>
+
                     <div className="flex items-center">
                         <BsCalendarDate className="mr-1 h-3 w-3" />
-                        Last date:{new Date().getFullYear()}
+                        Last date: {format(new Date(lastDate), 'dd/MM/yyyy')}
                     </div>
                 </div>
-                <Button
-                    variant="outline"
-                    className="bg-[#F9F5FF] mt-4 px-5 py-2 rounded-sm text-primary border-1 hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary"
-                >
-                    Apply
-                </Button>
+                {!isOrg ? (
+                    <Button
+                        variant="outline"
+                        className="bg-[#F9F5FF] mt-4 px-5 py-2 rounded-sm text-primary border-1 hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary"
+                        onClick={goToEventInfo}
+                    >
+                        Apply
+                    </Button>
+                ) : (
+                    <Button
+                        variant="outline"
+                        className="bg-[#F9F5FF] mt-4 px-5 py-2 rounded-sm text-primary border-1 hover:bg-[#F9F5FF]  border-[1.4px] hover:border-primary"
+                    >
+                        More Info
+                    </Button>
+                )}
             </CardContent>
         </Card>
     );

@@ -1,5 +1,4 @@
 import { NextPageWithLayout } from 'next';
-import React from 'react';
 import { GoOrganization } from 'react-icons/go';
 import { HomeLayout } from '@app/layout';
 import { Button } from '@app/components/ui/Button';
@@ -37,12 +36,14 @@ const Index: NextPageWithLayout = () => {
                             <GoOrganization className="border-black border-2 rounded-full text-3xl p-1" />
                             Create a new organisation
                         </div>
-                        {data?.orgs.map((el) => (
+                        {data?.data.map((el) => (
                             <OrgCard
                                 role={el.role}
                                 name={el.organization.name}
                                 id={el.organization.id}
                                 key={el.organization.id}
+                                events={el.organization._count.events}
+                                members={el.organization._count.members}
                             />
                         ))}
                     </>

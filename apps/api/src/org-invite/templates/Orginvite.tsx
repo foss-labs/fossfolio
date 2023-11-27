@@ -14,18 +14,11 @@ import {
     Text,
 } from '@react-email/components';
 import * as React from 'react';
-import { IData } from "../sendEmail"
+import { IData } from '../sendEmail';
 
-const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : '';
+const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '';
 
-export const InviteUserEmail = ({
-    from,
-    fromEmail,
-    orgName,
-    inviteId,
-}: IData) => {
+export const InviteUserEmail = ({ from, fromEmail, orgName, inviteUrl }: IData) => {
     const previewText = `Join ${orgName} on Fossfolio`;
 
     return (
@@ -47,9 +40,7 @@ export const InviteUserEmail = ({
                         <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
                             Join <strong>{orgName}</strong> on <strong>Fossfolio</strong>
                         </Heading>
-                        <Text className="text-black text-[14px] leading-[24px]">
-                            Hello,
-                        </Text>
+                        <Text className="text-black text-[14px] leading-[24px]">Hello,</Text>
                         <Text className="text-black text-[14px] leading-[24px]">
                             <strong>{from}</strong> (
                             <Link
@@ -66,18 +57,15 @@ export const InviteUserEmail = ({
                                 pX={20}
                                 pY={12}
                                 className="bg-[#000000] rounded text-white text-[12px] font-semibold no-underline text-center"
-                                href={process.env.WEB_URL + `/invite?id=${inviteId}`}
+                                href={inviteUrl}
                             >
                                 Join the Org
                             </Button>
                         </Section>
                         <Text className="text-black text-[14px] leading-[24px]">
                             or copy and paste this URL into your browser:{' '}
-                            <Link
-                                href={process.env.WEB_URL + `/invite?id=${inviteId}`}
-                                className="text-blue-600 no-underline"
-                            >
-                                {process.env.WEB_URL + `/invite?id=${inviteId}`}
+                            <Link href={inviteUrl} className="text-blue-600 no-underline">
+                                {inviteUrl}
                             </Link>
                         </Text>
                         <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
@@ -87,4 +75,3 @@ export const InviteUserEmail = ({
         </Html>
     );
 };
-

@@ -32,7 +32,7 @@ export const AuthContext = ({ children }: Child): JSX.Element => {
             setLoading(true);
             const { data } = await apiHandler.get('/user');
             setData(data);
-        } catch {
+        } catch (e) {
             console.error('Error Authenticating user');
             router.push('/');
         } finally {

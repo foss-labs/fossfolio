@@ -67,3 +67,8 @@ yarn-error.log*
 
 
 .vscode
+apps/web/.turbo
+apps/api/.turbo
+apps/app/.turbo
+
+

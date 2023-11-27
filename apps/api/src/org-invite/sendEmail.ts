@@ -4,7 +4,7 @@ import { InviteUserEmail } from './templates/Orginvite';
 const resend = new Resend(process.env.RESEND_KEY);
 
 export type IData = {
-    inviteId: string;
+    inviteUrl: string;
     from: string;
     orgName: string;
     fromEmail: string;
@@ -12,16 +12,16 @@ export type IData = {
 
 export const sendInvite = async (to: string, data: IData): Promise<boolean> => {
     try {
-        await resend.emails.send({
+        const res = await resend.emails.send({
             from: 'Sreehari <sreeharivijaya2003@gmail.com>',
             to: [to],
             subject: 'You have been invited to Join Fossfolio',
-            react: InviteUserEmail({
-                from: data.from,
-                orgName: data.orgName,
-                inviteId: data.inviteId,
-                fromEmail: data.fromEmail,
-            }),
+            text: `
+               you have been invited to ${data.orgName} a organization in Fossfolio 
+               by ${data.from}(${data.fromEmail}) please click following link to accept the 
+               invite ${data.inviteUrl}
+            
+            `,
         });
         return true;
     } catch {

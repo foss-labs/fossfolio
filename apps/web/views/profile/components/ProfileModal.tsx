@@ -10,7 +10,6 @@ import { useAuth } from '@app/hooks';
 import { toast } from 'sonner';
 import { Input } from '@app/ui/components/input';
 import { Button } from '@app/components/ui/Button';
-import { useProfileUpdate } from '@app/hooks/api/Profile';
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
@@ -28,11 +27,19 @@ import {
     FormLabel,
     FormMessage,
 } from '@app/ui/components/form';
+import { apiHandler } from '@app/config';
 
 type IModal = {
     isOpen: boolean;
     onClose: () => void;
 };
+
+interface IInfo {
+    slug: string;
+    name: string;
+    isCollegeStudent?: boolean;
+    collegeName?: string;
+}
 
 type Description = 'true' | 'false';
 
@@ -51,7 +58,6 @@ type IProfile = yup.InferType<typeof ProfileSchema>;
 
 export const ProfileModal = ({ isOpen, onClose }: IModal) => {
     const { user } = useAuth();
-    const handleProfileUpdates = useProfileUpdate();
 
     const form = useForm<IProfile>({
         defaultValues: {
@@ -64,18 +70,21 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
 
     const isCollegeStudent = form.watch('description') === 'true';
 
-    const handleUpdates: SubmitHandler<IProfile> = (data) => {
-        const isCollegeStudent = Boolean(data.description);
-        handleProfileUpdates.mutate({
-            name: data.name,
-            slug: data.slug,
-            isCollegeStudent,
-            collegeName: data.collegeName,
-        });
-        if (handleProfileUpdates.isSuccess) {
-            toast.success('Profile updated successfully');
+    const handleUpdates: SubmitHandler<IProfile> = async (data) => {
+        try {
+            const isCollegeStudent = Boolean(data.description);
+            await apiHandler.patch('/user', {
+                displayName: data.name,
+                slug: data.slug,
+                isCollegeStudent,
+                collegeName: data.collegeName,
+            });
+            toast.success('profile was updated successfully');
+        } catch {
+            toast.error('couldnt update the profile');
+        } finally {
+            onClose();
         }
-        onClose();
     };
 
     return (
