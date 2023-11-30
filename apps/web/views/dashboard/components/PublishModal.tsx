@@ -43,17 +43,17 @@ type IModal = {
 type Description = 'true' | 'false';
 
 export const EventSchema = yup.object().shape({
-    maxTicketCount: yup.number().required(),
+    maxTicketCount: yup.number().required('Ticket count is a required field').min(1),
     lastDate: yup.date().required(),
     eventDate: yup.date().required(),
     team: yup.string().required(),
     minTeamSize: yup.number().when('team', {
-        is: (val: Description) => Boolean(val),
+        is: (val: Description) => val === 'true',
         then: (schema) => schema.required(),
         otherwise: (schema) => schema.notRequired(),
     }),
     maxTeamSize: yup.number().when('team', {
-        is: (val: Description) => Boolean(val),
+        is: (val: Description) => val === 'true',
         then: (schema) => schema.required(),
         otherwise: (schema) => schema.notRequired(),
     }),
@@ -62,15 +62,14 @@ export const EventSchema = yup.object().shape({
 export type IProfile = yup.InferType<typeof EventSchema>;
 
 export const PublishModal = ({ isOpen, onClose }: IModal) => {
-    const { user } = useAuth();
     const [isUpdating, setUpdating] = useToggle(false);
     const router = useRouter();
     const { id, pk } = router.query;
 
     const form = useForm<IProfile>({
         defaultValues: {
-            maxTicketCount: 0,
-            team: String(user?.isStudent) || '',
+            maxTicketCount: 1,
+            team: 'false',
         },
         resolver: yupResolver(EventSchema),
     });

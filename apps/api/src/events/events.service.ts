@@ -79,6 +79,7 @@ export class EventsService {
                         ? payload.isCollegeEvent
                         : event.isCollegeEvent,
                     maxTicketCount: payload.maxTicketCount || event.maxTicketCount,
+                    eventDate: payload.eventDate || event.eventDate,
                 },
             });
 

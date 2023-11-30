@@ -41,4 +41,7 @@ export class UpdateEventDto {
 
     @ApiProperty()
     maxTicketCount: number;
+
+    @ApiProperty()
+    eventDate: Date;
 }

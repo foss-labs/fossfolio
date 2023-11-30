@@ -33,7 +33,6 @@ const Schema = yup.object().shape({
     name: yup.string().required().min(3),
     website: yup.string().url().required(),
     location: yup.string().required(),
-    lastDate: yup.string().required(),
 });
 
 type ISchema = yup.InferType<typeof Schema>;
@@ -47,7 +46,6 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
         defaultValues: {
             website: '',
             name: '',
-            lastDate: Date(),
             location: '',
         },
     });
@@ -116,23 +114,6 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
                                                 <FormLabel>Location</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="location" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="lastDate"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Date</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder="lastDate"
-                                                        {...field}
-                                                        type="date"
-                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
