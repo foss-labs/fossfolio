@@ -18,7 +18,6 @@ export const UserNav = () => {
     const { logOut } = useLogOut();
     const { user } = useAuth();
     const [isOpen, triggerModal] = useToggle(false);
-
     return (
         <>
             <ProfileModal isOpen={isOpen} onClose={triggerModal.off} />
