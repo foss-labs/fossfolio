@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Button } from '@app/components/ui/Button';
+import { TicketCard } from '@app/views/tickets';
 
 const Ticket: NextPageWithLayout = () => {
     const [activeTab, setTab] = useState('upcoming');
@@ -29,14 +30,13 @@ const Ticket: NextPageWithLayout = () => {
             <div>
                 {isLoading ? (
                     <div className="h-[300px]  flex items-center justify-center">
-                        {/*Skeleton*/}
+                        {/*SkeletonTicket  */}
                     </div>
                 ) : (
                     <div>
                         {activeTab === 'upcoming' && (
                             <div>
-                                <div className="rectangle-card">Upcoming Ticket 1</div>
-                                <div className="rectangle-card">Upcoming Ticket 2</div>
+                                <TicketCard />
                             </div>
                         )}
                         {activeTab === 'archived' && (
