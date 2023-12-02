@@ -10,7 +10,7 @@ export class MailService {
     async onOrgInvite(payload: OrgInviteEvent) {
         await this.mailerService.sendMail({
             to: payload.to,
-            subject: `You have been invited to Join ${payload.orgName}}`,
+            subject: `You have been invited to Join ${payload.orgName}`,
             template: 'org-invite',
             context: {
                 from: payload.from,
