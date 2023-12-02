@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { RbacGuard } from 'src/organization/guards/rbac-member.guard';
+import { RbacGuard } from '../organization/guards/rbac-member.guard';
 import { Roles } from '../organization/decorators/roles.decorator';
 import { OrganizationInviteService } from './org-invite.service';
-import { AuthUser } from 'src/auth/decorators/user.decorator';
+import { AuthUser } from '../auth/decorators/user.decorator';
 import { OrgInvie } from './dto/user-invite.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';

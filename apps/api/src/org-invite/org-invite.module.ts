@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OrganizationInviteService } from './org-invite.service';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from '../prisma/prisma.module';
 import { OrgInviteController } from './org-invite.controller';
 
 @Module({

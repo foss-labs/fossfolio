@@ -3,6 +3,15 @@
     "collection": "@nestjs/schematics",
     "sourceRoot": "src",
     "compilerOptions": {
+        "builder": {
+            "type": "swc",
+            "options": {
+                "extensions": [".jsx", ".tsx", ".js", ".ts"]
+            }
+        },
+        "typeCheck": true,
+        "deleteOutDir": true,
+        "assets": ["mail/templates/**/*"],
         "watchAssets": true
     }
 }

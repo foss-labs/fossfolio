@@ -4,7 +4,7 @@ import {
     ServiceUnavailableException,
     UnprocessableEntityException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';

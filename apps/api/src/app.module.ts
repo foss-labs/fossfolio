@@ -10,9 +10,12 @@ import { OrganizationModule } from './organization/organization.module';
 import { OrganizationMemberModule } from './org-member/org-member.module';
 import { OrganizationInviteModule } from './org-invite/org-invite.module';
 import { EventsModule } from './events/events.module';
+import { MailModule } from './mail/mail.module';
+import {EventEmitterModule} from '@nestjs/event-emitter'
 
 @Module({
     imports: [
+        EventEmitterModule.forRoot(),
         ConfigModule.forRoot({
             isGlobal: true,
             validationSchema: Joi.object({
@@ -28,7 +31,10 @@ import { EventsModule } from './events/events.module';
                 GOOGLE_CALLBACK_URL: Joi.string(),
                 GOOGLE_SCOPE: Joi.string(),
                 WEB_URL: Joi.string(),
-                RESEND_KEY: Joi.string(),
+                MAIL_HOST: Joi.string(),
+                MAIL_PORT: Joi.number(),
+                MAIL_USER: Joi.string(),
+                MAIL_PASSWORD: Joi.string(),
             }),
             validationOptions: {
                 allowUnknown: true,
@@ -49,6 +55,7 @@ import { EventsModule } from './events/events.module';
         OrganizationMemberModule,
         OrganizationInviteModule,
         EventsModule,
+        MailModule,
     ],
     controllers: [AppController],
     providers: [],

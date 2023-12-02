@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { ORG_MEMBER_NOT_FOUND, ROLE_UPDATE_FAILED } from 'src/error';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { ORG_MEMBER_NOT_FOUND, ROLE_UPDATE_FAILED } from '../error';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class OrganizationMemberService {
