@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrgDto } from './dto/create-org.dto';
-import { ORG_EXISTS, ORG_NOT_FOUND } from 'src/error';
+import { ORG_EXISTS, ORG_NOT_FOUND } from '../error';
 import { UpdateOrgDto } from './dto/update-org.dto';
 import { Role } from '@prisma/client';
-import { date } from 'joi';
 
 @Injectable()
 export class OrganizationService {

@@ -13,12 +13,12 @@ import {
     Tailwind,
     Text,
 } from '@react-email/components';
-import * as React from 'react';
-import { IData } from '../sendEmail';
+import { OrgInviteEvent } from '../mail.service';
+import React from 'react';
 
-const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '';
+const baseUrl = process.env.CLIENT_URL ? `https://${process.env.CLIENT_URL}` : 'fossfolio.com';
 
-export const InviteUserEmail = ({ from, fromEmail, orgName, inviteUrl }: IData) => {
+const InviteUserEmail = ({ from, fromEmail, orgName, inviteUrl }: OrgInviteEvent) => {
     const previewText = `Join ${orgName} on Fossfolio`;
 
     return (
@@ -75,3 +75,5 @@ export const InviteUserEmail = ({ from, fromEmail, orgName, inviteUrl }: IData) 
         </Html>
     );
 };
+
+export default InviteUserEmail;

@@ -1,7 +1,7 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { OrganizationMemberService } from './org-member.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RbacGuard } from 'src/organization/guards/rbac-member.guard';
+import { RbacGuard } from '../organization/guards/rbac-member.guard';
 
 @Controller('org/member')
 export class OrgMemberController {

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Profile } from 'passport';
-import { USER_UPDATE_ERROR } from 'src/error';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { USER_UPDATE_ERROR } from '../error';
+import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
 import { fakerEN } from '@faker-js/faker';

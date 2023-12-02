@@ -2,12 +2,12 @@ import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/co
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RbacGuard } from 'src/organization/guards/rbac-member.guard';
-import { Roles } from 'src/organization/decorators/roles.decorator';
+import { RbacGuard } from '../organization/guards/rbac-member.guard';
+import { Roles } from '../organization/decorators/roles.decorator';
 import { ApiOperation } from '@nestjs/swagger';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { RegisterEventDto } from './dto/register-event.dto';
-import { AuthUser } from 'src/auth/decorators/user.decorator';
+import { AuthUser } from '../auth/decorators/user.decorator';
 import { User } from '@prisma/client';
 
 @Controller('events')

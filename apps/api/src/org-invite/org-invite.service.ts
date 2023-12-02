@@ -1,11 +1,11 @@
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { sendInvite } from './sendEmail';
 import { Role } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class OrganizationInviteService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(private readonly prismaService: PrismaService,private readonly eventEmitter: EventEmitter2) {}
 
     async inviteToOrg(email: string, inviterid: string, orgId: string, role: Role) {
         try {
@@ -42,7 +42,7 @@ export class OrganizationInviteService {
             }
 
             // transaction
-            const transactionStatus = await this.prismaService.$transaction(async (db) => {
+            const inviteUrl = await this.prismaService.$transaction(async (db) => {
                 const data = await db.organization.update({
                     where: {
                         id: orgId,
@@ -71,39 +71,24 @@ export class OrganizationInviteService {
                 const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
                 const inviteURL = `${localPort}/verify?id=${inviteId}`;
 
-                const inviteInfo = {
+
+                await this.eventEmitter.emit('org.invite', {
+                    to: email,
                     inviteUrl: inviteURL,
                     from: inviter.displayName,
                     orgName: data.name,
                     fromEmail: inviter.email,
-                };
+                })
 
-                if (process.env.NODE_ENV === 'production') {
-                    const res = await sendInvite(email, inviteInfo);
-                    return res;
-                } else {
-                    return {
-                        ok: true,
-                        message: 'invite send successfully',
-                        data: inviteURL,
-                    };
-                }
+                return inviteURL
             });
 
-            const isProd = process.env.NODE_ENV === 'production';
-
-            if (!isProd) {
-                return transactionStatus;
-            }
-
-            if (transactionStatus) {
                 return {
                     ok: true,
-                    message: 'email send successfully , please check your mailbox',
+                    data: process.env.NODE_ENV !== 'production'? inviteUrl : null,
+                    message: 'email sent successfully , please check your mailbox',
                 };
-            }
 
-            throw new Error();
         } catch {
             return {
                 ok: false,
