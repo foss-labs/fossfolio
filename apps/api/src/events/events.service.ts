@@ -14,8 +14,6 @@ export class EventsService {
     constructor(private readonly prismaService: PrismaService) {}
 
     async createEvent(d: CreateEventDto) {
-        const date = new Date(d.lastDate);
-
         try {
             const data = await this.prismaService.organization.update({
                 where: {
@@ -27,7 +25,6 @@ export class EventsService {
                             name: d.name,
                             website: d.website,
                             location: d.location,
-                            lastDate: date,
                         },
                     },
                 },

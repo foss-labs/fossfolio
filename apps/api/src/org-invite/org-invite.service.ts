@@ -5,11 +5,14 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class OrganizationInviteService {
-    constructor(private readonly prismaService: PrismaService,private readonly eventEmitter: EventEmitter2) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly eventEmitter: EventEmitter2,
+    ) {}
 
     async inviteToOrg(email: string, inviterid: string, orgId: string, role: Role) {
         try {
-            // if there is already invite send no need of transaction
+            // if there is already invite
             const isAlreadySent = await this.prismaService.organizationInvite.findUnique({
                 where: {
                     inviteeEmail_organizationId: {
@@ -22,23 +25,16 @@ export class OrganizationInviteService {
                 },
             });
             // if user already exist in db
+            // delete the already existing invite
             if (isAlreadySent) {
-                const isProd = process.env.NODE_ENV === 'production';
-
-                const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
-                const inviteURL = `${localPort}/verify?id=${isAlreadySent.id}`;
-                if (!isProd) {
-                    return {
-                        ok: true,
-                        message: 'user is already invited, please check your mailbox',
-                        data: inviteURL,
-                    };
-                }
-
-                return {
-                    ok: true,
-                    message: 'user is already invited, please check your mailbox for old mails',
-                };
+                await this.prismaService.organizationInvite.delete({
+                    where: {
+                        inviteeEmail_organizationId: {
+                            organizationId: orgId,
+                            inviteeEmail: email,
+                        },
+                    },
+                });
             }
 
             // transaction
@@ -71,24 +67,25 @@ export class OrganizationInviteService {
                 const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
                 const inviteURL = `${localPort}/verify?id=${inviteId}`;
 
+                // we dont want to send invite on local
+                if (process.env.NODE_ENV === 'production') {
+                    await this.eventEmitter.emit('org.invite', {
+                        to: email,
+                        inviteUrl: inviteURL,
+                        from: inviter.displayName,
+                        orgName: data.name,
+                        fromEmail: inviter.email,
+                    });
+                }
 
-                await this.eventEmitter.emit('org.invite', {
-                    to: email,
-                    inviteUrl: inviteURL,
-                    from: inviter.displayName,
-                    orgName: data.name,
-                    fromEmail: inviter.email,
-                })
-
-                return inviteURL
+                return inviteURL;
             });
 
-                return {
-                    ok: true,
-                    data: process.env.NODE_ENV !== 'production'? inviteUrl : null,
-                    message: 'email sent successfully , please check your mailbox',
-                };
-
+            return {
+                ok: true,
+                data: process.env.NODE_ENV !== 'production' ? inviteUrl : null,
+                message: 'email sent successfully , please check your mailbox',
+            };
         } catch {
             return {
                 ok: false,

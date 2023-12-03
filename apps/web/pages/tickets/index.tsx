@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Button } from '@app/components/ui/Button';
 import { TicketCard } from '@app/views/tickets';
+import { useTickets } from '@app/hooks/api/user';
 
 const Ticket: NextPageWithLayout = () => {
     const [activeTab, setTab] = useState('upcoming');
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            setIsLoading(false);
-        };
-
-        fetchData();
-    }, [activeTab]);
+    const { isLoading, data } = useTickets();
 
     return (
         <div className="mt-4 p-4 h-[92vh]">
@@ -30,19 +22,14 @@ const Ticket: NextPageWithLayout = () => {
             <div>
                 {isLoading ? (
                     <div className="h-[300px]  flex items-center justify-center">
-                        {/*SkeletonTicket  */}
+                        <h1>Loading..</h1>
                     </div>
                 ) : (
                     <div>
-                        {activeTab === 'upcoming' && (
-                            <div>
-                                <TicketCard />
-                            </div>
-                        )}
+                        {activeTab === 'upcoming' && <TicketCard data={data?.data} />}
                         {activeTab === 'archived' && (
                             <div>
-                                <div className="rectangle-card">Archived Ticket 1</div>
-                                <div className="rectangle-card">Archived Ticket 2</div>
+                                <h1 className="rectangle-card">Archived Ticket 1</h1>
                             </div>
                         )}
                     </div>

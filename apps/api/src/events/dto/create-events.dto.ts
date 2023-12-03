@@ -23,9 +23,4 @@ export class CreateEventDto {
     @IsString()
     @IsNotEmpty()
     location: string;
-
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
-    lastDate: Date;
 }
