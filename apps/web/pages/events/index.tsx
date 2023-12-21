@@ -7,7 +7,7 @@ const Events: NextPageWithLayout = () => {
     const { isLoading, data } = useAllEvents();
 
     if (isLoading) {
-        return <PreLoader />;
+        return <PreLoader count={12} />;
     }
 
     if (data?.length === 0) {

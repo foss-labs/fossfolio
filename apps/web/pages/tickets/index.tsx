@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { Button } from '@app/components/ui/Button';
 import { TicketCard } from '@app/views/tickets';
 import { useTickets } from '@app/hooks/api/user';
+import { PreLoader } from '@app/components/events';
 
 const Ticket: NextPageWithLayout = () => {
     const [activeTab, setTab] = useState('upcoming');
@@ -21,16 +22,16 @@ const Ticket: NextPageWithLayout = () => {
 
             <div>
                 {isLoading ? (
-                    <div className="h-[300px]  flex items-center justify-center">
-                        <h1>Loading..</h1>
+                    <div className="flex items-center justify-center">
+                        <PreLoader count={6} />
                     </div>
                 ) : (
                     <div>
-                        {activeTab === 'upcoming' && <TicketCard data={data?.data} />}
+                        {activeTab === 'upcoming' && (
+                            <TicketCard data={data?.data} type="Upcoming" />
+                        )}
                         {activeTab === 'archived' && (
-                            <div>
-                                <h1 className="rectangle-card">Archived Ticket 1</h1>
-                            </div>
+                            <TicketCard data={data?.data} type="Archived" />
                         )}
                     </div>
                 )}
@@ -40,4 +41,5 @@ const Ticket: NextPageWithLayout = () => {
 };
 
 Ticket.Layout = HomeLayout;
+Ticket.RequireAuth = true;
 export default Ticket;

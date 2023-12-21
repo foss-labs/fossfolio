@@ -40,7 +40,7 @@ export async function getServerSideProps(ctx: any) {
         };
     }
 
-    const { data, status } = await apiHandler.get(`/org/invite/verify?id=${ctx.query.id}`, {
+    const { data } = await apiHandler.get(`/org/invite/verify?id=${ctx.query.id}`, {
         headers: {
             Cookie: `access_token=${accesToken}; refresh_token=${refreshToken};`,
         },
