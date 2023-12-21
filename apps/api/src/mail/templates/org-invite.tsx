@@ -33,7 +33,7 @@ const InviteUserEmail = ({ from, fromEmail, orgName, inviteUrl }: OrgInviteEvent
                                 src={`${baseUrl}/static/vercel-logo.png`}
                                 width="40"
                                 height="37"
-                                alt="Vercel"
+                                alt="Fossfolio"
                                 className="my-0 mx-auto"
                             />
                         </Section>

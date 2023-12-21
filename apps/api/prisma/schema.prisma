@@ -84,7 +84,7 @@ model Events {
   name            String
   website         String?
   location        String
-  lastDate        DateTime
+  lastDate        DateTime?
   organizationId  String
   isPublished     Boolean      @default(false)
   description     Json?

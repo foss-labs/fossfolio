@@ -96,6 +96,9 @@ const Event = () => {
         onSuccess: () => {
             refetch();
         },
+        onError: () => {
+            toast.error('Error publishing event');
+        },
     });
 
     const handleUnPublishClick = () => {

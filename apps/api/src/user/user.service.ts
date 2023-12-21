@@ -144,7 +144,7 @@ export class UserService {
             return {
                 ok: true,
                 message: 'Ticket found successfully',
-                data,
+                data: data.registeredEventsId,
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
