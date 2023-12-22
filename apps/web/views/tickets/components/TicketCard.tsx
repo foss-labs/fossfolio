@@ -17,7 +17,7 @@ export const TicketCard = ({ data, type }: Prop) => {
                 {type === 'Upcoming' && <h1 className="text-xl font-light">No Upcoming Events</h1>}
                 {type === 'Archived' && <h1 className="text-xl font-light">No Archived Events</h1>}
                 <Link href="/events">
-                    <Button variant="outline">But tickets</Button>
+                    <Button variant="outline">Buy tickets</Button>
                 </Link>
             </div>
         );
