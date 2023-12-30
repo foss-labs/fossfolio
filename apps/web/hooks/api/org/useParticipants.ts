@@ -12,7 +12,6 @@ type IData = {
 
 const getEventParticipants = async (id: string, orgId: string) => {
     const { data } = await apiHandler.get(`/events/participants/${orgId}/${id}`);
-    console.log(data);
     return data;
 };
 

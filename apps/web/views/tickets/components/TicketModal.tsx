@@ -1,40 +1,69 @@
-import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@app/ui/components/dialog';
 import { Button } from '@app/ui/components/button';
+import Qrcode from 'qrcode';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import type { Info } from '@app/hooks/api/user/useTickets';
+import { format } from 'date-fns';
+import { useAuth } from '@app/hooks';
 
 type IModal = {
     isOpen: boolean;
     onClose: () => void;
+    data: Info | undefined;
 };
 
-export const TicketModal = ({ isOpen, onClose }: IModal) => {
+export const TicketModal = ({ isOpen, onClose, data }: IModal) => {
+    const [qrCodeDataUrl, setQRCodeDataUrl] = useState('');
+    const { user } = useAuth();
+
+    const generateQRCode = async () => {
+        try {
+            const dataText = data?.id || 'test';
+            const dataUrl = await Qrcode.toDataURL(dataText);
+            setQRCodeDataUrl(dataUrl);
+        } catch (error) {
+            console.error('Error generating QR code:', error);
+        }
+    };
+
+    useEffect(() => {
+        generateQRCode();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-[450px] h-[500px]">
+            <DialogContent className="w-[450px] h-[600px]">
                 <DialogHeader>
                     <DialogDescription className="mt-3" />
                     <div className="border border-gray-400 rounded p-4 h-full">
                         <div className="flex items-center mb-4 rounded h-[100px]">
-                            <div className="w-1/2 h-full bg-gray-100 rounded">
-                                <img alt="Event Preview" className="w-full h-full object-cover" />
-                            </div>
-
                             <div className="w-1/2 pl-4">
-                                <p className="text-lg font-bold">UI HACKATHON</p>
-                                <p className="text-sm">14/11/2023-16/11/2023 </p>
-                                <p className="text-sm">VENUE: MDIT </p>
+                                <p className="text-lg font-bold">{data?.name}</p>
+                                <p className="text-sm">
+                                    {data && format(new Date(data.eventDate), 'dd/MM/yyyy')}
+                                </p>
+                                <p className="text-sm">VENUE: {data?.location} </p>
                             </div>
                         </div>
 
                         <div className="w-full h-1/2 bg-gray-100 rounded mb-4">
                             <div className="flex items-center h-full">
                                 <div className="w-1/2">
-                                    <p>Scan the QR code</p>
+                                    {qrCodeDataUrl && (
+                                        <Image
+                                            src={qrCodeDataUrl}
+                                            alt="QR Code"
+                                            height={400}
+                                            width={400}
+                                        />
+                                    )}
                                 </div>
 
                                 <div className="w-1/2 pl-4">
-                                    <p>TICKET ID: 11RTMDIT </p>
-                                    <p className="text-sm">ATTENDEE: SURYA </p>
+                                    <p className="text-sm">ATTENDEE</p>
+                                    <p className="text-sm">{user?.displayName}</p>
                                 </div>
                             </div>
                         </div>

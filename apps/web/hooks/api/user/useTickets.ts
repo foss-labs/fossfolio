@@ -1,7 +1,7 @@
 import { apiHandler } from '@app/config';
 import { useQuery } from '@tanstack/react-query';
 
-type Info = {
+export type Info = {
     name: string;
     eventDate: Date;
     location: string;

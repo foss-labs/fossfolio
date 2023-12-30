@@ -1,22 +1,49 @@
-import React from 'react';
 import { useToggle } from '@app/hooks/useToggle';
 import { TicketModal } from '@app/views/tickets';
-import type { Data } from '@app/hooks/api/user/useTickets';
+import { Button } from '@app/components/ui/Button';
+import Link from 'next/link';
+import { format } from 'date-fns';
+import type { Data, Info } from '@app/hooks/api/user/useTickets';
+import { useState } from 'react';
 
-export const TicketCard = ({ data }: Pick<Data, 'data'>) => {
+interface Prop extends Pick<Data, 'data'> {
+    type: 'Upcoming' | 'Archived';
+}
+
+export const TicketCard = ({ data, type }: Prop) => {
     const [isOpen, triggerModal] = useToggle(false);
+    const [info, setInfo] = useState<Info>();
+
+    const handleOpen = (i: Info) => {
+        setInfo(i);
+        triggerModal.on();
+    };
 
     if (!data || !data.length) {
-        return <h1>No Upcoming Events</h1>;
+        return (
+            <div className="flex justify-center items-center h-[650px] flex-col gap-5">
+                {type === 'Upcoming' && <h1 className="text-xl font-light">No Upcoming Events</h1>}
+                {type === 'Archived' && <h1 className="text-xl font-light">No Archived Events</h1>}
+                <Link href="/events">
+                    <Button variant="outline">Buy tickets</Button>
+                </Link>
+            </div>
+        );
     }
 
     return (
         <>
-            <TicketModal isOpen={isOpen} onClose={triggerModal.off} />
-            <div onClick={triggerModal.on} className="flex justify-between mt-10 p-14">
+            <div className="flex justify-between mt-10 p-14">
+                <TicketModal isOpen={isOpen} onClose={triggerModal.off} data={info} />
                 {data.map((el) => (
-                    <div>
+                    <div
+                        onClick={() => handleOpen(el)}
+                        key={el.id}
+                        className="border-2 border-gray-300 py-5 px-8 rounded-xl hover:cursor-pointer"
+                    >
                         <h1>{el.name}</h1>
+                        <h2>Date: {format(new Date(el.eventDate), 'dd/MM/yyyy')}</h2>
+                        <h2>Venue : {el.location}</h2>
                     </div>
                 ))}
             </div>
