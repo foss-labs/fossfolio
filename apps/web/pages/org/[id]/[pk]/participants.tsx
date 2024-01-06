@@ -8,7 +8,7 @@ const Dashboard: NextPageWithLayout = () => {
     const { isLoading, data } = useEventParticipants();
     if (isLoading) {
         return (
-            <div className="h-[100vh] flex items-center justify-center">
+            <div className="h-[100vh] flex items-center justify-center p-4">
                 <RiLoaderFill className="animate-spin h-8 w-8" />
             </div>
         );
@@ -17,7 +17,7 @@ const Dashboard: NextPageWithLayout = () => {
     if (data) {
         return (
             <div>
-                <h2 className="mb-3 mt-3 font-semibold text-2xl">All Registred Particpants</h2>
+                <h2 className="mb-3 mt-3 font-semibold text-2xl p-4">All Registred Particpants</h2>
                 <Participants data={data?.data} />
             </div>
         );

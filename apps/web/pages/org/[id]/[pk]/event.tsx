@@ -118,7 +118,7 @@ const Event = () => {
     }
 
     return (
-        <div>
+        <div className="p-4">
             <PublishModal isOpen={isOpen} onClose={triggerModal.off} />
             <div className="flex justify-end">
                 {!data?.data.isPublished ? (
