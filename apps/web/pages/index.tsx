@@ -26,7 +26,7 @@ const Home: NextPageWithLayout = () => {
                     ))}
                 </motion.div>
                 <div className="flex gap-4 mt-3 ">
-                    <Button>
+                    <Button isLoading>
                         <Link href="/events">Join Event</Link>
                     </Button>
                     <Button variant="outline" className="rounded-sm">
