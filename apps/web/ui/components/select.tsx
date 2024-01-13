@@ -3,7 +3,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { GoChevronDown } from 'react-icons/go';
 
-import { cn } from 'ui/lib/utils';
+import { cn } from '../lib/utils';
 
 const Select = SelectPrimitive.Root;
 
