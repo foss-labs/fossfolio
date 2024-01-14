@@ -1,4 +1,4 @@
-name: Runs All Unit tests
+name: Run all unit test
 
 on:
   push:
@@ -8,25 +8,31 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [15]
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js and pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Install dependencies
+        run: pnpm install
 
-      - name: Execute Unit tests
+      - name: Run tests
         run: |
-          pnpm --filter web install
-          pnpm --filter web test:unit
+              pnpm --filter web install
+              pnpm --filter web test:unit  
