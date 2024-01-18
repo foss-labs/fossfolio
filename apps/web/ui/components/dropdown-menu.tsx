@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { BiChevronRight, BiCheckCircle, BiCircle } from 'react-icons/bi';
 
-import { cn } from '@app/ui/lib/utils';
+import { cn } from '../lib/utils';
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 

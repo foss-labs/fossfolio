@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { AiOutlineClose } from 'react-icons/ai';
 
-import { cn } from 'ui/lib/utils';
+import { cn } from '../lib/utils';
 
 const Dialog = DialogPrimitive.Root;
 
