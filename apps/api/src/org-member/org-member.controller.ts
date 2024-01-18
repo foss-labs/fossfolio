@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { OrganizationMemberService } from './org-member.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RbacGuard } from '../organization/guards/rbac-member.guard';
-import { Roles } from 'src/organization/decorators/roles.decorator';
+import { Roles } from '../organization/decorators/roles.decorator';
 import { RemoveMember } from './dto/member-remove.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
