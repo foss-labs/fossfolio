@@ -89,6 +89,7 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                     ) : (
                         <Component {...pageProps} />
                     )}
+                    <Analytics />
                 </AuthContext>
             </QueryClientProvider>
         </main>
