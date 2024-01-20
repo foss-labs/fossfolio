@@ -10,7 +10,7 @@ import NProgress from 'nprogress';
 import { Child } from '@app/types';
 import '../theme/style.css';
 import { AuthContext, AuthGuard } from '@app/context/Auth';
-
+import { Analytics } from '@vercel/analytics/react';
 type ComponentWithPageLayout = AppProps & {
     Component: AppProps['Component'] & {
         Layout?: (arg: Child) => JSX.Element;
@@ -66,6 +66,7 @@ const MyApp = ({ Component, pageProps }: ComponentWithPageLayout) => {
                             ) : (
                                 <Component {...pageProps} />
                             )}
+                            <Analytics />
                         </AuthGuard>
                     </AuthContext>
                 </QueryClientProvider>
