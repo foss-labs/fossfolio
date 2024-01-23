@@ -29,6 +29,7 @@
         "@nestjs/platform-express": "^10.0.5",
         "@nestjs/schematics": "^10.0.1",
         "@nestjs/swagger": "^7.1.4",
+        "@nestjs/throttler": "^5.1.1",
         "@prisma/client": "^5.0.0",
         "@webtre/nestjs-mailer-react-adapter": "^0.1.2",
         "argon2": "^0.30.3",
