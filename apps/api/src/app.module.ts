@@ -11,11 +11,19 @@ import { OrganizationMemberModule } from './org-member/org-member.module';
 import { OrganizationInviteModule } from './org-invite/org-invite.module';
 import { EventsModule } from './events/events.module';
 import { MailModule } from './mail/mail.module';
-import {EventEmitterModule} from '@nestjs/event-emitter'
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
     imports: [
         EventEmitterModule.forRoot(),
+        ThrottlerModule.forRoot([
+            {
+                ttl: 60000,
+                limit: 10,
+            },
+        ]),
         ConfigModule.forRoot({
             isGlobal: true,
             validationSchema: Joi.object({
@@ -58,6 +66,11 @@ import {EventEmitterModule} from '@nestjs/event-emitter'
         MailModule,
     ],
     controllers: [AppController],
-    providers: [],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+    ],
 })
 export class AppModule {}
