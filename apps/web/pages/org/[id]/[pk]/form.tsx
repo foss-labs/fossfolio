@@ -5,7 +5,6 @@ import { Button } from '@app/components/ui/Button';
 import { Input } from '@app/ui/components/input';
 import { Separator } from '@app/ui/components/separator';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@app/ui/components/card';
-import { Label } from '@app/ui/components/label';
 import {
     Select,
     SelectContent,
@@ -26,6 +25,7 @@ import { InputOption, IFormInput } from '@app/views/form';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Label } from '@app/ui/components/label';
 
 type Iform = {
     label: string;
@@ -38,8 +38,8 @@ type Iform = {
 const builderSchema = yup.object({
     label: yup.string().required('Label is required'),
     placeHolder: yup.string(),
-    isRequired: yup.boolean(),
-    type: yup.string().required('Question type is required'),
+    required: yup.boolean().optional().default(false),
+    type: yup.string().required('Question type is required') as yup.StringSchema<IFormInput>,
 });
 
 type FormValidator = yup.InferType<typeof builderSchema>;
@@ -53,7 +53,7 @@ const Form: NextPageWithLayout = () => {
     });
 
     const handleUpdates: SubmitHandler<FormValidator> = async (data) => {
-        console.log(data);
+        setFormData((prev) => [...prev, data]);
     };
 
     const handleCancel = () => {
@@ -149,10 +149,22 @@ const Form: NextPageWithLayout = () => {
                                             />
                                         </div>
                                         <div className="flex items-center space-x-2 mt-3">
-                                            <Checkbox id="required" defaultChecked />
-                                            <Label className="font-normal" htmlFor="required">
-                                                Required
-                                            </Label>
+                                            <FormField
+                                                control={form.control}
+                                                name="required"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex flex-col">
+                                                        <FormLabel>Required</FormLabel>
+                                                        <FormControl>
+                                                            <Checkbox
+                                                                checked={field.value}
+                                                                onCheckedChange={field.onChange}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
                                         </div>
                                     </CardContent>
                                     <CardFooter className="flex justify-between">
@@ -171,6 +183,24 @@ const Form: NextPageWithLayout = () => {
                         <p className="text-sm text-gray-400 mt-3">
                             This is how your form will look like
                         </p>
+
+                        {formData.length > 0 && (
+                            <Card className="mt-10">
+                                <CardHeader>
+                                    <CardTitle>Please fill The form</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {formData.map((el) => (
+                                        <div>
+                                            <Label>{el.label}</Label>
+                                            {el.type === 'SingleLineText' && (
+                                                <Input placeholder={el.options} />
+                                            )}
+                                        </div>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        )}
                     </section>
                 </div>
             </div>

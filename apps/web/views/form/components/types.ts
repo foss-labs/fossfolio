@@ -11,7 +11,7 @@ type Iinput =
     | 'AttachMent';
 
 // v0 does not support attachment
-export type IFormInput = Omit<Iinput, 'AttachMent'>;
+export type IFormInput = Exclude<Iinput, 'AttachMent'>;
 
 type IinputOption = {
     label: string;
