@@ -36,22 +36,27 @@ FossFolio is an open source web application for people to Find, Host and Manage 
   </ol>
 </details>
 
-## Find Hackathons
 
-Users can go to the website and see a directory of all the published hackathons which are ongoing and upcoming. Users can find the ones they like to join and register for the event on the site by filling in the necessary information. Users get a dashboard where the can see all the hackathons they've registered for and options to edit their profile information.
 
-## Host Hackathons
+# Website Pages Showcase
 
-Users who want to host hackathons can use the "Create Hackathon" option and fill in the necessary details in a form and publish the event. Upon publishing everyone can see that event on the site.
+<!-- First Row -->
+<div align="center">
+  <img src="./packages/docs/all-events.png" alt="Page 1" width="300" />
+  <img src="./packages/docs/editor.png" alt="Page 2" width="300" />
+  <img src="./packages/docs/event.png" alt="Page 3" width="300" />
+  <img src="./packages/docs/members.png" alt="Page 3" width="300" />
+</div>
+<!-- Second Row -->
+<div align="center">
+  <img src="./packages/docs/orgs.png" alt="Page 4" width="300" />
+  <img src="./packages/docs/particpents.png" alt="Page 5" width="300" />
+  <img src="./packages/docs/profile.png" alt="Page 6" width="300" />
+  <img src="./packages/docs/settings.png" alt="Page 6" width="300" />
+</div>
 
-### Managing Created Hackathons
 
-Users who are hosting hackathons will get a detailed dashboard that displays the following data:
 
--   Total number of participants
--   Total number of teams
--   Number of student and professional applicants
--   List of all the participants and teams with details of participants
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
