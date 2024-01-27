@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import { DeleteMemModal } from './DeleteMemModal';
+import { RemoveMemberModal } from './RemoveMemberModal';
 import {
     Table,
     TableBody,
@@ -28,6 +28,7 @@ import { useAuth, useRoles, useToggle } from '@app/hooks';
 import * as yup from 'yup';
 import { isProd } from '@app/utils';
 import { RiLoaderFill } from 'react-icons/ri';
+import { useState } from 'react';
 
 enum Roles {
     Admin = 'ADMIN',
@@ -50,6 +51,11 @@ type Invite = yup.InferType<typeof invite>;
 export const Members = ({ setLink, onInviteModal }: IProp) => {
     const { canRemoveOrgUser, canSendInvite } = useRoles();
     const [isOpen, triggerModal] = useToggle(false);
+    const [MemberName, setMemberName] = useState('');
+    const handleRemoveButtonClick = (memberName: string) => {
+        setMemberName(memberName);
+        triggerModal.on();
+    };
     const form = useForm<Invite>({
         mode: 'onChange',
         resolver: yupResolver(invite),
@@ -88,6 +94,11 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
     return (
         <div className="p-none md:p-5">
             <Form {...form}>
+                <RemoveMemberModal
+                    isOpen={isOpen}
+                    onClose={triggerModal.off}
+                    MemberName={MemberName}
+                />
                 <form onSubmit={form.handleSubmit(sendEmailInvite)}>
                     <div className="flex gap-2 justify-end items-center mb-10 flex-wrap">
                         <FormField
@@ -174,13 +185,11 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                         {el.role !== Roles.Admin && (
                                             <AiOutlineDelete
                                                 className="hover:text-[red] cursor-pointer text-lg"
-                                                onClick={triggerModal.on}
+                                                onClick={() =>
+                                                    handleRemoveButtonClick(el.user.slug)
+                                                }
                                             />
                                         )}
-                                        <DeleteMemModal
-                                            isOpen={isOpen}
-                                            onClose={triggerModal.off}
-                                        />
                                     </TableCell>
                                 )}
                             </TableRow>

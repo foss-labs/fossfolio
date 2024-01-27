@@ -7,12 +7,13 @@ import { toast } from 'sonner';
 type IModal = {
     isOpen: boolean;
     onClose: () => void;
+    MemberName: string;
 };
 
-export const DeleteMemModal = ({ isOpen, onClose }: IModal) => {
+export const RemoveMemberModal = ({ isOpen, onClose, MemberName }: IModal) => {
     const router = useRouter();
 
-    const handleDeleteClick = async () => {
+    const handleRemoveClick = async () => {
         try {
             const { data } = await apiHandler.patch('/org/member/remove', {
                 data: { organizationId: router.query?.id },
@@ -34,7 +35,7 @@ export const DeleteMemModal = ({ isOpen, onClose }: IModal) => {
                 <DialogHeader>
                     Remove Team Member
                     <DialogDescription className="mt-3">
-                        Are you sure you want to remove the team member?
+                        Are you sure you want to remove {MemberName}?
                         <div className="flex justify-end space-x-2 mt-5">
                             <Button
                                 className="text-[black] bg-[#F9F5FF] hover:bg-emerald-50 border-[1.4px]"
@@ -44,7 +45,7 @@ export const DeleteMemModal = ({ isOpen, onClose }: IModal) => {
                             </Button>
                             <Button
                                 className="bg-[red]  border-1.4 hover:bg-[#ff0000c2]"
-                                onClick={handleDeleteClick}
+                                onClick={handleRemoveClick}
                             >
                                 Remove
                             </Button>
