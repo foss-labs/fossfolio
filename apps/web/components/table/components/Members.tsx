@@ -48,12 +48,24 @@ const invite = yup.object().shape({
 
 type Invite = yup.InferType<typeof invite>;
 
+type Member = {
+    userName: string;
+    userId: string;
+};
+
 export const Members = ({ setLink, onInviteModal }: IProp) => {
+    const { user } = useAuth();
     const { canRemoveOrgUser, canSendInvite } = useRoles();
     const [isOpen, triggerModal] = useToggle(false);
-    const [MemberName, setMemberName] = useState('');
-    const handleRemoveButtonClick = (memberName: string) => {
-        setMemberName(memberName);
+    const [removingMemberInfo, setRemovingMemberInfo] = useState<Member>({
+        userName: '',
+        userId: '',
+    });
+    const handleRemoveButtonClick = (info: Member) => {
+        setRemovingMemberInfo({
+            userName: info.userName,
+            userId: info.userId,
+        });
         triggerModal.on();
     };
     const form = useForm<Invite>({
@@ -75,10 +87,9 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                 organizationId: router.query?.id,
                 role: data.role,
             });
-            /* 
-            in DEV setup we dont send email
-            so instead  a modal open with the invite link
-            */
+
+            //In DEV setup we dont send email so instead  a modal open with the invite link
+
             if (!isProd) {
                 onInviteModal();
                 setLink(response.data);
@@ -97,7 +108,8 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                 <RemoveMemberModal
                     isOpen={isOpen}
                     onClose={triggerModal.off}
-                    MemberName={MemberName}
+                    MemberName={removingMemberInfo.userName}
+                    MemberId={removingMemberInfo.userId}
                 />
                 <form onSubmit={form.handleSubmit(sendEmailInvite)}>
                     <div className="flex gap-2 justify-end items-center mb-10 flex-wrap">
@@ -182,14 +194,18 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                 </TableCell>
                                 {canRemoveOrgUser && (
                                     <TableCell className="text-right">
-                                        {el.role !== Roles.Admin && (
-                                            <AiOutlineDelete
-                                                className="hover:text-[red] cursor-pointer text-lg"
-                                                onClick={() =>
-                                                    handleRemoveButtonClick(el.user.slug)
-                                                }
-                                            />
-                                        )}
+                                        {el.role !== Roles.Admin &&
+                                            user?.email !== el.user.email && (
+                                                <AiOutlineDelete
+                                                    className="hover:text-[red] cursor-pointer text-lg"
+                                                    onClick={() =>
+                                                        handleRemoveButtonClick({
+                                                            userId: el.user.uid,
+                                                            userName: el.user.displayName,
+                                                        })
+                                                    }
+                                                />
+                                            )}
                                     </TableCell>
                                 )}
                             </TableRow>

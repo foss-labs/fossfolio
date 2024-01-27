@@ -8,24 +8,26 @@ type IModal = {
     isOpen: boolean;
     onClose: () => void;
     MemberName: string;
+    MemberId: string;
 };
 
-export const RemoveMemberModal = ({ isOpen, onClose, MemberName }: IModal) => {
+export const RemoveMemberModal = ({ isOpen, onClose, MemberName, MemberId }: IModal) => {
     const router = useRouter();
 
     const handleRemoveClick = async () => {
         try {
             const { data } = await apiHandler.patch('/org/member/remove', {
-                data: { organizationId: router.query?.id },
+                data: { organizationId: router.query?.id, memberId: MemberId },
             });
             if (!data.ok) {
                 throw new Error();
             }
             onClose();
             toast.success('Team member has been removed');
-            router.push('/org/member');
         } catch {
             toast.error('could not remove team member');
+        } finally {
+            onClose();
         }
     };
 
