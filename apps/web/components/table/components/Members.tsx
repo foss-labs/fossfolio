@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'sonner';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
+import { DeleteMemModal } from './DeleteMemModal';
 import {
     Table,
     TableBody,
@@ -24,7 +24,7 @@ import { Input } from '@app/ui/components/input';
 import { Button } from '@app/components/ui/Button';
 import { useMembers } from '@app/hooks/api/org';
 import { apiHandler } from '@app/config';
-import { useAuth, useRoles } from '@app/hooks';
+import { useAuth, useRoles, useToggle } from '@app/hooks';
 import * as yup from 'yup';
 import { isProd } from '@app/utils';
 import { RiLoaderFill } from 'react-icons/ri';
@@ -49,7 +49,7 @@ type Invite = yup.InferType<typeof invite>;
 
 export const Members = ({ setLink, onInviteModal }: IProp) => {
     const { canRemoveOrgUser, canSendInvite } = useRoles();
-
+    const [isOpen, triggerModal] = useToggle(false);
     const form = useForm<Invite>({
         mode: 'onChange',
         resolver: yupResolver(invite),
@@ -171,7 +171,16 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                 </TableCell>
                                 {canRemoveOrgUser && (
                                     <TableCell className="text-right">
-                                        <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
+                                        {el.role !== Roles.Admin && (
+                                            <AiOutlineDelete
+                                                className="hover:text-[red] cursor-pointer text-lg"
+                                                onClick={triggerModal.on}
+                                            />
+                                        )}
+                                        <DeleteMemModal
+                                            isOpen={isOpen}
+                                            onClose={triggerModal.off}
+                                        />
                                     </TableCell>
                                 )}
                             </TableRow>
