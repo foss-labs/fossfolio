@@ -5,7 +5,7 @@ export class RemoveMember {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    organisationId: string;
+    organizationId: string;
 
     @ApiProperty()
     @IsNotEmpty()
