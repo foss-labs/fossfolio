@@ -11,6 +11,7 @@ export class OrgMemberController {
     constructor(private readonly orgMemberService: OrganizationMemberService) {}
 
     @Get('/:orgID')
+    @Roles('ADMIN', 'EDITOR', 'VIEWER')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getMembers(@Param('orgID') orgID: string) {
         return await this.orgMemberService.getMembers(orgID);
@@ -23,6 +24,6 @@ export class OrgMemberController {
     @Roles('ADMIN')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async removeUser(@Body() data: RemoveMember) {
-        return await this.orgMemberService.removeMember(data.organisationId, data.memberId);
+        return await this.orgMemberService.removeMember(data.organizationId, data.memberId);
     }
 }

@@ -1,34 +1,58 @@
 import { useRouter } from 'next/router';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@app/ui/components/dialog';
 import { apiHandler } from '@app/config';
 import { toast } from 'sonner';
+import {
+    QueryObserverResult,
+    RefetchOptions,
+    RefetchQueryFilters,
+    useMutation,
+} from '@tanstack/react-query';
+import { Member } from '@app/types';
+
+type MembersRefetchType = <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
+) => Promise<QueryObserverResult<Member[], unknown>>;
 
 type IModal = {
     isOpen: boolean;
     onClose: () => void;
     MemberName: string;
     MemberId: string;
+    refetch: MembersRefetchType;
 };
 
-export const RemoveMemberModal = ({ isOpen, onClose, MemberName, MemberId }: IModal) => {
+export const RemoveMemberModal = ({ isOpen, onClose, MemberName, MemberId, refetch }: IModal) => {
     const router = useRouter();
 
     const handleRemoveClick = async () => {
         try {
             const { data } = await apiHandler.patch('/org/member/remove', {
-                data: { organizationId: router.query?.id, memberId: MemberId },
+                organizationId: router.query?.id,
+                memberId: MemberId,
             });
             if (!data.ok) {
                 throw new Error();
             }
-            onClose();
             toast.success('Team member has been removed');
-        } catch {
-            toast.error('could not remove team member');
         } finally {
             onClose();
         }
+    };
+
+    const { mutate: removeUser, isLoading: isRemoving } = useMutation(handleRemoveClick, {
+        onSuccess: () => {
+            //fetching the users table again
+            refetch();
+        },
+        onError: () => {
+            toast.error('Error publishing event');
+        },
+    });
+
+    const handleRemove = () => {
+        removeUser();
     };
 
     return (
@@ -40,14 +64,16 @@ export const RemoveMemberModal = ({ isOpen, onClose, MemberName, MemberId }: IMo
                         Are you sure you want to remove {MemberName}?
                         <div className="flex justify-end space-x-2 mt-5">
                             <Button
-                                className="text-[black] bg-[#F9F5FF] hover:bg-emerald-50 border-[1.4px]"
+                                variant="outline"
                                 onClick={onClose}
+                                isLoading={isRemoving}
+                                className="text-black"
                             >
                                 Cancel
                             </Button>
                             <Button
-                                className="bg-[red]  border-1.4 hover:bg-[#ff0000c2]"
-                                onClick={handleRemoveClick}
+                                className="!bg-red-500 border-1.4 hover:bg-red-900"
+                                onClick={handleRemove}
                             >
                                 Remove
                             </Button>

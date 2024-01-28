@@ -77,7 +77,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
         },
     });
 
-    const { data, isLoading } = useMembers();
+    const { data, isLoading, refetch } = useMembers();
     const router = useRouter();
 
     const sendEmailInvite: SubmitHandler<Invite> = async (data) => {
@@ -110,6 +110,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                     onClose={triggerModal.off}
                     MemberName={removingMemberInfo.userName}
                     MemberId={removingMemberInfo.userId}
+                    refetch={refetch}
                 />
                 <form onSubmit={form.handleSubmit(sendEmailInvite)}>
                     <div className="flex gap-2 justify-end items-center mb-10 flex-wrap">
@@ -194,18 +195,17 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                 </TableCell>
                                 {canRemoveOrgUser && (
                                     <TableCell className="text-right">
-                                        {el.role !== Roles.Admin &&
-                                            user?.email !== el.user.email && (
-                                                <AiOutlineDelete
-                                                    className="hover:text-[red] cursor-pointer text-lg"
-                                                    onClick={() =>
-                                                        handleRemoveButtonClick({
-                                                            userId: el.user.uid,
-                                                            userName: el.user.displayName,
-                                                        })
-                                                    }
-                                                />
-                                            )}
+                                        {user?.email !== el.user.email && (
+                                            <AiOutlineDelete
+                                                className="hover:text-[red] cursor-pointer text-lg"
+                                                onClick={() =>
+                                                    handleRemoveButtonClick({
+                                                        userId: el.user.uid,
+                                                        userName: el.user.displayName,
+                                                    })
+                                                }
+                                            />
+                                        )}
                                     </TableCell>
                                 )}
                             </TableRow>
