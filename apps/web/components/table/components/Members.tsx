@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'sonner';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { RemoveMemberModal } from './RemoveMemberModal';
 import {
@@ -29,6 +29,7 @@ import * as yup from 'yup';
 import { isProd } from '@app/utils';
 import { RiLoaderFill } from 'react-icons/ri';
 import { useState } from 'react';
+import { Role } from '@app/types';
 
 enum Roles {
     Admin = 'ADMIN',
@@ -68,6 +69,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
         });
         triggerModal.on();
     };
+
     const form = useForm<Invite>({
         mode: 'onChange',
         resolver: yupResolver(invite),
@@ -76,6 +78,19 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
             role: Roles.Viewer,
         },
     });
+
+    const updateRole = async (role: Role, member: string) => {
+        try {
+            await apiHandler.patch('/org/member/role', {
+                organizationId: router.query?.id,
+                role: role,
+                memberId: member,
+            });
+            toast.success('role updated successfully');
+        } catch {
+            toast.error('failed to update role');
+        }
+    };
 
     const { data, isLoading, refetch } = useMembers();
     const router = useRouter();
@@ -182,14 +197,17 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                 </TableCell>
                                 <TableCell>{el.user.email}</TableCell>
                                 <TableCell>
-                                    <Select disabled={!canSendInvite}>
+                                    <Select
+                                        disabled={!canSendInvite}
+                                        onValueChange={(e: Role) => updateRole(e, el.user.uid)}
+                                    >
                                         <SelectTrigger className="w-44">
                                             <SelectValue placeholder={el.role} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="light">Admin</SelectItem>
-                                            <SelectItem value="dark">viewer</SelectItem>
-                                            <SelectItem value="system">editor</SelectItem>
+                                            <SelectItem value="ADMIN">ADMIN</SelectItem>
+                                            <SelectItem value="VIEWER">VIEWER</SelectItem>
+                                            <SelectItem value="EDITOR">EDITOR</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </TableCell>
