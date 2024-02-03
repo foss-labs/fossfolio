@@ -11,16 +11,18 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from '@app/ui/components/avatar';
 import { Button } from '@app/ui/components/button';
 import { useAuth, useToggle } from '@app/hooks';
-import { ProfileModal } from '@app/views/profile';
+import { ProfileModal, QrTokenModal } from '@app/views/profile';
 import { useLogOut } from '@app/hooks/api/Auth';
 
 export const UserNav = () => {
     const { logOut } = useLogOut();
     const { user } = useAuth();
     const [isOpen, triggerModal] = useToggle(false);
+    const [isQrCodeOpen, triggerQrcodeModal] = useToggle(false);
     return (
         <>
             <ProfileModal isOpen={isOpen} onClose={triggerModal.off} />
+            <QrTokenModal isOpen={isQrCodeOpen} onClose={triggerQrcodeModal.off} />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -52,6 +54,11 @@ export const UserNav = () => {
                                 Organize Events
                             </DropdownMenuItem>
                         </Link>
+
+                        <DropdownMenuItem className="!hover:cursor-pointer">
+                            <span onClick={triggerQrcodeModal.on}>Login to mobile</span>
+                        </DropdownMenuItem>
+
                         <Link href="/tickets" className="!hover:cursor-pointer">
                             <DropdownMenuItem className="!hover:cursor-pointer">
                                 My Tickets
