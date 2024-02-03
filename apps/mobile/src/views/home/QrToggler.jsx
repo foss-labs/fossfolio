@@ -25,8 +25,7 @@ const styles = StyleSheet.create({
     },
     icons: {
         flex: 1,
-        justifyContent: "center",
-        top: 743,
         flexDirection: 'row',
+        justifyContent: 'center',
     },
 });

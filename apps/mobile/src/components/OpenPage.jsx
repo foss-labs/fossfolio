@@ -1,6 +1,5 @@
 import { View, Image, StyleSheet, Text } from 'react-native';
 export const OpenPage = () => {
-
     return (
         <View style={styles.container}>
             <Image source={require('../../assets/Logo1.png')} style={styles.image} />
@@ -21,23 +20,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '70%',
     },
-    image: {
-        width: 193,
-        height: 43.49,
-        position: 'absolute',
-        top: 173,
-        left: 119,
-    },
+
     wallpaper: {
         width: 430,
         height: 260,
-        top: 315,
     },
     text: {
         width: 364,
-        height: 48,
-        top: 597,
+        marginTop: 30,
     },
     desc: {
         fontWeight: '400',
