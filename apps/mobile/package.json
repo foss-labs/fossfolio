@@ -14,6 +14,8 @@
         "@gluestack-ui/config": "^1.1.1",
         "@gluestack-ui/themed": "^1.1.0",
         "expo": "~50.0.3",
+        "expo-barcode-scanner": "^12.9.2",
+        "expo-camera": "^14.0.3",
         "expo-constants": "^15.4.5",
         "expo-linking": "^6.2.2",
         "expo-router": "^3.4.6",
