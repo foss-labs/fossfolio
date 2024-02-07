@@ -185,19 +185,42 @@ const Form: NextPageWithLayout = () => {
                         </p>
 
                         {formData.length > 0 && (
-                            <Card className="mt-10">
+                            <Card className="mt-10 w-[300px]">
                                 <CardHeader>
                                     <CardTitle>Please fill The form</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     {formData.map((el) => (
                                         <div>
-                                            <Label>{el.label}</Label>
+                                            <Label className="mb-4">{el.label}</Label>
                                             {el.type === 'SingleLineText' && (
                                                 <Input placeholder={el.options} />
                                             )}
+                                            {el.type === 'Checkbox' && (
+                                                <Checkbox placeHolder={el.plceholder} />
+                                            )}
+                                            {el.type === 'Email' && (
+                                                <Input placeholder={el.plceholder} type="email" />
+                                            )}
+                                            {el.type === 'SingleSelect' && (
+                                                <Select>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder={el.plceholder} />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="light">Light</SelectItem>
+                                                        <SelectItem value="dark">Dark</SelectItem>
+                                                        <SelectItem value="system">
+                                                            System
+                                                        </SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
                                         </div>
                                     ))}
+                                    <Button type="submit" className="mt-5 w-full">
+                                        submit
+                                    </Button>
                                 </CardContent>
                             </Card>
                         )}

@@ -103,8 +103,7 @@ model Events {
 model Field {
   id String @id @default(cuid())
 
-  title       String
-  label       String?
+  label       String
   placeholder String?
   options     String?
 
