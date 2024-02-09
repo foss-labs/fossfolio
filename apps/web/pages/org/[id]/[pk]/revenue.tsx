@@ -1,43 +1,6 @@
-import React, { useState } from 'react';
-import axios from 'axios';
 import { DashboardLayout } from '@app/layout';
-import { toast } from 'sonner';
-import { ENV } from '@app/config/ENV';
 
 const Revenue = () => {
-    const [response, setResponse] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-
-    const makeRequest = async () => {
-        try {
-            setIsLoading(true);
-            const apiKey = ENV.openai_api_key;
-            const apiUrl = ENV.openai_api_url;
-
-            const prompt = 'Write a ReactJS component that';
-            const response = await axios.post(
-                apiUrl,
-                {
-                    prompt,
-                    max_tokens: 150,
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${apiKey}`,
-                    },
-                },
-            );
-
-            setResponse(response.data.choices[0].text);
-        } catch (error) {
-            console.error('Error making OpenAI request', error);
-            toast.error('An error occurred. Please try again later.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     return (
         <div className="p-6">
             <h1 className="text-3xl font-bold">Revenue</h1>
@@ -60,12 +23,7 @@ const Revenue = () => {
             </div>
 
             <div className="rounded-md mt-10 h-80 mx-2 bg-brand-pink-100">
-                <div className="flex justify-center items-center h-full">
-                    <button onClick={makeRequest} disabled={isLoading}>
-                        {isLoading ? 'Generating...' : 'Generate React Component'}
-                    </button>
-                </div>
-                {response && <p>{response}</p>}
+                <div className="flex justify-center items-center h-full"></div>
             </div>
         </div>
     );

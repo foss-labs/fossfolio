@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Editor } from 'novel';
 import { toast } from 'sonner';
@@ -10,6 +10,7 @@ import { ENV, apiHandler } from '@app/config';
 import { PublishModal } from '@app/views/dashboard';
 import { useEvent } from '@app/hooks/api/Events';
 import { Button } from '@app/components/ui/Button';
+import axios from 'axios';
 
 const defaultEditorContent = {
     type: 'doc',
@@ -27,6 +28,7 @@ const Event = () => {
     const { data, isLoading, refetch } = useEvent('org');
     const router = useRouter();
     const { id, pk } = router.query;
+    const [generatedCompletion, setGeneratedCompletion] = useState('');
 
     const publishEvent = async () => {
         try {
@@ -108,6 +110,30 @@ const Event = () => {
     const handlePublishClick = () => {
         publish();
     };
+    const handleGenerateCompletion = async () => {
+        try {
+            const apiKey = ENV.openai_api_key;
+            const apiUrl = ENV.openai_api_url;
+
+            const response = await axios.post(
+                apiUrl,
+                {
+                    prompt: defaultEditorContent.content[0].content[0].text,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${apiKey}`,
+                    },
+                },
+            );
+
+            setGeneratedCompletion(response.data.choices[0].text);
+        } catch (error) {
+            console.error('Error making OpenAI request', error);
+            toast.error('An error occurred. Please try again later.');
+        }
+    };
 
     if (isLoading) {
         return (
@@ -137,6 +163,8 @@ const Event = () => {
                 completionApi={`${ENV.api_base}/ai/generate`}
                 onDebouncedUpdate={handleUpdate}
             />
+            <Button onClick={handleGenerateCompletion}>Generate description</Button>
+            {generatedCompletion && <div>{generatedCompletion}</div>}
         </div>
     );
 };
