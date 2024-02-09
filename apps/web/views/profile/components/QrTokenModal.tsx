@@ -22,6 +22,7 @@ export const QrTokenModal = ({ isOpen, onClose }: IModal) => {
 
     const generateQRCode = async () => {
         try {
+            console.log(document.cookie);
             const dataUrl = await Qrcode.toDataURL(user?.refreshToken || '');
             setQrCode(dataUrl);
         } catch (error) {

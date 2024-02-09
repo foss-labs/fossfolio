@@ -1,1 +1,1 @@
-export { QrToggler } from "./QrToggler"
+export { QrToggler } from './QrToggler';

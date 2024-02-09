@@ -1,16 +1,17 @@
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { Slot } from 'expo-router';
-import { SafeAreaView } from "react-native"
-import { config } from "../gluestack-ui.config"
+import { SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import { config } from '../gluestack-ui.config';
 
 export default function App() {
     return (
-        <GluestackUIProvider config={config}>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-                <SafeAreaView/>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <GluestackUIProvider config={config}>
+                <SafeAreaView />
                 <Slot />
-            </GestureHandlerRootView>
-        </GluestackUIProvider> 
+            </GluestackUIProvider>
+        </GestureHandlerRootView>
     );
 }
