@@ -19,5 +19,12 @@
             "outputs": []
         }
     },
-    "globalEnv": ["NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_WEBSITE_DOMAIN", "NODE_ENV", "PORT", "CI"]
+    "globalEnv": [
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_WEBSITE_DOMAIN",
+        "NODE_ENV",
+        "PORT",
+        "CI",
+        "OPEN_AI_TOKEN"
+    ]
 }

@@ -7,6 +7,8 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
+import { FormPayLoad } from './dto/create-form.dto';
+
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
 
 @Injectable()
@@ -334,6 +336,31 @@ export class EventsService {
                 message: 'User found successfully',
                 isRegistred: true,
             };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
+
+    async createForm(data: FormPayLoad) {
+        try {
+            const event = await this.prismaService.events.findUnique({
+                where: {
+                    organizationId: data.organizationId,
+                    id: data.eventId,
+                },
+            });
+
+            if (!event) {
+                throw new NotFoundException();
+            }
+
+            // TODO
+            //Create the form data from payload
+            // should use create many functions
         } catch (e) {
             if (e instanceof NotFoundException) {
                 throw new NotFoundException();

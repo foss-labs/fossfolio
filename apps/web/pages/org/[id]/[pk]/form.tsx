@@ -26,6 +26,9 @@ import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Label } from '@app/ui/components/label';
+import { Textarea } from '@app/ui/components/textarea';
+import { apiHandler } from '@app/config';
+import { useRouter } from 'next/router';
 
 type Iform = {
     label: string;
@@ -47,6 +50,8 @@ type FormValidator = yup.InferType<typeof builderSchema>;
 const Form: NextPageWithLayout = () => {
     const [formData, setFormData] = useState<Iform[]>([]);
 
+    const router = useRouter();
+
     const form = useForm<FormValidator>({
         mode: 'onSubmit',
         resolver: yupResolver(builderSchema),
@@ -60,9 +65,18 @@ const Form: NextPageWithLayout = () => {
         form.reset();
     };
 
+    const handlePublish = async () => {
+        apiHandler.post('/events/form', {
+            organisationId: router.query?.id,
+            data: formData,
+            eventId: router.query?.pk,
+        });
+    };
+
     return (
-        <div className="pt-5">
-            <div className="flex justify-center  h-screen  p-5">
+        <div className="pt-5 pr-3">
+            <Button className="float-right">Publish</Button>
+            <div className="flex justify-center  h-screen  p-5 ">
                 <div className="gap-20 flex justify-center">
                     <section>
                         <h3 className="text-3xl font-semibold mt-4">Form Builder</h3>
@@ -197,7 +211,7 @@ const Form: NextPageWithLayout = () => {
                                                 <Input placeholder={el.options} />
                                             )}
                                             {el.type === 'Checkbox' && (
-                                                <Checkbox placeHolder={el.plceholder} />
+                                                <Checkbox placeholder={el.plceholder} />
                                             )}
                                             {el.type === 'Email' && (
                                                 <Input placeholder={el.plceholder} type="email" />
@@ -215,6 +229,9 @@ const Form: NextPageWithLayout = () => {
                                                         </SelectItem>
                                                     </SelectContent>
                                                 </Select>
+                                            )}
+                                            {el.type === 'LongText' && (
+                                                <Textarea placeholder={el.plceholder} />
                                             )}
                                         </div>
                                     ))}

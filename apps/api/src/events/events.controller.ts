@@ -9,6 +9,7 @@ import { UpdateEventDto } from './dto/updtate-event.dto';
 import { RegisterEventDto } from './dto/register-event.dto';
 import { AuthUser } from '../auth/decorators/user.decorator';
 import { User } from '@prisma/client';
+import { FormPayLoad } from './dto/create-form.dto';
 
 @Controller('events')
 export class EventsController {
@@ -68,5 +69,12 @@ export class EventsController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getUserEventStatus(@Param('id') id: string, @AuthUser() user: User) {
         return await this.events.getEventRegistartionStatus(id, user.uid);
+    }
+
+    @Post('/form')
+    @ApiOperation({ summary: 'Create form for each event' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async createForm(@Body() payload: FormPayLoad) {
+        return await this.events.createForm(payload);
     }
 }
