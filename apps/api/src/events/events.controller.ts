@@ -1,4 +1,17 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    FileTypeValidator,
+    Get,
+    MaxFileSizeValidator,
+    Param,
+    ParseFilePipe,
+    Patch,
+    Post,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors,
+} from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -10,6 +23,7 @@ import { RegisterEventDto } from './dto/register-event.dto';
 import { AuthUser } from '../auth/decorators/user.decorator';
 import { User } from '@prisma/client';
 import { FormPayLoad } from './dto/create-form.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('events')
 export class EventsController {
@@ -72,9 +86,35 @@ export class EventsController {
     }
 
     @Post('/form')
+    @Roles('ADMIN', 'EDITOR')
     @ApiOperation({ summary: 'Create form for each event' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async createForm(@Body() payload: FormPayLoad) {
         return await this.events.createForm(payload);
+    }
+
+    @Post('/image/upload')
+    @Roles('ADMIN', 'EDITOR')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    @UseInterceptors(FileInterceptor('file'))
+    @ApiOperation({ summary: 'Upload image for event info' })
+    uploadFile(
+        @UploadedFile(
+            new ParseFilePipe({
+                // file size validators
+                validators: [
+                    new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }), // support png,jpg,peg
+                    new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }), // File size 4 megabytes
+                ],
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
+        console.log(file);
+
+        return {
+            ok: false,
+            message: 'hi',
+        };
     }
 }

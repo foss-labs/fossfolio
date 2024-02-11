@@ -1,5 +1,5 @@
 import { Button } from '@app/components/ui/Button';
-import { ENV, apiHandler } from '@app/config';
+import { apiHandler } from '@app/config';
 import { useEvent, useUserRegistartionStatus } from '@app/hooks/api/Events';
 import { HomeLayout } from '@app/layout';
 import { useMutation } from '@tanstack/react-query';
@@ -43,7 +43,6 @@ const Event: NextPageWithLayout = () => {
                 <Editor
                     className="w-full"
                     defaultValue={JSON.parse(data.data.description as string)}
-                    completionApi={`${ENV.api_base}/ai/generate`}
                     editorProps={{
                         editable: () => false,
                     }}
