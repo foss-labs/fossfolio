@@ -44,7 +44,6 @@
         "class-variance-authority": "^0.6.1",
         "clsx": "^1.2.1",
         "date-fns": "^2.30.0",
-        "formidable": "^3.5.1",
         "framer-motion": "^10.0.1",
         "next": "^13.2.3",
         "next-seo": "^5.15.0",

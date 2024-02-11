@@ -265,9 +265,6 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      formidable:
-        specifier: ^3.5.1
-        version: 3.5.1
       framer-motion:
         specifier: ^10.0.1
         version: 10.0.1(react-dom@18.2.0)(react@18.2.0)
@@ -13728,14 +13725,6 @@ packages:
       hexoid: 1.0.0
       once: 1.4.0
       qs: 6.11.0
-    dev: false
-
-  /formidable@3.5.1:
-    resolution: {integrity: sha512-WJWKelbRHN41m5dumb0/k8TeAx7Id/y3a+Z7QfhxP/htI9Js5zYaEDtG8uMgG0vM0lOlqnmjE99/kfpOYi/0Og==}
-    dependencies:
-      dezalgo: 1.0.4
-      hexoid: 1.0.0
-      once: 1.4.0
     dev: false
 
   /forwarded@0.2.0:
