@@ -80,7 +80,6 @@
         "@types/qrcode": "^1.5.5",
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.11",
-        "@types/react-lottie": "^1.2.6",
         "@vitejs/plugin-react": "^4.2.1",
         "autoprefixer": "^10.4.14",
         "jsdom": "^23.2.0",
