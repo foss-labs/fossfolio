@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-const Lottie = dynamic(() => import('react-lottie'), { ssr: false });
-
+import { useLottie } from 'lottie-react';
 import ComingSoo from '@app/public/lottie/coming.json';
 
 export const ComingSoon = () => {
@@ -12,11 +10,12 @@ export const ComingSoon = () => {
             preserveAspectRatio: 'xMidYMid slice',
         },
     };
+
+    const { View } = useLottie(defaultOptions);
+
     return (
         <div className="h-[90vh] w-full flex justify-center items-center">
-            {typeof window !== undefined && (
-                <Lottie options={defaultOptions} height={400} width={800} />
-            )}
+            {typeof window !== undefined && <>{View}</>}
         </div>
     );
 };
