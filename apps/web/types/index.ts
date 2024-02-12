@@ -10,6 +10,7 @@ export interface User {
     photoURL: string;
     isStudent: boolean;
     collegeName?: string;
+    refreshToken: string;
 }
 
 export type Member = {
