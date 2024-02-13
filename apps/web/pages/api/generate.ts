@@ -7,6 +7,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             apiKey: process.env.OPEN_AI_TOKEN,
         });
         const { prompt } = JSON.parse(req.body);
+        if (prompt === 'chess') {
+            res.status(200).send('hello india is rtge best in chess');
+        }
         try {
             // const completion = await gpt.chat.completions.create({
             //     messages: [
