@@ -16,7 +16,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             //         {
             //             role: 'system',
             //             content:
-            //                 'You are a helpful assistant that helps in creating large description about something from small input text description',
+            //                 "You are an AI writing assistant that continues existing text based on context from prior text. " +
+            //  "Give more weight/priority to the later characters than the beginning ones. Make sure to construct complete sentences.",
             //         },
             //         { role: 'user', content: prompt },
             //     ],
