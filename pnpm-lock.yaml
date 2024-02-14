@@ -62,6 +62,9 @@ importers:
       argon2:
         specifier: ^0.30.3
         version: 0.30.3
+      aws-sdk:
+        specifier: ^2.1556.0
+        version: 2.1556.0
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -14495,7 +14498,7 @@ packages:
       os-browserify: 0.3.0
       path-browserify: 1.0.1
       process: 0.11.10
-      punycode: 2.3.0
+      punycode: 2.3.1
       querystring-es3: 0.2.1
       readable-stream: 4.3.0
       stream-browserify: 3.0.0
@@ -16100,10 +16103,6 @@ packages:
   /punycode@1.4.1:
     resolution: {integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==}
     dev: true
-
-  /punycode@2.3.0:
-    resolution: {integrity: sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==}
-    engines: {node: '>=6'}
 
   /punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -18096,7 +18095,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       psl: 1.9.0
-      punycode: 2.3.0
+      punycode: 2.3.1
       universalify: 0.2.0
       url-parse: 1.5.10
 

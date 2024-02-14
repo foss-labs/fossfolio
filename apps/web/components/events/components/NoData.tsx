@@ -13,8 +13,8 @@ export const NoData = () => {
 
     const { View } = useLottie(defaultOptions);
     return (
-        <div className="h-[90vh] w-full flex justify-center items-center">
-            {typeof window !== undefined && <>{View}</>}
+        <div className="h-[90vh] w-full flex justify-center items-center ">
+            <div>{<>{View}</>}</div>
         </div>
     );
 };
