@@ -12,6 +12,7 @@ import { OrganizationInviteModule } from './org-invite/org-invite.module';
 import { EventsModule } from './events/events.module';
 import { MailModule } from './mail/mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CloudModule } from './cloud/cloud.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -64,6 +65,7 @@ import { APP_GUARD } from '@nestjs/core';
         OrganizationInviteModule,
         EventsModule,
         MailModule,
+        CloudModule,
     ],
     controllers: [AppController],
     providers: [

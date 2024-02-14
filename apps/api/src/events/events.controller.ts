@@ -8,6 +8,7 @@ import {
     ParseFilePipe,
     Patch,
     Post,
+    Query,
     UploadedFile,
     UseGuards,
     UseInterceptors,
@@ -24,7 +25,6 @@ import { AuthUser } from '../auth/decorators/user.decorator';
 import { User } from '@prisma/client';
 import { FormPayLoad } from './dto/create-form.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-
 @Controller('events')
 export class EventsController {
     constructor(private readonly events: EventsService) {}
@@ -58,6 +58,7 @@ export class EventsController {
     @Patch('/edit')
     @ApiOperation({ summary: 'update info of event' })
     @Roles('ADMIN', 'EDITOR')
+    @UseInterceptors(FileInterceptor('file'))
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async updateNewEvent(@Body() data: UpdateEventDto) {
         return await this.events.updateEvent(data);
@@ -93,12 +94,12 @@ export class EventsController {
         return await this.events.createForm(payload);
     }
 
-    @Post('/image/upload')
+    @Patch('/edit/cover')
     @Roles('ADMIN', 'EDITOR')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     @UseInterceptors(FileInterceptor('file'))
-    @ApiOperation({ summary: 'Upload image for event info' })
-    uploadFile(
+    @ApiOperation({ summary: 'Upload image for event cover page' })
+    async uploadFile(
         @UploadedFile(
             new ParseFilePipe({
                 // file size validators
@@ -109,12 +110,8 @@ export class EventsController {
             }),
         )
         file: Express.Multer.File,
+        @Query('event') event: string,
     ) {
-        console.log(file);
-
-        return {
-            ok: false,
-            message: 'hi',
-        };
+        return await this.events.uploadEventCover(file, event);
     }
 }

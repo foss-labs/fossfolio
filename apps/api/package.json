@@ -19,6 +19,7 @@
         "email": "email dev"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.513.0",
         "@nestjs-modules/mailer": "^1.9.1",
         "@nestjs/common": "^10.0.5",
         "@nestjs/config": "^3.0.0",
@@ -33,7 +34,6 @@
         "@prisma/client": "^5.0.0",
         "@webtre/nestjs-mailer-react-adapter": "^0.1.2",
         "argon2": "^0.30.3",
-        "aws-sdk": "^2.1556.0",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.0",
         "cookie-parser": "^1.4.6",

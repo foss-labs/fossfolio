@@ -99,6 +99,7 @@ model Events {
   maxTicketCount  Int?
   eventDate       DateTime?
   form            Field[]
+  coverImage      String?
 }
 
 model Field {

@@ -6,9 +6,10 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@app/ui/components/dialog';
-import { useAuth, useToggle } from '@app/hooks';
+import { useToggle } from '@app/hooks';
 import { toast } from 'sonner';
 import { Input } from '@app/ui/components/input';
+import Image from 'next/image';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@app/components/ui/Button';
 import * as yup from 'yup';
@@ -35,6 +36,7 @@ import { PopoverContent } from '@radix-ui/react-popover';
 import { Calendar } from '@app/ui/components/calendar';
 import { format, isBefore } from 'date-fns';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 type IModal = {
     isOpen: boolean;
@@ -43,6 +45,7 @@ type IModal = {
 type Description = 'true' | 'false';
 
 export const EventSchema = yup.object().shape({
+    file: yup.mixed(),
     maxTicketCount: yup.number().required('Ticket count is a required field').min(1),
     lastDate: yup.date().required(),
     eventDate: yup.date().required(),
@@ -63,6 +66,7 @@ export type IProfile = yup.InferType<typeof EventSchema>;
 
 export const PublishModal = ({ isOpen, onClose }: IModal) => {
     const [isUpdating, setUpdating] = useToggle(false);
+    const [cover, selectCover] = useState<string | undefined>('');
     const router = useRouter();
     const { id, pk } = router.query;
 
@@ -73,6 +77,22 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
         },
         resolver: yupResolver(EventSchema),
     });
+
+    const convert2base64 = (file: File) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => [selectCover(reader.result?.toString())];
+
+        reader.readAsDataURL(file);
+    };
+
+    useEffect(() => {
+        const image = form.watch('file') as File;
+        if (typeof image === 'object') {
+            convert2base64(image);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [form.watch('file')]);
 
     const isCollegeEvent = form.watch('team') === 'true';
 
@@ -95,7 +115,10 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                 });
                 return;
             }
-            await apiHandler.patch(`/events/edit`, {
+            const formData = new FormData();
+            formData.append('file', payload.file);
+
+            const dataWithOutImage = await apiHandler.patch(`/events/edit`, {
                 ...payload,
                 organizationId: id,
                 eventId: pk,
@@ -103,19 +126,35 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                 isPublished: true,
                 maxTeamSize: Number(payload.maxTeamSize),
                 minTeamSize: Number(payload.minTeamSize),
+                file: null,
             });
+
+            const uploadImageOnly = await apiHandler.patch(
+                `/events/edit/cover?org=${id}&event=${pk}`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                },
+            );
+
+            const calls = [uploadImageOnly, dataWithOutImage];
+            await Promise.all(calls);
+
             toast.success('Event was published successfully');
         } catch {
             toast.error('Error updating the event');
         } finally {
             setUpdating.off();
+            selectCover('');
             onClose();
         }
     };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-[325px] md:w-auto">
+            <DialogContent className="w-[325px] md:w-auto ">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleUpdates)}>
                         <DialogHeader>
@@ -127,17 +166,36 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                         <div className="grid gap-4 py-4">
                             <FormField
                                 control={form.control}
-                                name="maxTicketCount"
+                                name="file"
                                 render={({ field }) => (
                                     <FormItem className="items-center ">
-                                        <FormLabel>Maximum Ticket Count</FormLabel>
+                                        <FormLabel>Cover Image</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="0" {...field} type="number" />
+                                            <Input
+                                                accept=".jpg, .jpeg, .png, .svg, .gif, .mp4"
+                                                type="file"
+                                                onChange={(
+                                                    e: React.ChangeEvent<HTMLInputElement>,
+                                                ) => {
+                                                    field.onChange(
+                                                        e.target.files ? e.target.files[0] : null,
+                                                    );
+                                                }}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                            {/* @ts-ignore */}
+                            {cover?.length > 0 && (
+                                <Image
+                                    src={cover as string}
+                                    width={200}
+                                    height={100}
+                                    alt="cover image"
+                                />
+                            )}
                             <FormField
                                 control={form.control}
                                 name="lastDate"

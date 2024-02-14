@@ -23,7 +23,6 @@ export class RbacGuard implements CanActivate {
         }
 
         const request = context.switchToHttp().getRequest();
-
         const user = request.user;
 
         const organizationId =

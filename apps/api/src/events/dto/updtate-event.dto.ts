@@ -44,4 +44,7 @@ export class UpdateEventDto {
 
     @ApiProperty()
     eventDate: Date;
+
+    @ApiProperty()
+    file: string;
 }

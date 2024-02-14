@@ -17,6 +17,7 @@ type Events = {
     maxTicketCount: number;
     eventDate: Date;
     location: string;
+    coverImage?: string;
 };
 
 const getAllEvents = async () => {

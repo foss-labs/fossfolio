@@ -1,5 +1,6 @@
 import {
     Injectable,
+    InternalServerErrorException,
     NotFoundException,
     ServiceUnavailableException,
     UnprocessableEntityException,
@@ -8,12 +9,15 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
-
+import { S3Service } from '../cloud/cloud.service';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
 
 @Injectable()
 export class EventsService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly cloudService: S3Service,
+    ) {}
 
     async createEvent(d: CreateEventDto) {
         try {
@@ -366,6 +370,37 @@ export class EventsService {
                 throw new NotFoundException();
             } else {
                 return e;
+            }
+        }
+    }
+
+    async uploadEventCover(file: Express.Multer.File, eventId: string) {
+        try {
+            const publicUrl = await this.cloudService.uploadFile(file);
+            if (!publicUrl) {
+                throw new InternalServerErrorException();
+            }
+
+            const updatedEventCover = await this.prismaService.events.update({
+                where: {
+                    id: eventId,
+                },
+                data: {
+                    coverImage: publicUrl,
+                },
+            });
+
+            if (!updatedEventCover) {
+                throw new InternalServerErrorException();
+            }
+            return {
+                ok: true,
+                data: updatedEventCover,
+                message: 'image uploaded successfully',
+            };
+        } catch (e) {
+            if (e instanceof InternalServerErrorException) {
+                return new InternalServerErrorException();
             }
         }
     }

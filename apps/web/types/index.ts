@@ -65,4 +65,5 @@ export interface OrgEvents {
     maxTickerCount?: number;
     minTicketCount?: number;
     isCollegeEvent?: boolean;
+    coverImage?: string;
 }
