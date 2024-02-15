@@ -126,7 +126,7 @@ export class EventsController {
     @Get('/ticket/:eventId')
     @Roles('ADMIN', 'EDITOR')
     @ApiOperation({ summary: 'get event ticket info' })
-    async getTicketInfo(@Query('event') eventId: string) {
+    async getTicketInfo(@Param('eventId') eventId: string) {
         return await this.events.getTicketInfo(eventId);
     }
 }

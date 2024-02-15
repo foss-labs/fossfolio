@@ -17,7 +17,7 @@ export class EventsService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly cloudService: S3Service,
-    ) {}
+    ) { }
 
     async createEvent(d: CreateEventDto) {
         try {
@@ -451,17 +451,33 @@ export class EventsService {
     }
 
     async getTicketInfo(id: string) {
-        await this.prismaService.events.findUnique({
-            where: {
-                id,
-            },
-            select: {
-                eventDate: true,
-                description: true,
-                isCollegeEvent: true,
-                coverImage: true,
-                location: true,
-            },
-        });
+        try {
+            const event = await this.prismaService.events.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    eventDate: true,
+                    description: true,
+                    isCollegeEvent: true,
+                    coverImage: true,
+                    location: true,
+                },
+            });
+            if (!event) {
+                return new NotFoundException();
+            }
+            return {
+                ok: true,
+                message: 'Event schema found',
+                data: event,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                return new NotFoundException();
+            } else {
+                return e;
+            }
+        }
     }
 }
