@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@app/ui/components/dialog';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import Qrcode from 'qrcode';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -67,13 +67,9 @@ export const TicketModal = ({ isOpen, onClose, data }: IModal) => {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="mt-10 bg-gray-100 rounded ">
-                            <p className="text-sm">TOTAL AMOUNT </p>
-                        </div>
                     </div>
 
-                    <div className="flex justify-between gap-2 mt-2">
+                    <div className="flex justify-between gap-2 mt-6">
                         <Button variant="outline" className="flex-1 rounded-sm ">
                             Print
                         </Button>

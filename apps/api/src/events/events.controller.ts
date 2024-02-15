@@ -114,4 +114,19 @@ export class EventsController {
     ) {
         return await this.events.uploadEventCover(file, event);
     }
+
+    @Get('/form/:orgID/:eventId')
+    @Roles('ADMIN', 'EDITOR')
+    @ApiOperation({ summary: 'get form schema of a specific event' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getFormSchema(@Param('eventId') eventId: string) {
+        return await this.events.getEventFormScheme(eventId);
+    }
+
+    @Get('/ticket/:eventId')
+    @Roles('ADMIN', 'EDITOR')
+    @ApiOperation({ summary: 'get event ticket info' })
+    async getTicketInfo(@Query('event') eventId: string) {
+        return await this.events.getTicketInfo(eventId);
+    }
 }

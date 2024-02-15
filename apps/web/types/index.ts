@@ -62,7 +62,7 @@ export interface OrgEvents {
     description: string | null;
     lastDate: Date;
     eventDate: Date;
-    maxTickerCount?: number;
+    maxTicketCount?: number;
     minTicketCount?: number;
     isCollegeEvent?: boolean;
     coverImage?: string;

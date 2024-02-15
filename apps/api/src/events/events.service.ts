@@ -362,9 +362,25 @@ export class EventsService {
                 throw new NotFoundException();
             }
 
-            // TODO
-            //Create the form data from payload
-            // should use create many functions
+            const formSchema = await this.prismaService.field.create({
+                data: {
+                    label: data.data.label,
+                    placeholder: data.data.placeholder,
+                    required: data.data.required,
+                    type: data.data.type,
+                    Events: {
+                        connect: {
+                            id: data.eventId,
+                        },
+                    },
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'schema updated successfully',
+                data: formSchema,
+            };
         } catch (e) {
             if (e instanceof NotFoundException) {
                 throw new NotFoundException();
@@ -403,5 +419,49 @@ export class EventsService {
                 return new InternalServerErrorException();
             }
         }
+    }
+
+    async getEventFormScheme(event: string) {
+        try {
+            const eventSchema = await this.prismaService.events.findUnique({
+                where: {
+                    id: event,
+                },
+                select: {
+                    form: true,
+                },
+            });
+
+            if (!eventSchema) {
+                return new NotFoundException();
+            }
+
+            return {
+                ok: true,
+                message: 'Event schema found',
+                data: eventSchema.form,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                return new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
+
+    async getTicketInfo(id: string) {
+        await this.prismaService.events.findUnique({
+            where: {
+                id,
+            },
+            select: {
+                eventDate: true,
+                description: true,
+                isCollegeEvent: true,
+                coverImage: true,
+                location: true,
+            },
+        });
     }
 }

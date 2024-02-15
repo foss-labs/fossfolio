@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FieldType } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class FormPayLoad {
@@ -12,7 +13,7 @@ export class FormPayLoad {
     @IsNotEmpty()
     eventId: string;
 
-    data: Payload[];
+    data: Payload;
 }
 
 class Payload {
@@ -22,16 +23,3 @@ class Payload {
     required: boolean;
     type: FieldType;
 }
-
-type FieldType = {
-    SingleLineText;
-    LongText;
-    SingleSelect;
-    MultiSelect;
-    Checkbox;
-    Number;
-    Email;
-    URL;
-    PhoneNumber;
-    Attachment;
-};

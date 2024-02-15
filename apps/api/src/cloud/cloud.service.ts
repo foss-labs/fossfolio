@@ -18,7 +18,6 @@ export class S3Service {
     async uploadFile(file: Express.Multer.File): Promise<string> {
         try {
             const { mimetype, originalname } = file;
-            console.log(file);
             const command = new PutObjectCommand({
                 Bucket: 'fossfolio',
                 Key: originalname.split(' ').join('-'),

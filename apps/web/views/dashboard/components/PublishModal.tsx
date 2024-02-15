@@ -166,6 +166,19 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                         <div className="grid gap-4 py-4">
                             <FormField
                                 control={form.control}
+                                name="maxTicketCount"
+                                render={({ field }) => (
+                                    <FormItem className="items-center ">
+                                        <FormLabel>Maximum Ticket Count</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="100" {...field} type="number" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
                                 name="file"
                                 render={({ field }) => (
                                     <FormItem className="items-center ">

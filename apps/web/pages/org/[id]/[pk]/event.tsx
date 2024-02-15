@@ -133,7 +133,9 @@ const Event = () => {
             </div>
             <Editor
                 className="w-full"
-                defaultValue={JSON.parse(data?.data.description as string) || defaultEditorContent}
+                defaultValue={
+                    JSON.parse(data?.data.description as string) || defaultEditorContent || ''
+                }
                 completionApi={`/api/generate`}
                 onDebouncedUpdate={handleUpdate}
             />

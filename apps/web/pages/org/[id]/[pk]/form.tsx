@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { NextPageWithLayout } from 'next';
 import { DashboardLayout } from '@app/layout';
 import { Button } from '@app/components/ui/Button';
@@ -21,26 +20,21 @@ import {
     FormMessage,
 } from '@app/ui/components/form';
 import { Checkbox } from '@app/ui/components/checkbox';
-import { InputOption, IFormInput } from '@app/views/form';
+import { InputOption, IFormInput, SchemaPreview } from '@app/views/form';
 import * as yup from 'yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Label } from '@app/ui/components/label';
-import { Textarea } from '@app/ui/components/textarea';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
-
-type Iform = {
-    label: string;
-    plceholder?: string;
-    options?: string;
-    required: boolean;
-    type: IFormInput;
-};
+import { useFormSchema } from '@app/hooks/api/Events';
+import { useMutation } from '@tanstack/react-query';
+import { Iform } from '@app/hooks/api/Events/useFormSchema';
+import { toast } from 'sonner';
+import { RiLoaderFill } from 'react-icons/ri';
 
 const builderSchema = yup.object({
     label: yup.string().required('Label is required'),
-    placeHolder: yup.string(),
+    placeholder: yup.string(),
     required: yup.boolean().optional().default(false),
     type: yup.string().required('Question type is required') as yup.StringSchema<IFormInput>,
 });
@@ -48,7 +42,7 @@ const builderSchema = yup.object({
 type FormValidator = yup.InferType<typeof builderSchema>;
 
 const Form: NextPageWithLayout = () => {
-    const [formData, setFormData] = useState<Iform[]>([]);
+    const { data, isLoading, refetch } = useFormSchema();
 
     const router = useRouter();
 
@@ -57,25 +51,36 @@ const Form: NextPageWithLayout = () => {
         resolver: yupResolver(builderSchema),
     });
 
+    const updateSchema = async (schema: Iform) => {
+        console.log(schema);
+        try {
+            await apiHandler.post('/events/form', {
+                organizationId: router.query?.id,
+                data: schema,
+                eventId: router.query?.pk,
+            });
+        } catch {
+            toast.error('Error adding new schema');
+        }
+    };
+
+    const { isLoading: isSchemaUpdating, mutate } = useMutation(updateSchema, {
+        onSuccess: () => {
+            refetch();
+        },
+    });
+
     const handleUpdates: SubmitHandler<FormValidator> = async (data) => {
-        setFormData((prev) => [...prev, data]);
+        mutate(data);
     };
 
     const handleCancel = () => {
         form.reset();
     };
 
-    const handlePublish = async () => {
-        apiHandler.post('/events/form', {
-            organisationId: router.query?.id,
-            data: formData,
-            eventId: router.query?.pk,
-        });
-    };
-
     return (
         <div className="pt-5 pr-3">
-            <Button className="float-right">Publish</Button>
+            <Button className="float-right">Publish Form</Button>
             <div className="flex justify-center  h-screen  p-5 ">
                 <div className="gap-20 flex justify-center">
                     <section>
@@ -111,7 +116,7 @@ const Form: NextPageWithLayout = () => {
                                         <div className="space-y-2 mt-2">
                                             <FormField
                                                 control={form.control}
-                                                name="placeHolder"
+                                                name="placeholder"
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>
@@ -182,10 +187,16 @@ const Form: NextPageWithLayout = () => {
                                         </div>
                                     </CardContent>
                                     <CardFooter className="flex justify-between">
-                                        <Button variant="outline" onClick={handleCancel}>
+                                        <Button
+                                            variant="outline"
+                                            onClick={handleCancel}
+                                            type="reset"
+                                        >
                                             Cancel
                                         </Button>
-                                        <Button type="submit">Add Question</Button>
+                                        <Button type="submit" isLoading={isSchemaUpdating}>
+                                            Add Question
+                                        </Button>
                                     </CardFooter>
                                 </Card>
                             </form>
@@ -198,49 +209,13 @@ const Form: NextPageWithLayout = () => {
                             This is how your form will look like
                         </p>
 
-                        {formData.length > 0 && (
-                            <Card className="mt-10 w-[300px]">
-                                <CardHeader>
-                                    <CardTitle>Please fill The form</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    {formData.map((el) => (
-                                        <div>
-                                            <Label className="mb-4">{el.label}</Label>
-                                            {el.type === 'SingleLineText' && (
-                                                <Input placeholder={el.options} />
-                                            )}
-                                            {el.type === 'Checkbox' && (
-                                                <Checkbox placeholder={el.plceholder} />
-                                            )}
-                                            {el.type === 'Email' && (
-                                                <Input placeholder={el.plceholder} type="email" />
-                                            )}
-                                            {el.type === 'SingleSelect' && (
-                                                <Select>
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder={el.plceholder} />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="light">Light</SelectItem>
-                                                        <SelectItem value="dark">Dark</SelectItem>
-                                                        <SelectItem value="system">
-                                                            System
-                                                        </SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            )}
-                                            {el.type === 'LongText' && (
-                                                <Textarea placeholder={el.plceholder} />
-                                            )}
-                                        </div>
-                                    ))}
-                                    <Button type="submit" className="mt-5 w-full">
-                                        submit
-                                    </Button>
-                                </CardContent>
+                        {isLoading && (
+                            <Card className="mt-10 w-[300px] flex justify-center items-center h-[600px]">
+                                <RiLoaderFill className="animate-spin h-8 w-8" />
                             </Card>
                         )}
+
+                        {data?.data && data.data.length > 0 && <SchemaPreview data={data.data} />}
                     </section>
                 </div>
             </div>

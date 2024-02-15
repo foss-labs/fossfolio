@@ -134,6 +134,7 @@ export class UserService {
                             eventDate: true,
                             location: true,
                             id: true,
+                            coverImage: true,
                         },
                     },
                 },
