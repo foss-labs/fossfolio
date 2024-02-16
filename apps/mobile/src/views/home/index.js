@@ -1,1 +1,0 @@
-export { QrToggler } from './QrToggler';
