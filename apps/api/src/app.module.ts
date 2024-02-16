@@ -13,6 +13,7 @@ import { EventsModule } from './events/events.module';
 import { MailModule } from './mail/mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CloudModule } from './cloud/cloud.module';
+import { StripeModule} from "./stripe/stripe.module"
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -44,6 +45,11 @@ import { APP_GUARD } from '@nestjs/core';
                 MAIL_PORT: Joi.number(),
                 MAIL_USER: Joi.string(),
                 MAIL_PASSWORD: Joi.string(),
+                AWS_ACCESS_KEY:Joi.string(),
+                AWS_SECRET_KEY :Joi.string(),
+                AWS_REGION:Joi.string(),
+                STRIPE_SECRET_KEY:Joi.string()
+
             }),
             validationOptions: {
                 allowUnknown: true,
@@ -66,6 +72,7 @@ import { APP_GUARD } from '@nestjs/core';
         EventsModule,
         MailModule,
         CloudModule,
+        StripeModule
     ],
     controllers: [AppController],
     providers: [
