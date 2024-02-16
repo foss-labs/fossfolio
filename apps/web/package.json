@@ -19,7 +19,8 @@
         "nextjs",
         "event-manager",
         "typescript",
-        "nestjs"
+        "nestjs",
+        "vitetest"
     ],
     "author": "",
     "license": "ISC",

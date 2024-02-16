@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'sonner';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { useRouter } from 'next/router';
+import { RemoveMemberModal } from './RemoveMemberModal';
 import {
     Table,
     TableBody,
@@ -24,10 +24,12 @@ import { Input } from '@app/ui/components/input';
 import { Button } from '@app/components/ui/Button';
 import { useMembers } from '@app/hooks/api/org';
 import { apiHandler } from '@app/config';
-import { useAuth, useRoles } from '@app/hooks';
+import { useAuth, useRoles, useToggle } from '@app/hooks';
 import * as yup from 'yup';
 import { isProd } from '@app/utils';
 import { RiLoaderFill } from 'react-icons/ri';
+import { useState } from 'react';
+import { Role } from '@app/types';
 
 enum Roles {
     Admin = 'ADMIN',
@@ -47,8 +49,26 @@ const invite = yup.object().shape({
 
 type Invite = yup.InferType<typeof invite>;
 
+type Member = {
+    userName: string;
+    userId: string;
+};
+
 export const Members = ({ setLink, onInviteModal }: IProp) => {
+    const { user } = useAuth();
     const { canRemoveOrgUser, canSendInvite } = useRoles();
+    const [isOpen, triggerModal] = useToggle(false);
+    const [removingMemberInfo, setRemovingMemberInfo] = useState<Member>({
+        userName: '',
+        userId: '',
+    });
+    const handleRemoveButtonClick = (info: Member) => {
+        setRemovingMemberInfo({
+            userName: info.userName,
+            userId: info.userId,
+        });
+        triggerModal.on();
+    };
 
     const form = useForm<Invite>({
         mode: 'onChange',
@@ -59,7 +79,20 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
         },
     });
 
-    const { data, isLoading } = useMembers();
+    const updateRole = async (role: Role, member: string) => {
+        try {
+            await apiHandler.patch('/org/member/role', {
+                organizationId: router.query?.id,
+                role: role,
+                memberId: member,
+            });
+            toast.success('role updated successfully');
+        } catch {
+            toast.error('failed to update role');
+        }
+    };
+
+    const { data, isLoading, refetch } = useMembers();
     const router = useRouter();
 
     const sendEmailInvite: SubmitHandler<Invite> = async (data) => {
@@ -69,10 +102,9 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                 organizationId: router.query?.id,
                 role: data.role,
             });
-            /* 
-            in DEV setup we dont send email
-            so instead  a modal open with the invite link
-            */
+
+            //In DEV setup we dont send email so instead  a modal open with the invite link
+
             if (!isProd) {
                 onInviteModal();
                 setLink(response.data);
@@ -88,6 +120,13 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
     return (
         <div className="p-none md:p-5">
             <Form {...form}>
+                <RemoveMemberModal
+                    isOpen={isOpen}
+                    onClose={triggerModal.off}
+                    MemberName={removingMemberInfo.userName}
+                    MemberId={removingMemberInfo.userId}
+                    refetch={refetch}
+                />
                 <form onSubmit={form.handleSubmit(sendEmailInvite)}>
                     <div className="flex gap-2 justify-end items-center mb-10 flex-wrap">
                         <FormField
@@ -158,20 +197,33 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                 </TableCell>
                                 <TableCell>{el.user.email}</TableCell>
                                 <TableCell>
-                                    <Select disabled={!canSendInvite}>
+                                    <Select
+                                        disabled={!canSendInvite}
+                                        onValueChange={(e: Role) => updateRole(e, el.user.uid)}
+                                    >
                                         <SelectTrigger className="w-44">
                                             <SelectValue placeholder={el.role} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="light">Admin</SelectItem>
-                                            <SelectItem value="dark">viewer</SelectItem>
-                                            <SelectItem value="system">editor</SelectItem>
+                                            <SelectItem value="ADMIN">ADMIN</SelectItem>
+                                            <SelectItem value="VIEWER">VIEWER</SelectItem>
+                                            <SelectItem value="EDITOR">EDITOR</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </TableCell>
                                 {canRemoveOrgUser && (
                                     <TableCell className="text-right">
-                                        <AiOutlineDelete className="hover:text-[red] cursor-pointer text-lg" />
+                                        {user?.email !== el.user.email && (
+                                            <AiOutlineDelete
+                                                className="hover:text-[red] cursor-pointer text-lg"
+                                                onClick={() =>
+                                                    handleRemoveButtonClick({
+                                                        userId: el.user.uid,
+                                                        userName: el.user.displayName,
+                                                    })
+                                                }
+                                            />
+                                        )}
                                     </TableCell>
                                 )}
                             </TableRow>

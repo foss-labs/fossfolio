@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class RemoveMember {
+export class UpdateMemberRole {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
@@ -11,4 +11,9 @@ export class RemoveMember {
     @IsNotEmpty()
     @IsString()
     memberId: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    role: string;
 }
