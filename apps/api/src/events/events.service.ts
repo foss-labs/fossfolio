@@ -17,7 +17,7 @@ export class EventsService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly cloudService: S3Service,
-    ) { }
+    ) {}
 
     async createEvent(d: CreateEventDto) {
         try {
