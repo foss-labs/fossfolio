@@ -26,11 +26,12 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
-import { useFormSchema } from '@app/hooks/api/Events';
+import { useFormSchema, useEvent } from '@app/hooks/api/Events';
 import { useMutation } from '@tanstack/react-query';
-import { Iform } from '@app/hooks/api/Events/useFormSchema';
+import { Iform } from '@app/types';
 import { toast } from 'sonner';
 import { RiLoaderFill } from 'react-icons/ri';
+import { useToggle } from '@app/hooks';
 
 const builderSchema = yup.object({
     label: yup.string().required('Label is required'),
@@ -42,17 +43,39 @@ const builderSchema = yup.object({
 type FormValidator = yup.InferType<typeof builderSchema>;
 
 const Form: NextPageWithLayout = () => {
-    const { data, isLoading, refetch } = useFormSchema();
-
     const router = useRouter();
+    const { data, isLoading, refetch } = useFormSchema();
+    const { data: eventInfo } = useEvent('event');
+    const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
+
+    const { pk, id } = router.query;
 
     const form = useForm<FormValidator>({
         mode: 'onSubmit',
         resolver: yupResolver(builderSchema),
     });
 
+    const publishForm = async (status: boolean) => {
+        try {
+            toggleFormStatus.on();
+            await apiHandler.post(`/events/publish/form/${pk}`, {
+                organizationId: id,
+                shouldFormPublish: status,
+            });
+
+            if (status) {
+                toast.success('form was published successfully');
+            } else {
+                toast.success('form was unpublished successfully');
+            }
+        } catch {
+            toast.error('Couldnt complete the operation');
+        } finally {
+            toggleFormStatus.off();
+        }
+    };
+
     const updateSchema = async (schema: Iform) => {
-        console.log(schema);
         try {
             await apiHandler.post('/events/form', {
                 organizationId: router.query?.id,
@@ -80,7 +103,24 @@ const Form: NextPageWithLayout = () => {
 
     return (
         <div className="pt-5 pr-3">
-            <Button className="float-right">Publish Form</Button>
+            {!eventInfo?.data.isFormPublished && (
+                <Button
+                    className="float-right"
+                    onClick={() => publishForm(true)}
+                    isLoading={isFormStatusChanging}
+                >
+                    Publish Form
+                </Button>
+            )}
+            {eventInfo?.data.isFormPublished && (
+                <Button
+                    className="float-right"
+                    onClick={() => publishForm(false)}
+                    isLoading={isFormStatusChanging}
+                >
+                    Un Publish Form
+                </Button>
+            )}
             <div className="flex justify-center  h-screen  p-5 ">
                 <div className="gap-20 flex justify-center">
                     <section>

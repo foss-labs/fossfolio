@@ -1,5 +1,5 @@
 import { Button } from '@app/components/ui/Button';
-import { Iform } from '@app/hooks/api/Events/useFormSchema';
+import { Iform } from '@app/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@app/ui/components/card';
 import { Checkbox } from '@app/ui/components/checkbox';
 import { Input } from '@app/ui/components/input';

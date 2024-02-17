@@ -2,22 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
-import type { OrgEvents } from '@app/types';
-import { IFormInput } from '@app/views/form';
+import { Iform } from '@app/types';
 
 type IData = {
     data: Iform[];
     ok: boolean;
     message: string;
-};
-
-export type Iform = {
-    label: string;
-    placeholder?: string;
-    options?: string;
-    required: boolean;
-    type: IFormInput;
-    id?: string;
 };
 
 const getForm = async (id: string, pk: string) => {
@@ -29,11 +19,11 @@ export const useFormSchema = () => {
     const router = useRouter();
     const [Id, setId] = useState('');
     const [Pk, setPk] = useState('');
-    const orgEventQueryKey = ['events', Id];
+    const formQueryKey = ['events', 'form', Id];
 
     useEffect(() => {
-        // id is the primary key of event in events page
-        // pk is the primary key of event in org dashboard page
+        // id is the primary key of org
+        // pk is the primary key of event
 
         if (router.isReady) {
             // this is done to reuse same function event info page and org dashboard
@@ -45,7 +35,7 @@ export const useFormSchema = () => {
     }, [router.isReady]);
 
     const events = useQuery<IData>({
-        queryKey: orgEventQueryKey,
+        queryKey: formQueryKey,
         queryFn: () => getForm(Id, Pk),
         // query is disabled until the query param is available
         enabled: !!Id,

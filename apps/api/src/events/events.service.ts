@@ -216,6 +216,9 @@ export class EventsService {
                 where: {
                     id,
                 },
+                include: {
+                    form: true,
+                },
             });
 
             if (!data) {
@@ -254,6 +257,9 @@ export class EventsService {
             if (eventInfo.maxTicketCount <= 0) {
                 throw new ServiceUnavailableException();
             }
+
+            // when the event requires a form input we should check if the use has completed the form or not
+            // can only be done after creating the response schema
             const data = await this.prismaService.events.update({
                 where: {
                     id: eventId,
@@ -264,6 +270,7 @@ export class EventsService {
                             uid: userId,
                         },
                     },
+                    maxTicketCount: eventInfo.maxTicketCount - 1,
                 },
             });
 
@@ -478,6 +485,52 @@ export class EventsService {
             } else {
                 return e;
             }
+        }
+    }
+
+    async toggleFormPublishStatus(id: string, shouldPublish: boolean) {
+        try {
+            const event = await this.prismaService.events.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    form: true,
+                },
+            });
+            if (!event) {
+                throw new NotFoundException();
+            }
+
+            if (!event.form.length) {
+                throw new InternalServerErrorException();
+            }
+
+            const newEventStatus = await this.prismaService.events.update({
+                where: {
+                    id,
+                },
+                data: {
+                    isFormPublished: shouldPublish,
+                },
+            });
+
+            return {
+                ok: 'true',
+                message: 'form status was changed',
+                data: newEventStatus,
+            };
+        } catch (e) {
+            if (e instanceof InternalServerErrorException) {
+                return new InternalServerErrorException({
+                    message: 'Please create a form schema to publish the form',
+                });
+            }
+            if (e instanceof NotFoundException) {
+                return new NotFoundException();
+            }
+
+            return e;
         }
     }
 }

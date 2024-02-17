@@ -24,7 +24,7 @@ const defaultEditorContent = {
 
 const Event = () => {
     const [isOpen, triggerModal] = useToggle(false);
-    const { data, isLoading, refetch } = useEvent('org');
+    const { data, isLoading, refetch } = useEvent('event');
     const router = useRouter();
     const { id, pk } = router.query;
 

@@ -94,6 +94,7 @@ model Events {
   maxTeamSize     Int          @default(1)
   minTeamSize     Int          @default(1)
   isCollegeEvent  Boolean      @default(false)
+  isFormPublished Boolean      @default(false)
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   maxTicketCount  Int?

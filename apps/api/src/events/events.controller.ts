@@ -13,18 +13,19 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { EventsService } from './events.service';
-import { CreateEventDto } from './dto/create-events.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
-import { RbacGuard } from '../organization/guards/rbac-member.guard';
-import { Roles } from '../organization/decorators/roles.decorator';
 import { ApiOperation } from '@nestjs/swagger';
+import { User } from '@prisma/client';
+import { EventsService } from './events.service';
+import { AuthUser } from '../auth/decorators/user.decorator';
+import { RbacGuard } from '../organization/guards/rbac-member.guard';
+import { CreateEventDto } from './dto/create-events.dto';
+import { Roles } from '../organization/decorators/roles.decorator';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { RegisterEventDto } from './dto/register-event.dto';
-import { AuthUser } from '../auth/decorators/user.decorator';
-import { User } from '@prisma/client';
 import { FormPayLoad } from './dto/create-form.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { ToggleFormPublishStatus } from './dto/publishForm.dto';
 @Controller('events')
 export class EventsController {
     constructor(private readonly events: EventsService) {}
@@ -34,8 +35,9 @@ export class EventsController {
     async getAllEvents() {
         return await this.events.getAllEvents();
     }
+
     @Get('/:eventId')
-    @ApiOperation({ summary: 'returns all upcoming events' })
+    @ApiOperation({ summary: 'returns the specific event with id' })
     async getEventByID(@Param('eventId') id: string) {
         return await this.events.getEventById(id);
     }
@@ -123,9 +125,17 @@ export class EventsController {
         return await this.events.getEventFormScheme(eventId);
     }
 
+    @Post('/publish/form/:id')
+    @ApiOperation({ summary: 'publish event , by doing this we lets public to register for event' })
+    @Roles('ADMIN', 'EDITOR')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async publishForm(@Param('id') data: string, @Body() payload: ToggleFormPublishStatus) {
+        return await this.events.toggleFormPublishStatus(data, payload.shouldFormPublish);
+    }
+
     @Get('/ticket/:eventId')
     @Roles('ADMIN', 'EDITOR')
-    @ApiOperation({ summary: 'get event ticket info' })
+    @ApiOperation({ summary: 'publish or not publish the already build form public' })
     async getTicketInfo(@Param('eventId') eventId: string) {
         return await this.events.getTicketInfo(eventId);
     }
