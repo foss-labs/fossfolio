@@ -1,6 +1,5 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@app/ui/components/dialog';
-import { Button } from '@app/components/ui/Button';
-import { useAuth } from '@app/hooks';
+import { Dialog, DialogContent } from '@app/ui/components/dialog';
+
 import { Iform } from '@app/types';
 import { SchemaPreview } from './SchemaPreview';
 
