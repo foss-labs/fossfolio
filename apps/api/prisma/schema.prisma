@@ -103,6 +103,7 @@ model Events {
   form            Field[]
   coverImage      String?
   Response        Response[]
+  ticketPrice     Int          @default(0)
 }
 
 model Field {
