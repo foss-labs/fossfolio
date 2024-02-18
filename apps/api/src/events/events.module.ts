@@ -4,9 +4,10 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { CloudModule } from '../cloud/cloud.module';
 import { EventsController } from './events.controller';
 import { UploadMiddleWare } from './upload.middleware';
+import { StripeService } from '../stripe/stripe.service';
 
 @Module({
-    providers: [EventsService],
+    providers: [EventsService, StripeService],
     imports: [PrismaModule, CloudModule],
     controllers: [EventsController],
 })

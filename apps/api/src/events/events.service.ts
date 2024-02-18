@@ -6,10 +6,11 @@ import {
     UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { StripeService } from '../stripe/stripe.service';
+import { S3Service } from '../cloud/cloud.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
-import { S3Service } from '../cloud/cloud.service';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
 import { json } from 'stream/consumers';
 
@@ -18,6 +19,7 @@ export class EventsService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly cloudService: S3Service,
+        private readonly stripeService: StripeService,
     ) {}
 
     public async getEventInfo(id: string) {
@@ -40,6 +42,7 @@ export class EventsService {
                             name: d.name,
                             website: d.website,
                             location: d.location,
+                            ticketPrice: d.ticketPrice,
                         },
                     },
                 },
@@ -269,22 +272,30 @@ export class EventsService {
 
             // when the event requires a form input we should check if the use has completed the form or not
             // can only be done after creating the response schema
-            const data = await this.prismaService.events.update({
-                where: {
-                    id: eventId,
-                },
-                data: {
-                    registeredUsers: {
-                        connect: {
-                            uid: userId,
-                        },
-                    },
-                    maxTicketCount: eventInfo.maxTicketCount - 1,
-                },
-            });
 
-            if (!data) {
-                throw new NotFoundException();
+            // After this if the event has a ticket price we will redirect to stripe checkout
+
+            if (eventInfo.ticketPrice > 0) {
+                // this will trigger another service layer from the stripeService Event emitter
+                return await this.stripeService.createCheckoutSession(eventInfo, userId);
+            } else {
+                const data = await this.prismaService.events.update({
+                    where: {
+                        id: eventId,
+                    },
+                    data: {
+                        registeredUsers: {
+                            connect: {
+                                uid: userId,
+                            },
+                        },
+                        maxTicketCount: eventInfo.maxTicketCount - 1,
+                    },
+                });
+
+                if (!data) {
+                    throw new NotFoundException();
+                }
             }
         } catch (e) {
             if (e instanceof NotFoundException) {

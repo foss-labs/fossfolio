@@ -81,29 +81,31 @@ model OrganizationInvite {
 }
 
 model Events {
-  id              String       @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
-  name            String
-  website         String?
-  location        String
-  lastDate        DateTime?
-  organizationId  String
-  isPublished     Boolean      @default(false)
-  description     Json?
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  registeredUsers User[]
-  isTeamEvent     Boolean      @default(false)
-  maxTeamSize     Int          @default(1)
-  minTeamSize     Int          @default(1)
-  isCollegeEvent  Boolean      @default(false)
-  isFormPublished Boolean      @default(false)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  maxTicketCount  Int?
-  eventDate       DateTime?
-  form            Field[]
-  coverImage      String?
-  Response        Response[]
-  ticketPrice     Int          @default(0)
+  id                    String       @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
+  name                  String
+  website               String?
+  location              String
+  lastDate              DateTime?
+  organizationId        String
+  isPublished           Boolean      @default(false)
+  description           Json?
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  registeredUsers       User[]
+  isTeamEvent           Boolean      @default(false)
+  maxTeamSize           Int          @default(1)
+  minTeamSize           Int          @default(1)
+  isCollegeEvent        Boolean      @default(false)
+  isFormPublished       Boolean      @default(false)
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  maxTicketCount        Int?
+  eventDate             DateTime?
+  form                  Field[]
+  coverImage            String?
+  Response              Response[]
+  ticketPrice           Int          @default(0)
+  stripe_price_object   String?
+  stripe_product_object String?
 }
 
 model Field {

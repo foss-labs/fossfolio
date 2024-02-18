@@ -27,6 +27,7 @@ import { UpdateEventDto } from './dto/updtate-event.dto';
 import { RegisterEventDto } from './dto/register-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { ToggleFormPublishStatus } from './dto/publishForm.dto';
+import { url } from 'inspector';
 @Controller('events')
 export class EventsController {
     constructor(private readonly events: EventsService) {}
@@ -78,7 +79,7 @@ export class EventsController {
     @Roles('ADMIN', 'EDITOR', 'VIEWER')
     @ApiOperation({ summary: 'Get all participants of events' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getregisterDParticipants(@Param('id') id: string, @AuthUser() user: User) {
+    async getregisterDParticipants(@Param('id') id: string) {
         return await this.events.getEventParticipants(id);
     }
 
