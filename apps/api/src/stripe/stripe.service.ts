@@ -27,7 +27,6 @@ export class StripeService {
         );
         if (event.type === 'payment_intent.created') {
             const eventInfo = event.data.object.metadata;
-            console.log(eventInfo);
             const { event_id, user_id } = eventInfo;
             if (!event_id || !user_id) {
                 throw new Error('Inavlid metadata');
@@ -148,7 +147,6 @@ export class StripeService {
 
             return { sessionId: session.id, url: session.url };
         } catch (error) {
-            console.log('error', error);
             throw new Error('Failed to create checkout');
         }
     }
