@@ -23,6 +23,7 @@ model User {
   providerAccounts   Account[]
 
   registeredEventsId Events[]
+  Response           Response[]
 }
 
 model Account {
@@ -101,6 +102,7 @@ model Events {
   eventDate       DateTime?
   form            Field[]
   coverImage      String?
+  Response        Response[]
 }
 
 model Field {
@@ -118,6 +120,19 @@ model Field {
   updatedAt DateTime @updatedAt
   Events    Events?  @relation(fields: [eventsId], references: [id])
   eventsId  String?
+}
+
+model Response {
+  id    String @id @default(cuid())
+  event Events @relation(fields: [eventsId], references: [id])
+  user  User   @relation(fields: [userUid], references: [uid])
+
+  data Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  eventsId  String
+  userUid   String
 }
 
 enum Role {
