@@ -19,6 +19,42 @@ export class StripeService {
         this.configService = config;
     }
 
+    async handleWebHookEvent(body, signature) {
+        const event = this.stripe.webhooks.constructEvent(
+            body,
+            signature,
+            process.env.STRIPE_WEBHOOK_SECRET,
+        );
+        if (event.type === 'payment_intent.created') {
+            const eventInfo = event.data.object.metadata;
+            console.log(eventInfo);
+            const { event_id, user_id } = eventInfo;
+            if (!event_id || !user_id) {
+                throw new Error('Inavlid metadata');
+            } else {
+                const event = await this.prisma.events.findUnique({
+                    where: {
+                        id: event_id,
+                    },
+                });
+
+                await this.prisma.events.update({
+                    where: {
+                        id: event_id,
+                    },
+                    data: {
+                        registeredUsers: {
+                            connect: {
+                                uid: user_id,
+                            },
+                        },
+                        maxTicketCount: event.maxTicketCount - 1,
+                    },
+                });
+            }
+        }
+    }
+
     async createProductObject(event: Events): Promise<string> {
         try {
             const product = await this.stripe.products.create({

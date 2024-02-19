@@ -49,6 +49,7 @@ import { AppController } from './app.controller';
                 AWS_SECRET_KEY: Joi.string(),
                 AWS_REGION: Joi.string(),
                 STRIPE_SECRET_KEY: Joi.string(),
+                STRIPE_WEBHOOK_SECRET: Joi.string(),
             }),
             validationOptions: {
                 allowUnknown: true,
