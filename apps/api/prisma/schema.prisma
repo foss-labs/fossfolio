@@ -123,16 +123,16 @@ model Field {
 }
 
 model Response {
-  id    String @id @default(cuid())
-  event Events @relation(fields: [eventsId], references: [id])
-  user  User   @relation(fields: [userUid], references: [uid])
+  id   String @id @default(cuid())
+  user User   @relation(fields: [userUid], references: [uid])
 
   data Json
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  eventsId  String
   userUid   String
+  Events    Events?  @relation(fields: [eventsId], references: [id])
+  eventsId  String?
 }
 
 enum Role {

@@ -11,6 +11,7 @@ import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { S3Service } from '../cloud/cloud.service';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
+import { json } from 'stream/consumers';
 
 @Injectable()
 export class EventsService {
@@ -18,6 +19,14 @@ export class EventsService {
         private readonly prismaService: PrismaService,
         private readonly cloudService: S3Service,
     ) {}
+
+    public async getEventInfo(id: string) {
+        return await this.prismaService.events.findUnique({
+            where: {
+                id,
+            },
+        });
+    }
 
     async createEvent(d: CreateEventDto) {
         try {
@@ -307,6 +316,7 @@ export class EventsService {
                     },
                 },
             });
+
             if (!data) {
                 throw new NotFoundException();
             }
@@ -531,6 +541,82 @@ export class EventsService {
             }
 
             return e;
+        }
+    }
+
+    public async addUserFormSubmission(
+        info: Record<string, string | Array<string>>,
+        eventId: string,
+        userId: string,
+    ) {
+        try {
+            const event = await this.getEventInfo(eventId);
+            if (!event) throw new NotFoundException();
+
+            await this.prismaService.response.create({
+                data: {
+                    data: info,
+                    user: {
+                        connect: {
+                            uid: userId,
+                        },
+                    },
+                    Events: {
+                        connect: {
+                            id: event.id,
+                        },
+                    },
+                },
+            });
+        } catch {
+            return new NotFoundException();
+        }
+    }
+
+    async getregisterParticipantsFormSubmissions(id: string, userId: string) {
+        try {
+            const scheam = await this.prismaService.events.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    form: true,
+                },
+            });
+
+            const label = {};
+            scheam.form.forEach((el) => {
+                label[el.id] = el.label;
+            });
+
+            const data = await this.prismaService.response.findMany({
+                where: {
+                    userUid: userId,
+                    eventsId: id,
+                },
+            });
+            if (!data) throw new NotFoundException();
+
+            const result = {};
+
+            scheam.form.forEach((el) => {
+                // @ts-ignore
+                if (el.id in data[0].data) {
+                    result[el.label] = data[0].data[el.id];
+                }
+            });
+
+            return {
+                ok: true,
+                data: result,
+                message: 'recieved form successfully',
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                return new NotFoundException();
+            } else {
+                return e;
+            }
         }
     }
 }

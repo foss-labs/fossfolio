@@ -4,6 +4,7 @@ import {
     FileTypeValidator,
     Get,
     MaxFileSizeValidator,
+    NotFoundException,
     Param,
     ParseFilePipe,
     Patch,
@@ -81,6 +82,14 @@ export class EventsController {
         return await this.events.getEventParticipants(id);
     }
 
+    @Get('/participants/:orgID/:id/form')
+    @Roles('ADMIN', 'EDITOR', 'VIEWER')
+    @ApiOperation({ summary: 'Get all the form submissipn from participant' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getregisterParticipantsFormSubmissions(@Param('id') id: string, @AuthUser() user: User) {
+        return await this.events.getregisterParticipantsFormSubmissions(id, user.uid);
+    }
+
     @Get('/status/:id')
     @ApiOperation({ summary: 'Get if participant is registerd for event or not' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -123,6 +132,31 @@ export class EventsController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getFormSchema(@Param('eventId') eventId: string) {
         return await this.events.getEventFormScheme(eventId);
+    }
+
+    @Post('/form/:eventId')
+    @ApiOperation({ summary: 'users register form via this route' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async postFormResponse(
+        @Param('eventId') eventId: string,
+        @Body() data: Record<string, string | Array<string>>,
+        @AuthUser() user: User,
+    ) {
+        try {
+            const event = await this.events.getEventInfo(eventId);
+            if (event.maxTicketCount < 1) {
+                throw new NotFoundException();
+            }
+            await this.events.addUserFormSubmission(data, eventId, user.uid);
+            await this.events.registerEvent(eventId, user.uid);
+        } catch (e) {
+            if (e instanceof NotFoundException) return new NotFoundException();
+            return {
+                ok: false,
+                message: 'Invalid request',
+                error: e,
+            };
+        }
     }
 
     @Post('/publish/form/:id')

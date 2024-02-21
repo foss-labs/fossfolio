@@ -33,6 +33,7 @@ const Event: NextPageWithLayout = () => {
     const { isLoading, mutate } = useMutation(registerEvent, {
         onSuccess: () => {
             // make sure to close the form else this onSuccess wont work
+            // Should add payment condition as well - todo @sreehari2003
             if (data?.data.isFormPublished && isFormOpen) return;
             toast.success('successfully registered for event');
             refetch();

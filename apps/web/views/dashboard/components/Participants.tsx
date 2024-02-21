@@ -11,16 +11,23 @@ import { DeleteModal } from './DeleteModal';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { User } from '@app/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@app/ui/components/avatar';
+import { IoIosMore } from 'react-icons/io';
+// import Drawer from 'react-modern-drawer';
 
 interface Data {
     data: User[];
+    doesEventHaveForm: boolean;
 }
 
-export const Participants = ({ data }: Data) => {
+export const Participants = ({ data, doesEventHaveForm = false }: Data) => {
     const [isModapOpen, toggleModal] = useToggle();
+    const [isDrawerOpen, toggleDrawer] = useToggle(false);
     return (
         <Table className="border-1/4 border-brand-purple-200 rounded-full">
             <DeleteModal isOpen={isModapOpen} onClose={toggleModal.off} />
+            {/* <Drawer open={isDrawerOpen} onClose={toggleDrawer.toggle} direction="right">
+                <h2>You can see the forms here</h2>
+            </Drawer> */}
             <TableHeader className="bg-[#F9FAFB] rounded-lg">
                 <TableRow style={{ background: 'white', height: '67px' }}>
                     <TableCell className="font-medium">Participants</TableCell>
@@ -49,6 +56,11 @@ export const Participants = ({ data }: Data) => {
                         </TableCell>
                         <TableCell>{el.isStudent ? 'Student' : 'Professional'}</TableCell>
                         <TableCell>{el.email}</TableCell>
+                        {doesEventHaveForm && (
+                            <TableCell className="text-right" onClick={toggleModal.on}>
+                                <IoIosMore className="hover:text-red-500 cursor-pointer text-lg" />
+                            </TableCell>
+                        )}
                         <TableCell className="text-right" onClick={toggleModal.on}>
                             <AiOutlineDelete className="hover:text-red-500 cursor-pointer text-lg" />
                         </TableCell>

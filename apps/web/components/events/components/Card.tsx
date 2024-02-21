@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 type DescriptionExcluded = Omit<
     OrgEvents,
-    'description' | 'createdAt' | 'isPublished' | 'updatedAt'
+    'description' | 'createdAt' | 'isPublished' | 'updatedAt' | 'isFormPublished' | 'form'
 >;
 
 interface Prop extends DescriptionExcluded {

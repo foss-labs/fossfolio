@@ -13,7 +13,7 @@ export const PublicFormModal = ({ isOpen, onClose, schema }: IModal) => {
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="!w-[350px] shadow-md">
-                <SchemaPreview data={schema} />
+                <SchemaPreview data={schema} isPublic={true} closeModal={onClose} />
             </DialogContent>
         </Dialog>
     );

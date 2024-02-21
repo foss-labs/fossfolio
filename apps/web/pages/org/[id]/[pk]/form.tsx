@@ -95,6 +95,7 @@ const Form: NextPageWithLayout = () => {
 
     const handleUpdates: SubmitHandler<FormValidator> = async (data) => {
         mutate(data);
+        form.reset();
     };
 
     const handleCancel = () => {
@@ -255,7 +256,9 @@ const Form: NextPageWithLayout = () => {
                             </Card>
                         )}
 
-                        {data?.data && data.data.length > 0 && <SchemaPreview data={data.data} />}
+                        {data?.data && data.data.length > 0 && (
+                            <SchemaPreview data={data.data} isPublic={false} />
+                        )}
                     </section>
                 </div>
             </div>
