@@ -21,7 +21,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@app/ui/components/card';
 
 const Settings = () => {
-    const { data, isLoading } = useEvent('org');
+    const { data, isLoading } = useEvent('event');
 
     const form = useForm<IProfile>({
         defaultValues: {
