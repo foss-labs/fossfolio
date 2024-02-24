@@ -9,15 +9,20 @@ type Prop = {
 };
 
 const Verify = ({ orgId }: Prop) => {
+    const router = useRouter();
 
     useEffect(() => {
         const verify = async () => {
-            const { data } = await apiHandler.get(`/org/invite/verify?id=${orgId}`);
-            console.log(data);
+            try {
+                await apiHandler.get(`/org/invite/verify?id=${orgId}`);
+                router.push(`/orgs/${orgId}`);
+            } catch {
+                router.push('/events?invite_failed=true');
+            }
         };
         verify();
-    }, [orgId]);
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className="flex justify-center items-center flex-col h-[90vh] p-7">

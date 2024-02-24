@@ -21,6 +21,6 @@ export class OrgInviteController {
     @Get('/verify')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async verfyEmail(@AuthUser() user: User, @Query() { id }) {
-        return this.service.verifyEmailInvite(id, user.uid);
+        return this.service.verifyEmailInvite(id, user.uid, user.email);
     }
 }

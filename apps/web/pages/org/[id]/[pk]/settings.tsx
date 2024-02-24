@@ -19,9 +19,26 @@ import { useEvent } from '@app/hooks/api/Events';
 import { RiLoaderFill } from 'react-icons/ri';
 import Image from 'next/image';
 import { Card, CardContent } from '@app/ui/components/card';
+import { apiHandler } from '@app/config';
+import { useRouter } from 'next/router';
+import { toast } from 'sonner';
 
 const Settings = () => {
     const { data, isLoading } = useEvent('event');
+    const router = useRouter();
+    const { pk, id } = router.query;
+
+    const deleteEvent = async () => {
+        try {
+            await apiHandler.delete(`/events/delete/${pk}`, {
+                data: { organizationId: id },
+            });
+            toast.success('Event was deleted successfully');
+            router.push('/org');
+        } catch {
+            toast.error('Error deleting event');
+        }
+    };
 
     const form = useForm<IProfile>({
         defaultValues: {
@@ -157,7 +174,10 @@ const Settings = () => {
                         <CardContent className="pt-6 ">
                             <div className="space-y-2">
                                 <p>Deleting the Events will delete its all data</p>
-                                <Button className="!bg-[red] !hover:bg-[#ff0000c2]">
+                                <Button
+                                    className="!bg-[red] !hover:bg-[#ff0000c2]"
+                                    onClick={deleteEvent}
+                                >
                                     Delete Event
                                 </Button>
                             </div>

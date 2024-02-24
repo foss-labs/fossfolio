@@ -96,7 +96,7 @@ const Org: NextPageWithLayout = () => {
                 </div>
                 <TabsContent
                     value="events"
-                    className="flex md:flex-row flex-wrap gap-5 sm:justify-center "
+                    className="flex md:flex-row flex-wrap gap-5 sm:justify-center"
                 >
                     <Events />
                 </TabsContent>

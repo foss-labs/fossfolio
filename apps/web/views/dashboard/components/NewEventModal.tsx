@@ -45,7 +45,7 @@ const Schema = yup.object().shape({
     isPaidEvent: yup.string().required(),
     ticketPrice: yup
         .number()
-        .min(1)
+        .min(0)
         .when('isPaidEvent', {
             is: (val: Description) => val === 'true',
             then: (schema) => schema.required('ticket price is a required field'),
@@ -69,6 +69,8 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
             ticketPrice: 0,
         },
     });
+
+    console.log(form.formState.errors);
 
     /* 
     generate a new event , doing this here to create unique id to route into

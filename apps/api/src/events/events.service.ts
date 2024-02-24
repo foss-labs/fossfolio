@@ -266,6 +266,8 @@ export class EventsService {
                 },
             });
 
+            console.log('REACHED HERE');
+
             if (eventInfo.maxTicketCount <= 0) {
                 throw new ServiceUnavailableException();
             }
@@ -628,6 +630,30 @@ export class EventsService {
             } else {
                 return e;
             }
+        }
+    }
+    async deleteEvent(eventId: string) {
+        try {
+            const event = await this.getEventById(eventId);
+            // cant delete paid event till we figure out a way to process refund
+            if (event.data.ticketPrice > 0) {
+                throw new ServiceUnavailableException();
+            }
+
+            await this.prismaService.events.delete({
+                where: {
+                    id: eventId,
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'event was deleted successfully',
+            };
+        } catch {
+            throw new ServiceUnavailableException({
+                message: 'We dont support to delete a paid event',
+            });
         }
     }
 }
