@@ -56,7 +56,8 @@
         "rxjs": "^7.8.1",
         "stripe": "^14.18.0",
         "zod": "^3.22.4",
-        "zod-to-json-schema": "^3.22.5"
+        "zod-to-json-schema": "^3.22.5",
+        "passport-saml": "^3.2.4"
     },
     "devDependencies": {
         "@faker-js/faker": "^8.4.1",
