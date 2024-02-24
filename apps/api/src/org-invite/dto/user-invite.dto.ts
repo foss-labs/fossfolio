@@ -9,7 +9,7 @@ export class OrgInvie {
     email: string;
 
     @ApiProperty({
-        enum: Role
+        enum: Role,
     })
     @IsNotEmpty()
     role: Role;

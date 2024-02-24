@@ -24,7 +24,7 @@ const defaultEditorContent = {
 
 const Event = () => {
     const [isOpen, triggerModal] = useToggle(false);
-    const { data, isLoading, refetch } = useEvent('org');
+    const { data, isLoading, refetch } = useEvent('event');
     const router = useRouter();
     const { id, pk } = router.query;
 
@@ -118,7 +118,7 @@ const Event = () => {
     }
 
     return (
-        <div>
+        <div className="p-4">
             <PublishModal isOpen={isOpen} onClose={triggerModal.off} />
             <div className="flex justify-end">
                 {!data?.data.isPublished ? (
@@ -133,8 +133,10 @@ const Event = () => {
             </div>
             <Editor
                 className="w-full"
-                defaultValue={JSON.parse(data?.data.description as string) || defaultEditorContent}
-                completionApi={`${ENV.api_base}/ai/generate`}
+                defaultValue={
+                    JSON.parse(data?.data.description as string) || defaultEditorContent || ''
+                }
+                completionApi={`/api/generate`}
                 onDebouncedUpdate={handleUpdate}
             />
         </div>

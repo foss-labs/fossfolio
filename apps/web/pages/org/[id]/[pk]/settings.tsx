@@ -1,6 +1,5 @@
 import { DashboardLayout } from '@app/layout';
 import { Calendar } from '@app/ui/components/calendar';
-import { DialogHeader, DialogFooter } from '@app/ui/components/dialog';
 import {
     Form,
     FormField,
@@ -11,21 +10,24 @@ import {
 } from '@app/ui/components/form';
 import { Input } from '@app/ui/components/input';
 import { cn } from '@app/ui/lib/utils';
-import { EventSchema, IProfile } from '@app/views/dashboard';
+import { IProfile } from '@app/views/dashboard';
 import { Popover, PopoverTrigger, PopoverContent } from '@app/ui/components/popover';
 import { format } from 'date-fns';
 import { Button } from '@app/components/ui/Button';
 import { useForm } from 'react-hook-form';
 import { useEvent } from '@app/hooks/api/Events';
 import { RiLoaderFill } from 'react-icons/ri';
+import Image from 'next/image';
+import { Card, CardContent } from '@app/ui/components/card';
 
 const Settings = () => {
     const { data, isLoading } = useEvent('org');
+
     const form = useForm<IProfile>({
         defaultValues: {
             eventDate: data?.data.eventDate,
             lastDate: data?.data.lastDate,
-            maxTicketCount: data?.data.maxTickerCount,
+            maxTicketCount: data?.data.maxTicketCount,
         },
     });
 
@@ -51,7 +53,13 @@ const Settings = () => {
                                         <FormItem className="items-center ">
                                             <FormLabel>Maximum Ticket Count</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="0" {...field} type="number" />
+                                                <Input
+                                                    min={1}
+                                                    placeholder="0"
+                                                    {...field}
+                                                    type="number"
+                                                    defaultValue={data?.data.maxTicketCount}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -133,9 +141,28 @@ const Settings = () => {
                                         </FormItem>
                                     )}
                                 />
+                                <h4 className="text-lg">Cover Image</h4>
+                                {data?.data.coverImage && (
+                                    <Image
+                                        src={data.data.coverImage}
+                                        width={400}
+                                        height={400}
+                                        alt="cover image"
+                                    />
+                                )}
                             </div>
                         </form>
                     </Form>
+                    <Card className="border-2 border-[red] max-w-2xl">
+                        <CardContent className="pt-6 ">
+                            <div className="space-y-2">
+                                <p>Deleting the Events will delete its all data</p>
+                                <Button className="!bg-[red] !hover:bg-[#ff0000c2]">
+                                    Delete Event
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
             )}
         </div>

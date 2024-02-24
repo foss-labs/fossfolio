@@ -4,7 +4,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class MailService {
-    constructor(private readonly mailerService: MailerService){}
+    constructor(private readonly mailerService: MailerService) {}
 
     @OnEvent('org.invite')
     async onOrgInvite(payload: OrgInviteEvent) {
@@ -16,20 +16,16 @@ export class MailService {
                 from: payload.from,
                 fromEmail: payload.fromEmail,
                 orgName: payload.orgName,
-                inviteUrl: payload.inviteUrl
-            }
-        })
+                inviteUrl: payload.inviteUrl,
+            },
+        });
     }
-
-
 }
 
-
-export interface OrgInviteEvent{
+export interface OrgInviteEvent {
     inviteUrl: string;
     from: string;
     orgName: string;
     fromEmail: string;
-    to: string
+    to: string;
 }
- 

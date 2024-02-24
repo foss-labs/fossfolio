@@ -1,5 +1,6 @@
 import {
     Injectable,
+    InternalServerErrorException,
     NotFoundException,
     ServiceUnavailableException,
     UnprocessableEntityException,
@@ -7,11 +8,25 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
+import { FormPayLoad } from './dto/create-form.dto';
+import { S3Service } from '../cloud/cloud.service';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
+import { json } from 'stream/consumers';
 
 @Injectable()
 export class EventsService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly cloudService: S3Service,
+    ) {}
+
+    public async getEventInfo(id: string) {
+        return await this.prismaService.events.findUnique({
+            where: {
+                id,
+            },
+        });
+    }
 
     async createEvent(d: CreateEventDto) {
         try {
@@ -210,6 +225,9 @@ export class EventsService {
                 where: {
                     id,
                 },
+                include: {
+                    form: true,
+                },
             });
 
             if (!data) {
@@ -248,6 +266,9 @@ export class EventsService {
             if (eventInfo.maxTicketCount <= 0) {
                 throw new ServiceUnavailableException();
             }
+
+            // when the event requires a form input we should check if the use has completed the form or not
+            // can only be done after creating the response schema
             const data = await this.prismaService.events.update({
                 where: {
                     id: eventId,
@@ -258,6 +279,7 @@ export class EventsService {
                             uid: userId,
                         },
                     },
+                    maxTicketCount: eventInfo.maxTicketCount - 1,
                 },
             });
 
@@ -294,6 +316,7 @@ export class EventsService {
                     },
                 },
             });
+
             if (!data) {
                 throw new NotFoundException();
             }
@@ -337,6 +360,260 @@ export class EventsService {
         } catch (e) {
             if (e instanceof NotFoundException) {
                 throw new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
+
+    async createForm(data: FormPayLoad) {
+        try {
+            const event = await this.prismaService.events.findUnique({
+                where: {
+                    organizationId: data.organizationId,
+                    id: data.eventId,
+                },
+            });
+
+            if (!event) {
+                throw new NotFoundException();
+            }
+
+            const formSchema = await this.prismaService.field.create({
+                data: {
+                    label: data.data.label,
+                    placeholder: data.data.placeholder,
+                    required: data.data.required,
+                    type: data.data.type,
+                    Events: {
+                        connect: {
+                            id: data.eventId,
+                        },
+                    },
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'schema updated successfully',
+                data: formSchema,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
+
+    async uploadEventCover(file: Express.Multer.File, eventId: string) {
+        try {
+            const publicUrl = await this.cloudService.uploadFile(file);
+            if (!publicUrl) {
+                throw new InternalServerErrorException();
+            }
+
+            const updatedEventCover = await this.prismaService.events.update({
+                where: {
+                    id: eventId,
+                },
+                data: {
+                    coverImage: publicUrl,
+                },
+            });
+
+            if (!updatedEventCover) {
+                throw new InternalServerErrorException();
+            }
+            return {
+                ok: true,
+                data: updatedEventCover,
+                message: 'image uploaded successfully',
+            };
+        } catch (e) {
+            if (e instanceof InternalServerErrorException) {
+                return new InternalServerErrorException();
+            }
+        }
+    }
+
+    async getEventFormScheme(event: string) {
+        try {
+            const eventSchema = await this.prismaService.events.findUnique({
+                where: {
+                    id: event,
+                },
+                select: {
+                    form: true,
+                },
+            });
+
+            if (!eventSchema) {
+                return new NotFoundException();
+            }
+
+            return {
+                ok: true,
+                message: 'Event schema found',
+                data: eventSchema.form,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                return new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
+
+    async getTicketInfo(id: string) {
+        try {
+            const event = await this.prismaService.events.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    eventDate: true,
+                    description: true,
+                    isCollegeEvent: true,
+                    coverImage: true,
+                    location: true,
+                },
+            });
+            if (!event) {
+                return new NotFoundException();
+            }
+            return {
+                ok: true,
+                message: 'Event schema found',
+                data: event,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                return new NotFoundException();
+            } else {
+                return e;
+            }
+        }
+    }
+
+    async toggleFormPublishStatus(id: string, shouldPublish: boolean) {
+        try {
+            const event = await this.prismaService.events.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    form: true,
+                },
+            });
+            if (!event) {
+                throw new NotFoundException();
+            }
+
+            if (!event.form.length) {
+                throw new InternalServerErrorException();
+            }
+
+            const newEventStatus = await this.prismaService.events.update({
+                where: {
+                    id,
+                },
+                data: {
+                    isFormPublished: shouldPublish,
+                },
+            });
+
+            return {
+                ok: 'true',
+                message: 'form status was changed',
+                data: newEventStatus,
+            };
+        } catch (e) {
+            if (e instanceof InternalServerErrorException) {
+                return new InternalServerErrorException({
+                    message: 'Please create a form schema to publish the form',
+                });
+            }
+            if (e instanceof NotFoundException) {
+                return new NotFoundException();
+            }
+
+            return e;
+        }
+    }
+
+    public async addUserFormSubmission(
+        info: Record<string, string | Array<string>>,
+        eventId: string,
+        userId: string,
+    ) {
+        try {
+            const event = await this.getEventInfo(eventId);
+            if (!event) throw new NotFoundException();
+
+            await this.prismaService.response.create({
+                data: {
+                    data: info,
+                    user: {
+                        connect: {
+                            uid: userId,
+                        },
+                    },
+                    Events: {
+                        connect: {
+                            id: event.id,
+                        },
+                    },
+                },
+            });
+        } catch {
+            return new NotFoundException();
+        }
+    }
+
+    async getregisterParticipantsFormSubmissions(id: string, userId: string) {
+        try {
+            const scheam = await this.prismaService.events.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    form: true,
+                },
+            });
+
+            const label = {};
+            scheam.form.forEach((el) => {
+                label[el.id] = el.label;
+            });
+
+            const data = await this.prismaService.response.findMany({
+                where: {
+                    userUid: userId,
+                    eventsId: id,
+                },
+            });
+            if (!data) throw new NotFoundException();
+
+            const result = {};
+
+            scheam.form.forEach((el) => {
+                // @ts-ignore
+                if (el.id in data[0].data) {
+                    result[el.label] = data[0].data[el.id];
+                }
+            });
+
+            return {
+                ok: true,
+                data: result,
+                message: 'recieved form successfully',
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                return new NotFoundException();
             } else {
                 return e;
             }

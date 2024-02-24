@@ -6,7 +6,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@app/ui/components/dialog';
-import { Button } from '@app/ui/components/button';
+import { Button } from '@app/components/ui/Button';
 import { Input } from '@app/ui/components/input';
 import { apiHandler } from '@app/config';
 import * as yup from 'yup';
@@ -123,10 +123,10 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
                                 <div className="flex flex-col gap-3 mt-4">
                                     <Button
                                         type="submit"
-                                        disabled={form.formState.isSubmitting ? true : false}
-                                        className="bg-primary px-5 py-2 rounded-md text-white  hover:bg-brand-pink-100  border-[1.4px] hover:border-primary hover:text-primary"
+                                        isLoading={form.formState.isSubmitting}
+                                        variant="outline"
                                     >
-                                        {form.formState.isSubmitting ? '...' : 'Create Event'}
+                                        Create Event
                                     </Button>
                                 </div>
                             </form>

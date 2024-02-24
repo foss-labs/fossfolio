@@ -22,12 +22,8 @@ export const useUserRegistartionStatus = () => {
 
     useEffect(() => {
         // id is the primary key of event in events page
-        // pk is the primary key of event in org dashboard page
-
         if (router.isReady) {
-            // this is done to reuse same function event info page and org dashboard
             const { id } = router.query;
-
             setId(id as string);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

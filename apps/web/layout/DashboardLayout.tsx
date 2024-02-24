@@ -5,7 +5,7 @@ export const DashboardLayout = ({ children }: Child) => {
     return (
         <div className="flex">
             <DashNav />
-            <div className="ml-[240px] w-full p-4">{children}</div>
+            <div className="ml-[240px] w-full">{children}</div>
         </div>
     );
 };

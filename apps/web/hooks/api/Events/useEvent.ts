@@ -4,6 +4,13 @@ import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
 import type { OrgEvents } from '@app/types';
 
+/*
+  This hook can be used in both event page in dashboad and event page user facing page 
+  PK is the primary key of event in dahsboard
+  ID is the primary key of event in Evrnt page
+
+*/
+
 type IData = {
     data: OrgEvents;
     ok: boolean;
@@ -15,12 +22,12 @@ const getEvent = async (id: string) => {
     return data;
 };
 
-type Fetch = 'event' | 'org';
+type Fetch = 'event' | 'public';
 
 export const useEvent = (type: Fetch = 'event') => {
     const router = useRouter();
     const [Id, setId] = useState('');
-    const orgEventQueryKey = ['events', Id];
+    const eventQueryKey = ['events', Id];
 
     useEffect(() => {
         // id is the primary key of event in events page
@@ -30,22 +37,26 @@ export const useEvent = (type: Fetch = 'event') => {
             // this is done to reuse same function event info page and org dashboard
             const { id, pk } = router.query;
             if (type === 'event') {
-                setId(id as string);
-            }
-            if (type === 'org') {
                 setId(pk as string);
+            }
+            if (type === 'public') {
+                setId(id as string);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.isReady]);
 
     const events = useQuery<IData>({
-        queryKey: orgEventQueryKey,
+        queryKey: eventQueryKey,
         queryFn: () => getEvent(Id),
         // query is disabled until the query param is available
         enabled: !!Id,
         onSuccess: (data) => {
-            localStorage.setItem('novel__content', data.data.description as string);
+            if (data.data.description) {
+                localStorage.setItem('novel__content', data.data.description as string);
+            } else {
+                localStorage.setItem('novel__content', '');
+            }
         },
     });
 

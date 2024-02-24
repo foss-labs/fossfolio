@@ -33,6 +33,7 @@ const Events: NextPageWithLayout = () => {
                         website={el.website}
                         lastDate={el.lastDate}
                         eventDate={el.eventDate}
+                        coverImage={el.coverImage}
                     />
                 ))}
             </div>

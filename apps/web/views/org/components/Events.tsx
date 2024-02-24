@@ -40,6 +40,7 @@ export const Events = () => {
                         website={el.website}
                         lastDate={el.lastDate}
                         eventDate={el.eventDate}
+                        coverImage={el.coverImage}
                         isOrg
                     />
                 </div>

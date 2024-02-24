@@ -6,10 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@app/
 import { OrgEvents } from '@app/types';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 type DescriptionExcluded = Omit<
     OrgEvents,
-    'description' | 'createdAt' | 'isPublished' | 'updatedAt'
+    'description' | 'createdAt' | 'isPublished' | 'updatedAt' | 'isFormPublished' | 'form'
 >;
 
 interface Prop extends DescriptionExcluded {
@@ -25,6 +26,7 @@ export function EventCard({
     lastDate,
     isOrg = false,
     id,
+    coverImage,
 }: Prop): JSX.Element {
     const router = useRouter();
 
@@ -44,10 +46,13 @@ export function EventCard({
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="flex space-x-4 text-sm text-muted-foreground flex-wrap gap-3">
+                <div className="flex space-x-4 text-sm text-muted-foreground flex-wrap gap-3 w-full">
+                    {coverImage && (
+                        <Image src={coverImage} width={500} height={300} alt="event banner" />
+                    )}
                     <div className="flex items-center">
                         <BiLocationPlus className="mr-1 h-3 w-3 fill-sky-400 text-sky-400" />
-                        {location}
+                        {location}I
                     </div>
 
                     <div className="flex items-center">

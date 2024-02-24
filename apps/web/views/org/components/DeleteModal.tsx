@@ -44,7 +44,7 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
                                 Cancel
                             </Button>
                             <Button
-                                className="bg-[red]  border-1.4 hover:bg-[#ff0000c2]"
+                                className="bg-[red] border-1.4 hover:bg-[#ff0000c2]"
                                 onClick={handleDeleteClick}
                             >
                                 Delete

@@ -10,8 +10,19 @@ type IData = {
     data: User[];
 };
 
+type IDataForm = {
+    ok: boolean;
+    message: string;
+    data: Record<string, string | Array<string>>;
+};
+
 const getEventParticipants = async (id: string, orgId: string) => {
     const { data } = await apiHandler.get(`/events/participants/${orgId}/${id}`);
+    return data;
+};
+
+const getEventParticipantsForms = async (id: string, orgId: string) => {
+    const { data } = await apiHandler.get(`/events/participants/${orgId}/${id}/form`);
     return data;
 };
 
@@ -37,4 +48,28 @@ export const useEventParticipants = () => {
     });
 
     return events;
+};
+
+export const useEventParticipantsFormSubmissions = () => {
+    const router = useRouter();
+    const [eventId, setEventId] = useState('');
+    const [orgId, setOrgId] = useState('');
+    const orgEventQueryKey = ['org-info', 'forms', eventId];
+    useEffect(() => {
+        if (router.isReady) {
+            const { pk, id } = router.query;
+            setEventId(pk as string);
+            setOrgId(id as string);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [router.isReady]);
+
+    const eventsFormSubmissions = useQuery<IDataForm>({
+        queryKey: orgEventQueryKey,
+        queryFn: () => getEventParticipantsForms(eventId, orgId),
+        // query is disabled until the query param is available
+        enabled: !!eventId,
+    });
+
+    return eventsFormSubmissions;
 };

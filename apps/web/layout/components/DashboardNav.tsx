@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { FiArrowLeft, FiHome, FiUser, FiSettings, FiBarChart } from 'react-icons/fi';
+import { FaWpforms } from 'react-icons/fa';
 import { BsPeople } from 'react-icons/bs';
 
 export const DashNav = () => {
@@ -26,6 +27,13 @@ export const DashNav = () => {
                 >
                     <FiUser className="9px text-md" />
                     Participants
+                </div>
+                <div
+                    className="font-medium flex text-lg hover:cursor-pointer  justify-center items-center gap-3"
+                    onClick={() => router.push(`/org/${id}/${pk}/form`)}
+                >
+                    <FaWpforms className="9px text-md" />
+                    Form
                 </div>
                 <div
                     className="font-medium flex text-lg hover:cursor-pointer  justify-center items-center gap-3"

@@ -23,6 +23,7 @@ model User {
   providerAccounts   Account[]
 
   registeredEventsId Events[]
+  Response           Response[]
 }
 
 model Account {
@@ -94,14 +95,61 @@ model Events {
   maxTeamSize     Int          @default(1)
   minTeamSize     Int          @default(1)
   isCollegeEvent  Boolean      @default(false)
+  isFormPublished Boolean      @default(false)
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   maxTicketCount  Int?
   eventDate       DateTime?
+  form            Field[]
+  coverImage      String?
+  Response        Response[]
+}
+
+model Field {
+  id String @id @default(cuid())
+
+  label       String
+  placeholder String?
+  options     String?
+
+  required Boolean @default(false)
+
+  type FieldType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Events    Events?  @relation(fields: [eventsId], references: [id])
+  eventsId  String?
+}
+
+model Response {
+  id   String @id @default(cuid())
+  user User   @relation(fields: [userUid], references: [uid])
+
+  data Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userUid   String
+  Events    Events?  @relation(fields: [eventsId], references: [id])
+  eventsId  String?
 }
 
 enum Role {
   ADMIN
   EDITOR
   VIEWER
+}
+
+enum FieldType {
+  SingleLineText
+  LongText
+  SingleSelect
+  MultiSelect
+  Checkbox
+  Number
+  Email
+  URL
+  PhoneNumber
+  Attachment
 }

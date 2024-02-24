@@ -1,3 +1,5 @@
+import { IFormInput } from '@app/views/form';
+
 export interface Child {
     children: React.ReactNode;
 }
@@ -63,7 +65,19 @@ export interface OrgEvents {
     description: string | null;
     lastDate: Date;
     eventDate: Date;
-    maxTickerCount?: number;
+    maxTicketCount?: number;
     minTicketCount?: number;
     isCollegeEvent?: boolean;
+    coverImage?: string;
+    isFormPublished: boolean;
+    form: Iform[];
 }
+
+export type Iform = {
+    label: string;
+    placeholder?: string;
+    options?: string;
+    required: boolean;
+    type: IFormInput;
+    id?: string;
+};

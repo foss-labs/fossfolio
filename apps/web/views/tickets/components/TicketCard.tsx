@@ -3,6 +3,7 @@ import { TicketModal } from '@app/views/tickets';
 import { Button } from '@app/components/ui/Button';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import Image from 'next/image';
 import type { Data, Info } from '@app/hooks/api/user/useTickets';
 import { useState } from 'react';
 
@@ -44,6 +45,13 @@ export const TicketCard = ({ data, type }: Prop) => {
                         <h1>{el.name}</h1>
                         <h2>Date: {format(new Date(el.eventDate), 'dd/MM/yyyy')}</h2>
                         <h2>Venue : {el.location}</h2>
+                        <Image
+                            src={el.coverImage}
+                            width={400}
+                            height={400}
+                            alt="cover image"
+                            className="mt-4"
+                        />
                     </div>
                 ))}
             </div>
