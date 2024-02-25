@@ -29,7 +29,7 @@ export class StripeService {
             const eventInfo = event.data.object.metadata;
             const { event_id, user_id } = eventInfo;
             if (!event_id || !user_id) {
-                throw new Error('Inavlid metadata');
+                throw new Error('Invalid metadata');
             } else {
                 const event = await this.prisma.events.findUnique({
                     where: {

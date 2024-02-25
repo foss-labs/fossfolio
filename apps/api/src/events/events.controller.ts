@@ -29,6 +29,7 @@ import { RegisterEventDto } from './dto/register-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { ToggleFormPublishStatus } from './dto/publishForm.dto';
 import { DeleteEventDto } from './dto/delete-event.dto';
+import { RemoveUserDto } from './dto/remove-user.dto';
 @Controller('events')
 export class EventsController {
     constructor(private readonly events: EventsService) {}
@@ -91,13 +92,25 @@ export class EventsController {
         return await this.events.getEventParticipants(id);
     }
 
-    @Get('/participants/:orgID/:id/form')
+    @Get('/participants/:orgID/:id/:userId/form')
     @ApiTags('events')
     @Roles('ADMIN', 'EDITOR', 'VIEWER')
     @ApiOperation({ summary: 'Get all the form submissipn from participant' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getregisterParticipantsFormSubmissions(@Param('id') id: string, @AuthUser() user: User) {
-        return await this.events.getregisterParticipantsFormSubmissions(id, user.uid);
+    async getregisterParticipantsFormSubmissions(
+        @Param('id') id: string,
+        @Param('userId') uid: string,
+    ) {
+        return await this.events.getregisterParticipantsFormSubmissions(id, uid);
+    }
+
+    @Delete('/participants/delete')
+    @ApiTags('events')
+    @Roles('ADMIN', 'EDITOR')
+    @ApiOperation({ summary: 'Remove participant from a event' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async removePartcipent(@Body() data: RemoveUserDto) {
+        return await this.events.removeParticipant(data.eventId, data.userId);
     }
 
     @Get('/status/:id')

@@ -12,7 +12,6 @@ import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
-import { json } from 'stream/consumers';
 
 @Injectable()
 export class EventsService {
@@ -654,6 +653,51 @@ export class EventsService {
             throw new ServiceUnavailableException({
                 message: 'We dont support to delete a paid event',
             });
+        }
+    }
+
+    async removeParticipant(eventId, userId) {
+        try {
+            const isUserExist = await this.prismaService.events.findUnique({
+                where: {
+                    id: eventId,
+                },
+                select: {
+                    registeredUsers: {
+                        where: {
+                            uid: userId,
+                        },
+                    },
+                },
+            });
+
+            if (!isUserExist.registeredUsers[0]) {
+                throw new NotFoundException();
+            }
+
+            await this.prismaService.events.update({
+                where: {
+                    id: eventId,
+                },
+                data: {
+                    registeredUsers: {
+                        disconnect: {
+                            uid: userId,
+                        },
+                    },
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'user was removed successfully',
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                throw new ServiceUnavailableException();
+            }
         }
     }
 }
