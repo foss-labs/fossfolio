@@ -1,12 +1,14 @@
-import OpenAI from 'openai';
+import MistralClient from '@mistralai/mistralai';
 import type { NextApiRequest, NextApiResponse } from 'next/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     
     if (req.method === 'POST') {
-        const gpt = new OpenAI({
-            apiKey: process.env.OPEN_AI_TOKEN,
-        });
+
+        const apiKey = process.env.MISTRAL_API_KEY;
+
+        const client = new MistralClient(apiKey);
+
         const prompt = req.body
 
         if(!prompt?.prompt) {
@@ -18,18 +20,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         try {
-            const completion = await gpt.chat.completions.create({
+
+            const completion = await client.chat({
+                model: 'mistral-large-latest',
                 messages: [
                     {
                         role: 'system',
                         content:
-                            'You are an AI writing assistant that continues existing text based on context from prior text. ' +
+                            'You are an AI writing assistant that continues existing text based on context from prior text.  You are used for writing descriptions of events in an event managememt platform' +
                             'Give more weight/priority to the later characters than the beginning ones. Make sure to construct complete sentences.',
                     },
                     { role: 'user', content: prompt?.prompt },
                 ],
-                model: 'gpt-3.5-turbo',
             });
+            
+
 
             res.status(200).send(completion.choices[0].message.content as string);
         } catch {

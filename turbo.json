@@ -22,6 +22,7 @@
     "globalEnv": [
         "NEXT_PUBLIC_API_URL",
         "NEXT_PUBLIC_WEBSITE_DOMAIN",
+        "MISTRAL_API_KEY",
         "NODE_ENV",
         "PORT",
         "CI",
