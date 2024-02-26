@@ -2,13 +2,12 @@ import OpenAI from 'openai';
 import type { NextApiRequest, NextApiResponse } from 'next/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    console.log(req.body)
     
     if (req.method === 'POST') {
         const gpt = new OpenAI({
             apiKey: process.env.OPEN_AI_TOKEN,
         });
-        const prompt = JSON.parse(req.body);
+        const prompt = req.body
 
         if(!prompt?.prompt) {
             res.status(400).json({
