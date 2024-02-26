@@ -49,7 +49,7 @@ export const EventSchema = yup.object().shape({
     maxTicketCount: yup.number().required('Ticket count is a required field').min(1),
     lastDate: yup.date().required(),
     eventDate: yup.date().required(),
-    team: yup.string().required(),
+    team: yup.string().required().default('false'),
     minTeamSize: yup.number().when('team', {
         is: (val: Description) => val === 'true',
         then: (schema) => schema.required(),
@@ -94,7 +94,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [form.watch('file')]);
 
-    const isCollegeEvent = form.watch('team') === 'true';
+    const isTeamEvent = form.watch('team') === 'true';
 
     const handleUpdates: SubmitHandler<IProfile> = async (payload) => {
         try {
@@ -283,7 +283,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="team"
                                 render={({ field }) => (
@@ -308,8 +308,8 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                                         <FormMessage />
                                     </FormItem>
                                 )}
-                            />
-                            {isCollegeEvent && (
+                            /> */}
+                            {/* {isTeamEvent && (
                                 <>
                                     <FormField
                                         control={form.control}
@@ -346,7 +346,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
                                         )}
                                     />
                                 </>
-                            )}
+                            )} */}
                         </div>
 
                         <DialogFooter>

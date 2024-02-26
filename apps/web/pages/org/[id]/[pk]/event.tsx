@@ -6,7 +6,7 @@ import { RiLoaderFill } from 'react-icons/ri';
 import { useMutation } from '@tanstack/react-query';
 import { useToggle } from '@app/hooks';
 import { DashboardLayout } from '@app/layout';
-import { ENV, apiHandler } from '@app/config';
+import { apiHandler } from '@app/config';
 import { PublishModal } from '@app/views/dashboard';
 import { useEvent } from '@app/hooks/api/Events';
 import { Button } from '@app/components/ui/Button';
@@ -52,6 +52,28 @@ const Event = () => {
     useEffect(() => {
         // remove description when ever component unmounts
         () => localStorage.removeItem('novel__content');
+    }, []);
+
+    const handleSaveShortcut = async (event: KeyboardEvent) => {
+        // Check if the key combination is Ctrl + S (for Windows/Linux) or Command + S (for macOS)
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+            event.preventDefault();
+            try {
+                await handleUpdate();
+                toast.success('Description was saved successfully');
+            } catch {
+                toast.error('Error updating description');
+            }
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleSaveShortcut);
+
+        return () => {
+            window.removeEventListener('keydown', handleSaveShortcut);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleUpdate = async () => {

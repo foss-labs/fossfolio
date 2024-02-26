@@ -12,22 +12,35 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { User } from '@app/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@app/ui/components/avatar';
 import { IoIosMore } from 'react-icons/io';
-// import Drawer from 'react-modern-drawer';
+import { FormDrawer } from './FormDrawer';
+import { useState } from 'react';
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
+import { IData } from '@app/hooks/api/org/useParticipants';
+import { ref } from 'yup';
 
 interface Data {
     data: User[];
     doesEventHaveForm: boolean;
+    refetch: <TPageData>(
+        options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
+    ) => Promise<QueryObserverResult<IData, unknown>>;
 }
 
-export const Participants = ({ data, doesEventHaveForm = false }: Data) => {
-    const [isModapOpen, toggleModal] = useToggle();
+export const Participants = ({ data, doesEventHaveForm = false, refetch }: Data) => {
+    const [isModapOpen, toggleModal] = useToggle(false);
     const [isDrawerOpen, toggleDrawer] = useToggle(false);
+
+    const [userToBeDeleted, setDeleteId] = useState('');
+    const [userMoreInfoId, setUserMoreInfo] = useState('');
     return (
         <Table className="border-1/4 border-brand-purple-200 rounded-full">
-            <DeleteModal isOpen={isModapOpen} onClose={toggleModal.off} />
-            {/* <Drawer open={isDrawerOpen} onClose={toggleDrawer.toggle} direction="right">
-                <h2>You can see the forms here</h2>
-            </Drawer> */}
+            <DeleteModal
+                isOpen={isModapOpen}
+                onClose={toggleModal.off}
+                userId={userToBeDeleted}
+                refetch={refetch}
+            />
+            <FormDrawer open={isDrawerOpen} onClose={toggleDrawer.off} userId={userMoreInfoId} />
             <TableHeader className="bg-[#F9FAFB] rounded-lg">
                 <TableRow style={{ background: 'white', height: '67px' }}>
                     <TableCell className="font-medium">Participants</TableCell>
@@ -57,11 +70,23 @@ export const Participants = ({ data, doesEventHaveForm = false }: Data) => {
                         <TableCell>{el.isStudent ? 'Student' : 'Professional'}</TableCell>
                         <TableCell>{el.email}</TableCell>
                         {doesEventHaveForm && (
-                            <TableCell className="text-right" onClick={toggleModal.on}>
+                            <TableCell
+                                className="text-right"
+                                onClick={() => {
+                                    setUserMoreInfo(el.uid);
+                                    toggleDrawer.on();
+                                }}
+                            >
                                 <IoIosMore className="hover:text-red-500 cursor-pointer text-lg" />
                             </TableCell>
                         )}
-                        <TableCell className="text-right" onClick={toggleModal.on}>
+                        <TableCell
+                            className="text-right"
+                            onClick={() => {
+                                setDeleteId(el.uid);
+                                toggleModal.on();
+                            }}
+                        >
                             <AiOutlineDelete className="hover:text-red-500 cursor-pointer text-lg" />
                         </TableCell>
                     </TableRow>

@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     FileTypeValidator,
     Get,
     MaxFileSizeValidator,
@@ -16,7 +17,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { EventsService } from './events.service';
 import { AuthUser } from '../auth/decorators/user.decorator';
@@ -27,17 +28,21 @@ import { UpdateEventDto } from './dto/updtate-event.dto';
 import { RegisterEventDto } from './dto/register-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { ToggleFormPublishStatus } from './dto/publishForm.dto';
+import { DeleteEventDto } from './dto/delete-event.dto';
+import { RemoveUserDto } from './dto/remove-user.dto';
 @Controller('events')
 export class EventsController {
     constructor(private readonly events: EventsService) {}
 
     @Get('/')
+    @ApiTags('events')
     @ApiOperation({ summary: 'returns all upcoming events' })
     async getAllEvents() {
         return await this.events.getAllEvents();
     }
 
     @Get('/:eventId')
+    @ApiTags('events')
     @ApiOperation({ summary: 'returns the specific event with id' })
     async getEventByID(@Param('eventId') id: string) {
         return await this.events.getEventById(id);
@@ -45,6 +50,7 @@ export class EventsController {
 
     @Post('/create')
     @ApiOperation({ summary: 'create new events' })
+    @ApiTags('events')
     @Roles('ADMIN', 'EDITOR')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async createNewEvent(@Body() data: CreateEventDto) {
@@ -52,6 +58,7 @@ export class EventsController {
     }
 
     @Get('/publish/:orgID/:id')
+    @ApiTags('events')
     @ApiOperation({ summary: 'publish event , by doing this we lets public to register for event' })
     @Roles('ADMIN', 'EDITOR')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -60,6 +67,7 @@ export class EventsController {
     }
     @Patch('/edit')
     @ApiOperation({ summary: 'update info of event' })
+    @ApiTags('events')
     @Roles('ADMIN', 'EDITOR')
     @UseInterceptors(FileInterceptor('file'))
     @UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -68,6 +76,7 @@ export class EventsController {
     }
 
     @Post('/register')
+    @ApiTags('events')
     @ApiOperation({ summary: 'Register for specific event' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async registerEvent(@Body() data: RegisterEventDto, @AuthUser() user: User) {
@@ -75,22 +84,37 @@ export class EventsController {
     }
 
     @Get('/participants/:orgID/:id')
+    @ApiTags('events')
     @Roles('ADMIN', 'EDITOR', 'VIEWER')
     @ApiOperation({ summary: 'Get all participants of events' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getregisterDParticipants(@Param('id') id: string, @AuthUser() user: User) {
+    async getregisterDParticipants(@Param('id') id: string) {
         return await this.events.getEventParticipants(id);
     }
 
-    @Get('/participants/:orgID/:id/form')
+    @Get('/participants/:orgID/:id/:userId/form')
+    @ApiTags('events')
     @Roles('ADMIN', 'EDITOR', 'VIEWER')
     @ApiOperation({ summary: 'Get all the form submissipn from participant' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getregisterParticipantsFormSubmissions(@Param('id') id: string, @AuthUser() user: User) {
-        return await this.events.getregisterParticipantsFormSubmissions(id, user.uid);
+    async getregisterParticipantsFormSubmissions(
+        @Param('id') id: string,
+        @Param('userId') uid: string,
+    ) {
+        return await this.events.getregisterParticipantsFormSubmissions(id, uid);
+    }
+
+    @Delete('/participants/delete')
+    @ApiTags('events')
+    @Roles('ADMIN', 'EDITOR')
+    @ApiOperation({ summary: 'Remove participant from a event' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async removePartcipent(@Body() data: RemoveUserDto) {
+        return await this.events.removeParticipant(data.eventId, data.userId);
     }
 
     @Get('/status/:id')
+    @ApiTags('events')
     @ApiOperation({ summary: 'Get if participant is registerd for event or not' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getUserEventStatus(@Param('id') id: string, @AuthUser() user: User) {
@@ -98,6 +122,7 @@ export class EventsController {
     }
 
     @Post('/form')
+    @ApiTags('events')
     @Roles('ADMIN', 'EDITOR')
     @ApiOperation({ summary: 'Create form for each event' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -107,6 +132,7 @@ export class EventsController {
 
     @Patch('/edit/cover')
     @Roles('ADMIN', 'EDITOR')
+    @ApiTags('events')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     @UseInterceptors(FileInterceptor('file'))
     @ApiOperation({ summary: 'Upload image for event cover page' })
@@ -127,6 +153,7 @@ export class EventsController {
     }
 
     @Get('/form/:orgID/:eventId')
+    @ApiTags('events')
     @Roles('ADMIN', 'EDITOR')
     @ApiOperation({ summary: 'get form schema of a specific event' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -135,6 +162,7 @@ export class EventsController {
     }
 
     @Post('/form/:eventId')
+    @ApiTags('events')
     @ApiOperation({ summary: 'users register form via this route' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async postFormResponse(
@@ -148,7 +176,7 @@ export class EventsController {
                 throw new NotFoundException();
             }
             await this.events.addUserFormSubmission(data, eventId, user.uid);
-            await this.events.registerEvent(eventId, user.uid);
+            return await this.events.registerEvent(eventId, user.uid);
         } catch (e) {
             if (e instanceof NotFoundException) return new NotFoundException();
             return {
@@ -160,6 +188,7 @@ export class EventsController {
     }
 
     @Post('/publish/form/:id')
+    @ApiTags('events')
     @ApiOperation({ summary: 'publish event , by doing this we lets public to register for event' })
     @Roles('ADMIN', 'EDITOR')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -168,9 +197,19 @@ export class EventsController {
     }
 
     @Get('/ticket/:eventId')
+    @ApiTags('events')
     @Roles('ADMIN', 'EDITOR')
     @ApiOperation({ summary: 'publish or not publish the already build form public' })
     async getTicketInfo(@Param('eventId') eventId: string) {
         return await this.events.getTicketInfo(eventId);
+    }
+
+    @Delete('/delete/:id')
+    @Roles('ADMIN')
+    @ApiTags('events')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    @ApiOperation({ summary: 'Delete a event using event id' })
+    async deleteEvent(@Param('id') eventId: string, @Body() _: DeleteEventDto) {
+        return await this.events.deleteEvent(eventId);
     }
 }

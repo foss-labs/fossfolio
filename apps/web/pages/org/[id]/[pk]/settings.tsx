@@ -19,9 +19,26 @@ import { useEvent } from '@app/hooks/api/Events';
 import { RiLoaderFill } from 'react-icons/ri';
 import Image from 'next/image';
 import { Card, CardContent } from '@app/ui/components/card';
+import { apiHandler } from '@app/config';
+import { useRouter } from 'next/router';
+import { toast } from 'sonner';
 
 const Settings = () => {
     const { data, isLoading } = useEvent('event');
+    const router = useRouter();
+    const { pk, id } = router.query;
+
+    const deleteEvent = async () => {
+        try {
+            await apiHandler.delete(`/events/delete/${pk}`, {
+                data: { organizationId: id },
+            });
+            toast.success('Event was deleted successfully');
+            router.push('/org');
+        } catch {
+            toast.error('Error deleting event');
+        }
+    };
 
     const form = useForm<IProfile>({
         defaultValues: {
@@ -32,6 +49,29 @@ const Settings = () => {
     });
 
     const handleUpdates = () => {};
+
+    if (!data?.data.isPublished) {
+        return (
+            <div className="flex flex-col justify-center w-full ml-10 h-screen items-center">
+                <div className="h-[70vh]">
+                    <h2 className="text-3xl mt-8 mb-5 font-medium h-full flex justify-center items-center">
+                        Please publish the Event to access the settings
+                    </h2>
+                </div>
+                <Card className="border-2 border-red-400 max-w-2xl mt-5 flex w-full">
+                    <CardContent className="pt-6">
+                        <div className="space-y-2">
+                            <p>Deleting the Events will delete its all data</p>
+                            <Button className="!bg-red-600" onClick={deleteEvent}>
+                                Delete Event
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col justify-center w-full ml-10">
             <h2 className="self-start  text-3xl mt-8 mb-5 font-medium">
@@ -141,14 +181,17 @@ const Settings = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <h4 className="text-lg">Cover Image</h4>
+
                                 {data?.data.coverImage && (
-                                    <Image
-                                        src={data.data.coverImage}
-                                        width={400}
-                                        height={400}
-                                        alt="cover image"
-                                    />
+                                    <>
+                                        <h4 className="text-lg">Cover Image</h4>
+                                        <Image
+                                            src={data.data.coverImage}
+                                            width={400}
+                                            height={400}
+                                            alt="cover image"
+                                        />
+                                    </>
                                 )}
                             </div>
                         </form>
@@ -157,7 +200,10 @@ const Settings = () => {
                         <CardContent className="pt-6 ">
                             <div className="space-y-2">
                                 <p>Deleting the Events will delete its all data</p>
-                                <Button className="!bg-[red] !hover:bg-[#ff0000c2]">
+                                <Button
+                                    className="!bg-[red] !hover:bg-[#ff0000c2]"
+                                    onClick={deleteEvent}
+                                >
                                     Delete Event
                                 </Button>
                             </div>

@@ -14,6 +14,7 @@ export class OrgMemberController {
 
     @Get('/:orgID')
     @Roles('ADMIN', 'EDITOR', 'VIEWER')
+    @ApiTags('org-members')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getMembers(@Param('orgID') orgID: string) {
         return await this.orgMemberService.getMembers(orgID);

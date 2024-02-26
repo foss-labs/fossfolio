@@ -34,7 +34,6 @@ const upload = async (req: NextApiRequest, res: NextApiResponse) => {
             downloadUrl: `https://${params.Bucket}.s3.amazonaws.com/${params.Key}?download=1`,
         });
     } catch (e) {
-        console.log(e);
         return res.status(500).json({
             ok: false,
             message: 'upload failed',

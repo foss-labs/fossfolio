@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
 import { User } from '@app/types';
 
-type IData = {
+export type IData = {
     ok: boolean;
     message: string;
     data: User[];
@@ -21,8 +21,10 @@ const getEventParticipants = async (id: string, orgId: string) => {
     return data;
 };
 
-const getEventParticipantsForms = async (id: string, orgId: string) => {
-    const { data } = await apiHandler.get(`/events/participants/${orgId}/${id}/form`);
+const getEventParticipantsForms = async (eventId: string, orgId: string, userId: string) => {
+    const { data } = await apiHandler.get(
+        `/events/participants/${orgId}/${eventId}/${userId}/form`,
+    );
     return data;
 };
 
@@ -50,7 +52,7 @@ export const useEventParticipants = () => {
     return events;
 };
 
-export const useEventParticipantsFormSubmissions = () => {
+export const useEventParticipantsFormSubmissions = (id: string) => {
     const router = useRouter();
     const [eventId, setEventId] = useState('');
     const [orgId, setOrgId] = useState('');
@@ -66,9 +68,9 @@ export const useEventParticipantsFormSubmissions = () => {
 
     const eventsFormSubmissions = useQuery<IDataForm>({
         queryKey: orgEventQueryKey,
-        queryFn: () => getEventParticipantsForms(eventId, orgId),
+        queryFn: () => getEventParticipantsForms(eventId, orgId, id),
         // query is disabled until the query param is available
-        enabled: !!eventId,
+        enabled: !!eventId && !!id,
     });
 
     return eventsFormSubmissions;

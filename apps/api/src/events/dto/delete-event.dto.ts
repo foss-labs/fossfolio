@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
-export class ImageUpload {
+export class DeleteEventDto {
     @ApiProperty()
+    @IsString()
     organizationId: string;
-
-    @ApiProperty()
-    eventId: string;
 }

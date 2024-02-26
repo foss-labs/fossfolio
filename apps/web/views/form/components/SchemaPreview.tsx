@@ -41,7 +41,11 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false }: Prop) => {
             }
         }
         try {
-            await apiHandler.post(`/events/form/${id}`, formData);
+            const { data } = await apiHandler.post(`/events/form/${id}`, formData);
+            if (data.url) {
+                // shoudl use stripe js library to pass session id
+                window.location.href = data.url;
+            }
             toast.success('Form submitted successfully');
             if (closeModal) {
                 closeModal();

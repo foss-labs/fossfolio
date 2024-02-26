@@ -25,9 +25,14 @@ const Event: NextPageWithLayout = () => {
             toggleForm.on();
             return;
         }
-        return await apiHandler.post('/events/register', {
+        const { data: checkOutSession } = await apiHandler.post('/events/register', {
             eventId: id,
         });
+
+        if (checkOutSession.url) {
+            // shoudl use stripe js library to pass session id
+            window.location.href = checkOutSession.url;
+        }
     };
 
     const { isLoading, mutate } = useMutation(registerEvent, {

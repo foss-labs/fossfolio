@@ -21,6 +21,13 @@ import {
 } from '@app/ui/components/form';
 import { toast } from 'sonner';
 import { useRouter } from 'next/router';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@app/ui/components/select';
 
 // TODO - DEFINE THE TYPE OF REFETCH
 type IModal = {
@@ -29,10 +36,21 @@ type IModal = {
     refetch: any;
 };
 
+type Description = 'true' | 'false';
+
 const Schema = yup.object().shape({
     name: yup.string().required().min(3),
     website: yup.string().url().required(),
     location: yup.string().required(),
+    isPaidEvent: yup.string().required(),
+    ticketPrice: yup
+        .number()
+        .min(0)
+        .when('isPaidEvent', {
+            is: (val: Description) => val === 'true',
+            then: (schema) => schema.required('ticket price is a required field'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
 });
 
 type ISchema = yup.InferType<typeof Schema>;
@@ -47,14 +65,24 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
             website: '',
             name: '',
             location: '',
+            isPaidEvent: 'false',
+            ticketPrice: 0,
         },
     });
+
+    console.log(form.formState.errors);
 
     /* 
     generate a new event , doing this here to create unique id to route into
     only after publishing the event public can access the event 
     */
     const onUserSubMit: SubmitHandler<ISchema> = async (val) => {
+        // when user randomly enters some ticket price and go back to not a  money event
+        //  we need to make sure that ticker price will stay 0
+        if (val.isPaidEvent === 'false') {
+            val.ticketPrice = 0;
+        }
+
         const { id } = router.query;
         const payload = {
             ...val,
@@ -70,6 +98,8 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
             refetch();
         }
     };
+
+    const isPaidEvent = form.watch('isPaidEvent') === 'true';
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -119,6 +149,52 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
                                             </FormItem>
                                         )}
                                     />
+                                    <FormField
+                                        control={form.control}
+                                        name="isPaidEvent"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Is this a paid event?</FormLabel>
+
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={field.value}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Paid Event" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="true">Yes</SelectItem>
+                                                        <SelectItem value="false">No</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    {isPaidEvent && (
+                                        <FormField
+                                            control={form.control}
+                                            name="ticketPrice"
+                                            render={({ field }) => (
+                                                <FormItem className="items-center ">
+                                                    <FormLabel>Ticket price (INR)</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            placeholder="100"
+                                                            {...field}
+                                                            type="number"
+                                                            min={0}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    )}
                                 </div>
                                 <div className="flex flex-col gap-3 mt-4">
                                     <Button

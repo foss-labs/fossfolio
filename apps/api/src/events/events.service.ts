@@ -6,18 +6,19 @@ import {
     UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { StripeService } from '../stripe/stripe.service';
+import { S3Service } from '../cloud/cloud.service';
 import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
-import { S3Service } from '../cloud/cloud.service';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
-import { json } from 'stream/consumers';
 
 @Injectable()
 export class EventsService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly cloudService: S3Service,
+        private readonly stripeService: StripeService,
     ) {}
 
     public async getEventInfo(id: string) {
@@ -40,6 +41,7 @@ export class EventsService {
                             name: d.name,
                             website: d.website,
                             location: d.location,
+                            ticketPrice: d.ticketPrice,
                         },
                     },
                 },
@@ -263,28 +265,38 @@ export class EventsService {
                 },
             });
 
+            console.log('REACHED HERE');
+
             if (eventInfo.maxTicketCount <= 0) {
                 throw new ServiceUnavailableException();
             }
 
             // when the event requires a form input we should check if the use has completed the form or not
             // can only be done after creating the response schema
-            const data = await this.prismaService.events.update({
-                where: {
-                    id: eventId,
-                },
-                data: {
-                    registeredUsers: {
-                        connect: {
-                            uid: userId,
-                        },
-                    },
-                    maxTicketCount: eventInfo.maxTicketCount - 1,
-                },
-            });
 
-            if (!data) {
-                throw new NotFoundException();
+            // After this if the event has a ticket price we will redirect to stripe checkout
+
+            if (eventInfo.ticketPrice > 0) {
+                // this will trigger another service layer from the stripeService Event emitter
+                return await this.stripeService.createCheckoutSession(eventInfo, userId);
+            } else {
+                const data = await this.prismaService.events.update({
+                    where: {
+                        id: eventId,
+                    },
+                    data: {
+                        registeredUsers: {
+                            connect: {
+                                uid: userId,
+                            },
+                        },
+                        maxTicketCount: eventInfo.maxTicketCount - 1,
+                    },
+                });
+
+                if (!data) {
+                    throw new NotFoundException();
+                }
             }
         } catch (e) {
             if (e instanceof NotFoundException) {
@@ -616,6 +628,75 @@ export class EventsService {
                 return new NotFoundException();
             } else {
                 return e;
+            }
+        }
+    }
+    async deleteEvent(eventId: string) {
+        try {
+            const event = await this.getEventById(eventId);
+            // cant delete paid event till we figure out a way to process refund
+            if (event.data.ticketPrice > 0) {
+                throw new ServiceUnavailableException();
+            }
+
+            await this.prismaService.events.delete({
+                where: {
+                    id: eventId,
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'event was deleted successfully',
+            };
+        } catch {
+            throw new ServiceUnavailableException({
+                message: 'We dont support to delete a paid event',
+            });
+        }
+    }
+
+    async removeParticipant(eventId, userId) {
+        try {
+            const isUserExist = await this.prismaService.events.findUnique({
+                where: {
+                    id: eventId,
+                },
+                select: {
+                    registeredUsers: {
+                        where: {
+                            uid: userId,
+                        },
+                    },
+                },
+            });
+
+            if (!isUserExist.registeredUsers[0]) {
+                throw new NotFoundException();
+            }
+
+            await this.prismaService.events.update({
+                where: {
+                    id: eventId,
+                },
+                data: {
+                    registeredUsers: {
+                        disconnect: {
+                            uid: userId,
+                        },
+                    },
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'user was removed successfully',
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            } else {
+                throw new ServiceUnavailableException();
             }
         }
     }
