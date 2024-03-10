@@ -198,8 +198,7 @@ export class EventsController {
 
     @Get('/ticket/:eventId')
     @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR')
-    @ApiOperation({ summary: 'publish or not publish the already build form public' })
+    @ApiOperation({ summary: 'return  ticket info' })
     async getTicketInfo(@Param('eventId') eventId: string) {
         return await this.events.getTicketInfo(eventId);
     }

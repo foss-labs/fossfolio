@@ -491,11 +491,13 @@ export class EventsService {
                     isCollegeEvent: true,
                     coverImage: true,
                     location: true,
+                    name: true,
                 },
             });
             if (!event) {
                 return new NotFoundException();
             }
+
             return {
                 ok: true,
                 message: 'Event schema found',
