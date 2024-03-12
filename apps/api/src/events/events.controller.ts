@@ -121,6 +121,14 @@ export class EventsController {
         return await this.events.getEventRegistartionStatus(id, user.uid);
     }
 
+    @Get('/stats/:id')
+    @ApiTags('events')
+    @ApiOperation({ summary: 'Get event stats' })
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async getEventStats(@Param('id') id: string) {
+        return await this.events.getEventStats(id);
+    }
+
     @Post('/form')
     @ApiTags('events')
     @Roles('ADMIN', 'EDITOR')
@@ -198,8 +206,7 @@ export class EventsController {
 
     @Get('/ticket/:eventId')
     @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR')
-    @ApiOperation({ summary: 'publish or not publish the already build form public' })
+    @ApiOperation({ summary: 'return  ticket info' })
     async getTicketInfo(@Param('eventId') eventId: string) {
         return await this.events.getTicketInfo(eventId);
     }

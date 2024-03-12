@@ -491,11 +491,13 @@ export class EventsService {
                     isCollegeEvent: true,
                     coverImage: true,
                     location: true,
+                    name: true,
                 },
             });
             if (!event) {
                 return new NotFoundException();
             }
+
             return {
                 ok: true,
                 message: 'Event schema found',
@@ -700,4 +702,67 @@ export class EventsService {
             }
         }
     }
+
+    async getEventStats(id: string) {
+        try {
+            const eventInfo = await this.getEventById(id);
+
+            if (!eventInfo) throw new NotFoundException();
+
+            // Aggregate response data for the specified event
+
+            const insights = await this.prismaService.response.groupBy({
+                by: ['createdAt'],
+                where: {
+                    eventsId: id,
+                },
+                _count: true,
+            });
+
+            const stats = await this.prismaService.response.aggregate({
+                where: {
+                    eventsId: id,
+                },
+                _count: true,
+            });
+
+            const totalRevenue = stats._count * eventInfo.data.ticketPrice;
+
+            const data = {
+                totalRevenue: totalRevenue || 0,
+                totalTickets: stats._count || 0,
+                insights: this.aggregateCountsByDay(insights),
+            };
+
+            return {
+                data,
+                message: 'Data Found successfully',
+            };
+        } catch {
+            throw new NotFoundException();
+        }
+    }
+    aggregateCountsByDay(responses: Insights[]) {
+        const aggregatedCounts = {};
+
+        responses.forEach((response) => {
+            // Extract the date part from createdAt
+            const date = new Date(response.createdAt).toISOString().split('T')[0];
+
+            // Initialize count for the day if not exists
+            if (!aggregatedCounts[date]) {
+                aggregatedCounts[date] = 0;
+            }
+
+            // Add count to the existing count for the day
+            aggregatedCounts[date] += response._count;
+        });
+
+        return aggregatedCounts;
+    }
 }
+
+type Insights = {
+    _count: number;
+    createdAt: Date;
+};
