@@ -719,9 +719,13 @@ export class EventsService {
                 _count: true,
             });
 
-            const stats = await this.prismaService.response.aggregate({
+            const stats = await this.prismaService.user.aggregate({
                 where: {
-                    eventsId: id,
+                    registeredEventsId: {
+                        some: {
+                            id,
+                        },
+                    },
                 },
                 _count: true,
             });
