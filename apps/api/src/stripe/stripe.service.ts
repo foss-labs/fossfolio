@@ -43,9 +43,9 @@ export class StripeService {
                             id: event_id,
                         },
                         data: {
-                            registeredUsers: {
-                                connect: {
-                                    uid: user_id,
+                            Ticket: {
+                                create: {
+                                    userUid: user_id,
                                 },
                             },
                             maxTicketCount: event.maxTicketCount - 1,
@@ -55,6 +55,7 @@ export class StripeService {
             }
         } catch (e) {
             console.log(e);
+            throw new Error('Failed to handle payments');
         }
     }
 

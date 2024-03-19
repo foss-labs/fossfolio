@@ -1,11 +1,16 @@
 import { DashboardLayout } from '@app/layout';
-import { useEvent, useEventStats } from '@app/hooks/api/Events';
+import { useEventStats } from '@app/hooks/api/Events';
 import { RiLoaderFill } from 'react-icons/ri';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { useMemo } from 'react';
 
 const Revenue = () => {
     const { isLoading: isStatsLoading, data: statsData } = useEventStats();
-    const { data: eventInfo } = useEvent('event');
+
+    const stats = useMemo(() => {
+        return statsData?.data.insights;
+    }, [statsData]);
+
     return (
         <div className="bg-gray-100 min-h-screen items-center justify-center">
             <div className="flex flex-wrap  p-6 sm:gap-4 justify-start">
@@ -36,30 +41,18 @@ const Revenue = () => {
                             <RiLoaderFill className="animate-spin h-8 w-8" />
                         </div>
                     ) : (
-                        eventInfo?.data.form &&
-                        eventInfo.data.form.length > 0 && (
-                            <ResponsiveContainer width="100%" height="100%" className="bg-white">
-                                <LineChart width={300} height={100} data={data}>
-                                    <Line
-                                        type="monotone"
-                                        dataKey="pv"
-                                        stroke="#8884d8"
-                                        strokeWidth={2}
-                                    />
-                                    <XAxis />
-                                    <YAxis />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        )
-                    )}
-                    {!eventInfo?.data.form.length && (
-                        <div className="flex w-full h-full justify-center items-center px-40">
-                            <article className="w-full bg-red-600 p-8 rounded-md">
-                                <h1 className="font-bold text-xl text-center text-white">
-                                    Analytics is not supported for event without forms
-                                </h1>
-                            </article>
-                        </div>
+                        <ResponsiveContainer width="100%" height="100%" className="bg-white">
+                            <LineChart width={300} height={100} data={data}>
+                                <Line
+                                    type="monotone"
+                                    dataKey="pv"
+                                    stroke="#8884d8"
+                                    strokeWidth={2}
+                                />
+                                <XAxis />
+                                <YAxis />
+                            </LineChart>
+                        </ResponsiveContainer>
                     )}
                 </div>
             </div>

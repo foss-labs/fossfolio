@@ -6,6 +6,7 @@ import { apiHandler } from '@app/config';
 type Data = {
     totalRevenue: number;
     totalTickets: number;
+    insights: Record<string, number>;
 };
 
 type IData = {

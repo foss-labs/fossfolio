@@ -12,6 +12,8 @@ import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
+import excludeKey from '../utils/exclude';
+import { Ticket, User } from '@prisma/client';
 
 @Injectable()
 export class EventsService {
@@ -265,8 +267,6 @@ export class EventsService {
                 },
             });
 
-            console.log('REACHED HERE');
-
             if (eventInfo.maxTicketCount <= 0) {
                 throw new ServiceUnavailableException();
             }
@@ -285,9 +285,9 @@ export class EventsService {
                         id: eventId,
                     },
                     data: {
-                        registeredUsers: {
-                            connect: {
-                                uid: userId,
+                        Ticket: {
+                            create: {
+                                userUid: userId,
                             },
                         },
                         maxTicketCount: eventInfo.maxTicketCount - 1,
@@ -311,31 +311,34 @@ export class EventsService {
 
     async getEventParticipants(id: string) {
         try {
-            const data = await this.prismaService.events.findUnique({
+            const userInfo = await this.prismaService.events.findUnique({
                 where: {
                     id,
                 },
                 select: {
-                    registeredUsers: {
+                    Ticket: {
                         select: {
-                            uid: true,
-                            displayName: true,
-                            collegeName: true,
-                            photoURL: true,
-                            isStudent: true,
-                            email: true,
+                            user: true,
                         },
                     },
                 },
             });
 
-            if (!data) {
+            if (!userInfo) {
                 throw new NotFoundException();
             }
+
+            const data = userInfo.Ticket.map((info) =>
+                excludeKey<User, 'refreshToken' | 'createdAt'>(info.user, [
+                    'refreshToken',
+                    'createdAt',
+                ]),
+            );
+
             return {
                 ok: true,
                 message: 'members found successfully',
-                data: data.registeredUsers,
+                data: data,
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
@@ -352,15 +355,15 @@ export class EventsService {
                     id: eventId,
                 },
                 select: {
-                    registeredUsers: {
+                    Ticket: {
                         where: {
-                            uid: userId,
+                            userUid: userId,
                         },
                     },
                 },
             });
 
-            if (!data || !data.registeredUsers.length) {
+            if (!data || !data.Ticket.length) {
                 throw new NotFoundException();
             }
 
@@ -658,37 +661,24 @@ export class EventsService {
         }
     }
 
-    async removeParticipant(eventId, userId) {
+    async removeParticipant(eventId: string, userId: string) {
         try {
             const isUserExist = await this.prismaService.events.findUnique({
                 where: {
                     id: eventId,
                 },
                 select: {
-                    registeredUsers: {
+                    Ticket: {
                         where: {
-                            uid: userId,
+                            userUid: userId,
                         },
                     },
                 },
             });
 
-            if (!isUserExist.registeredUsers[0]) {
+            if (!isUserExist.Ticket) {
                 throw new NotFoundException();
             }
-
-            await this.prismaService.events.update({
-                where: {
-                    id: eventId,
-                },
-                data: {
-                    registeredUsers: {
-                        disconnect: {
-                            uid: userId,
-                        },
-                    },
-                },
-            });
 
             return {
                 ok: true,
@@ -709,9 +699,7 @@ export class EventsService {
 
             if (!eventInfo) throw new NotFoundException();
 
-            // Aggregate response data for the specified event
-
-            const insights = await this.prismaService.response.groupBy({
+            const insights = await this.prismaService.ticket.groupBy({
                 by: ['createdAt'],
                 where: {
                     eventsId: id,
@@ -721,9 +709,9 @@ export class EventsService {
 
             const stats = await this.prismaService.user.aggregate({
                 where: {
-                    registeredEventsId: {
+                    Ticket: {
                         some: {
-                            id,
+                            eventsId: id,
                         },
                     },
                 },

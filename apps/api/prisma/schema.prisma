@@ -22,8 +22,8 @@ model User {
   organizationMember OrganizationMember[]
   providerAccounts   Account[]
 
-  registeredEventsId Events[]
-  Response           Response[]
+  Response Response[]
+  Ticket   Ticket[]
 }
 
 model Account {
@@ -90,7 +90,6 @@ model Events {
   isPublished           Boolean      @default(false)
   description           Json?
   organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  registeredUsers       User[]
   isTeamEvent           Boolean      @default(false)
   maxTeamSize           Int          @default(1)
   minTeamSize           Int          @default(1)
@@ -106,6 +105,7 @@ model Events {
   ticketPrice           Int          @default(0)
   stripe_price_object   String?
   stripe_product_object String?
+  Ticket                Ticket[]
 }
 
 model Field {
@@ -136,6 +136,17 @@ model Response {
   userUid   String
   Events    Events?  @relation(fields: [eventsId], references: [id])
   eventsId  String?
+}
+
+model Ticket {
+  id       String @id @default(cuid())
+  event    Events @relation(fields: [eventsId], references: [id])
+  eventsId String
+  user     User   @relation(fields: [userUid], references: [uid])
+  userUid  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
