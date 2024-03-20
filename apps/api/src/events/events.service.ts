@@ -1,4 +1,5 @@
 import {
+    ConflictException,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
@@ -133,6 +134,9 @@ export class EventsService {
                         gte: new Date(),
                     },
                     isPublished: true,
+                    maxTicketCount: {
+                        gt: 0,
+                    },
                 },
             });
         } catch {
@@ -265,7 +269,18 @@ export class EventsService {
                 where: {
                     id: eventId,
                 },
+                include: {
+                    Ticket: {
+                        where: {
+                            userUid: userId,
+                        },
+                    },
+                },
             });
+
+            if (eventInfo.Ticket.length) {
+                throw new ConflictException();
+            }
 
             if (eventInfo.maxTicketCount <= 0) {
                 throw new ServiceUnavailableException();
@@ -303,6 +318,8 @@ export class EventsService {
                 throw new NotFoundException();
             } else if (e instanceof ServiceUnavailableException) {
                 throw new ServiceUnavailableException();
+            } else if (e instanceof ConflictException) {
+                throw new ConflictException('user already registerd');
             } else {
                 throw e;
             }
@@ -663,22 +680,22 @@ export class EventsService {
 
     async removeParticipant(eventId: string, userId: string) {
         try {
-            const isUserExist = await this.prismaService.events.findUnique({
+            const isUserExist = await this.prismaService.ticket.findFirst({
                 where: {
-                    id: eventId,
-                },
-                select: {
-                    Ticket: {
-                        where: {
-                            userUid: userId,
-                        },
-                    },
+                    eventsId: eventId,
+                    userUid: userId,
                 },
             });
 
-            if (!isUserExist.Ticket) {
+            if (!isUserExist) {
                 throw new NotFoundException();
             }
+
+            await this.prismaService.ticket.delete({
+                where: {
+                    id: isUserExist.id,
+                },
+            });
 
             return {
                 ok: true,

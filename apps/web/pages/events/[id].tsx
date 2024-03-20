@@ -6,6 +6,7 @@ import { HomeLayout } from '@app/layout';
 import { PublicFormModal } from '@app/views/form';
 import { useMutation } from '@tanstack/react-query';
 import { NextPageWithLayout } from 'next';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Editor } from 'novel';
 import { RiLoaderFill } from 'react-icons/ri';
@@ -13,7 +14,7 @@ import { toast } from 'sonner';
 
 const Event: NextPageWithLayout = () => {
     const { data, refetch } = useEvent('public');
-    const { data: dt, refetch: refetchStatus } = useUserRegistartionStatus();
+    const { data: registerStatus, refetch: refetchStatus } = useUserRegistartionStatus();
     const [isFormOpen, toggleForm] = useToggle(false);
     const router = useRouter();
     // pk of event
@@ -61,18 +62,38 @@ const Event: NextPageWithLayout = () => {
                 <section>
                     <h1 className="text-5xl font-bold text-center uppercase">{data.data.name}</h1>
                 </section>
-                <Editor
-                    className="w-full"
-                    defaultValue={JSON.parse(data.data.description as string)}
-                    editorProps={{
-                        editable: () => false,
-                    }}
-                />
-                {!dt?.isRegistred && (
-                    <Button className="ml-10 px-6" isLoading={isLoading} onClick={register}>
-                        Register
-                    </Button>
-                )}
+                <section className="flex p-4 flex-col md:flex-row">
+                    <Editor
+                        className="w-full"
+                        defaultValue={JSON.parse(data.data.description as string)}
+                        editorProps={{
+                            editable: () => false,
+                        }}
+                    />
+                    <div className="h-[290px] flex flex-col rounded-md">
+                        <Image
+                            src={data.data.coverImage as string}
+                            width={500}
+                            height={300}
+                            alt="event banner"
+                        />
+
+                        {registerStatus?.isRegistred ? (
+                            <Button size="sm" disabled>
+                                Already registered
+                            </Button>
+                        ) : (
+                            <Button
+                                isLoading={isLoading}
+                                onClick={register}
+                                size="sm"
+                                variant="outline"
+                            >
+                                Register
+                            </Button>
+                        )}
+                    </div>
+                </section>
             </div>
         );
     } else {

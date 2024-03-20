@@ -91,7 +91,7 @@ const Settings = () => {
                                     name="maxTicketCount"
                                     render={({ field }) => (
                                         <FormItem className="items-center ">
-                                            <FormLabel>Maximum Ticket Count</FormLabel>
+                                            <FormLabel>Total Tickets left</FormLabel>
                                             <FormControl>
                                                 <Input
                                                     min={1}

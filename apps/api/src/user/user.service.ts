@@ -154,7 +154,7 @@ export class UserService {
         }
     }
 
-    generateSlug() {
+    private generateSlug() {
         return fakerEN.lorem.slug({
             min: 1,
             max: 2,
