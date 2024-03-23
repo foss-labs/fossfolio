@@ -31,7 +31,6 @@ const Event: NextPageWithLayout = () => {
         });
 
         if (checkOutSession.url) {
-            // shoudl use stripe js library to pass session id
             window.location.href = checkOutSession.url;
         }
     };

@@ -29,11 +29,13 @@ const Events: NextPageWithLayout = () => {
                     <EventCard
                         name={el.name}
                         id={el.id}
+                        key={el.id}
                         location={el.location}
                         website={el.website}
                         lastDate={el.lastDate}
                         eventDate={el.eventDate}
                         coverImage={el.coverImage}
+                        slug={el.slug}
                     />
                 ))}
             </div>

@@ -83,6 +83,7 @@ model OrganizationInvite {
 model Events {
   id                    String       @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
   name                  String
+  slug                  String       @unique
   website               String?
   location              String
   lastDate              DateTime?

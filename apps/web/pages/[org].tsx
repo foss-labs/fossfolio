@@ -34,6 +34,7 @@ const Event: NextPageWithLayout = () => {
                         lastDate={el.lastDate}
                         eventDate={el.eventDate}
                         coverImage={el.coverImage}
+                        slug={el.slug}
                     />
                 ))}
             </div>

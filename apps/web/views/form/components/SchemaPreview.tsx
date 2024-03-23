@@ -20,9 +20,10 @@ type Prop = {
     data: Iform[];
     isPublic: boolean;
     closeModal?: () => void;
+    eventId: string;
 };
 
-export const SchemaPreview = ({ data, closeModal, isPublic = false }: Prop) => {
+export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: Prop) => {
     const router = useRouter();
 
     const { id } = router.query;
@@ -41,7 +42,7 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false }: Prop) => {
             }
         }
         try {
-            const { data } = await apiHandler.post(`/events/form/${id}`, formData);
+            const { data } = await apiHandler.post(`/events/form/${eventId}`, formData);
             if (data.url) {
                 // shoudl use stripe js library to pass session id
                 window.location.href = data.url;
