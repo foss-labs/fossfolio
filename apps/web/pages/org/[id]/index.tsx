@@ -45,6 +45,19 @@ const Org: NextPageWithLayout = () => {
     const { canDeleteOrg } = useRoles();
     const router = useRouter();
     const { id } = router.query;
+
+    useEffect(() => {
+        if (activeTab) {
+            router.replace({
+                query: {
+                    ...router.query,
+                    tab: activeTab,
+                },
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab]);
+
     // api is only called when tab becomes settings
     const { data, isLoading } = useOrgInfo(activeTab === 'settings');
     const form = useForm<IOrgVal>({

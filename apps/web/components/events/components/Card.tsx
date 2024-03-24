@@ -17,7 +17,7 @@ interface Prop extends DescriptionExcluded {
     isOrg?: boolean;
 }
 
-export function EventCard({
+export const EventCard = ({
     name,
     description,
     website,
@@ -26,7 +26,7 @@ export function EventCard({
     isOrg = false,
     slug,
     coverImage,
-}: Prop): JSX.Element {
+}: Prop) => {
     const router = useRouter();
 
     const goToEventInfo = () => {
@@ -80,4 +80,4 @@ export function EventCard({
             </CardContent>
         </Card>
     );
-}
+};
