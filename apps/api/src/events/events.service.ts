@@ -32,7 +32,7 @@ export class EventsService {
         });
     }
 
-    async createEvent(d: CreateEventDto) {
+    async createEvent(d: CreateEventDto, userId: string) {
         try {
             const isEventWithSlugExist = await this.prismaService.events.findUnique({
                 where: {
@@ -68,6 +68,40 @@ export class EventsService {
                     },
                 },
             });
+
+            const newEvent = await this.prismaService.events.findUnique({
+                where: {
+                    slug,
+                },
+            });
+
+            // By default these kanban boards are created for each event
+            await this.prismaService.events.update({
+                where: {
+                    id: newEvent.id,
+                },
+                data: {
+                    kanban: {
+                        createMany: {
+                            data: [
+                                {
+                                    userUid: userId,
+                                    title: 'Todo',
+                                },
+                                {
+                                    userUid: userId,
+                                    title: 'In process',
+                                },
+                                {
+                                    userUid: userId,
+                                    title: 'completed',
+                                },
+                            ],
+                        },
+                    },
+                },
+            });
+
             return {
                 ok: true,
                 message: 'event created successfully',
@@ -140,7 +174,9 @@ export class EventsService {
                     message: e.message,
                 });
             } else {
-                throw e; // Rethrow other exceptions
+                throw new InternalServerErrorException({
+                    error: e,
+                }); // Rethrow other exceptions
             }
         }
     }

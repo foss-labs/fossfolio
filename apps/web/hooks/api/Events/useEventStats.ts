@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
+import { ServerResponse } from '@app/types';
 
 type Data = {
     totalRevenue: number;
@@ -9,11 +10,7 @@ type Data = {
     insights: Record<string, number>;
 };
 
-type IData = {
-    data: Data;
-    ok: boolean;
-    message: string;
-};
+type IData = ServerResponse<Data>;
 
 const getEventStats = async (id: string) => {
     const { data } = await apiHandler.get(`/events/stats/${id}`);

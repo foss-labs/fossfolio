@@ -54,8 +54,8 @@ export class EventsController {
     @ApiTags('events')
     @Roles('ADMIN', 'EDITOR')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async createNewEvent(@Body() data: CreateEventDto) {
-        return await this.events.createEvent(data);
+    async createNewEvent(@Body() data: CreateEventDto, @AuthUser() user: User) {
+        return await this.events.createEvent(data, user.uid);
     }
 
     @Get('/publish/:orgID/:id')

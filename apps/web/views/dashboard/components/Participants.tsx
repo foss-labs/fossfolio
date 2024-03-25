@@ -16,7 +16,6 @@ import { FormDrawer } from './FormDrawer';
 import { useState } from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
 import { IData } from '@app/hooks/api/org/useParticipants';
-import { ref } from 'yup';
 
 interface Data {
     data: User[];
@@ -28,7 +27,7 @@ interface Data {
 }
 
 export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: Data) => {
-    const [isModapOpen, toggleModal] = useToggle(false);
+    const [isModalOpen, toggleModal] = useToggle(false);
     const [isDrawerOpen, toggleDrawer] = useToggle(false);
 
     const [userToBeDeleted, setDeleteId] = useState('');
@@ -36,7 +35,7 @@ export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: D
     return (
         <Table className="border-1/4 border-brand-purple-200 rounded-full">
             <DeleteModal
-                isOpen={isModapOpen}
+                isOpen={isModalOpen}
                 onClose={toggleModal.off}
                 userId={userToBeDeleted}
                 refetch={refetch}
