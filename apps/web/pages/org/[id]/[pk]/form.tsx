@@ -31,7 +31,10 @@ import { useMutation } from '@tanstack/react-query';
 import { Iform } from '@app/types';
 import { toast } from 'sonner';
 import { RiLoaderFill } from 'react-icons/ri';
+import { IoIosAdd } from 'react-icons/io';
+import { MdDeleteForever } from 'react-icons/md';
 import { useToggle } from '@app/hooks';
+import { useEffect, useState } from 'react';
 
 const builderSchema = yup.object({
     label: yup.string().required('Label is required'),
@@ -45,6 +48,7 @@ type FormValidator = yup.InferType<typeof builderSchema>;
 const Form: NextPageWithLayout = () => {
     const router = useRouter();
     const { data, isLoading, refetch } = useFormSchema();
+    const [numberOfOptions, setNumberOfOptions] = useState(1);
     const { data: eventInfo } = useEvent('event');
     const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
 
@@ -90,16 +94,30 @@ const Form: NextPageWithLayout = () => {
     const { isLoading: isSchemaUpdating, mutate } = useMutation(updateSchema, {
         onSuccess: () => {
             refetch();
+            form.reset();
         },
     });
 
     const handleUpdates: SubmitHandler<FormValidator> = async (data) => {
         mutate(data);
-        form.reset();
     };
 
     const handleCancel = () => {
         form.reset();
+    };
+
+    const isSingleOrMultiSelect =
+        form.watch('type') === 'SingleSelect' || form.watch('type') === 'MultiSelect';
+
+    useEffect(() => {
+        setNumberOfOptions(1);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [form.watch('type')]);
+
+    const removeOptionNodes = () => {
+        if (numberOfOptions >= 2) {
+            setNumberOfOptions((prev) => prev - 1);
+        }
     };
 
     return (
@@ -208,6 +226,52 @@ const Form: NextPageWithLayout = () => {
                                                 )}
                                             />
                                         </div>
+                                        {isSingleOrMultiSelect && (
+                                            <>
+                                                {new Array(numberOfOptions)
+                                                    .fill(0)
+                                                    .map((_, index) => (
+                                                        <div className="flex items-center space-x-2 mt-3 group">
+                                                            <FormField
+                                                                key={index}
+                                                                control={form.control}
+                                                                name="required"
+                                                                render={({ field }) => (
+                                                                    <FormItem className="flex flex-col w-full">
+                                                                        <FormLabel className="flex items-center">
+                                                                            Option {index + 1}
+                                                                            <span
+                                                                                className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
+                                                                                onClick={
+                                                                                    removeOptionNodes
+                                                                                }
+                                                                            >
+                                                                                <MdDeleteForever className="text-md text-red-600" />
+                                                                            </span>
+                                                                        </FormLabel>
+                                                                        <FormControl>
+                                                                            <Input
+                                                                                className="w-full"
+                                                                                required
+                                                                            />
+                                                                        </FormControl>
+                                                                        <FormMessage {...field} />
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                <Button
+                                                    className="w-full mt-4"
+                                                    variant="outline"
+                                                    onClick={() =>
+                                                        setNumberOfOptions((prev) => prev + 1)
+                                                    }
+                                                >
+                                                    <IoIosAdd className="text-xl" />
+                                                </Button>
+                                            </>
+                                        )}
                                         <div className="flex items-center space-x-2 mt-3">
                                             <FormField
                                                 control={form.control}
@@ -243,7 +307,7 @@ const Form: NextPageWithLayout = () => {
                             </form>
                         </FormProvider>
                     </section>
-                    <Separator orientation="vertical" />
+                    <Separator orientation="vertical" className="min-h-screen" />
                     <section>
                         <h3 className="text-3xl font-semibold mt-4">Preview</h3>
                         <p className="text-sm text-gray-400 mt-3">
