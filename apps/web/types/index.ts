@@ -80,9 +80,12 @@ export interface OrgEvents {
 }
 
 export type Iform = {
+    selectOptions?: Array<{
+        option: string;
+    }>;
     label: string;
     placeholder?: string;
-    options?: string;
+    options?: Array<string>;
     required: boolean;
     type: IFormInput;
     id?: string;

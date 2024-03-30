@@ -26,6 +26,7 @@ model User {
   Ticket   Ticket[]
   Kanban   Kanban[]
   Task     Task[]
+  Comment  Comment[]
 }
 
 model Account {
@@ -117,7 +118,7 @@ model Field {
 
   label       String
   placeholder String?
-  options     String?
+  options     String[]
 
   required Boolean @default(false)
 
@@ -167,14 +168,24 @@ model Kanban {
 }
 
 model Task {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   title     String
-  createdBy User     @relation(fields: [userUid], references: [uid])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Kanban    Kanban?  @relation(fields: [kanbanId], references: [id])
+  createdBy User      @relation(fields: [userUid], references: [uid])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Kanban    Kanban?   @relation(fields: [kanbanId], references: [id])
   kanbanId  String?
   userUid   String
+  Comment   Comment[]
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  task    Task   @relation(fields: [taskId], references: [id])
+  taskId  String
+  data    Json
+  user    User   @relation(fields: [userUid], references: [uid])
+  userUid String
 }
 
 enum Role {

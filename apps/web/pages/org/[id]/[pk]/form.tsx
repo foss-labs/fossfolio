@@ -22,7 +22,7 @@ import {
 import { Checkbox } from '@app/ui/components/checkbox';
 import { InputOption, IFormInput, SchemaPreview } from '@app/views/form';
 import * as yup from 'yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
@@ -34,21 +34,31 @@ import { RiLoaderFill } from 'react-icons/ri';
 import { IoIosAdd } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
 import { useToggle } from '@app/hooks';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-const builderSchema = yup.object({
-    label: yup.string().required('Label is required'),
+const builderSchema = yup.object().shape({
+    label: yup.string().required('label is required'),
     placeholder: yup.string(),
     required: yup.boolean().optional().default(false),
-    type: yup.string().required('Question type is required') as yup.StringSchema<IFormInput>,
+    type: yup.string().required('question type is required') as yup.StringSchema<IFormInput>,
+    selectOptions: yup
+        .array(
+            yup.object({
+                option: yup.string().trim().required('this is a required field'),
+            }),
+        )
+        .when('type', {
+            is: (val: IFormInput) => val === 'MultiSelect' || val === 'SingleSelect',
+            then: (schema) => schema.required('this is a required field'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
 });
 
-type FormValidator = yup.InferType<typeof builderSchema>;
+export type FormValidator = yup.InferType<typeof builderSchema>;
 
 const Form: NextPageWithLayout = () => {
     const router = useRouter();
     const { data, isLoading, refetch } = useFormSchema();
-    const [numberOfOptions, setNumberOfOptions] = useState(1);
     const { data: eventInfo } = useEvent('event');
     const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
 
@@ -57,7 +67,21 @@ const Form: NextPageWithLayout = () => {
     const form = useForm<FormValidator>({
         mode: 'onSubmit',
         resolver: yupResolver(builderSchema),
+        defaultValues: {
+            type: 'SingleLineText',
+        },
     });
+
+    const { fields, append, remove } = useFieldArray<FormValidator>({
+        control: form.control,
+        name: 'selectOptions',
+    });
+
+    const addNewField = () => {
+        append({
+            option: '',
+        });
+    };
 
     const publishForm = async (status: boolean) => {
         try {
@@ -81,9 +105,15 @@ const Form: NextPageWithLayout = () => {
 
     const updateSchema = async (schema: Iform) => {
         try {
+            const options = schema.selectOptions && schema.selectOptions.map((data) => data.option);
+            const payload = {
+                ...schema,
+                options: options,
+            };
+
             await apiHandler.post('/events/form', {
                 organizationId: router.query?.id,
-                data: schema,
+                data: payload,
                 eventId: eventInfo?.data.id,
             });
         } catch {
@@ -106,19 +136,25 @@ const Form: NextPageWithLayout = () => {
         form.reset();
     };
 
+    const handleFieldDelete = (index: number) => {
+        if (fields.length === 1) return;
+
+        remove(index);
+    };
+
     const isSingleOrMultiSelect =
         form.watch('type') === 'SingleSelect' || form.watch('type') === 'MultiSelect';
 
     useEffect(() => {
-        setNumberOfOptions(1);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [form.watch('type')]);
-
-    const removeOptionNodes = () => {
-        if (numberOfOptions >= 2) {
-            setNumberOfOptions((prev) => prev - 1);
+        if (isSingleOrMultiSelect) {
+            addNewField();
+        } else {
+            for (let i = 0; i < fields.length; i++) {
+                remove(i);
+            }
         }
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSingleOrMultiSelect]);
 
     return (
         <div className="pt-5 pr-3">
@@ -228,45 +264,46 @@ const Form: NextPageWithLayout = () => {
                                         </div>
                                         {isSingleOrMultiSelect && (
                                             <>
-                                                {new Array(numberOfOptions)
-                                                    .fill(0)
-                                                    .map((_, index) => (
-                                                        <div className="flex items-center space-x-2 mt-3 group">
-                                                            <FormField
-                                                                key={index}
-                                                                control={form.control}
-                                                                name="required"
-                                                                render={({ field }) => (
-                                                                    <FormItem className="flex flex-col w-full">
-                                                                        <FormLabel className="flex items-center">
-                                                                            Option {index + 1}
-                                                                            <span
-                                                                                className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
-                                                                                onClick={
-                                                                                    removeOptionNodes
-                                                                                }
-                                                                            >
-                                                                                <MdDeleteForever className="text-md text-red-600" />
-                                                                            </span>
-                                                                        </FormLabel>
-                                                                        <FormControl>
-                                                                            <Input
-                                                                                className="w-full"
-                                                                                required
-                                                                            />
-                                                                        </FormControl>
-                                                                        <FormMessage {...field} />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                        </div>
-                                                    ))}
+                                                {fields.map((dynamicField, index) => (
+                                                    <div
+                                                        className="flex items-center space-x-2 mt-3 group"
+                                                        key={dynamicField.id}
+                                                    >
+                                                        <FormField
+                                                            key={index}
+                                                            control={form.control}
+                                                            name={`selectOptions.${index}.option`}
+                                                            render={({ field }) => (
+                                                                <FormItem className="flex flex-col w-full">
+                                                                    <FormLabel className="flex items-center">
+                                                                        Option {index + 1}
+                                                                        <span
+                                                                            className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
+                                                                            onClick={() =>
+                                                                                handleFieldDelete(
+                                                                                    index,
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <MdDeleteForever className="text-md text-red-600" />
+                                                                        </span>
+                                                                    </FormLabel>
+                                                                    <FormControl>
+                                                                        <Input
+                                                                            className="w-full"
+                                                                            {...field}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormMessage {...field} />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                    </div>
+                                                ))}
                                                 <Button
                                                     className="w-full mt-4"
                                                     variant="outline"
-                                                    onClick={() =>
-                                                        setNumberOfOptions((prev) => prev + 1)
-                                                    }
+                                                    onClick={addNewField}
                                                 >
                                                     <IoIosAdd className="text-xl" />
                                                 </Button>

@@ -94,9 +94,9 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
                                             <SelectValue placeholder={el.placeholder} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="light">Light</SelectItem>
-                                            <SelectItem value="dark">Dark</SelectItem>
-                                            <SelectItem value="system">System</SelectItem>
+                                            {el.options?.map((option) => (
+                                                <SelectItem value={option}>{option}</SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 )}

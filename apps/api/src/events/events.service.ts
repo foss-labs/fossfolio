@@ -480,6 +480,7 @@ export class EventsService {
                     placeholder: data.data.placeholder,
                     required: data.data.required,
                     type: data.data.type,
+                    options: data.data.options,
                     Events: {
                         connect: {
                             id: data.eventId,

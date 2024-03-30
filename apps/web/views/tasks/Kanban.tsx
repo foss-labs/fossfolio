@@ -12,8 +12,9 @@ import type { Kanban as KanbanType } from '@app/types';
 import { TaskPane } from './TaskPane';
 import { useToggle } from '@app/hooks';
 import { useRouter } from 'next/router';
+import { Card } from '@app/ui/components/card';
 
-export const Kanban = ({ title, _count, id }: KanbanType) => {
+export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
     const [isTaskPaneOpen, setTaskPane] = useToggle(false);
 
     const router = useRouter();
@@ -43,7 +44,7 @@ export const Kanban = ({ title, _count, id }: KanbanType) => {
 
     return (
         <>
-            <TaskPane open={isTaskPaneOpen} onClose={closeTaskPane} />
+            <TaskPane open={isTaskPaneOpen} onClose={closeTaskPane} boardId={id} />
             <article className="min-h-[700px] w-[300px]">
                 <div className="p-5 flex justify-between">
                     <h3 className="text-start font-bold">
@@ -74,7 +75,13 @@ export const Kanban = ({ title, _count, id }: KanbanType) => {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
-                <div className="p-3">
+
+                <div className="p-3 gap-2 flex flex-col">
+                    {tasks.map((data) => (
+                        <Card className="rounded-md p-5 hover:cursor-pointer">
+                            <h2>{data.title}</h2>
+                        </Card>
+                    ))}
                     <Button className="w-full mt-3" variant="outline" onClick={addTask}>
                         New Task
                     </Button>
