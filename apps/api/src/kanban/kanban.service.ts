@@ -25,6 +25,7 @@ export class KanbanService {
                                             photoURL: true,
                                         },
                                     },
+                                    Comment: true,
                                 },
                             },
                             createdBy: {
@@ -35,6 +36,9 @@ export class KanbanService {
                                 },
                             },
                             _count: true,
+                        },
+                        orderBy: {
+                            createdAt: 'asc',
                         },
                     },
                 },

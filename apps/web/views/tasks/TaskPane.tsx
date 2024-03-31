@@ -12,7 +12,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { Editor } from 'novel';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import { toast } from 'sonner';

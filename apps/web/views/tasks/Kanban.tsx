@@ -8,14 +8,19 @@ import {
     DropdownMenuTrigger,
     DropdownMenuItem,
 } from '@app/ui/components/dropdown-menu';
-import type { Kanban as KanbanType } from '@app/types';
+import type { Kanban as KanbanType, Task } from '@app/types';
 import { TaskPane } from './TaskPane';
 import { useToggle } from '@app/hooks';
 import { useRouter } from 'next/router';
 import { Card } from '@app/ui/components/card';
+import { TaskPreviewPane } from './TaskPreviewPane';
+import { useState } from 'react';
 
 export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
     const [isTaskPaneOpen, setTaskPane] = useToggle(false);
+    const [isPreviewPaneOpen, setTaskPreviewPane] = useToggle(false);
+
+    const [taskPreview, setTaskPreview] = useState<Task>();
 
     const router = useRouter();
 
@@ -42,9 +47,20 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
         setTaskPane.off();
     };
 
+    const handlePreviewPane = (data: Task) => {
+        setTaskPreview(data);
+        setTaskPreviewPane.on();
+    };
+
     return (
         <>
             <TaskPane open={isTaskPaneOpen} onClose={closeTaskPane} boardId={id} />
+            <TaskPreviewPane
+                open={isPreviewPaneOpen}
+                onClose={setTaskPreviewPane.off}
+                title={taskPreview?.title || ''}
+                description={taskPreview?.Comment || []}
+            />
             <article className="min-h-[700px] w-[300px]">
                 <div className="p-5 flex justify-between">
                     <h3 className="text-start font-bold">
@@ -78,7 +94,10 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
 
                 <div className="p-3 gap-2 flex flex-col">
                     {tasks.map((data) => (
-                        <Card className="rounded-md p-5 hover:cursor-pointer">
+                        <Card
+                            className="rounded-md p-5 hover:cursor-pointer"
+                            onClick={() => handlePreviewPane(data)}
+                        >
                             <h2>{data.title}</h2>
                         </Card>
                     ))}
