@@ -9,9 +9,10 @@ type Props = {
     onClose: () => void;
     title: string;
     description: Comments[];
+    storageKey: string;
 };
 
-export const TaskPreviewPane = ({ open, onClose, title, description }: Props) => {
+export const TaskPreviewPane = ({ open, onClose, title, description, storageKey }: Props) => {
     const handleClose = () => {
         localStorage.clear();
         onClose();
@@ -39,7 +40,7 @@ export const TaskPreviewPane = ({ open, onClose, title, description }: Props) =>
                     ))}
                 </article>
                 <article className="border-2 rounded-sm mt-3 p-2">
-                    <Editor className="w-full" completionApi={`/api/generate`} />
+                    <Editor className="w-full" storageKey={storageKey} />
                 </article>
                 <Button className="mt-3">Save</Button>
             </div>

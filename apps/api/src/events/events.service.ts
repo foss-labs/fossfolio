@@ -784,14 +784,18 @@ export class EventsService {
 
     async getEventStats(id: string) {
         try {
-            const eventInfo = await this.getEventById(id);
+            const eventInfo = await this.prismaService.events.findUnique({
+                where: {
+                    slug: id,
+                },
+            });
 
             if (!eventInfo) throw new NotFoundException();
 
             const insights = await this.prismaService.ticket.groupBy({
                 by: ['createdAt'],
                 where: {
-                    eventsId: id,
+                    eventsId: eventInfo.id,
                 },
                 _count: true,
             });
@@ -800,7 +804,7 @@ export class EventsService {
                 where: {
                     Ticket: {
                         some: {
-                            eventsId: id,
+                            eventsId: eventInfo.id,
                         },
                     },
                 },

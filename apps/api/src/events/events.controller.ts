@@ -163,7 +163,7 @@ export class EventsController {
 
     @Get('/form/:orgID/:eventId')
     @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR')
+    @Roles('ADMIN', 'EDITOR', 'VIEWER')
     @ApiOperation({ summary: 'get form schema of a specific event' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getFormSchema(@Param('eventId') slugId: string) {

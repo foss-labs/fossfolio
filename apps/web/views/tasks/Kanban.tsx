@@ -60,6 +60,7 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
                 onClose={setTaskPreviewPane.off}
                 title={taskPreview?.title || ''}
                 description={taskPreview?.Comment || []}
+                storageKey={id}
             />
             <article className="min-h-[700px] w-[300px]">
                 <div className="p-5 flex justify-between">

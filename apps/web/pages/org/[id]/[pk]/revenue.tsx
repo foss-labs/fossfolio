@@ -23,14 +23,14 @@ const Revenue = () => {
             <div className="flex flex-wrap  p-6 sm:gap-4 justify-start">
                 <div className="rounded-md h-32 w-56  bg-gradient-to-b from-purple-300 via-purple-100 to-white flex flex-col justify-center items-center shadow-md">
                     <h1 className=" text-2xl text-center font-bold mb-2">
-                        {statsData?.data.totalRevenue} rs
+                        {statsData?.data.totalRevenue || 0} rs
                     </h1>
                     <p className="  text-brand-purple-700 font-bold   text-center">Total Revenue</p>
                 </div>
 
                 <div className="rounded-md h-32 w-56 bg-gradient-to-b from-purple-300 via-purple-100 to-white  bg-blue-100 flex flex-col justify-center items-center shadow-md">
                     <h1 className="text-2xl text-center font-bold mb-2">
-                        {statsData?.data.totalTickets}
+                        {statsData?.data.totalTickets || 0}
                     </h1>
                     <p className="text-brand-purple-700 font-bold  text-center ">
                         Tickets Generated
@@ -41,7 +41,7 @@ const Revenue = () => {
                 <div className="bg-white shadow-md w-full">
                     <div className="flex flex-wrap justify-between p-6">
                         <h1 className="font-bold">Revenue</h1>
-                        <p>Total revenue : {statsData?.data.totalRevenue}</p>
+                        <p>Total revenue : {statsData?.data.totalRevenue || 0}</p>
                     </div>
                     {isStatsLoading ? (
                         <div className="flex w-full h-full justify-center items-center">
