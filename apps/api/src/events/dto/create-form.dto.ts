@@ -19,7 +19,7 @@ export class FormPayLoad {
 class Payload {
     label: string;
     placeholder?: string;
-    options?: string;
+    options?: Array<string>;
     required: boolean;
     type: FieldType;
 }

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
-import type { OrgEvents } from '@app/types';
+import type { OrgEvents, ServerResponse } from '@app/types';
 
 /*
   This hook can be used in both event page in dashboad and event page user facing page 
@@ -11,11 +11,7 @@ import type { OrgEvents } from '@app/types';
 
 */
 
-type IData = {
-    data: OrgEvents;
-    ok: boolean;
-    message: string;
-};
+type IData = ServerResponse<OrgEvents>;
 
 const getEvent = async (id: string) => {
     const { data } = await apiHandler.get(`/events/${id}`);

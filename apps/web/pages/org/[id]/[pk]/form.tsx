@@ -22,7 +22,7 @@ import {
 import { Checkbox } from '@app/ui/components/checkbox';
 import { InputOption, IFormInput, SchemaPreview } from '@app/views/form';
 import * as yup from 'yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
@@ -31,16 +31,30 @@ import { useMutation } from '@tanstack/react-query';
 import { Iform } from '@app/types';
 import { toast } from 'sonner';
 import { RiLoaderFill } from 'react-icons/ri';
+import { IoIosAdd } from 'react-icons/io';
+import { MdDeleteForever } from 'react-icons/md';
 import { useToggle } from '@app/hooks';
+import { useEffect } from 'react';
 
-const builderSchema = yup.object({
-    label: yup.string().required('Label is required'),
+const builderSchema = yup.object().shape({
+    label: yup.string().required('label is required'),
     placeholder: yup.string(),
     required: yup.boolean().optional().default(false),
-    type: yup.string().required('Question type is required') as yup.StringSchema<IFormInput>,
+    type: yup.string().required('question type is required') as yup.StringSchema<IFormInput>,
+    selectOptions: yup
+        .array(
+            yup.object({
+                option: yup.string().trim().required('this is a required field'),
+            }),
+        )
+        .when('type', {
+            is: (val: IFormInput) => val === 'MultiSelect' || val === 'SingleSelect',
+            then: (schema) => schema.required('this is a required field'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
 });
 
-type FormValidator = yup.InferType<typeof builderSchema>;
+export type FormValidator = yup.InferType<typeof builderSchema>;
 
 const Form: NextPageWithLayout = () => {
     const router = useRouter();
@@ -53,7 +67,21 @@ const Form: NextPageWithLayout = () => {
     const form = useForm<FormValidator>({
         mode: 'onSubmit',
         resolver: yupResolver(builderSchema),
+        defaultValues: {
+            type: 'SingleLineText',
+        },
     });
+
+    const { fields, append, remove } = useFieldArray<FormValidator>({
+        control: form.control,
+        name: 'selectOptions',
+    });
+
+    const addNewField = () => {
+        append({
+            option: '',
+        });
+    };
 
     const publishForm = async (status: boolean) => {
         try {
@@ -77,10 +105,16 @@ const Form: NextPageWithLayout = () => {
 
     const updateSchema = async (schema: Iform) => {
         try {
+            const options = schema.selectOptions && schema.selectOptions.map((data) => data.option);
+            const payload = {
+                ...schema,
+                options: options,
+            };
+
             await apiHandler.post('/events/form', {
                 organizationId: router.query?.id,
-                data: schema,
-                eventId: router.query?.pk,
+                data: payload,
+                eventId: eventInfo?.data.id,
             });
         } catch {
             toast.error('Error adding new schema');
@@ -90,17 +124,37 @@ const Form: NextPageWithLayout = () => {
     const { isLoading: isSchemaUpdating, mutate } = useMutation(updateSchema, {
         onSuccess: () => {
             refetch();
+            form.reset();
         },
     });
 
     const handleUpdates: SubmitHandler<FormValidator> = async (data) => {
         mutate(data);
-        form.reset();
     };
 
     const handleCancel = () => {
         form.reset();
     };
+
+    const handleFieldDelete = (index: number) => {
+        if (fields.length === 1) return;
+
+        remove(index);
+    };
+
+    const isSingleOrMultiSelect =
+        form.watch('type') === 'SingleSelect' || form.watch('type') === 'MultiSelect';
+
+    useEffect(() => {
+        if (isSingleOrMultiSelect) {
+            addNewField();
+        } else {
+            for (let i = 0; i < fields.length; i++) {
+                remove(i);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSingleOrMultiSelect]);
 
     return (
         <div className="pt-5 pr-3">
@@ -208,6 +262,53 @@ const Form: NextPageWithLayout = () => {
                                                 )}
                                             />
                                         </div>
+                                        {isSingleOrMultiSelect && (
+                                            <>
+                                                {fields.map((dynamicField, index) => (
+                                                    <div
+                                                        className="flex items-center space-x-2 mt-3 group"
+                                                        key={dynamicField.id}
+                                                    >
+                                                        <FormField
+                                                            key={index}
+                                                            control={form.control}
+                                                            name={`selectOptions.${index}.option`}
+                                                            render={({ field }) => (
+                                                                <FormItem className="flex flex-col w-full">
+                                                                    <FormLabel className="flex items-center">
+                                                                        Option {index + 1}
+                                                                        <span
+                                                                            className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
+                                                                            onClick={() =>
+                                                                                handleFieldDelete(
+                                                                                    index,
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <MdDeleteForever className="text-md text-red-600" />
+                                                                        </span>
+                                                                    </FormLabel>
+                                                                    <FormControl>
+                                                                        <Input
+                                                                            className="w-full"
+                                                                            {...field}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormMessage {...field} />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                    </div>
+                                                ))}
+                                                <Button
+                                                    className="w-full mt-4"
+                                                    variant="outline"
+                                                    onClick={addNewField}
+                                                >
+                                                    <IoIosAdd className="text-xl" />
+                                                </Button>
+                                            </>
+                                        )}
                                         <div className="flex items-center space-x-2 mt-3">
                                             <FormField
                                                 control={form.control}
@@ -243,7 +344,7 @@ const Form: NextPageWithLayout = () => {
                             </form>
                         </FormProvider>
                     </section>
-                    <Separator orientation="vertical" />
+                    <Separator orientation="vertical" className="min-h-screen" />
                     <section>
                         <h3 className="text-3xl font-semibold mt-4">Preview</h3>
                         <p className="text-sm text-gray-400 mt-3">
@@ -257,7 +358,11 @@ const Form: NextPageWithLayout = () => {
                         )}
 
                         {data?.data && data.data.length > 0 && (
-                            <SchemaPreview data={data.data} isPublic={false} />
+                            <SchemaPreview
+                                data={data.data}
+                                isPublic={false}
+                                eventId={eventInfo?.data.id as string}
+                            />
                         )}
                     </section>
                 </div>

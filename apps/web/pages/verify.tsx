@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { HomeLayout } from '@app/layout';
 import { apiHandler } from '@app/config';
+import { QueryClient } from '@tanstack/react-query';
 
 type Prop = {
     ok: boolean;
@@ -11,11 +12,15 @@ type Prop = {
 const Verify = ({ orgId }: Prop) => {
     const router = useRouter();
 
+    const queryClient = new QueryClient();
     useEffect(() => {
         const verify = async () => {
             try {
                 await apiHandler.get(`/org/invite/verify?id=${orgId}`);
-                router.push(`/orgs/${orgId}`);
+                queryClient.invalidateQueries({
+                    queryKey: ['orgs'],
+                });
+                router.push(`/org`);
             } catch {
                 router.push('/events?invite_failed=true');
             }

@@ -1,4 +1,5 @@
 import {
+    ConflictException,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
@@ -12,6 +13,8 @@ import { CreateEventDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
+import excludeKey from '../utils/exclude';
+import { Ticket, User } from '@prisma/client';
 
 @Injectable()
 export class EventsService {
@@ -21,7 +24,7 @@ export class EventsService {
         private readonly stripeService: StripeService,
     ) {}
 
-    public async getEventInfo(id: string) {
+    public async getEventById(id: string) {
         return await this.prismaService.events.findUnique({
             where: {
                 id,
@@ -29,8 +32,26 @@ export class EventsService {
         });
     }
 
-    async createEvent(d: CreateEventDto) {
+    async createEvent(d: CreateEventDto, userId: string) {
         try {
+            const isEventWithSlugExist = await this.prismaService.events.findUnique({
+                where: {
+                    slug: d.name,
+                },
+            });
+
+            const totalCount = await this.prismaService.events.aggregate({
+                _count: true,
+            });
+
+            let slug: string;
+
+            if (isEventWithSlugExist) {
+                slug = `${d.name}-${totalCount._count}`;
+            } else {
+                slug = d.name;
+            }
+
             const data = await this.prismaService.organization.update({
                 where: {
                     id: d.organizationId,
@@ -42,10 +63,45 @@ export class EventsService {
                             website: d.website,
                             location: d.location,
                             ticketPrice: d.ticketPrice,
+                            slug,
                         },
                     },
                 },
             });
+
+            const newEvent = await this.prismaService.events.findUnique({
+                where: {
+                    slug,
+                },
+            });
+
+            // By default these kanban boards are created for each event
+            await this.prismaService.events.update({
+                where: {
+                    id: newEvent.id,
+                },
+                data: {
+                    kanban: {
+                        createMany: {
+                            data: [
+                                {
+                                    userUid: userId,
+                                    title: 'Todo',
+                                },
+                                {
+                                    userUid: userId,
+                                    title: 'In process',
+                                },
+                                {
+                                    userUid: userId,
+                                    title: 'completed',
+                                },
+                            ],
+                        },
+                    },
+                },
+            });
+
             return {
                 ok: true,
                 message: 'event created successfully',
@@ -65,7 +121,7 @@ export class EventsService {
             const event = await this.prismaService.events.findUnique({
                 where: {
                     organizationId: payload.organizationId,
-                    id: payload.eventId,
+                    slug: payload.eventSlug,
                 },
             });
 
@@ -76,7 +132,7 @@ export class EventsService {
             const data = await this.prismaService.events.update({
                 where: {
                     organizationId: payload.organizationId,
-                    id: payload.eventId,
+                    slug: payload.eventSlug,
                 },
                 data: {
                     name: payload.name || event.name,
@@ -118,7 +174,9 @@ export class EventsService {
                     message: e.message,
                 });
             } else {
-                throw e; // Rethrow other exceptions
+                throw new InternalServerErrorException({
+                    error: e,
+                }); // Rethrow other exceptions
             }
         }
     }
@@ -131,6 +189,9 @@ export class EventsService {
                         gte: new Date(),
                     },
                     isPublished: true,
+                    maxTicketCount: {
+                        gt: 0,
+                    },
                 },
             });
         } catch {
@@ -172,11 +233,11 @@ export class EventsService {
         }
     }
 
-    async publishEvent(eventId: string) {
+    async publishEvent(eventSlug: string) {
         try {
             const data = await this.prismaService.events.findUnique({
                 where: {
-                    id: eventId,
+                    slug: eventSlug,
                 },
             });
 
@@ -192,7 +253,7 @@ export class EventsService {
             }
             await this.prismaService.events.update({
                 where: {
-                    id: eventId,
+                    slug: eventSlug,
                 },
                 data: {
                     isPublished: true,
@@ -221,11 +282,11 @@ export class EventsService {
         }
     }
 
-    async getEventById(id: string) {
+    async getEventBySlugId(slug: string) {
         try {
             const data = await this.prismaService.events.findUnique({
                 where: {
-                    id,
+                    slug,
                 },
                 include: {
                     form: true,
@@ -257,15 +318,24 @@ export class EventsService {
         }
     }
 
-    async registerEvent(eventId: string, userId: string) {
+    async registerEvent(eventSlug: string, userId: string) {
         try {
             const eventInfo = await this.prismaService.events.findUnique({
                 where: {
-                    id: eventId,
+                    slug: eventSlug,
+                },
+                include: {
+                    Ticket: {
+                        where: {
+                            userUid: userId,
+                        },
+                    },
                 },
             });
 
-            console.log('REACHED HERE');
+            if (eventInfo.Ticket.length) {
+                throw new ConflictException();
+            }
 
             if (eventInfo.maxTicketCount <= 0) {
                 throw new ServiceUnavailableException();
@@ -282,12 +352,12 @@ export class EventsService {
             } else {
                 const data = await this.prismaService.events.update({
                     where: {
-                        id: eventId,
+                        slug: eventSlug,
                     },
                     data: {
-                        registeredUsers: {
-                            connect: {
-                                uid: userId,
+                        Ticket: {
+                            create: {
+                                userUid: userId,
                             },
                         },
                         maxTicketCount: eventInfo.maxTicketCount - 1,
@@ -297,45 +367,55 @@ export class EventsService {
                 if (!data) {
                     throw new NotFoundException();
                 }
+
+                return {
+                    ok: true,
+                    message: 'Event registerd successfully',
+                };
             }
         } catch (e) {
             if (e instanceof NotFoundException) {
                 throw new NotFoundException();
             } else if (e instanceof ServiceUnavailableException) {
                 throw new ServiceUnavailableException();
+            } else if (e instanceof ConflictException) {
+                throw new ConflictException('user already registerd');
             } else {
                 throw e;
             }
         }
     }
 
-    async getEventParticipants(id: string) {
+    async getEventParticipants(slugId: string) {
         try {
-            const data = await this.prismaService.events.findUnique({
+            const userInfo = await this.prismaService.events.findUnique({
                 where: {
-                    id,
+                    slug: slugId,
                 },
                 select: {
-                    registeredUsers: {
+                    Ticket: {
                         select: {
-                            uid: true,
-                            displayName: true,
-                            collegeName: true,
-                            photoURL: true,
-                            isStudent: true,
-                            email: true,
+                            user: true,
                         },
                     },
                 },
             });
 
-            if (!data) {
+            if (!userInfo) {
                 throw new NotFoundException();
             }
+
+            const data = userInfo.Ticket.map((info) =>
+                excludeKey<User, 'refreshToken' | 'createdAt'>(info.user, [
+                    'refreshToken',
+                    'createdAt',
+                ]),
+            );
+
             return {
                 ok: true,
                 message: 'members found successfully',
-                data: data.registeredUsers,
+                data: data,
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
@@ -345,22 +425,23 @@ export class EventsService {
             }
         }
     }
-    async getEventRegistartionStatus(eventId, userId) {
+
+    async getEventRegistartionStatus(slugId: string, userId: string) {
         try {
             const data = await this.prismaService.events.findUnique({
                 where: {
-                    id: eventId,
+                    slug: slugId,
                 },
                 select: {
-                    registeredUsers: {
+                    Ticket: {
                         where: {
-                            uid: userId,
+                            userUid: userId,
                         },
                     },
                 },
             });
 
-            if (!data || !data.registeredUsers.length) {
+            if (!data || !data.Ticket.length) {
                 throw new NotFoundException();
             }
 
@@ -373,7 +454,9 @@ export class EventsService {
             if (e instanceof NotFoundException) {
                 throw new NotFoundException();
             } else {
-                return e;
+                throw new InternalServerErrorException({
+                    error: e,
+                });
             }
         }
     }
@@ -397,6 +480,7 @@ export class EventsService {
                     placeholder: data.data.placeholder,
                     required: data.data.required,
                     type: data.data.type,
+                    options: data.data.options,
                     Events: {
                         connect: {
                             id: data.eventId,
@@ -419,7 +503,7 @@ export class EventsService {
         }
     }
 
-    async uploadEventCover(file: Express.Multer.File, eventId: string) {
+    async uploadEventCover(file: Express.Multer.File, eventSlug: string) {
         try {
             const publicUrl = await this.cloudService.uploadFile(file);
             if (!publicUrl) {
@@ -428,7 +512,7 @@ export class EventsService {
 
             const updatedEventCover = await this.prismaService.events.update({
                 where: {
-                    id: eventId,
+                    slug: eventSlug,
                 },
                 data: {
                     coverImage: publicUrl,
@@ -450,11 +534,11 @@ export class EventsService {
         }
     }
 
-    async getEventFormScheme(event: string) {
+    async getEventFormScheme(eventSlug: string) {
         try {
             const eventSchema = await this.prismaService.events.findUnique({
                 where: {
-                    id: event,
+                    slug: eventSlug,
                 },
                 select: {
                     form: true,
@@ -491,11 +575,13 @@ export class EventsService {
                     isCollegeEvent: true,
                     coverImage: true,
                     location: true,
+                    name: true,
                 },
             });
             if (!event) {
                 return new NotFoundException();
             }
+
             return {
                 ok: true,
                 message: 'Event schema found',
@@ -510,11 +596,11 @@ export class EventsService {
         }
     }
 
-    async toggleFormPublishStatus(id: string, shouldPublish: boolean) {
+    async toggleFormPublishStatus(eventSlug: string, shouldPublish: boolean) {
         try {
             const event = await this.prismaService.events.findUnique({
                 where: {
-                    id,
+                    slug: eventSlug,
                 },
                 select: {
                     form: true,
@@ -530,7 +616,7 @@ export class EventsService {
 
             const newEventStatus = await this.prismaService.events.update({
                 where: {
-                    id,
+                    slug: eventSlug,
                 },
                 data: {
                     isFormPublished: shouldPublish,
@@ -544,12 +630,12 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof InternalServerErrorException) {
-                return new InternalServerErrorException({
+                throw new InternalServerErrorException({
                     message: 'Please create a form schema to publish the form',
                 });
             }
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             return e;
@@ -561,57 +647,54 @@ export class EventsService {
         eventId: string,
         userId: string,
     ) {
-        try {
-            const event = await this.getEventInfo(eventId);
-            if (!event) throw new NotFoundException();
+        const event = await this.getEventById(eventId);
+        if (!event) throw new NotFoundException();
 
-            await this.prismaService.response.create({
-                data: {
-                    data: info,
-                    user: {
-                        connect: {
-                            uid: userId,
-                        },
-                    },
-                    Events: {
-                        connect: {
-                            id: event.id,
-                        },
+        await this.prismaService.response.create({
+            data: {
+                data: info,
+                user: {
+                    connect: {
+                        uid: userId,
                     },
                 },
-            });
-        } catch {
-            return new NotFoundException();
-        }
+                Events: {
+                    connect: {
+                        id: event.id,
+                    },
+                },
+            },
+        });
     }
 
     async getregisterParticipantsFormSubmissions(id: string, userId: string) {
         try {
-            const scheam = await this.prismaService.events.findUnique({
+            const schema = await this.prismaService.events.findUnique({
                 where: {
-                    id,
+                    slug: id,
                 },
                 select: {
                     form: true,
+                    id: true,
                 },
             });
 
             const label = {};
-            scheam.form.forEach((el) => {
+            schema.form.forEach((el) => {
                 label[el.id] = el.label;
             });
 
             const data = await this.prismaService.response.findMany({
                 where: {
                     userUid: userId,
-                    eventsId: id,
+                    eventsId: schema.id,
                 },
             });
             if (!data) throw new NotFoundException();
 
             const result = {};
 
-            scheam.form.forEach((el) => {
+            schema.form.forEach((el) => {
                 // @ts-ignore
                 if (el.id in data[0].data) {
                     result[el.label] = data[0].data[el.id];
@@ -635,9 +718,15 @@ export class EventsService {
         try {
             const event = await this.getEventById(eventId);
             // cant delete paid event till we figure out a way to process refund
-            if (event.data.ticketPrice > 0) {
+            if (event.ticketPrice > 0) {
                 throw new ServiceUnavailableException();
             }
+
+            await this.prismaService.ticket.deleteMany({
+                where: {
+                    eventsId: eventId,
+                },
+            });
 
             await this.prismaService.events.delete({
                 where: {
@@ -649,42 +738,34 @@ export class EventsService {
                 ok: true,
                 message: 'event was deleted successfully',
             };
-        } catch {
-            throw new ServiceUnavailableException({
-                message: 'We dont support to delete a paid event',
+        } catch (e) {
+            if (e instanceof ServiceUnavailableException) {
+                throw new ServiceUnavailableException({
+                    message: 'We dont support to delete a paid event',
+                });
+            }
+            throw new InternalServerErrorException({
+                error: e,
             });
         }
     }
 
-    async removeParticipant(eventId, userId) {
+    async removeParticipant(eventId: string, userId: string) {
         try {
-            const isUserExist = await this.prismaService.events.findUnique({
+            const isUserExist = await this.prismaService.ticket.findFirst({
                 where: {
-                    id: eventId,
-                },
-                select: {
-                    registeredUsers: {
-                        where: {
-                            uid: userId,
-                        },
-                    },
+                    eventsId: eventId,
+                    userUid: userId,
                 },
             });
 
-            if (!isUserExist.registeredUsers[0]) {
+            if (!isUserExist) {
                 throw new NotFoundException();
             }
 
-            await this.prismaService.events.update({
+            await this.prismaService.ticket.delete({
                 where: {
-                    id: eventId,
-                },
-                data: {
-                    registeredUsers: {
-                        disconnect: {
-                            uid: userId,
-                        },
-                    },
+                    id: isUserExist.id,
                 },
             });
 
@@ -700,4 +781,73 @@ export class EventsService {
             }
         }
     }
+
+    async getEventStats(id: string) {
+        try {
+            const eventInfo = await this.prismaService.events.findUnique({
+                where: {
+                    slug: id,
+                },
+            });
+
+            if (!eventInfo) throw new NotFoundException();
+
+            const insights = await this.prismaService.ticket.groupBy({
+                by: ['createdAt'],
+                where: {
+                    eventsId: eventInfo.id,
+                },
+                _count: true,
+            });
+
+            const stats = await this.prismaService.user.aggregate({
+                where: {
+                    Ticket: {
+                        some: {
+                            eventsId: eventInfo.id,
+                        },
+                    },
+                },
+                _count: true,
+            });
+
+            const totalRevenue = stats._count * eventInfo.ticketPrice;
+
+            const data = {
+                totalRevenue: totalRevenue || 0,
+                totalTickets: stats._count || 0,
+                insights: this.aggregateCountsByDay(insights),
+            };
+
+            return {
+                data,
+                message: 'Data Found successfully',
+            };
+        } catch {
+            throw new NotFoundException();
+        }
+    }
+    private aggregateCountsByDay(responses: Insights[]) {
+        const aggregatedCounts = {};
+
+        responses.forEach((response) => {
+            // Extract the date part from createdAt
+            const date = new Date(response.createdAt).toISOString().split('T')[0];
+
+            // Initialize count for the day if not exists
+            if (!aggregatedCounts[date]) {
+                aggregatedCounts[date] = 0;
+            }
+
+            // Add count to the existing count for the day
+            aggregatedCounts[date] += response._count;
+        });
+
+        return aggregatedCounts;
+    }
 }
+
+type Insights = {
+    _count: number;
+    createdAt: Date;
+};

@@ -16,6 +16,7 @@ import { OrganizationModule } from './organization/organization.module';
 import { OrganizationMemberModule } from './org-member/org-member.module';
 import { OrganizationInviteModule } from './org-invite/org-invite.module';
 import { AppController } from './app.controller';
+import { KanbanModule } from './kanban/kanban.module';
 
 @Module({
     imports: [
@@ -72,6 +73,7 @@ import { AppController } from './app.controller';
         MailModule,
         CloudModule,
         StripeModule,
+        KanbanModule,
     ],
     controllers: [AppController],
     providers: [

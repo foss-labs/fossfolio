@@ -4,6 +4,11 @@ export interface Child {
     children: React.ReactNode;
 }
 
+interface DbProps {
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface User {
     uid: string;
     displayName: string;
@@ -71,13 +76,48 @@ export interface OrgEvents {
     coverImage?: string;
     isFormPublished: boolean;
     form: Iform[];
+    slug: string;
 }
 
 export type Iform = {
+    selectOptions?: Array<{
+        option: string;
+    }>;
     label: string;
     placeholder?: string;
-    options?: string;
+    options?: Array<string>;
     required: boolean;
     type: IFormInput;
     id?: string;
 };
+
+export interface Kanban extends DbProps {
+    id: string;
+    title: string;
+    userUid: string;
+    createdBy: UserInKanban;
+    tasks: Task[];
+    _count: {
+        tasks: number;
+    };
+}
+
+export interface ServerResponse<T> {
+    ok: boolean;
+    message: string;
+    data: T;
+}
+
+type UserInKanban = Omit<User, 'slug' | 'refreshToken' | 'isStudent' | 'collegeName' | 'uid'>;
+export interface Task extends DbProps {
+    id: string;
+    title: string;
+    createdBy: UserInKanban;
+    Comment: Comments[];
+}
+
+export interface Comments {
+    id: string;
+    data: string;
+    user: UserInKanban;
+}
