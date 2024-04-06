@@ -11,9 +11,10 @@ import { useRouter } from 'next/router';
 import { Editor } from 'novel';
 import { RiLoaderFill } from 'react-icons/ri';
 import { toast } from 'sonner';
+import { Error } from '@app/components/Error';
 
 const Event: NextPageWithLayout = () => {
-    const { data, refetch } = useEvent('public');
+    const { data, refetch, error } = useEvent('public');
     const { data: registerStatus, refetch: refetchStatus } = useUserRegistartionStatus();
     const [isFormOpen, toggleForm] = useToggle(false);
     const router = useRouter();
@@ -49,6 +50,10 @@ const Event: NextPageWithLayout = () => {
     const register = () => {
         mutate();
     };
+
+    if (error) {
+        return <Error />;
+    }
 
     if (data) {
         return (

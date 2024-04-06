@@ -40,7 +40,7 @@ export const TaskPreviewPane = ({ open, onClose, title, description, storageKey 
                     ))}
                 </article>
                 <article className="border-2 rounded-sm mt-3 p-2">
-                    <Editor className="w-full" storageKey={storageKey} />
+                    <Editor className="w-full" storageKey={storageKey} defaultValue="" />
                 </article>
                 <Button className="mt-3">Save</Button>
             </div>

@@ -77,6 +77,7 @@ export interface OrgEvents {
     isFormPublished: boolean;
     form: Iform[];
     slug: string;
+    ticketPrice: number;
 }
 
 export type Iform = {
