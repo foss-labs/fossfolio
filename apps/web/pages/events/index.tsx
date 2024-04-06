@@ -2,12 +2,17 @@ import { NextPageWithLayout } from 'next';
 import { HomeLayout } from '@app/layout';
 import { EventCard, PreLoader, NoData } from '@app/components/events';
 import { useAllEvents } from '@app/hooks/api/Events';
+import { Error } from '@app/components/Error';
 
 const Events: NextPageWithLayout = () => {
-    const { isLoading, data } = useAllEvents();
+    const { isLoading, data, error } = useAllEvents();
 
     if (isLoading) {
         return <PreLoader count={12} />;
+    }
+
+    if (error) {
+        return <Error />;
     }
 
     if (data?.length === 0) {
