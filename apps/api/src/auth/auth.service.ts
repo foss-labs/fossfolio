@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
-import { hash, verify } from 'argon2';
-import { Profile } from 'passport';
-import { PrismaService } from '../prisma/prisma.service';
-import { UserService } from '../user/user.service';
+import {Injectable} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {JwtService} from '@nestjs/jwt';
+import {User} from '@prisma/client';
+import {hash, verify} from 'argon2';
+import {Profile} from 'passport';
+import {PrismaService} from '../prisma/prisma.service';
+import {UserService} from '../user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -98,8 +98,6 @@ export class AuthService {
 
         if (!isRefreshTokenValid) throw new Error('AFTER_GENERATION_INVALID_REFRESH_TOKEN');
 
-        const newAccessToken = await this.generateAuthToken(user.uid);
-
-        return newAccessToken;
+        return await this.generateAuthToken(user.uid);
     }
 }

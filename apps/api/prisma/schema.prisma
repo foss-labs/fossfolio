@@ -114,7 +114,8 @@ model Events {
   Ticket                Ticket[]
   kanban                Kanban[]
 
-  embedding Unsupported("vector(768)")?
+  embedding_description Unsupported("vector(768)")?
+  embedding_title       Unsupported("vector(768)")?
 }
 
 model Field {
@@ -209,4 +210,5 @@ enum FieldType {
   URL
   PhoneNumber
   Attachment
+  DateTime
 }
