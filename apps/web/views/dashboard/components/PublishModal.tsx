@@ -154,7 +154,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-[325px] md:w-auto ">
+            <DialogContent className="w-[350px] max-h-[700px] overflow-auto md:w-auto ">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleUpdates)}>
                         <DialogHeader>
