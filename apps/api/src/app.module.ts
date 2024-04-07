@@ -17,6 +17,7 @@ import { OrganizationMemberModule } from './org-member/org-member.module';
 import { OrganizationInviteModule } from './org-invite/org-invite.module';
 import { AppController } from './app.controller';
 import { KanbanModule } from './kanban/kanban.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
     imports: [
@@ -51,6 +52,7 @@ import { KanbanModule } from './kanban/kanban.module';
                 AWS_REGION: Joi.string(),
                 STRIPE_SECRET_KEY: Joi.string(),
                 STRIPE_WEBHOOK_SECRET: Joi.string(),
+                AI_KEY: Joi.string(),
             }),
             validationOptions: {
                 allowUnknown: true,
@@ -74,6 +76,7 @@ import { KanbanModule } from './kanban/kanban.module';
         CloudModule,
         StripeModule,
         KanbanModule,
+        AiModule,
     ],
     controllers: [AppController],
     providers: [

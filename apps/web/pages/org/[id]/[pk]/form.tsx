@@ -34,7 +34,9 @@ import { RiLoaderFill } from 'react-icons/ri';
 import { IoIosAdd } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
 import { useToggle } from '@app/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Textarea } from '@app/ui/components/textarea';
+import { tr } from 'date-fns/locale';
 
 const builderSchema = yup.object().shape({
     label: yup.string().required('label is required'),
@@ -62,6 +64,15 @@ const Form: NextPageWithLayout = () => {
     const { data: eventInfo } = useEvent('event');
     const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
 
+    const [messages, setMessages] = useState<
+        Array<{
+            ai: boolean;
+            text: string;
+        }>
+    >([]);
+
+    const [prompt, setPrompt] = useState<string>('');
+
     const { pk, id } = router.query;
 
     const form = useForm<FormValidator>({
@@ -81,6 +92,32 @@ const Form: NextPageWithLayout = () => {
         append({
             option: '',
         });
+    };
+
+    const [isFormLoading, setFormLoading] = useState(false);
+    const [tempForm, setTempForm] = useState<Iform[]>([]);
+
+    const generateForm = async () => {
+        try {
+            setFormLoading(true);
+            const data = await apiHandler.post('/ai/form', {
+                prompt: prompt,
+                messages: messages,
+            });
+            setMessages([
+                ...messages,
+                {
+                    ai: false,
+                    text: prompt,
+                },
+                { ai: true, text: data.data?.fields },
+            ]);
+            setTempForm(data.data?.fields);
+        } catch {
+            toast.error('Error generating form');
+        } finally {
+            setFormLoading(false);
+        }
     };
 
     const publishForm = async (status: boolean) => {
@@ -343,6 +380,40 @@ const Form: NextPageWithLayout = () => {
                                 </Card>
                             </form>
                         </FormProvider>
+                        <h1 className="py-4 text-lg">Generate Form With AI</h1>
+                        <div className="flex flex-col">
+                            <Textarea
+                                className="mb-1"
+                                placeholder="Enter prompt"
+                                onChange={(t) => {
+                                    setPrompt(t.target.value);
+                                }}
+                            />
+                            <Button isLoading={isFormLoading} onClick={generateForm}>
+                                Generate
+                            </Button>
+                        </div>
+                    </section>
+                    <Separator orientation="vertical" className="min-h-screen" />
+                    <section>
+                        <h3 className="text-3xl font-semibold mt-4">AI Form Preview</h3>
+                        <p className="text-sm text-gray-400 mt-3">
+                            This is how your form will look like
+                        </p>
+
+                        {isFormLoading && (
+                            <Card className="mt-10 w-[300px] flex justify-center items-center h-[600px]">
+                                <RiLoaderFill className="animate-spin h-8 w-8" />
+                            </Card>
+                        )}
+
+                        {tempForm && tempForm.length > 0 && (
+                            <SchemaPreview
+                                data={tempForm}
+                                isPublic={false}
+                                eventId={eventInfo?.data.id as string}
+                            />
+                        )}
                     </section>
                     <Separator orientation="vertical" className="min-h-screen" />
                     <section>

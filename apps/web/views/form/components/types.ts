@@ -8,10 +8,10 @@ type Iinput =
     | 'Email'
     | 'URL'
     | 'PhoneNumber'
-    | 'AttachMent';
+    | 'Attachment';
 
 // v0 does not support attachment
-export type IFormInput = Exclude<Iinput, 'AttachMent'>;
+export type IFormInput = Exclude<Iinput, 'Attachment'>;
 
 type IinputOption = {
     label: string;

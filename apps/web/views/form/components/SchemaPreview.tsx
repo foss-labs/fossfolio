@@ -17,7 +17,7 @@ import { Textarea } from '@app/ui/components/textarea';
 import { toast } from 'sonner';
 
 type Prop = {
-    data: Iform[];
+    data: Array<Iform>;
     isPublic: boolean;
     closeModal?: () => void;
     eventId: string;
@@ -60,12 +60,20 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
             <CardHeader>
                 <CardTitle>Please fill The form</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="max-h-[calc(70svh)] pt-4 pb-8 overflow-auto">
                 <form onSubmit={handleSubmit}>
-                    {data.map((el) => (
+                    {(data ?? []).map((el) => (
                         <div key={el.id}>
                             <Label>{el.label}</Label>
                             <div className="mt-3 mb-2">
+                                {el.type === 'Number' && (
+                                    <Input
+                                        type="number"
+                                        placeholder={el.placeholder}
+                                        required={el.required}
+                                        name={el.id}
+                                    />
+                                )}
                                 {el.type === 'SingleLineText' && (
                                     <Input
                                         placeholder={el.placeholder}
@@ -74,16 +82,20 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
                                     />
                                 )}
                                 {el.type === 'Checkbox' && (
-                                    <Checkbox
-                                        placeholder={el.placeholder}
-                                        required={el.required}
-                                        name={el.id}
-                                    />
+                                    <Checkbox required={el.required} name={el.id} />
                                 )}
                                 {el.type === 'Email' && (
                                     <Input
                                         placeholder={el.placeholder}
                                         type="email"
+                                        required={el.required}
+                                        name={el.id}
+                                    />
+                                )}
+                                {el.type === 'PhoneNumber' && (
+                                    <Input
+                                        placeholder={el.placeholder}
+                                        type="phoneNumber"
                                         required={el.required}
                                         name={el.id}
                                     />
