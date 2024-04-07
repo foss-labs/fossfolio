@@ -6,7 +6,11 @@
 
 */
 -- AlterTable
-ALTER TABLE "Events" ADD COLUMN     "slug" TEXT NOT NULL;
+ALTER TABLE "Events" ADD COLUMN IF NOT EXISTS "slug" TEXT UNIQUE;
+
+UPDATE "Events" SET "slug" = CONCAT('event_', id);
+
+ALTER TABLE "Events" ALTER COLUMN "slug" SET NOT NULL;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Events_slug_key" ON "Events"("slug");
+CREATE UNIQUE INDEX IF NOT EXISTS "Events_slug_key" ON "Events"("slug");
