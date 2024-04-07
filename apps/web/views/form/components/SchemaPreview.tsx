@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@app/ui/components/car
 import { Checkbox } from '@app/ui/components/checkbox';
 import { Input } from '@app/ui/components/input';
 import { Label } from '@app/ui/components/label';
+import Multiselect from 'multiselect-react-dropdown';
 import {
     Select,
     SelectContent,
@@ -76,6 +77,7 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
                                 )}
                                 {el.type === 'SingleLineText' && (
                                     <Input
+                                        type="text"
                                         placeholder={el.placeholder}
                                         required={el.required}
                                         name={el.id}
@@ -100,17 +102,42 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
                                         name={el.id}
                                     />
                                 )}
+                                {el.type === 'URL' && (
+                                    <Input
+                                        placeholder={el.placeholder}
+                                        type="url"
+                                        required={el.required}
+                                        name={el.id}
+                                    />
+                                )}
                                 {el.type === 'SingleSelect' && (
                                     <Select required={el.required} name={el.id}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder={el.placeholder} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {el.options?.map((option) => (
-                                                <SelectItem value={option}>{option}</SelectItem>
+                                            {el.selectOptions?.map((option) => (
+                                                <SelectItem value={option.option}>
+                                                    {option.option}
+                                                </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                )}
+                                {el.type === 'MultiSelect' && (
+                                    <>
+                                    <Multiselect
+                                        options={el.selectOptions?.map((o) => ({
+                                            name: o.option,
+                                            id: o.option
+                                        }))}
+                                        selectedValues={el.options}
+                                        onSelect={(e) => el.options?.push(e)}
+                                        onRemove={(e) => el.options?.splice(el.options?.indexOf(e), 1)}
+                                        displayValue="name"
+                                    />
+                                    </>
+
                                 )}
                                 {el.type === 'LongText' && (
                                     <Textarea

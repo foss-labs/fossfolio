@@ -76,13 +76,24 @@ export class AiService {
             stream: false,
             model: 'mistralai/Mistral-7B-Instruct-v0.1',
             messages: history,
-            max_tokens: 2000,
+            max_tokens: 4000,
+            temperature: 0.7,
+            frequency_penalty: 0.5,
             // @ts-ignore – Together.ai supports schema while OpenAI does not
             response_format: { type: 'json_object', schema: jsonSchema },
         });
 
-        const output = JSON.parse(chat.choices[0].message.content!);
-        console.log({ output });
+        const jsonExtract = chat.choices[0].message.content!.match(/[{\[]{1}([,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]|".*?")+[}\]]{1}/gis);
+
+        if (!jsonExtract) {
+            console.log('No JSON found in the response');
+            console.log('Retrying!!!!')
+            return this.gptComplete(prompt, messages);
+        }
+
+        console.log(jsonExtract)
+
+        const output = JSON.parse(jsonExtract[0]);
         return output;
     }
 }

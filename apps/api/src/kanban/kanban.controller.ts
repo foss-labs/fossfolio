@@ -2,9 +2,9 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { KanbanService } from './kanban.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { RbacGuard } from 'src/organization/guards/rbac-member.guard';
+import { RbacGuard } from '../organization/guards/rbac-member.guard';
 import { CreateTask } from './dto/create-task.dto';
-import { AuthUser } from 'src/auth/decorators/user.decorator';
+import { AuthUser } from '../auth/decorators/user.decorator';
 import { User } from '@prisma/client';
 
 @Controller('/events/kanban')

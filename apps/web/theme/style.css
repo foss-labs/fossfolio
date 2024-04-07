@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.searchBox {
+border: none;
+    font-size: 10px;
+    min-height: 50px;
+}
+.inputField {
+margin: 5px;
+}
+.chips {
+background: red;
+}
+.optionContainer {
+border: 2px solid;
+}
+.option {
+color: blue;
+}
+
+
 @layer base {
     :root {
         --background: 0 0% 100%;
