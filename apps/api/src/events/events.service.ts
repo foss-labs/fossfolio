@@ -854,8 +854,10 @@ export class EventsService {
 
     @OnEvent('event.updated')
     async handleEventUpdated(event: Events) {
-        const embed = await this.AiService.generateEmbedding(JSON.stringify(event.description));
-        await this.prismaService.$queryRaw`UPDATE public."Events" SET embedding = ${embed} WHERE id = ${event.id}`;
+        const embedDescription = await this.AiService.generateEmbedding(JSON.stringify(event.description));
+        const embedName = await this.AiService.generateEmbedding(JSON.stringify(event.name));
+        await this.prismaService.$queryRaw`UPDATE public."Events" SET embedding_description = ${embedDescription} WHERE id = ${event.id}`;
+        await this.prismaService.$queryRaw`UPDATE public."Events" SET embedding_title = ${embedName} WHERE id = ${event.id}`;
     }
 }
 

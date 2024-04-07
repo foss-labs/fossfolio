@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     {
                         role: 'system',
                         content:
-                            'You are an AI writing assistant that continues existing text based on context from prior text.  You are used for writing descriptions of events in an event managememt platform' +
+                            'You are an AI writing assistant that continues existing text based on context from prior text.  You are used for writing descriptions of events in an event management platform' +
                             'Give more weight/priority to the later characters than the beginning ones. Make sure to construct complete sentences.',
                     },
                     { role: 'user', content: prompt?.prompt },
