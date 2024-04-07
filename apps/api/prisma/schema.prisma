@@ -114,7 +114,7 @@ model Events {
   Ticket                Ticket[]
   kanban                Kanban[]
 
-  embedding Unsupported("vector")?
+  embedding Unsupported("vector(768)")?
 }
 
 model Field {
