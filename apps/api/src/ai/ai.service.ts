@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import {Injectable} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
 import OpenAI from 'openai';
-import { z } from 'zod';
+import {z} from 'zod';
 import zodToJsonSchema from 'zod-to-json-schema';
-import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
+import {ChatCompletionMessageParam} from 'openai/resources/chat/completions';
 
 type Message = {
     text: string;
-    ai?: boolean; // Indicate if the message is from the AI
+    ai?: boolean;
 };
 
 const FormArraySchema = z.object({
@@ -90,10 +90,22 @@ export class AiService {
             console.log('Retrying!!!!')
             return this.gptComplete(prompt, messages);
         }
+        
+        return JSON.parse(jsonExtract[0]);
+    }
 
-        console.log(jsonExtract)
+    async generateEmbedding(text: string) {
+        try {
+            const res = await this.openAI.embeddings.create({
+                model: 'togethercomputer/m2-bert-80M-2k-retrieval',
+                input: text,
+            });
 
-        const output = JSON.parse(jsonExtract[0]);
-        return output;
+            return res.data[0].embedding;
+
+        } catch (error) {
+            console.error(error);
+            return '';
+        }
     }
 }

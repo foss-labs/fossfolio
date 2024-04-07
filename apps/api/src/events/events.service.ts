@@ -14,7 +14,9 @@ import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
 import excludeKey from '../utils/exclude';
-import { Ticket, User } from '@prisma/client';
+import {Events, User} from '@prisma/client';
+import {EventEmitter2, OnEvent} from "@nestjs/event-emitter";
+import {AiService} from "../ai/ai.service";
 
 @Injectable()
 export class EventsService {
@@ -22,10 +24,12 @@ export class EventsService {
         private readonly prismaService: PrismaService,
         private readonly cloudService: S3Service,
         private readonly stripeService: StripeService,
+        private readonly eventEmitter: EventEmitter2,
+        private readonly AiService: AiService,
     ) {}
 
     public async getEventById(id: string) {
-        return await this.prismaService.events.findUnique({
+        return this.prismaService.events.findUnique({
             where: {
                 id,
             },
@@ -126,7 +130,7 @@ export class EventsService {
             });
 
             if (!event) {
-                throw new NotFoundException();
+                return new NotFoundException("Event doesn't exist")
             }
 
             const data = await this.prismaService.events.update({
@@ -154,8 +158,10 @@ export class EventsService {
             });
 
             if (!data) {
-                throw new UnprocessableEntityException();
+                return  new UnprocessableEntityException("Event couldn't be updated");
             }
+
+            this.eventEmitter.emit('event.updated', data);
 
             return {
                 ok: true,
@@ -164,19 +170,19 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                throw new NotFoundException({
+                return new NotFoundException({
                     ok: false,
                     message: e.message,
                 });
             } else if (e instanceof UnprocessableEntityException) {
-                throw new UnprocessableEntityException({
+                return  new UnprocessableEntityException({
                     ok: false,
                     message: e.message,
                 });
             } else {
-                throw new InternalServerErrorException({
+                return  new InternalServerErrorException({
                     error: e,
-                }); // Rethrow other exceptions
+                });
             }
         }
     }
@@ -242,12 +248,12 @@ export class EventsService {
             });
 
             if (!data) {
-                throw new NotFoundException();
+                return new NotFoundException();
             }
 
             const { maxTicketCount, eventDate, lastDate } = data;
             if (!maxTicketCount || !eventDate || !lastDate) {
-                throw new UnprocessableEntityException({
+                return new UnprocessableEntityException({
                     message: 'please provide all required information for event',
                 });
             }
@@ -267,17 +273,17 @@ export class EventsService {
         } catch (e) {
             // Use exception filters to handle exceptions and return appropriate responses
             if (e instanceof NotFoundException) {
-                throw new NotFoundException({
+                return  new NotFoundException({
                     ok: false,
                     message: e.message,
                 });
             } else if (e instanceof UnprocessableEntityException) {
-                throw new UnprocessableEntityException({
+                return new UnprocessableEntityException({
                     ok: false,
                     message: e.message,
                 });
             } else {
-                throw e; // Rethrow other exceptions
+                return e; // Rethrow other exceptions
             }
         }
     }
@@ -294,7 +300,7 @@ export class EventsService {
             });
 
             if (!data) {
-                throw new NotFoundException();
+                return new NotFoundException();
             }
             return {
                 ok: true,
@@ -334,11 +340,11 @@ export class EventsService {
             });
 
             if (eventInfo.Ticket.length) {
-                throw new ConflictException();
+                return new ConflictException();
             }
 
             if (eventInfo.maxTicketCount <= 0) {
-                throw new ServiceUnavailableException();
+                return new ServiceUnavailableException();
             }
 
             // when the event requires a form input we should check if the use has completed the form or not
@@ -365,7 +371,7 @@ export class EventsService {
                 });
 
                 if (!data) {
-                    throw new NotFoundException();
+                    return  new NotFoundException();
                 }
 
                 return {
@@ -375,13 +381,13 @@ export class EventsService {
             }
         } catch (e) {
             if (e instanceof NotFoundException) {
-                throw new NotFoundException();
+                return new NotFoundException();
             } else if (e instanceof ServiceUnavailableException) {
-                throw new ServiceUnavailableException();
+                return new ServiceUnavailableException();
             } else if (e instanceof ConflictException) {
-                throw new ConflictException('user already registerd');
+                return new ConflictException('user already registerd');
             } else {
-                throw e;
+                return e;
             }
         }
     }
@@ -402,7 +408,7 @@ export class EventsService {
             });
 
             if (!userInfo) {
-                throw new NotFoundException();
+                return new NotFoundException('Events not found');
             }
 
             const data = userInfo.Ticket.map((info) =>
@@ -419,7 +425,7 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                throw new NotFoundException();
+                return new NotFoundException('Event not found');
             } else {
                 return e;
             }
@@ -442,7 +448,7 @@ export class EventsService {
             });
 
             if (!data || !data.Ticket.length) {
-                throw new NotFoundException();
+                return new NotFoundException();
             }
 
             return {
@@ -452,9 +458,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                throw new NotFoundException();
+                return new NotFoundException();
             } else {
-                throw new InternalServerErrorException({
+                return new InternalServerErrorException({
                     error: e,
                 });
             }
@@ -471,7 +477,7 @@ export class EventsService {
             });
 
             if (!event) {
-                throw new NotFoundException();
+                return new NotFoundException();
             }
 
             const formSchema = await this.prismaService.field.create({
@@ -496,7 +502,7 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                throw new NotFoundException();
+                return new NotFoundException();
             } else {
                 return e;
             }
@@ -507,7 +513,7 @@ export class EventsService {
         try {
             const publicUrl = await this.cloudService.uploadFile(file);
             if (!publicUrl) {
-                throw new InternalServerErrorException();
+                return new InternalServerErrorException();
             }
 
             const updatedEventCover = await this.prismaService.events.update({
@@ -520,7 +526,7 @@ export class EventsService {
             });
 
             if (!updatedEventCover) {
-                throw new InternalServerErrorException();
+                return new InternalServerErrorException();
             }
             return {
                 ok: true,
@@ -607,11 +613,11 @@ export class EventsService {
                 },
             });
             if (!event) {
-                throw new NotFoundException();
+                return new NotFoundException();
             }
 
             if (!event.form.length) {
-                throw new InternalServerErrorException();
+                return new InternalServerErrorException();
             }
 
             const newEventStatus = await this.prismaService.events.update({
@@ -630,12 +636,12 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof InternalServerErrorException) {
-                throw new InternalServerErrorException({
+                return new InternalServerErrorException({
                     message: 'Please create a form schema to publish the form',
                 });
             }
             if (e instanceof NotFoundException) {
-                throw new NotFoundException();
+                return new NotFoundException();
             }
 
             return e;
@@ -648,7 +654,7 @@ export class EventsService {
         userId: string,
     ) {
         const event = await this.getEventById(eventId);
-        if (!event) throw new NotFoundException();
+        if (!event) return new NotFoundException();
 
         await this.prismaService.response.create({
             data: {
@@ -690,7 +696,7 @@ export class EventsService {
                     eventsId: schema.id,
                 },
             });
-            if (!data) throw new NotFoundException();
+            if (!data) return new NotFoundException();
 
             const result = {};
 
@@ -719,7 +725,7 @@ export class EventsService {
             const event = await this.getEventById(eventId);
             // cant delete paid event till we figure out a way to process refund
             if (event.ticketPrice > 0) {
-                throw new ServiceUnavailableException();
+                return new ServiceUnavailableException();
             }
 
             await this.prismaService.ticket.deleteMany({
@@ -740,11 +746,11 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof ServiceUnavailableException) {
-                throw new ServiceUnavailableException({
+                return new ServiceUnavailableException({
                     message: 'We dont support to delete a paid event',
                 });
             }
-            throw new InternalServerErrorException({
+            return new InternalServerErrorException({
                 error: e,
             });
         }
@@ -760,7 +766,7 @@ export class EventsService {
             });
 
             if (!isUserExist) {
-                throw new NotFoundException();
+                return new NotFoundException();
             }
 
             await this.prismaService.ticket.delete({
@@ -775,9 +781,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                throw new NotFoundException();
+                return new NotFoundException();
             } else {
-                throw new ServiceUnavailableException();
+                return new ServiceUnavailableException();
             }
         }
     }
@@ -790,7 +796,7 @@ export class EventsService {
                 },
             });
 
-            if (!eventInfo) throw new NotFoundException();
+            if (!eventInfo) return new NotFoundException();
 
             const insights = await this.prismaService.ticket.groupBy({
                 by: ['createdAt'],
@@ -824,7 +830,7 @@ export class EventsService {
                 message: 'Data Found successfully',
             };
         } catch {
-            throw new NotFoundException();
+            return new NotFoundException();
         }
     }
     private aggregateCountsByDay(responses: Insights[]) {
@@ -844,6 +850,12 @@ export class EventsService {
         });
 
         return aggregatedCounts;
+    }
+
+    @OnEvent('event.updated')
+    async handleEventUpdated(event: Events) {
+        const embed = await this.AiService.generateEmbedding(JSON.stringify(event.description));
+        await this.prismaService.$queryRaw`UPDATE public."Events" SET embedding = ${embed} WHERE id = ${event.id}`;
     }
 }
 
