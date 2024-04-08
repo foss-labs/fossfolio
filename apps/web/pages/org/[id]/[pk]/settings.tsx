@@ -18,11 +18,12 @@ import { useForm } from 'react-hook-form';
 import { useEvent } from '@app/hooks/api/Events';
 import { RiLoaderFill } from 'react-icons/ri';
 import Image from 'next/image';
-import { Card, CardContent } from '@app/ui/components/card';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { useRoles } from '@app/hooks';
+import { DeleteEvent } from '@app/views/dashboard/components/settings';
 
 const Settings = () => {
     const { data, isLoading } = useEvent('event');
@@ -56,6 +57,7 @@ const Settings = () => {
         },
     });
 
+    // TODO - feature to let admin edit the event info
     const handleUpdates = () => {};
 
     if (!data?.data.isPublished) {
@@ -66,16 +68,7 @@ const Settings = () => {
                         Please publish the Event to access the settings
                     </h2>
                 </div>
-                <Card className="border-2 border-red-400 max-w-2xl mt-5 flex w-full">
-                    <CardContent className="pt-6">
-                        <div className="space-y-2">
-                            <p>Deleting the Events will delete its all data</p>
-                            <Button className="!bg-red-600" onClick={deleteEvent}>
-                                Delete Event
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
+                <DeleteEvent deleteEvent={deleteEvent} />
             </div>
         );
     }
@@ -204,19 +197,7 @@ const Settings = () => {
                             </div>
                         </form>
                     </Form>
-                    <Card className="border-2 border-[red] max-w-2xl">
-                        <CardContent className="pt-6 ">
-                            <div className="space-y-2">
-                                <p>Deleting the Events will delete its all data</p>
-                                <Button
-                                    className="!bg-[red] !hover:bg-[#ff0000c2]"
-                                    onClick={deleteEvent}
-                                >
-                                    Delete Event
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <DeleteEvent deleteEvent={deleteEvent} />
                 </div>
             )}
         </div>

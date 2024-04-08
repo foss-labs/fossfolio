@@ -154,6 +154,7 @@ export class StripeService {
 
             return { sessionId: session.id, url: session.url };
         } catch (error) {
+            console.log(error);
             throw new Error('Failed to create checkout');
         }
     }
