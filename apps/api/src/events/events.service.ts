@@ -130,7 +130,7 @@ export class EventsService {
             });
 
             if (!event) {
-                return new NotFoundException("Event doesn't exist")
+                throw new NotFoundException("Event doesn't exist")
             }
 
             const data = await this.prismaService.events.update({
@@ -158,7 +158,7 @@ export class EventsService {
             });
 
             if (!data) {
-                return  new UnprocessableEntityException("Event couldn't be updated");
+                throw new UnprocessableEntityException("Event couldn't be updated");
             }
 
             this.eventEmitter.emit('event.updated', data);
@@ -170,17 +170,17 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException({
+                throw new NotFoundException({
                     ok: false,
                     message: e.message,
                 });
             } else if (e instanceof UnprocessableEntityException) {
-                return  new UnprocessableEntityException({
+                throw  new UnprocessableEntityException({
                     ok: false,
                     message: e.message,
                 });
             } else {
-                return  new InternalServerErrorException({
+                throw  new InternalServerErrorException({
                     error: e,
                 });
             }
@@ -201,7 +201,7 @@ export class EventsService {
                 },
             });
         } catch {
-            return {
+            throw {
                 ok: false,
                 message: 'could not get events',
             };
@@ -248,12 +248,12 @@ export class EventsService {
             });
 
             if (!data) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             const { maxTicketCount, eventDate, lastDate } = data;
             if (!maxTicketCount || !eventDate || !lastDate) {
-                return new UnprocessableEntityException({
+                throw new UnprocessableEntityException({
                     message: 'please provide all required information for event',
                 });
             }
@@ -273,17 +273,17 @@ export class EventsService {
         } catch (e) {
             // Use exception filters to handle exceptions and return appropriate responses
             if (e instanceof NotFoundException) {
-                return  new NotFoundException({
+                throw  new NotFoundException({
                     ok: false,
                     message: e.message,
                 });
             } else if (e instanceof UnprocessableEntityException) {
-                return new UnprocessableEntityException({
+                throw new UnprocessableEntityException({
                     ok: false,
                     message: e.message,
                 });
             } else {
-                return e; // Rethrow other exceptions
+                throw e; // Rethrow other exceptions
             }
         }
     }
@@ -300,7 +300,7 @@ export class EventsService {
             });
 
             if (!data) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
             return {
                 ok: true,
@@ -340,11 +340,11 @@ export class EventsService {
             });
 
             if (eventInfo.Ticket.length) {
-                return new ConflictException();
+                throw new ConflictException();
             }
 
             if (eventInfo.maxTicketCount <= 0) {
-                return new ServiceUnavailableException();
+                throw new ServiceUnavailableException();
             }
 
             // when the event requires a form input we should check if the use has completed the form or not
@@ -371,7 +371,7 @@ export class EventsService {
                 });
 
                 if (!data) {
-                    return  new NotFoundException();
+                    throw  new NotFoundException();
                 }
 
                 return {
@@ -381,13 +381,13 @@ export class EventsService {
             }
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             } else if (e instanceof ServiceUnavailableException) {
-                return new ServiceUnavailableException();
+                throw new ServiceUnavailableException();
             } else if (e instanceof ConflictException) {
-                return new ConflictException('user already registerd');
+                throw new ConflictException('user already registerd');
             } else {
-                return e;
+                throw e;
             }
         }
     }
@@ -408,7 +408,7 @@ export class EventsService {
             });
 
             if (!userInfo) {
-                return new NotFoundException('Events not found');
+                throw new NotFoundException('Events not found');
             }
 
             const data = userInfo.Ticket.map((info) =>
@@ -425,9 +425,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException('Event not found');
+                throw new NotFoundException('Event not found');
             } else {
-                return e;
+                throw e;
             }
         }
     }
@@ -448,7 +448,7 @@ export class EventsService {
             });
 
             if (!data || !data.Ticket.length) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             return {
@@ -458,9 +458,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             } else {
-                return new InternalServerErrorException({
+                throw new InternalServerErrorException({
                     error: e,
                 });
             }
@@ -477,7 +477,7 @@ export class EventsService {
             });
 
             if (!event) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             const formSchema = await this.prismaService.field.create({
@@ -502,9 +502,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             } else {
-                return e;
+                throw e;
             }
         }
     }
@@ -526,7 +526,7 @@ export class EventsService {
             });
 
             if (!updatedEventCover) {
-                return new InternalServerErrorException();
+                throw new InternalServerErrorException();
             }
             return {
                 ok: true,
@@ -535,7 +535,7 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof InternalServerErrorException) {
-                return new InternalServerErrorException();
+                throw new InternalServerErrorException();
             }
         }
     }
@@ -552,7 +552,7 @@ export class EventsService {
             });
 
             if (!eventSchema) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             return {
@@ -562,9 +562,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             } else {
-                return e;
+                throw e;
             }
         }
     }
@@ -585,7 +585,7 @@ export class EventsService {
                 },
             });
             if (!event) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             return {
@@ -595,9 +595,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             } else {
-                return e;
+                throw e;
             }
         }
     }
@@ -613,11 +613,11 @@ export class EventsService {
                 },
             });
             if (!event) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             if (!event.form.length) {
-                return new InternalServerErrorException();
+                throw new InternalServerErrorException();
             }
 
             const newEventStatus = await this.prismaService.events.update({
@@ -636,12 +636,12 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof InternalServerErrorException) {
-                return new InternalServerErrorException({
+                throw new InternalServerErrorException({
                     message: 'Please create a form schema to publish the form',
                 });
             }
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             return e;
@@ -714,9 +714,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             } else {
-                return e;
+                throw e;
             }
         }
     }
@@ -746,11 +746,11 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof ServiceUnavailableException) {
-                return new ServiceUnavailableException({
+                throw new ServiceUnavailableException({
                     message: 'We dont support to delete a paid event',
                 });
             }
-            return new InternalServerErrorException({
+            throw new InternalServerErrorException({
                 error: e,
             });
         }
@@ -766,7 +766,7 @@ export class EventsService {
             });
 
             if (!isUserExist) {
-                return new NotFoundException();
+                throw new NotFoundException();
             }
 
             await this.prismaService.ticket.delete({
@@ -781,9 +781,9 @@ export class EventsService {
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
-                return new NotFoundException();
+                throw new NotFoundException();
             } else {
-                return new ServiceUnavailableException();
+                throw new ServiceUnavailableException();
             }
         }
     }
@@ -796,7 +796,7 @@ export class EventsService {
                 },
             });
 
-            if (!eventInfo) return new NotFoundException();
+            if (!eventInfo) throw new NotFoundException();
 
             const insights = await this.prismaService.ticket.groupBy({
                 by: ['createdAt'],
@@ -830,7 +830,7 @@ export class EventsService {
                 message: 'Data Found successfully',
             };
         } catch {
-            return new NotFoundException();
+            throw new NotFoundException();
         }
     }
     private aggregateCountsByDay(responses: Insights[]) {
