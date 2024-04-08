@@ -14,9 +14,10 @@ import { UpdateEventDto } from './dto/updtate-event.dto';
 import { FormPayLoad } from './dto/create-form.dto';
 import { GetEventByOrgDto, GetEventByOrgIdDto } from './dto/get-events.dto';
 import excludeKey from '../utils/exclude';
-import {Events, User} from '@prisma/client';
-import {EventEmitter2, OnEvent} from "@nestjs/event-emitter";
-import {AiService} from "../ai/ai.service";
+import { Events, User } from '@prisma/client';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { AiService } from '../ai/ai.service';
+import { hyphenete } from 'src/utils/hyphenate';
 
 @Injectable()
 export class EventsService {
@@ -38,9 +39,10 @@ export class EventsService {
 
     async createEvent(d: CreateEventDto, userId: string) {
         try {
+            const hyphenetedName = hyphenete(d.name);
             const isEventWithSlugExist = await this.prismaService.events.findUnique({
                 where: {
-                    slug: d.name,
+                    slug: hyphenetedName,
                 },
             });
 
@@ -51,9 +53,9 @@ export class EventsService {
             let slug: string;
 
             if (isEventWithSlugExist) {
-                slug = `${d.name}-${totalCount._count}`;
+                slug = `${hyphenetedName}-${totalCount._count}`;
             } else {
-                slug = d.name;
+                slug = hyphenetedName;
             }
 
             const data = await this.prismaService.organization.update({
@@ -130,7 +132,7 @@ export class EventsService {
             });
 
             if (!event) {
-                throw new NotFoundException("Event doesn't exist")
+                throw new NotFoundException("Event doesn't exist");
             }
 
             const data = await this.prismaService.events.update({
@@ -175,12 +177,12 @@ export class EventsService {
                     message: e.message,
                 });
             } else if (e instanceof UnprocessableEntityException) {
-                throw  new UnprocessableEntityException({
+                throw new UnprocessableEntityException({
                     ok: false,
                     message: e.message,
                 });
             } else {
-                throw  new InternalServerErrorException({
+                throw new InternalServerErrorException({
                     error: e,
                 });
             }
@@ -273,7 +275,7 @@ export class EventsService {
         } catch (e) {
             // Use exception filters to handle exceptions and return appropriate responses
             if (e instanceof NotFoundException) {
-                throw  new NotFoundException({
+                throw new NotFoundException({
                     ok: false,
                     message: e.message,
                 });
@@ -371,7 +373,7 @@ export class EventsService {
                 });
 
                 if (!data) {
-                    throw  new NotFoundException();
+                    throw new NotFoundException();
                 }
 
                 return {
@@ -854,10 +856,14 @@ export class EventsService {
 
     @OnEvent('event.updated')
     async handleEventUpdated(event: Events) {
-        const embedDescription = await this.AiService.generateEmbedding(JSON.stringify(event.description));
+        const embedDescription = await this.AiService.generateEmbedding(
+            JSON.stringify(event.description),
+        );
         const embedName = await this.AiService.generateEmbedding(JSON.stringify(event.name));
-        await this.prismaService.$queryRaw`UPDATE public."Events" SET embedding_description = ${embedDescription} WHERE id = ${event.id}`;
-        await this.prismaService.$queryRaw`UPDATE public."Events" SET embedding_title = ${embedName} WHERE id = ${event.id}`;
+        await this.prismaService
+            .$queryRaw`UPDATE public."Events" SET embedding_description = ${embedDescription} WHERE id = ${event.id}`;
+        await this.prismaService
+            .$queryRaw`UPDATE public."Events" SET embedding_title = ${embedName} WHERE id = ${event.id}`;
     }
 }
 

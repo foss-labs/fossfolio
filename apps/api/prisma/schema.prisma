@@ -4,82 +4,69 @@ generator client {
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  extensions = [pgvector(map: "vector", schema: "public")]
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  uid         String   @id @default(cuid())
-  email       String?  @unique
-  displayName String?
-  slug        String?  @unique
-  photoURL    String?
-  isStudent   Boolean?
-  collegeName String?
-
-  refreshToken String?
-  createdAt    DateTime @default(now())
-
-  organizationMember OrganizationMember[]
+  uid                String               @id @default(cuid())
+  email              String?              @unique
+  displayName        String?
+  slug               String?              @unique
+  photoURL           String?
+  refreshToken       String?
+  createdAt          DateTime             @default(now())
+  collegeName        String?
+  isStudent          Boolean?
   providerAccounts   Account[]
-
-  Response Response[]
-  Ticket   Ticket[]
-  Kanban   Kanban[]
-  Task     Task[]
-  Comment  Comment[]
+  Comment            Comment[]
+  Kanban             Kanban[]
+  organizationMember OrganizationMember[]
+  Response           Response[]
+  Task               Task[]
+  Ticket             Ticket[]
 }
 
 model Account {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [uid])
-
-  provider          String
-  providerAccountId String
-
+  id                   String   @id @default(cuid())
+  userId               String
+  provider             String
+  providerAccountId    String
   providerAccessToken  String?
   providerRefreshToken String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [uid])
 
   @@unique([provider, providerAccountId], name: "verify_provider_account")
 }
 
 model Organization {
-  id   String @id @default(cuid())
-  name String
-  slug String @unique
-
-  members OrganizationMember[]
-  invites OrganizationInvite[]
-  events  Events[]
-
-  isActive  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String               @id @default(cuid())
+  name      String
+  slug      String               @unique
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  events    Events[]
+  invites   OrganizationInvite[]
+  members   OrganizationMember[]
 }
 
 model OrganizationMember {
-  id   String @id @default(cuid())
-  role Role
-
-  userUid String
-  user    User   @relation(fields: [userUid], references: [uid])
-
+  id             String       @id @default(cuid())
+  userUid        String
+  role           Role
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userUid], references: [uid])
 
   @@unique([userUid, organizationId])
 }
 
 model OrganizationInvite {
-  id           String @id @default(cuid())
-  inviteeEmail String
-  inviteeRole  Role
-
+  id             String       @id @default(cuid())
+  inviteeEmail   String
+  inviteeRole    Role
   inviterUid     String
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -90,109 +77,98 @@ model OrganizationInvite {
 model Events {
   id                    String       @id @unique @default(dbgenerated("(gen_random_uuid())::text"))
   name                  String
-  slug                  String       @unique
   website               String?
   location              String
+  createdAt             DateTime     @default(now())
   lastDate              DateTime?
   organizationId        String
   isPublished           Boolean      @default(false)
   description           Json?
-  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  isCollegeEvent        Boolean      @default(false)
   isTeamEvent           Boolean      @default(false)
   maxTeamSize           Int          @default(1)
   minTeamSize           Int          @default(1)
-  isCollegeEvent        Boolean      @default(false)
-  isFormPublished       Boolean      @default(false)
-  createdAt             DateTime     @default(now())
   updatedAt             DateTime     @updatedAt
-  maxTicketCount        Int?
   eventDate             DateTime?
-  form                  Field[]
+  maxTicketCount        Int?
   coverImage            String?
-  Response              Response[]
+  isFormPublished       Boolean      @default(false)
   ticketPrice           Int          @default(0)
   stripe_price_object   String?
   stripe_product_object String?
-  Ticket                Ticket[]
+  slug                  String       @unique
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  form                  Field[]
   kanban                Kanban[]
-
-  embedding_description Unsupported("vector(768)")?
-  embedding_title       Unsupported("vector(768)")?
+  Response              Response[]
+  Ticket                Ticket[]
 }
 
 model Field {
-  id String @id @default(cuid())
-
+  id          String    @id @default(cuid())
   label       String
   placeholder String?
+  required    Boolean   @default(false)
+  type        FieldType
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  eventsId    String?
   options     String[]
-
-  required Boolean @default(false)
-
-  type FieldType
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Events    Events?  @relation(fields: [eventsId], references: [id])
-  eventsId  String?
+  Events      Events?   @relation(fields: [eventsId], references: [id])
 }
 
 model Response {
-  id   String @id @default(cuid())
-  user User   @relation(fields: [userUid], references: [uid])
-
-  data Json
-
+  id        String   @id @default(cuid())
+  data      Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userUid   String
-  Events    Events?  @relation(fields: [eventsId], references: [id])
   eventsId  String?
+  Events    Events?  @relation(fields: [eventsId], references: [id])
+  user      User     @relation(fields: [userUid], references: [uid])
 }
 
 model Ticket {
-  id       String @id @default(cuid())
-  event    Events @relation(fields: [eventsId], references: [id])
-  eventsId String
-  user     User   @relation(fields: [userUid], references: [uid])
-  userUid  String
-
+  id        String   @id @default(cuid())
+  eventsId  String
+  userUid   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  event     Events   @relation(fields: [eventsId], references: [id])
+  user      User     @relation(fields: [userUid], references: [uid])
 }
 
 model Kanban {
-  id        String @id @default(cuid())
+  id        String   @id @default(cuid())
   title     String
-  tasks     Task[]
-  createdBy User   @relation(fields: [userUid], references: [uid])
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userUid   String
-  Events    Events?  @relation(fields: [eventsId], references: [id])
   eventsId  String?
+  Events    Events?  @relation(fields: [eventsId], references: [id])
+  createdBy User     @relation(fields: [userUid], references: [uid])
+  tasks     Task[]
 }
 
 model Task {
   id        String    @id @default(cuid())
   title     String
-  createdBy User      @relation(fields: [userUid], references: [uid])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Kanban    Kanban?   @relation(fields: [kanbanId], references: [id])
   kanbanId  String?
   userUid   String
   Comment   Comment[]
+  Kanban    Kanban?   @relation(fields: [kanbanId], references: [id])
+  createdBy User      @relation(fields: [userUid], references: [uid])
 }
 
 model Comment {
   id      String @id @default(cuid())
-  task    Task   @relation(fields: [taskId], references: [id])
   taskId  String
   data    Json
-  user    User   @relation(fields: [userUid], references: [uid])
   userUid String
+  task    Task   @relation(fields: [taskId], references: [id])
+  user    User   @relation(fields: [userUid], references: [uid])
 }
 
 enum Role {
@@ -212,5 +188,4 @@ enum FieldType {
   URL
   PhoneNumber
   Attachment
-  DateTime
 }
