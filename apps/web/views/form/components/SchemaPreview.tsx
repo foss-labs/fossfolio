@@ -43,7 +43,6 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
         try {
             const { data } = await apiHandler.post(`/events/form/${eventId}`, formData);
             if (data.url) {
-                // shoudl use stripe js library to pass session id
                 window.location.href = data.url;
             }
             toast.success('Form submitted successfully');
@@ -126,18 +125,19 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
                                 )}
                                 {el.type === 'MultiSelect' && (
                                     <>
-                                    <Multiselect
-                                        options={el.selectOptions?.map((o) => ({
-                                            name: o.option,
-                                            id: o.option
-                                        }))}
-                                        selectedValues={el.options}
-                                        onSelect={(e) => el.options?.push(e)}
-                                        onRemove={(e) => el.options?.splice(el.options?.indexOf(e), 1)}
-                                        displayValue="name"
-                                    />
+                                        <Multiselect
+                                            options={el.selectOptions?.map((o) => ({
+                                                name: o.option,
+                                                id: o.option,
+                                            }))}
+                                            selectedValues={el.options}
+                                            onSelect={(e) => el.options?.push(e)}
+                                            onRemove={(e) =>
+                                                el.options?.splice(el.options?.indexOf(e), 1)
+                                            }
+                                            displayValue="name"
+                                        />
                                     </>
-
                                 )}
                                 {el.type === 'LongText' && (
                                     <Textarea

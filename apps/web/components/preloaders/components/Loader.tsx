@@ -1,8 +1,13 @@
 import { RiLoaderFill } from 'react-icons/ri';
+import { twMerge } from 'tailwind-merge';
 
-export const Loader = () => {
+interface LoaderProp {
+    className?: string;
+}
+
+export const Loader = ({ className = 'h-screen' }: LoaderProp) => {
     return (
-        <div className="h-screen flex items-center justify-center p-4">
+        <div className={twMerge('flex items-center justify-center p-4', className)}>
             <RiLoaderFill className="animate-spin h-8 w-8" />
         </div>
     );

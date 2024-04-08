@@ -30,12 +30,12 @@ import { useEvent, useFormSchema } from '@app/hooks/api/Events';
 import { useMutation } from '@tanstack/react-query';
 import { Iform } from '@app/types';
 import { toast } from 'sonner';
-import { RiLoaderFill } from 'react-icons/ri';
 import { IoIosAdd } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
 import { useToggle } from '@app/hooks';
 import { useEffect, useState } from 'react';
 import { Textarea } from '@app/ui/components/textarea';
+import { Loader } from '@app/components/preloaders';
 
 const builderSchema = yup.object().shape({
     label: yup.string().required('label is required'),
@@ -59,6 +59,7 @@ export type FormValidator = yup.InferType<typeof builderSchema>;
 
 const Form: NextPageWithLayout = () => {
     const router = useRouter();
+    const [isAiForm, setAiForm] = useState(false);
     const { data, isLoading, refetch } = useFormSchema();
     const { data: eventInfo } = useEvent('event');
     const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
@@ -196,10 +197,7 @@ const Form: NextPageWithLayout = () => {
     const saveAIForm = async () => {
         try {
             setSavingAIForm(true);
-            const promises = tempForm.map((schema) => {
-                return updateSchema(schema);
-            });
-            await Promise.all(promises);
+            await Promise.all(tempForm.map((schema) => updateSchema(schema)));
         } catch {
             toast.error('Error adding new schema');
         } finally {
@@ -232,230 +230,242 @@ const Form: NextPageWithLayout = () => {
             )}
             <div className="flex justify-center  h-screen  p-5 ">
                 <div className="gap-20 flex justify-center">
-                    <section>
-                        <h3 className="text-3xl font-semibold mt-4">Form Builder</h3>
-                        <p className="text-sm text-gray-400 mt-3">
-                            Create Custom forms with various question types
-                        </p>
-                        <FormProvider {...form}>
-                            <form className="space-y-4" onSubmit={form.handleSubmit(handleUpdates)}>
-                                <Card className="mt-10">
-                                    <CardHeader>
-                                        <CardTitle>Create a new question</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="space-y-2">
-                                            <FormField
-                                                control={form.control}
-                                                name="label"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Question</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                placeholder="Enter your question"
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                        <div className="space-y-2 mt-2">
-                                            <FormField
-                                                control={form.control}
-                                                name="placeholder"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>
-                                                            Placeholder (optional)
-                                                        </FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                placeholder="Enter Placeholder"
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                        <div className="space-y-2 mt-2">
-                                            <FormField
-                                                control={form.control}
-                                                name="type"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel htmlFor="type">
-                                                            Question Type
-                                                        </FormLabel>
-                                                        <Select
-                                                            onValueChange={field.onChange}
-                                                            defaultValue={field.value}
-                                                        >
+                    {!isAiForm && (
+                        <section>
+                            <h3 className="text-3xl font-semibold mt-4">Form Builder</h3>
+                            <p className="text-sm text-gray-400 mt-3">
+                                Create Custom forms with various question types
+                            </p>
+                            <FormProvider {...form}>
+                                <form
+                                    className="space-y-4"
+                                    onSubmit={form.handleSubmit(handleUpdates)}
+                                >
+                                    <Card className="mt-10">
+                                        <CardHeader>
+                                            <CardTitle>Create a new question</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="space-y-2">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="label"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Question</FormLabel>
                                                             <FormControl>
-                                                                <SelectTrigger id="type">
-                                                                    <SelectValue placeholder="Select" />
-                                                                </SelectTrigger>
+                                                                <Input
+                                                                    placeholder="Enter your question"
+                                                                    {...field}
+                                                                />
                                                             </FormControl>
-                                                            <SelectContent position="popper">
-                                                                {InputOption.map((el) => (
-                                                                    <SelectItem
-                                                                        key={el.value as string}
-                                                                        value={el.value as string}
-                                                                    >
-                                                                        {el.label}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                        {isSingleOrMultiSelect && (
-                                            <>
-                                                {fields.map((dynamicField, index) => (
-                                                    <div
-                                                        className="flex items-center space-x-2 mt-3 group"
-                                                        key={dynamicField.id}
-                                                    >
-                                                        <FormField
-                                                            key={index}
-                                                            control={form.control}
-                                                            name={`selectOptions.${index}.option`}
-                                                            render={({ field }) => (
-                                                                <FormItem className="flex flex-col w-full">
-                                                                    <FormLabel className="flex items-center">
-                                                                        Option {index + 1}
-                                                                        <span
-                                                                            className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
-                                                                            onClick={() =>
-                                                                                handleFieldDelete(
-                                                                                    index,
-                                                                                )
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="space-y-2 mt-2">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="placeholder"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>
+                                                                Placeholder (optional)
+                                                            </FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    placeholder="Enter Placeholder"
+                                                                    {...field}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="space-y-2 mt-2">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="type"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel htmlFor="type">
+                                                                Question Type
+                                                            </FormLabel>
+                                                            <Select
+                                                                onValueChange={field.onChange}
+                                                                defaultValue={field.value}
+                                                            >
+                                                                <FormControl>
+                                                                    <SelectTrigger id="type">
+                                                                        <SelectValue placeholder="Select" />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent position="popper">
+                                                                    {InputOption.map((el) => (
+                                                                        <SelectItem
+                                                                            key={el.value as string}
+                                                                            value={
+                                                                                el.value as string
                                                                             }
                                                                         >
-                                                                            <MdDeleteForever className="text-md text-red-600" />
-                                                                        </span>
-                                                                    </FormLabel>
-                                                                    <FormControl>
-                                                                        <Input
-                                                                            className="w-full"
-                                                                            {...field}
-                                                                        />
-                                                                    </FormControl>
-                                                                    <FormMessage {...field} />
-                                                                </FormItem>
-                                                            )}
-                                                        />
-                                                    </div>
-                                                ))}
-                                                <Button
-                                                    className="w-full mt-4"
-                                                    variant="outline"
-                                                    onClick={addNewField}
-                                                >
-                                                    <IoIosAdd className="text-xl" />
-                                                </Button>
-                                            </>
-                                        )}
-                                        <div className="flex items-center space-x-2 mt-3">
-                                            <FormField
-                                                control={form.control}
-                                                name="required"
-                                                render={({ field }) => (
-                                                    <FormItem className="flex flex-col">
-                                                        <FormLabel>Required</FormLabel>
-                                                        <FormControl>
-                                                            <Checkbox
-                                                                checked={field.value}
-                                                                onCheckedChange={field.onChange}
+                                                                            {el.label}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            {isSingleOrMultiSelect && (
+                                                <>
+                                                    {fields.map((dynamicField, index) => (
+                                                        <div
+                                                            className="flex items-center space-x-2 mt-3 group"
+                                                            key={dynamicField.id}
+                                                        >
+                                                            <FormField
+                                                                key={index}
+                                                                control={form.control}
+                                                                name={`selectOptions.${index}.option`}
+                                                                render={({ field }) => (
+                                                                    <FormItem className="flex flex-col w-full">
+                                                                        <FormLabel className="flex items-center">
+                                                                            Option {index + 1}
+                                                                            <span
+                                                                                className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
+                                                                                onClick={() =>
+                                                                                    handleFieldDelete(
+                                                                                        index,
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                <MdDeleteForever className="text-md text-red-600" />
+                                                                            </span>
+                                                                        </FormLabel>
+                                                                        <FormControl>
+                                                                            <Input
+                                                                                className="w-full"
+                                                                                {...field}
+                                                                            />
+                                                                        </FormControl>
+                                                                        <FormMessage {...field} />
+                                                                    </FormItem>
+                                                                )}
                                                             />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="flex justify-between">
-                                        <Button
-                                            variant="outline"
-                                            onClick={handleCancel}
-                                            type="reset"
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button type="submit" isLoading={isSchemaUpdating}>
-                                            Add Question
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
-                            </form>
-                        </FormProvider>
-                        <h1 className="py-4 text-lg">Generate Form With AI</h1>
-                        <div className="flex flex-col">
-                            <Textarea
-                                className="mb-1"
-                                placeholder="Enter prompt"
-                                onChange={(t) => {
-                                    setPrompt(t.target.value);
-                                }}
-                            />
-                            <Button isLoading={isFormLoading} onClick={generateForm}>
-                                Generate
+                                                        </div>
+                                                    ))}
+                                                    <Button
+                                                        className="w-full mt-4"
+                                                        variant="outline"
+                                                        onClick={addNewField}
+                                                    >
+                                                        <IoIosAdd className="text-xl" />
+                                                    </Button>
+                                                </>
+                                            )}
+                                            <div className="flex items-center space-x-2 mt-3">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="required"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-col">
+                                                            <FormLabel>Required</FormLabel>
+                                                            <FormControl>
+                                                                <Checkbox
+                                                                    checked={field.value}
+                                                                    onCheckedChange={field.onChange}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </CardContent>
+                                        <CardFooter className="flex justify-between">
+                                            <Button
+                                                variant="outline"
+                                                onClick={handleCancel}
+                                                type="reset"
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button type="submit" isLoading={isSchemaUpdating}>
+                                                Add Question
+                                            </Button>
+                                        </CardFooter>
+                                    </Card>
+                                </form>
+                            </FormProvider>
+                            <Button className="mt-5" onClick={() => setAiForm(true)}>
+                                Use Ai to generate form
                             </Button>
-                        </div>
-                    </section>
+                        </section>
+                    )}
+                    {isAiForm && (
+                        <section>
+                            <h1 className="py-4 text-lg">Generate Form With AI</h1>
+                            <div className="flex flex-col">
+                                <Textarea
+                                    className="mb-1"
+                                    placeholder="Enter prompt"
+                                    onChange={(t) => {
+                                        setPrompt(t.target.value);
+                                    }}
+                                />
+                                <Button isLoading={isFormLoading} onClick={generateForm}>
+                                    Generate
+                                </Button>
+                            </div>
+                            <Button className="mt-5" onClick={() => setAiForm(false)}>
+                                Close AI
+                            </Button>
+                        </section>
+                    )}
                     <Separator orientation="vertical" className="min-h-screen" />
-                    <section>
-                        <h3 className="text-3xl font-semibold mt-4">AI Form Preview</h3>
-                        <Button disabled={!tempForm || savingAIForm} onClick={saveAIForm}>
-                            Save Generated Form
-                        </Button>
-                        <p className="text-sm text-gray-400 mt-3">
-                            This is how your form will look like
-                        </p>
+                    {isAiForm && (
+                        <section>
+                            <h3 className="text-3xl font-semibold mt-4">AI Form Preview</h3>
+                            <Button disabled={!tempForm || savingAIForm} onClick={saveAIForm}>
+                                Save Generated Form
+                            </Button>
+                            <p className="text-sm text-gray-400 mt-3">
+                                This is how your form will look like
+                            </p>
 
-                        {isFormLoading && (
-                            <Card className="mt-10 w-[300px] flex justify-center items-center h-[600px]">
-                                <RiLoaderFill className="animate-spin h-8 w-8" />
-                            </Card>
-                        )}
+                            {isFormLoading && <Loader className="mt-10 w-[300px] h-[600px]" />}
 
-                        {tempForm && tempForm.length > 0 && (
-                            <SchemaPreview
-                                data={tempForm}
-                                isPublic={false}
-                                eventId={eventInfo?.data.id as string}
-                            />
-                        )}
-                    </section>
-                    <Separator orientation="vertical" className="min-h-screen" />
-                    <section>
-                        <h3 className="text-3xl font-semibold mt-4">Preview</h3>
-                        <p className="text-sm text-gray-400 mt-3">
-                            This is how your form will look like
-                        </p>
+                            {tempForm && tempForm.length > 0 && (
+                                <SchemaPreview
+                                    data={tempForm}
+                                    isPublic={false}
+                                    eventId={eventInfo?.data.id as string}
+                                />
+                            )}
+                        </section>
+                    )}
+                    {!isAiForm && (
+                        <section>
+                            <h3 className="text-3xl font-semibold mt-4">Preview</h3>
+                            <p className="text-sm text-gray-400 mt-3">
+                                This is how your form will look like
+                            </p>
 
-                        {isLoading && (
-                            <Card className="mt-10 w-[300px] flex justify-center items-center h-[600px]">
-                                <RiLoaderFill className="animate-spin h-8 w-8" />
-                            </Card>
-                        )}
+                            {isLoading && <Loader className="w-[300px] h-[600px]" />}
 
-                        {data?.data && data.data.length > 0 && (
-                            <SchemaPreview
-                                data={data.data}
-                                isPublic={false}
-                                eventId={eventInfo?.data.id as string}
-                            />
-                        )}
-                    </section>
+                            {data?.data && data.data.length > 0 && (
+                                <SchemaPreview
+                                    data={data.data}
+                                    isPublic={false}
+                                    eventId={eventInfo?.data.id as string}
+                                />
+                            )}
+                        </section>
+                    )}
                 </div>
             </div>
         </div>
