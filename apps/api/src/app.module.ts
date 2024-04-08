@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import { z } from 'zod';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
@@ -30,29 +30,29 @@ import { AiModule } from './ai/ai.module';
         ]),
         ConfigModule.forRoot({
             isGlobal: true,
-            validationSchema: Joi.object({
-                DATABASE_URL: Joi.string(),
-                GITHUB_CLIENT_ID: Joi.string(),
-                GITHUB_CLIENT_SECRET: Joi.string(),
-                GITHUB_CALLBACK_URL: Joi.string(),
-                GITHUB_SCOPE: Joi.string(),
-                ACCESS_TOKEN_VALIDITY: Joi.string(),
-                API_BASE_URL: Joi.string(),
-                GOOGLE_CLIENT_ID: Joi.string(),
-                GOOGLE_CLIENT_SECRET: Joi.string(),
-                GOOGLE_CALLBACK_URL: Joi.string(),
-                GOOGLE_SCOPE: Joi.string(),
-                WEB_URL: Joi.string(),
-                MAIL_HOST: Joi.string(),
-                MAIL_PORT: Joi.number(),
-                MAIL_USER: Joi.string(),
-                MAIL_PASSWORD: Joi.string(),
-                AWS_ACCESS_KEY: Joi.string(),
-                AWS_SECRET_KEY: Joi.string(),
-                AWS_REGION: Joi.string(),
-                STRIPE_SECRET_KEY: Joi.string(),
-                STRIPE_WEBHOOK_SECRET: Joi.string(),
-                AI_KEY: Joi.string(),
+            validationSchema: z.object({
+                DATABASE_URL: z.string(),
+                GITHUB_CLIENT_ID: z.string(),
+                GITHUB_CLIENT_SECRET: z.string(),
+                GITHUB_CALLBACK_URL: z.string(),
+                GITHUB_SCOPE: z.string(),
+                ACCESS_TOKEN_VALIDITY: z.string(),
+                API_BASE_URL: z.string(),
+                GOOGLE_CLIENT_ID: z.string(),
+                GOOGLE_CLIENT_SECRET: z.string(),
+                GOOGLE_CALLBACK_URL: z.string(),
+                GOOGLE_SCOPE: z.string(),
+                WEB_URL: z.string(),
+                MAIL_HOST: z.string(),
+                MAIL_PORT: z.number(),
+                MAIL_USER: z.string(),
+                MAIL_PASSWORD: z.string(),
+                AWS_ACCESS_KEY: z.string(),
+                AWS_SECRET_KEY: z.string(),
+                AWS_REGION: z.string(),
+                STRIPE_SECRET_KEY: z.string(),
+                STRIPE_WEBHOOK_SECRET: z.string(),
+                AI_KEY: z.string(),
             }),
             validationOptions: {
                 allowUnknown: true,

@@ -1,28 +1,41 @@
-import {NextPageWithLayout} from 'next';
-import {DashboardLayout} from '@app/layout';
-import {Button} from '@app/components/ui/Button';
-import {Input} from '@app/ui/components/input';
-import {Separator} from '@app/ui/components/separator';
-import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@app/ui/components/card';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@app/ui/components/select';
-import {Form as FormProvider, FormControl, FormField, FormItem, FormLabel, FormMessage,} from '@app/ui/components/form';
-import {Checkbox} from '@app/ui/components/checkbox';
-import {IFormInput, InputOption, SchemaPreview} from '@app/views/form';
+import { NextPageWithLayout } from 'next';
+import { DashboardLayout } from '@app/layout';
+import { Button } from '@app/components/ui/Button';
+import { Input } from '@app/ui/components/input';
+import { Separator } from '@app/ui/components/separator';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@app/ui/components/card';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@app/ui/components/select';
+import {
+    Form as FormProvider,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@app/ui/components/form';
+import { Checkbox } from '@app/ui/components/checkbox';
+import { IFormInput, InputOption, SchemaPreview } from '@app/views/form';
 import * as yup from 'yup';
-import {SubmitHandler, useFieldArray, useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import {apiHandler} from '@app/config';
-import {useRouter} from 'next/router';
-import {useEvent, useFormSchema} from '@app/hooks/api/Events';
-import {useMutation} from '@tanstack/react-query';
-import {Iform} from '@app/types';
-import {toast} from 'sonner';
-import {RiLoaderFill} from 'react-icons/ri';
-import {IoIosAdd} from 'react-icons/io';
-import {MdDeleteForever} from 'react-icons/md';
-import {useToggle} from '@app/hooks';
-import {useEffect, useState} from 'react';
-import {Textarea} from '@app/ui/components/textarea';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { apiHandler } from '@app/config';
+import { useRouter } from 'next/router';
+import { useEvent, useFormSchema } from '@app/hooks/api/Events';
+import { useMutation } from '@tanstack/react-query';
+import { Iform } from '@app/types';
+import { toast } from 'sonner';
+import { RiLoaderFill } from 'react-icons/ri';
+import { IoIosAdd } from 'react-icons/io';
+import { MdDeleteForever } from 'react-icons/md';
+import { useToggle } from '@app/hooks';
+import { useEffect, useState } from 'react';
+import { Textarea } from '@app/ui/components/textarea';
 
 const builderSchema = yup.object().shape({
     label: yup.string().required('label is required'),
@@ -46,8 +59,8 @@ export type FormValidator = yup.InferType<typeof builderSchema>;
 
 const Form: NextPageWithLayout = () => {
     const router = useRouter();
-    const {data, isLoading, refetch} = useFormSchema();
-    const {data: eventInfo} = useEvent('event');
+    const { data, isLoading, refetch } = useFormSchema();
+    const { data: eventInfo } = useEvent('event');
     const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
 
     const [messages, setMessages] = useState<
@@ -59,7 +72,7 @@ const Form: NextPageWithLayout = () => {
 
     const [prompt, setPrompt] = useState<string>('');
 
-    const {pk, id} = router.query;
+    const { pk, id } = router.query;
 
     const form = useForm<FormValidator>({
         mode: 'onSubmit',
@@ -69,7 +82,7 @@ const Form: NextPageWithLayout = () => {
         },
     });
 
-    const {fields, append, remove} = useFieldArray<FormValidator>({
+    const { fields, append, remove } = useFieldArray<FormValidator>({
         control: form.control,
         name: 'selectOptions',
     });
@@ -96,7 +109,7 @@ const Form: NextPageWithLayout = () => {
                     ai: false,
                     text: prompt,
                 },
-                {ai: true, text: data.data?.fields},
+                { ai: true, text: data.data?.fields },
             ]);
             setTempForm(data.data?.fields);
         } catch {
@@ -132,7 +145,7 @@ const Form: NextPageWithLayout = () => {
             const payload = {
                 ...schema,
                 selectOptions: options,
-            }
+            };
 
             await apiHandler.post('/events/form', {
                 organizationId: router.query?.id,
@@ -144,7 +157,7 @@ const Form: NextPageWithLayout = () => {
         }
     };
 
-    const {isLoading: isSchemaUpdating, mutate} = useMutation(updateSchema, {
+    const { isLoading: isSchemaUpdating, mutate } = useMutation(updateSchema, {
         onSuccess: () => {
             refetch();
             form.reset();
@@ -195,7 +208,7 @@ const Form: NextPageWithLayout = () => {
             await refetch();
             form.reset();
         }
-    }
+    };
 
     return (
         <div className="pt-5 pr-3">
@@ -235,7 +248,7 @@ const Form: NextPageWithLayout = () => {
                                             <FormField
                                                 control={form.control}
                                                 name="label"
-                                                render={({field}) => (
+                                                render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>Question</FormLabel>
                                                         <FormControl>
@@ -244,7 +257,7 @@ const Form: NextPageWithLayout = () => {
                                                                 {...field}
                                                             />
                                                         </FormControl>
-                                                        <FormMessage/>
+                                                        <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
@@ -253,7 +266,7 @@ const Form: NextPageWithLayout = () => {
                                             <FormField
                                                 control={form.control}
                                                 name="placeholder"
-                                                render={({field}) => (
+                                                render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>
                                                             Placeholder (optional)
@@ -264,7 +277,7 @@ const Form: NextPageWithLayout = () => {
                                                                 {...field}
                                                             />
                                                         </FormControl>
-                                                        <FormMessage/>
+                                                        <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
@@ -273,7 +286,7 @@ const Form: NextPageWithLayout = () => {
                                             <FormField
                                                 control={form.control}
                                                 name="type"
-                                                render={({field}) => (
+                                                render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel htmlFor="type">
                                                             Question Type
@@ -284,7 +297,7 @@ const Form: NextPageWithLayout = () => {
                                                         >
                                                             <FormControl>
                                                                 <SelectTrigger id="type">
-                                                                    <SelectValue placeholder="Select"/>
+                                                                    <SelectValue placeholder="Select" />
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent position="popper">
@@ -298,7 +311,7 @@ const Form: NextPageWithLayout = () => {
                                                                 ))}
                                                             </SelectContent>
                                                         </Select>
-                                                        <FormMessage/>
+                                                        <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
@@ -314,7 +327,7 @@ const Form: NextPageWithLayout = () => {
                                                             key={index}
                                                             control={form.control}
                                                             name={`selectOptions.${index}.option`}
-                                                            render={({field}) => (
+                                                            render={({ field }) => (
                                                                 <FormItem className="flex flex-col w-full">
                                                                     <FormLabel className="flex items-center">
                                                                         Option {index + 1}
@@ -326,8 +339,7 @@ const Form: NextPageWithLayout = () => {
                                                                                 )
                                                                             }
                                                                         >
-                                                                            <MdDeleteForever
-                                                                                className="text-md text-red-600"/>
+                                                                            <MdDeleteForever className="text-md text-red-600" />
                                                                         </span>
                                                                     </FormLabel>
                                                                     <FormControl>
@@ -347,7 +359,7 @@ const Form: NextPageWithLayout = () => {
                                                     variant="outline"
                                                     onClick={addNewField}
                                                 >
-                                                    <IoIosAdd className="text-xl"/>
+                                                    <IoIosAdd className="text-xl" />
                                                 </Button>
                                             </>
                                         )}
@@ -355,7 +367,7 @@ const Form: NextPageWithLayout = () => {
                                             <FormField
                                                 control={form.control}
                                                 name="required"
-                                                render={({field}) => (
+                                                render={({ field }) => (
                                                     <FormItem className="flex flex-col">
                                                         <FormLabel>Required</FormLabel>
                                                         <FormControl>
@@ -364,7 +376,7 @@ const Form: NextPageWithLayout = () => {
                                                                 onCheckedChange={field.onChange}
                                                             />
                                                         </FormControl>
-                                                        <FormMessage/>
+                                                        <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
@@ -399,7 +411,7 @@ const Form: NextPageWithLayout = () => {
                             </Button>
                         </div>
                     </section>
-                    <Separator orientation="vertical" className="min-h-screen"/>
+                    <Separator orientation="vertical" className="min-h-screen" />
                     <section>
                         <h3 className="text-3xl font-semibold mt-4">AI Form Preview</h3>
                         <Button disabled={!tempForm || savingAIForm} onClick={saveAIForm}>
@@ -411,7 +423,7 @@ const Form: NextPageWithLayout = () => {
 
                         {isFormLoading && (
                             <Card className="mt-10 w-[300px] flex justify-center items-center h-[600px]">
-                                <RiLoaderFill className="animate-spin h-8 w-8"/>
+                                <RiLoaderFill className="animate-spin h-8 w-8" />
                             </Card>
                         )}
 
@@ -423,7 +435,7 @@ const Form: NextPageWithLayout = () => {
                             />
                         )}
                     </section>
-                    <Separator orientation="vertical" className="min-h-screen"/>
+                    <Separator orientation="vertical" className="min-h-screen" />
                     <section>
                         <h3 className="text-3xl font-semibold mt-4">Preview</h3>
                         <p className="text-sm text-gray-400 mt-3">
@@ -432,7 +444,7 @@ const Form: NextPageWithLayout = () => {
 
                         {isLoading && (
                             <Card className="mt-10 w-[300px] flex justify-center items-center h-[600px]">
-                                <RiLoaderFill className="animate-spin h-8 w-8"/>
+                                <RiLoaderFill className="animate-spin h-8 w-8" />
                             </Card>
                         )}
 
