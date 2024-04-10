@@ -10,7 +10,7 @@ import {
 } from '@app/ui/components/form';
 import { Input } from '@app/ui/components/input';
 import { cn } from '@app/ui/lib/utils';
-import { IProfile } from '@app/views/dashboard';
+import { DeleteEvent, IProfile } from '@app/views/dashboard';
 import { Popover, PopoverTrigger, PopoverContent } from '@app/ui/components/popover';
 import { format } from 'date-fns';
 import { Button } from '@app/components/ui/Button';
@@ -23,14 +23,17 @@ import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { useToggle } from '@app/hooks';
 
 const Settings = () => {
     const { data, isLoading } = useEvent('event');
+    const [isEventDeleting, setDelete] = useToggle();
     const router = useRouter();
     const { id } = router.query;
 
     const deleteEvent = async () => {
         try {
+            setDelete.on();
             await apiHandler.delete(`/events/delete/${data?.data.id}`, {
                 data: { organizationId: id },
             });
@@ -45,6 +48,8 @@ const Settings = () => {
             } else {
                 toast.error('Error deleting event');
             }
+        } finally {
+            setDelete.off();
         }
     };
 
@@ -204,19 +209,7 @@ const Settings = () => {
                             </div>
                         </form>
                     </Form>
-                    <Card className="border-2 border-[red] max-w-2xl">
-                        <CardContent className="pt-6 ">
-                            <div className="space-y-2">
-                                <p>Deleting the Events will delete its all data</p>
-                                <Button
-                                    className="!bg-[red] !hover:bg-[#ff0000c2]"
-                                    onClick={deleteEvent}
-                                >
-                                    Delete Event
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <DeleteEvent deleteEvent={deleteEvent} isLoading={isEventDeleting} />
                 </div>
             )}
         </div>

@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tab
 import { Events, DeleteOrg, LeaveOrg, InviteModal } from '@app/views/org';
 import { useRoles, useToggle } from '@app/hooks';
 import { useOrgInfo } from '@app/hooks/api/org';
-import { RiLoaderFill } from 'react-icons/ri';
 import {
     Form,
     FormControl,
@@ -24,6 +23,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
+import { Loader } from '@app/components/preloaders';
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -121,11 +121,7 @@ const Org: NextPageWithLayout = () => {
                     value="settings"
                     className="flex justify-end items-center flex-col gap-3"
                 >
-                    {isLoading && (
-                        <div className="h-[300px]  flex items-center justify-center">
-                            <RiLoaderFill className="animate-spin h-5 w-5" />
-                        </div>
-                    )}
+                    {isLoading && <Loader />}
                     {data && (
                         <div className="flex gap-4 py-4 w-full">
                             <Form {...form}>

@@ -126,18 +126,19 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
                                 )}
                                 {el.type === 'MultiSelect' && (
                                     <>
-                                    <Multiselect
-                                        options={el.selectOptions?.map((o) => ({
-                                            name: o.option,
-                                            id: o.option
-                                        }))}
-                                        selectedValues={el.options}
-                                        onSelect={(e) => el.options?.push(e)}
-                                        onRemove={(e) => el.options?.splice(el.options?.indexOf(e), 1)}
-                                        displayValue="name"
-                                    />
+                                        <Multiselect
+                                            options={el.selectOptions?.map((o) => ({
+                                                name: o.option,
+                                                id: o.option,
+                                            }))}
+                                            selectedValues={el.options}
+                                            onSelect={(e) => el.options?.push(e)}
+                                            onRemove={(e) =>
+                                                el.options?.splice(el.options?.indexOf(e), 1)
+                                            }
+                                            displayValue="name"
+                                        />
                                     </>
-
                                 )}
                                 {el.type === 'LongText' && (
                                     <Textarea
