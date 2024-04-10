@@ -2,18 +2,19 @@ import { NextPageWithLayout } from 'next';
 import { DashboardLayout } from '@app/layout';
 import { Participants } from '@app/views/dashboard';
 import { useEventParticipants } from '@app/hooks/api/org';
-import { RiLoaderFill } from 'react-icons/ri';
 import { useEvent } from '@app/hooks/api/Events';
+import { Loader } from '@app/components/preloaders';
+import { Error } from '@app/components/Error';
 
 const Dashboard: NextPageWithLayout = () => {
-    const { isLoading, data, refetch } = useEventParticipants();
+    const { isLoading, data, refetch, error } = useEventParticipants();
     const { data: eventData } = useEvent('event');
     if (isLoading) {
-        return (
-            <div className="h-screen flex items-center justify-center p-4">
-                <RiLoaderFill className="animate-spin h-8 w-8" />
-            </div>
-        );
+        return <Loader />;
+    }
+
+    if (error) {
+        <Error />;
     }
 
     if (data) {

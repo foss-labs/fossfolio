@@ -10,6 +10,7 @@ const Properties = {
         canViewDashboard: true,
         canChangeParticipantStatus: true,
         canSeeRevenue: true,
+        canDeleteEvent: true,
     },
     EDITOR: {
         canDeleteOrg: false,
@@ -20,6 +21,7 @@ const Properties = {
         canRemoveOrgUser: false,
         canChangeParticipantStatus: true,
         canSeeRevenue: false,
+        canDeleteEvent: false,
     },
     VIEWER: {
         canDeleteOrg: false,
@@ -30,6 +32,7 @@ const Properties = {
         canViewDashboard: true,
         canChangeParticipantStatus: true,
         canSeeRevenue: false,
+        canDeleteEvent: false,
     },
     NO_ACCESS: {
         canDeleteOrg: false,
@@ -40,6 +43,7 @@ const Properties = {
         canViewDashboard: true,
         canChangeParticipantStatus: false,
         canSeeRevenue: false,
+        canDeleteEvent: false,
     },
 };
 

@@ -10,6 +10,7 @@ import { apiHandler } from '@app/config';
 import { PublishModal } from '@app/views/dashboard';
 import { useEvent } from '@app/hooks/api/Events';
 import { Button } from '@app/components/ui/Button';
+import { Loader } from '@app/components/preloaders';
 
 const defaultEditorContent = {
     type: 'doc',
@@ -132,11 +133,7 @@ const Event = () => {
     };
 
     if (isLoading) {
-        return (
-            <div className="h-[90vh]  flex items-center justify-center">
-                <RiLoaderFill className="animate-spin h-8 w-8" />
-            </div>
-        );
+        return <Loader />;
     }
 
     return (

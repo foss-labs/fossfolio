@@ -1,18 +1,14 @@
 import { useKanban } from '@app/hooks/api/kanban';
 import { DashboardLayout } from '@app/layout';
-import { RiLoaderFill } from 'react-icons/ri';
 import { Separator } from '@app/ui/components/separator';
 import { Kanban } from '@app/views/tasks';
+import { Loader } from '@app/components/preloaders';
 
 const Tasks = () => {
     const { data, isLoading } = useKanban();
 
     if (isLoading) {
-        return (
-            <div className="h-screen flex items-center justify-center p-4">
-                <RiLoaderFill className="animate-spin h-8 w-8" />
-            </div>
-        );
+        return <Loader />;
     }
     return (
         <div className="h-screen p-5">
