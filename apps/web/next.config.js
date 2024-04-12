@@ -6,7 +6,12 @@ const nextConfig = {
         ignoreBuildErrors: true,
     },
     images: {
-        domains: ['img.freepik.com', 'fossfolio.s3.amazonaws.com'],
+        domains: [
+            'img.freepik.com',
+            'fossfolio.s3.amazonaws.com',
+            'loremflickr.com',
+            'picsum.photos',
+        ],
     },
 };
 
