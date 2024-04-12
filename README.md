@@ -37,6 +37,36 @@ FossFolio is an open source web application for people to Find, Host and Manage 
 </details>
 
 
+## How to run locally
+
+### Install pnpm globally
+```bash
+  npm i -g pnpm
+```
+
+### Install all local dependencies
+```bash
+ pnpm install
+```
+
+### Install docker and run 
+```bash
+ docker compose up
+```
+### Migrate prisma and seed the db
+```bash
+pnpm --filter api prisma migrate dev
+pnpm --filter api db:seed
+```
+### Run client and server
+```bash
+ pnpm --filter web dev
+ // new tab
+ pnpm --filter api nest:dev
+```
+
+
+
 
 # Website Pages Showcase
 
