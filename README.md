@@ -37,23 +37,56 @@ FossFolio is an open source web application for people to Find, Host and Manage 
 </details>
 
 
+## How to run locally
+
+### Install pnpm globally
+
+```bash
+npm i -g pnpm
+```
+
+### Install all local dependencies
+
+```bash
+pnpm install
+```
+
+### Install docker and run 
+
+```bash
+docker compose up
+```
+### Migrate prisma and seed the db
+
+```bash
+pnpm --filter api prisma migrate dev
+pnpm --filter api db:seed
+```
+### Run client and server
+
+```bash
+pnpm --filter web dev
+
+pnpm --filter api nest:dev
+```
+
+
+
 
 # Website Pages Showcase
 
 <!-- First Row -->
-<div align="center">
+<div align="start">
   <img src="./packages/docs/all-events.png" alt="Page 1" width="300" />
   <img src="./packages/docs/editor.png" alt="Page 2" width="300" />
   <img src="./packages/docs/event.png" alt="Page 3" width="300" />
   <img src="./packages/docs/members.png" alt="Page 3" width="300" />
-</div>
-<!-- Second Row -->
-<div align="center">
   <img src="./packages/docs/orgs.png" alt="Page 4" width="300" />
   <img src="./packages/docs/particpents.png" alt="Page 5" width="300" />
   <img src="./packages/docs/profile.png" alt="Page 6" width="300" />
   <img src="./packages/docs/settings.png" alt="Page 6" width="300" />
 </div>
+
 
 
 

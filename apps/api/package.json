@@ -16,7 +16,8 @@
         "db:studio": "prisma studio",
         "db:migrate": "prisma migrate dev",
         "dev": "concurrently \"pnpm --filter api nest:dev\" \"pnpm --filter api db:studio\"",
-        "email": "email dev"
+        "email": "email dev",
+        "db:seed": "ts-node prisma/seed.ts"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.521.0",
