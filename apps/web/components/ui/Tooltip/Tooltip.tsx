@@ -7,7 +7,7 @@ import {
 
 interface Prop {
     content: string;
-    toolTipMessage: number;
+    toolTipMessage: string;
 }
 
 export const Tooltip = ({ content, toolTipMessage }: Prop) => {
