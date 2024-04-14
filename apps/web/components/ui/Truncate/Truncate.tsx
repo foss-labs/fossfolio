@@ -19,7 +19,7 @@ export const Truncate = ({ text, size = 10 }: Prop) => {
                 <Tooltip>
                     <TooltipTrigger>{text}</TooltipTrigger>
                     <TooltipContent>
-                        <p>{text.slice(0, 9)}....</p>
+                        <p>{text.slice(0, 9)}...</p>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
