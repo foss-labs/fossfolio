@@ -181,7 +181,6 @@ export class EventsController {
     ) {
         try {
             const event = await this.events.getEventById(eventId);
-
             if (event.maxTicketCount < 1) {
                 throw new NotFoundException();
             }

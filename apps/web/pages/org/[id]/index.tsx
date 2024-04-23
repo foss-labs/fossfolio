@@ -119,7 +119,7 @@ const Org: NextPageWithLayout = () => {
                 </TabsContent>
                 <TabsContent
                     value="settings"
-                    className="flex justify-end items-center flex-col gap-3"
+                    className="flex justify-end items-center pb-3 flex-col gap-3"
                 >
                     {isLoading && <Loader />}
                     {data && (
@@ -133,11 +133,11 @@ const Org: NextPageWithLayout = () => {
                                         control={form.control}
                                         name="orgName"
                                         render={({ field }) => (
-                                            <FormItem className="items-center border-2 border-gray-300 p-5 rounded-md w-full max-w-2xl">
-                                                <FormLabel>Org Name</FormLabel>
+                                            <FormItem className="items-center border border-gray-300 p-5 rounded-md w-full max-w-2xl">
+                                                <FormLabel>Organization Name</FormLabel>
                                                 <FormDescription>
-                                                    Pleae enter a org name you are comfortable with
-                                                    bieng public
+                                                    Pleae enter a Organization name you are
+                                                    comfortable with being public
                                                 </FormDescription>
 
                                                 <FormControl>
@@ -159,11 +159,11 @@ const Org: NextPageWithLayout = () => {
                                         control={form.control}
                                         name="slug"
                                         render={({ field }) => (
-                                            <FormItem className="items-center mt-5 border-2  border-gray-300 p-5 rounded-md w-full max-w-2xl">
-                                                <FormLabel>Org URL</FormLabel>
+                                            <FormItem className="items-center mt-5 border  border-gray-300 p-5 rounded-md w-full max-w-2xl">
+                                                <FormLabel>Organization Slug</FormLabel>
                                                 <FormDescription>
-                                                    Pleae enter a valid URL ,this URL can be
-                                                    acccessible by anyone
+                                                    Pleae enter a valid Slug. The slug can be used
+                                                    to visit your organization page
                                                 </FormDescription>
                                                 <FormControl>
                                                     <Input
@@ -171,6 +171,7 @@ const Org: NextPageWithLayout = () => {
                                                         {...field}
                                                     />
                                                 </FormControl>
+
                                                 <FormMessage />
                                                 <div className="flex w-full max-w-2xl justify-end">
                                                     <Button className="p-3 mt-3" type="submit">

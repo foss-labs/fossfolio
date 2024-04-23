@@ -48,7 +48,7 @@ const Schema = yup.object().shape({
         .min(0)
         .when('isPaidEvent', {
             is: (val: Description) => val === 'true',
-            then: (schema) => schema.required('ticket price is a required field'),
+            then: (schema) => schema.required('Ticket price is a required field'),
             otherwise: (schema) => schema.notRequired(),
         }),
 });
@@ -91,7 +91,7 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
             // create new event
             onClose();
         } catch {
-            toast.error('Couldnt create event , please try again later');
+            toast.error(`Couldn't create event. Please try again later`);
         } finally {
             refetch();
         }
@@ -115,9 +115,9 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
                                             <FormItem>
                                                 <FormLabel>Name</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="event name" {...field} />
+                                                    <Input placeholder="DevHack" {...field} />
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage className="capitalize" />
                                             </FormItem>
                                         )}
                                     />
@@ -128,9 +128,12 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
                                             <FormItem>
                                                 <FormLabel>Website</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="website link" {...field} />
+                                                    <Input
+                                                        placeholder="https://example.com"
+                                                        {...field}
+                                                    />
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage className="capitalize" />
                                             </FormItem>
                                         )}
                                     />
@@ -141,9 +144,9 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
                                             <FormItem>
                                                 <FormLabel>Location</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="location" {...field} />
+                                                    <Input placeholder="Kochi, India" {...field} />
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage className="capitalize" />
                                             </FormItem>
                                         )}
                                     />
@@ -188,7 +191,7 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
                                                             min={0}
                                                         />
                                                     </FormControl>
-                                                    <FormMessage />
+                                                    <FormMessage className="capitalize" />
                                                 </FormItem>
                                             )}
                                         />

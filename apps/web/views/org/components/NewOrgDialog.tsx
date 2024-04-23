@@ -86,11 +86,11 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
                         <form onSubmit={handleSubmit(onUserSubMit)}>
                             <div className="flex flex-col gap-3">
                                 <label htmlFor="org" className="text-start">
-                                    org name
+                                    Name of Organization
                                 </label>
                                 <Input type="org" {...register('name')} />
                                 <label htmlFor="slug" className="text-start">
-                                    domain url
+                                    Organization Url
                                 </label>
                                 <Input type="slug" {...register('slug')} />
                                 {errors.slug && (
@@ -98,7 +98,7 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
                                         An org with same name already exist
                                     </span>
                                 )}
-                                <label className="text-start">{`${ENV.web_base_url}/${watch(
+                                <label className="text-start">{`Your organization Url is ${ENV.web_base_url}/${watch(
                                     'slug',
                                 )}`}</label>
                             </div>

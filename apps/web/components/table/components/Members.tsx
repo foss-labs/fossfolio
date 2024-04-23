@@ -161,8 +161,8 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                                         </FormControl>
                                         <SelectContent>
                                             <SelectItem value={Roles.Admin}>Admin</SelectItem>
-                                            <SelectItem value={Roles.Editor}>editor</SelectItem>
-                                            <SelectItem value={Roles.Viewer}>viewer</SelectItem>
+                                            <SelectItem value={Roles.Editor}>Editor</SelectItem>
+                                            <SelectItem value={Roles.Viewer}>Viewer</SelectItem>
                                         </SelectContent>
                                     </Select>
 
@@ -180,7 +180,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                     <RiLoaderFill className="animate-spin h-8 w-8" />
                 </div>
             ) : (
-                <Table className="border-2 border-[#E9D7FE] rounded-full">
+                <Table className="border rounded-md">
                     <TableHeader className="bg-[#F9FAFB] rounded-lg">
                         <TableRow>
                             <TableHead>Name</TableHead>
@@ -193,21 +193,21 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                         {data?.map((el) => (
                             <TableRow key={el.user.uid}>
                                 <TableCell className="font-medium">
-                                    <h5>{el.user.slug}</h5>
+                                    <h5>{el.user.displayName ?? el.user.slug}</h5>
                                 </TableCell>
                                 <TableCell>{el.user.email}</TableCell>
                                 <TableCell>
                                     <Select
-                                        disabled={!canSendInvite}
+                                        disabled={!canSendInvite || user?.uid === el.user.uid}
                                         onValueChange={(e: Role) => updateRole(e, el.user.uid)}
                                     >
                                         <SelectTrigger className="w-44">
                                             <SelectValue placeholder={el.role} />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="ADMIN">ADMIN</SelectItem>
-                                            <SelectItem value="VIEWER">VIEWER</SelectItem>
-                                            <SelectItem value="EDITOR">EDITOR</SelectItem>
+                                            <SelectItem value="ADMIN">Admin</SelectItem>
+                                            <SelectItem value="VIEWER">Viewer</SelectItem>
+                                            <SelectItem value="EDITOR">Editor</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </TableCell>

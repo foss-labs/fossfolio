@@ -32,9 +32,9 @@ export const LeaveModal = ({ isOpen, onClose }: IModal) => {
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="w-[325px] md:w-auto ">
                 <DialogHeader>
-                    Delete Org
+                    Leave Organization
                     <DialogDescription className="mt-3">
-                        Are you sure You want to leave the organisation ?
+                        Are you sure You want to leave the organisation?
                         <div className="flex justify-end space-x-2 mt-5">
                             <Button
                                 className="text-[black] bg-[#F9F5FF] hover:bg-emerald-50 border-[1.4px]"
