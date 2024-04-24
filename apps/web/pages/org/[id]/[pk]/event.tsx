@@ -51,7 +51,7 @@ const Event = () => {
 
     useEffect(() => {
         // remove description when ever component unmounts
-        () => localStorage.removeItem('novel__content');
+        return () => localStorage.removeItem('novel__content');
     }, []);
 
     const handleSaveShortcut = async (event: KeyboardEvent) => {
