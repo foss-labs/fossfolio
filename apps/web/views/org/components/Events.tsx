@@ -18,7 +18,7 @@ export const Events = () => {
     };
 
     if (isLoading) {
-        return <PreLoader count={2} />;
+        return <PreLoader count={5} />;
     }
     return (
         <div className="flex flex-wrap gap-4 lg:w-[90%] ">

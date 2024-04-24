@@ -47,7 +47,7 @@ const Org: NextPageWithLayout = () => {
     const { id } = router.query;
 
     useEffect(() => {
-        if (activeTab) {
+        if (router.isReady) {
             router.replace({
                 query: {
                     ...router.query,
@@ -94,7 +94,7 @@ const Org: NextPageWithLayout = () => {
         <div className="mt-4 p-4 h-[92vh]">
             <Tabs
                 value={activeTab}
-                defaultValue="events"
+                defaultValue={activeTab}
                 className="h-full"
                 onValueChange={(el: string) => setTab(el)}
             >
