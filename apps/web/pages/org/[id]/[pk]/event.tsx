@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Editor } from 'novel';
 import { toast } from 'sonner';
-import { RiLoaderFill } from 'react-icons/ri';
 import { useMutation } from '@tanstack/react-query';
 import { useToggle } from '@app/hooks';
 import { DashboardLayout } from '@app/layout';
