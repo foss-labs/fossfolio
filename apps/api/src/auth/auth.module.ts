@@ -10,7 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { RefreshStrategy } from './strategy/refresh.strategy';
 import { GoogleStrategy } from './strategy/google.strategy';
-import { MultiSamlStrategy } from 'passport-saml';
+import { SamlStrategy } from './strategy/saml.strategy';
 
 @Module({
     imports: [
@@ -27,7 +27,7 @@ import { MultiSamlStrategy } from 'passport-saml';
         AuthService,
         GithubStrategy,
         GoogleStrategy,
-        MultiSamlStrategy,
+        SamlStrategy,
         UserService,
         JwtStrategy,
         RefreshStrategy,

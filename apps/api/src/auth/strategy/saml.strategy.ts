@@ -18,24 +18,18 @@ export class SamlStrategy extends PassportStrategy(MultiSamlStrategy, 'saml') {
             passReqToCallback: true,
             getSamlOptions: async (req: e.Request, callback: SamlOptionsCallback) => {
                 const issuer = req.query.issuer;
-
                 if (!issuer || typeof issuer !== 'string') {
                     return callback(new Error('Issuer not found'));
                 }
-
                 const config = await this.prismaService.samlConfig.findUnique({
-                    where: {
-                        issuer: issuer,
-                    },
-                })
-
+                    where: { issuer: issuer },
+                });
                 if (!config) {
                     return callback(new Error('SAML config not found'));
                 }
-
                 return callback(null, config);
-            }
-
+            },
         });
+    
     }
 }
