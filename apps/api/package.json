@@ -32,6 +32,7 @@
         "@nestjs/schematics": "^10.1.1",
         "@nestjs/swagger": "^7.3.0",
         "@nestjs/throttler": "^5.1.2",
+        "@node-saml/passport-saml": "^5.0.0",
         "@prisma/client": "^5.10.2",
         "@webtre/nestjs-mailer-react-adapter": "^0.1.2",
         "argon2": "^0.40.1",
@@ -56,8 +57,7 @@
         "rxjs": "^7.8.1",
         "stripe": "^14.18.0",
         "zod": "^3.22.4",
-        "zod-to-json-schema": "^3.22.5",
-        "passport-saml": "^3.2.4"
+        "zod-to-json-schema": "^3.22.5"
     },
     "devDependencies": {
         "@faker-js/faker": "^8.4.1",
