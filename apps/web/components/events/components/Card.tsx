@@ -45,7 +45,7 @@ export const EventCard = ({
                 <CardTitle>{name}</CardTitle>
                 <CardDescription>{description}</CardDescription>
                 <div className="flex items-center  rounded-md bg-secondary text-secondary-foreground ">
-                    <a href={`https://${website}`} type="_blank">
+                    <a href={website} type="_blank">
                         <Button variant="secondary" className="shadow-none">
                             <BiLink className="mr-2 h-4 " />
                             <Truncate text={website} size={10} />
