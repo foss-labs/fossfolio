@@ -47,6 +47,8 @@ export class UserService {
             if (user) continue;
             break;
         }
+
+
         const createdUser = await this.prismaService.user.create({
             data: {
                 displayName: userDisplayName,
@@ -55,7 +57,7 @@ export class UserService {
                 slug,
                 providerAccounts: {
                     create: {
-                        provider: profile.provider,
+                        provider: profile.provider ,
                         providerAccountId: profile.id,
                         providerRefreshToken: refreshToken,
                         providerAccessToken: accessToken,
