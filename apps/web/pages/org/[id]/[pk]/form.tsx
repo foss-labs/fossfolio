@@ -30,7 +30,6 @@ import { useEvent, useFormSchema } from '@app/hooks/api/Events';
 import { useMutation } from '@tanstack/react-query';
 import { Iform } from '@app/types';
 import { toast } from 'sonner';
-import { RiLoaderFill } from 'react-icons/ri';
 import { IoIosAdd } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
 import { useToggle } from '@app/hooks';

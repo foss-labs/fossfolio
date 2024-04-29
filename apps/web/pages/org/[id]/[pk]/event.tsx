@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Editor } from 'novel';
 import { toast } from 'sonner';
-import { RiLoaderFill } from 'react-icons/ri';
 import { useMutation } from '@tanstack/react-query';
 import { useToggle } from '@app/hooks';
 import { DashboardLayout } from '@app/layout';
@@ -52,7 +51,7 @@ const Event = () => {
 
     useEffect(() => {
         // remove description when ever component unmounts
-        () => localStorage.removeItem('novel__content');
+        return () => localStorage.removeItem('novel__content');
     }, []);
 
     const handleSaveShortcut = async (event: KeyboardEvent) => {

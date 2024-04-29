@@ -11,15 +11,13 @@ interface Prop {
 }
 
 export const Truncate = ({ text, size = 10 }: Prop) => {
-    const textSize = text.length;
-
-    if (textSize > size) {
+    if (text.length > size) {
         return (
             <TooltipProvider>
                 <Tooltip>
-                    <TooltipTrigger>{text}</TooltipTrigger>
+                    <TooltipTrigger>{text.substring(0, 9)}...</TooltipTrigger>
                     <TooltipContent>
-                        <p>{text.slice(0, 9)}...</p>
+                        <p>{text}</p>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>

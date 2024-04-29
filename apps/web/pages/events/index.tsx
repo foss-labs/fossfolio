@@ -29,7 +29,7 @@ const Events: NextPageWithLayout = () => {
     return (
         <div className="p-6 flex flex-col items-center">
             <h1 className="text-center text-5xl">Find Events</h1>
-            <div className="flex flex-wrap flex-col justify-center items-center p-4  gap-2 lg:flex-row lg:items-center lg:w-[90%] lg:justify-start">
+            <div className="flex flex-wrap flex-col justify-center items-center p-4  gap-2 lg:flex-row lg:items-center lg:justify-start">
                 {data?.map((el) => (
                     <EventCard
                         name={el.name}
