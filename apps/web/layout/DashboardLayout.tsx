@@ -3,9 +3,9 @@ import { DashNav } from './components/DashboardNav';
 
 export const DashboardLayout = ({ children }: Child) => {
     return (
-        <div className="flex">
+        <div className="flex flex-col">
             <DashNav />
-            <div className="ml-[240px] w-full">{children}</div>
+            <div className="w-full mt-12">{children}</div>
         </div>
     );
 };
