@@ -1,7 +1,7 @@
 import { Button } from '@app/components/ui/Button';
 import { apiHandler } from '@app/config';
 import { useToggle } from '@app/hooks';
-import { useEvent, useUserRegistartionStatus } from '@app/hooks/api/Events';
+import { useEvent, useUserRegistrationStatus } from '@app/hooks/api/Events';
 import { HomeLayout } from '@app/layout';
 import { PublicFormModal } from '@app/views/form';
 import { useMutation } from '@tanstack/react-query';
@@ -15,7 +15,7 @@ import { Error } from '@app/components/Error';
 
 const Event: NextPageWithLayout = () => {
     const { data, refetch, error } = useEvent('public');
-    const { data: registerStatus, refetch: refetchStatus } = useUserRegistartionStatus();
+    const { data: registerStatus, refetch: refetchStatus } = useUserRegistrationStatus();
     const [isFormOpen, toggleForm] = useToggle(false);
     const router = useRouter();
     // slug of event

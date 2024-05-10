@@ -132,7 +132,7 @@ const Form: NextPageWithLayout = () => {
                 toast.success('form was unpublished successfully');
             }
         } catch {
-            toast.error('Couldnt complete the operation');
+            toast.error("Couldn't complete the operation");
         } finally {
             toggleFormStatus.off();
         }
@@ -200,7 +200,7 @@ const Form: NextPageWithLayout = () => {
         } finally {
             setTempForm([]);
             setSavingAIForm(false);
-            await refetch();
+            refetch();
             form.reset();
         }
     };

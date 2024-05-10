@@ -21,8 +21,6 @@ export class StripeService {
 
     async handleWebHookEvent(body, signature) {
         try {
-            console.log('BODY', body);
-            console.log('SIGNATIRE', signature);
             const event = this.stripe.webhooks.constructEvent(
                 body,
                 signature,

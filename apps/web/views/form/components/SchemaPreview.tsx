@@ -1,6 +1,7 @@
 import { Button } from '@app/components/ui/Button';
+import { MdDeleteOutline } from 'react-icons/md';
 import { apiHandler } from '@app/config';
-import { useUserRegistartionStatus } from '@app/hooks/api/Events';
+import { useFormSchema, useUserRegistrationStatus } from '@app/hooks/api/Events';
 import { Iform } from '@app/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@app/ui/components/card';
 import { Checkbox } from '@app/ui/components/checkbox';
@@ -16,6 +17,8 @@ import {
 } from '@app/ui/components/select';
 import { Textarea } from '@app/ui/components/textarea';
 import { toast } from 'sonner';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 
 type Prop = {
     data: Array<Iform>;
@@ -25,7 +28,23 @@ type Prop = {
 };
 
 export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: Prop) => {
-    const { refetch: refetchStatus } = useUserRegistartionStatus();
+    const { refetch: refetchStatus } = useUserRegistrationStatus();
+    const { refetch } = useFormSchema();
+    const router = useRouter();
+    const { pk, id } = router.query;
+
+    const bulkDeleteFormPreview = async () => {
+        try {
+            await apiHandler.delete(`events/form/bulk-delete/${pk}`, {
+                data: {
+                    organizationId: id,
+                },
+            });
+            toast.success('form deleted successfully');
+        } catch {
+            toast.error('error deleting form');
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         if (!isPublic) return;
@@ -43,7 +62,7 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
         try {
             const { data } = await apiHandler.post(`/events/form/${eventId}`, formData);
             if (data.url) {
-                // shoudl use stripe js library to pass session id
+                // should use stripe js library to pass session id
                 window.location.href = data.url;
             }
             toast.success('Form submitted successfully');
@@ -52,14 +71,28 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
                 closeModal();
             }
         } catch {
-            toast.error('Error submiting form');
+            toast.error('Error submitting form');
         }
     };
 
+    const { mutate } = useMutation(bulkDeleteFormPreview, {
+        onSuccess: () => {
+            refetch();
+        },
+    });
+
     return (
-        <Card className="mt-10 w-[300px]">
+        <Card className="mt-10 w-[300px] group">
             <CardHeader>
-                <CardTitle>Please fill The form</CardTitle>
+                <CardTitle className="flex">
+                    Please fill The form
+                    {!isPublic && (
+                        <MdDeleteOutline
+                            className="ml-2 w-4 hover:text-red-500 hover:cursor-pointer hidden group-hover:block"
+                            onClick={() => mutate()}
+                        />
+                    )}
+                </CardTitle>
             </CardHeader>
             <CardContent className="max-h-[calc(70svh)] pt-4 pb-8 overflow-auto">
                 <form onSubmit={handleSubmit}>

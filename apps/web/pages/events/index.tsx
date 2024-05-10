@@ -7,10 +7,6 @@ import { Error } from '@app/components/Error';
 const Events: NextPageWithLayout = () => {
     const { isLoading, data, error } = useAllEvents();
 
-    if (isLoading) {
-        return <PreLoader count={12} />;
-    }
-
     if (error) {
         return <Error />;
     }
@@ -29,21 +25,25 @@ const Events: NextPageWithLayout = () => {
     return (
         <div className="p-6 flex flex-col items-center">
             <h1 className="text-center text-5xl">Find Events</h1>
-            <div className="flex flex-wrap flex-col justify-center items-center p-4  gap-2 lg:flex-row lg:items-center lg:justify-start">
-                {data?.map((el) => (
-                    <EventCard
-                        name={el.name}
-                        id={el.id}
-                        key={el.id}
-                        location={el.location}
-                        website={el.website}
-                        lastDate={el.lastDate}
-                        eventDate={el.eventDate}
-                        coverImage={el.coverImage}
-                        slug={el.slug}
-                    />
-                ))}
-            </div>
+            {isLoading ? (
+                <PreLoader count={10} />
+            ) : (
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[80%]">
+                    {data?.map((el) => (
+                        <EventCard
+                            name={el.name}
+                            id={el.id}
+                            key={el.id}
+                            location={el.location}
+                            website={el.website}
+                            lastDate={el.lastDate}
+                            eventDate={el.eventDate}
+                            coverImage={el.coverImage}
+                            slug={el.slug}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
