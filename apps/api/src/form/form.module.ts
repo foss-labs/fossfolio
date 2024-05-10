@@ -11,4 +11,4 @@ import { EventsModule } from '../events/events.module';
     imports: [PrismaModule, AiModule, EventsModule],
     controllers: [FormController],
 })
-export class FromModule {}
+export class FormModule {}

@@ -81,10 +81,10 @@ export class FormController {
     @Roles('ADMIN', 'EDITOR', 'VIEWER')
     @ApiOperation({ summary: 'Get all the form submission from participant' })
     @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getregistredParticipantsFormSubmissions(
+    async getRegisteredParticipantsFormSubmissions(
         @Param('id') id: string,
         @Param('userId') uid: string,
     ) {
-        return await this.form.getregisterParticipantsFormSubmissions(id, uid);
+        return await this.form.getRegisteredParticipantsFormSubmissions(id, uid);
     }
 }

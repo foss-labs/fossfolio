@@ -17,6 +17,7 @@ import { OrganizationMemberModule } from './org-member/org-member.module';
 import { OrganizationInviteModule } from './org-invite/org-invite.module';
 import { AppController } from './app.controller';
 import { KanbanModule } from './kanban/kanban.module';
+import { FormModule } from './form/form.module';
 import { AiModule } from './ai/ai.module';
 
 @Module({
@@ -77,6 +78,7 @@ import { AiModule } from './ai/ai.module';
         StripeModule,
         KanbanModule,
         AiModule,
+        FormModule,
     ],
     controllers: [AppController],
     providers: [

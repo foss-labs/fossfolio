@@ -1,7 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AiService } from '../ai/ai.service';
-import { StripeService } from '../stripe/stripe.service';
 import { EventsService } from '../events/events.service';
 import { FormPayLoad } from './dto/create-form.dto';
 
@@ -155,7 +154,7 @@ export class FormService {
         });
     }
 
-    async getregisterParticipantsFormSubmissions(id: string, userId: string) {
+    async getRegisteredParticipantsFormSubmissions(id: string, userId: string) {
         try {
             const schema = await this.prismaService.events.findUnique({
                 where: {
