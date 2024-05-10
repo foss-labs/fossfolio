@@ -35,13 +35,17 @@ export class EventsService {
         });
     }
 
+    private async getEventBySlug(id: string) {
+        return this.prismaService.events.findUnique({
+            where: {
+                slug: id,
+            },
+        });
+    }
+
     async createEvent(d: CreateEventDto, userId: string) {
         try {
-            const isEventWithSlugExist = await this.prismaService.events.findUnique({
-                where: {
-                    slug: d.name,
-                },
-            });
+            const isEventWithSlugExist = await this.getEventBySlug(d.name);
 
             const totalCount = await this.prismaService.events.aggregate({
                 _count: true,
@@ -72,11 +76,7 @@ export class EventsService {
                 },
             });
 
-            const newEvent = await this.prismaService.events.findUnique({
-                where: {
-                    slug,
-                },
-            });
+            const newEvent = await this.getEventBySlug(slug);
 
             // By default these kanban boards are created for each event
             await this.prismaService.events.update({
@@ -240,11 +240,7 @@ export class EventsService {
 
     async publishEvent(eventSlug: string) {
         try {
-            const data = await this.prismaService.events.findUnique({
-                where: {
-                    slug: eventSlug,
-                },
-            });
+            const data = await this.getEventBySlug(eventSlug);
 
             if (!data) {
                 throw new NotFoundException();
