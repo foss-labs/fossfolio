@@ -11,6 +11,9 @@ const generateUser = () => ({
     collegeName: faker.lorem.word(),
 });
 
+const description =
+    '{"type":"doc","content":[{"type":"heading","attrs":{"level":1},"content":[{"type":"text","text":"Hello world"}]},{"type":"paragraph","content":[{"type":"text","text":"Hi i am from this org and I need some gkjrhgjkfdghfkjdhgjkdfhg"},{"type":"hardBreak"},{"type":"hardBreak"}]},{"type":"taskList","content":[{"type":"taskItem","attrs":{"checked":false},"content":[{"type":"paragraph","content":[{"type":"text","text":"18+"}]}]},{"type":"taskItem","attrs":{"checked":false},"content":[{"type":"paragraph","content":[{"type":"text","text":"Indian"}]}]},{"type":"taskItem","attrs":{"checked":false},"content":[{"type":"paragraph","content":[{"type":"text","text":"Graduate"}]}]}]},{"type":"blockquote","content":[{"type":"paragraph"}]}]}';
+
 async function main() {
     const rounds = 10;
     for (let i = 0; i < rounds; i++) {
@@ -75,6 +78,7 @@ async function main() {
                         ],
                     },
                 },
+                description: description,
                 isFormPublished: true,
                 isPublished: true,
             },

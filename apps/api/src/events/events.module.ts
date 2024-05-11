@@ -5,7 +5,7 @@ import { CloudModule } from '../cloud/cloud.module';
 import { EventsController } from './events.controller';
 import { UploadMiddleWare } from './upload.middleware';
 import { StripeService } from '../stripe/stripe.service';
-import {AiModule} from "../ai/ai.module";
+import { AiModule } from '../ai/ai.module';
 
 @Module({
     providers: [EventsService, StripeService],

@@ -15,7 +15,7 @@ type Status = {
     message: string;
 };
 
-export const useUserRegistartionStatus = () => {
+export const useUserRegistrationStatus = () => {
     const { user } = useAuth();
     const [id, setId] = useState('');
     const router = useRouter();
