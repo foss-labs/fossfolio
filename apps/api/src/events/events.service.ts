@@ -671,8 +671,6 @@ export class EventsService {
             .$queryRaw`UPDATE public."Events" SET embedding_description = ${embedDescription} WHERE id = ${event.id}`;
         await this.prismaService
             .$queryRaw`UPDATE public."Events" SET embedding_title = ${embedName} WHERE id = ${event.id}`;
-<<<<<<< HEAD
-=======
     }
 
     async deleteForm(slug: string) {
@@ -694,7 +692,6 @@ export class EventsService {
         } catch {
             throw new InternalServerErrorException();
         }
->>>>>>> dev
     }
 }
 
