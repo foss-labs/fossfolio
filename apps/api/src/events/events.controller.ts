@@ -114,27 +114,6 @@ export class EventsController {
         return await this.events.getEventStats(id);
     }
 
-<<<<<<< HEAD
-=======
-    @Post('/form')
-    @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR')
-    @ApiOperation({ summary: 'Create form for each event' })
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async createForm(@Body() payload: FormPayLoad) {
-        return await this.events.createForm(payload);
-    }
-
-    @Delete('/form/bulk-delete/:slug')
-    @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR')
-    @ApiOperation({ summary: 'Bulk delete form for each event' })
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async bulkDeleteForm(@Param('slug') eventName: string) {
-        return await this.events.deleteForm(eventName);
-    }
-
->>>>>>> dev
     @Patch('/edit/cover')
     @Roles('ADMIN', 'EDITOR')
     @ApiTags('events')
