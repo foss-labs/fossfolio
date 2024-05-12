@@ -1,0 +1,235 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  uid String [pk]
+  email String [unique]
+  displayName String
+  slug String [unique]
+  photoURL String
+  isStudent Boolean
+  collegeName String
+  refreshToken String
+  createdAt DateTime [default: `now()`, not null]
+  organizationMember OrganizationMember [not null]
+  providerAccounts Account [not null]
+  Response Response [not null]
+  Ticket Ticket [not null]
+  Kanban Kanban [not null]
+  Task Task [not null]
+  Comment Comment [not null]
+}
+
+Table Account {
+  id String [pk]
+  userId String [not null]
+  user User [not null]
+  provider String [not null]
+  providerAccountId String [not null]
+  providerAccessToken String
+  providerRefreshToken String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (provider, providerAccountId) [unique]
+  }
+}
+
+Table Organization {
+  id String [pk]
+  name String [not null]
+  slug String [unique, not null]
+  members OrganizationMember [not null]
+  invites OrganizationInvite [not null]
+  events Events [not null]
+  isActive Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table OrganizationMember {
+  id String [pk]
+  role Role [not null]
+  userUid String [not null]
+  user User [not null]
+  organizationId String [not null]
+  organization Organization [not null]
+
+  indexes {
+    (userUid, organizationId) [unique]
+  }
+}
+
+Table OrganizationInvite {
+  id String [pk]
+  inviteeEmail String [not null]
+  inviteeRole Role [not null]
+  inviterUid String [not null]
+  organizationId String [not null]
+  organization Organization [not null]
+
+  indexes {
+    (inviteeEmail, organizationId) [unique]
+  }
+}
+
+Table Events {
+  id String [pk]
+  name String [not null]
+  slug String [unique, not null]
+  website String
+  location String [not null]
+  lastDate DateTime
+  organizationId String [not null]
+  isPublished Boolean [not null, default: false]
+  description Json
+  organization Organization [not null]
+  isTeamEvent Boolean [not null, default: false]
+  maxTeamSize Int [not null, default: 1]
+  minTeamSize Int [not null, default: 1]
+  isCollegeEvent Boolean [not null, default: false]
+  isFormPublished Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  maxTicketCount Int
+  eventDate DateTime
+  form Field [not null]
+  coverImage String
+  Response Response [not null]
+  ticketPrice Int [not null, default: 0]
+  stripe_price_object String
+  stripe_product_object String
+  Ticket Ticket [not null]
+  kanban Kanban [not null]
+}
+
+Table Field {
+  id String [pk]
+  label String [not null]
+  placeholder String
+  options String[] [not null]
+  required Boolean [not null, default: false]
+  type FieldType [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  Events Events
+  eventsId String
+}
+
+Table Response {
+  id String [pk]
+  user User [not null]
+  data Json [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userUid String [not null]
+  Events Events
+  eventsId String
+}
+
+Table Ticket {
+  id String [pk]
+  event Events [not null]
+  eventsId String [not null]
+  user User [not null]
+  userUid String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Kanban {
+  id String [pk]
+  title String [not null]
+  tasks Task [not null]
+  createdBy User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userUid String [not null]
+  Events Events
+  eventsId String
+}
+
+Table Task {
+  id String [pk]
+  title String [not null]
+  createdBy User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  Kanban Kanban
+  kanbanId String
+  userUid String [not null]
+  Comment Comment [not null]
+}
+
+Table Comment {
+  id String [pk]
+  task Task [not null]
+  taskId String [not null]
+  data Json [not null]
+  user User [not null]
+  userUid String [not null]
+}
+
+Table SamlConfig {
+  id String [pk]
+  issuer String [unique, not null]
+  cert String [not null]
+  entryPoint String [not null]
+  wantAssertionsSigned Boolean [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+Enum FieldType {
+  SingleLineText
+  LongText
+  SingleSelect
+  MultiSelect
+  Checkbox
+  Number
+  Email
+  URL
+  PhoneNumber
+  Attachment
+  DateTime
+}
+
+Ref: Account.userId > User.uid
+
+Ref: OrganizationMember.userUid > User.uid
+
+Ref: OrganizationMember.organizationId > Organization.id [delete: Cascade]
+
+Ref: OrganizationInvite.organizationId > Organization.id [delete: Cascade]
+
+Ref: Events.organizationId > Organization.id [delete: Cascade]
+
+Ref: Field.eventsId > Events.id
+
+Ref: Response.userUid > User.uid
+
+Ref: Response.eventsId > Events.id
+
+Ref: Ticket.eventsId > Events.id
+
+Ref: Ticket.userUid > User.uid
+
+Ref: Kanban.userUid > User.uid
+
+Ref: Kanban.eventsId > Events.id
+
+Ref: Task.userUid > User.uid
+
+Ref: Task.kanbanId > Kanban.id
+
+Ref: Comment.taskId > Task.id
+
+Ref: Comment.userUid > User.uid
