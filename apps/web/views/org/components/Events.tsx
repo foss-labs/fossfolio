@@ -24,7 +24,7 @@ export const Events = () => {
         <div className="flex flex-wrap gap-4 lg:w-[90%] ">
             {canCreateEvent && (
                 <div
-                    className="h-[230px] w-[330px] rounded-md border-2 flex justify-center items-center border-dotted  md:w-[400px] mt-6 hover:cursor-pointer hover:outline-double hover:outline-primary"
+                    className="w-[300px] h-[150px] mt-6 border-2 group p-3 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition flex justify-center items-center border-dotted rounded-md flex-col hover:cursor-pointer"
                     onClick={toggleOpen.on}
                 >
                     <BsCalendarEvent className="text-3xl p-1" />

@@ -79,9 +79,9 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-[400px] md:w-md-auto">
+            <DialogContent className="w-[320px] rounded-md md:w-[400px] md:w-md-auto">
                 <DialogHeader>
-                    <DialogTitle className="mb-4">New Org</DialogTitle>
+                    <DialogTitle className="mb-4">Create new organization</DialogTitle>
                     <DialogDescription>
                         <form onSubmit={handleSubmit(onUserSubMit)}>
                             <div className="flex flex-col gap-3">

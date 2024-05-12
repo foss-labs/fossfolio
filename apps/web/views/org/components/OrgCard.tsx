@@ -24,11 +24,11 @@ export const OrgCard = ({ name, id, role, members, events }: Prop) => {
     return (
         <div
             onClick={goToOrg}
-            className="flex flex-col group justify-between w-[300px] h-[150px] border-solid border-2 p-3 border-gray-400 rounded-sm b hover:cursor-pointer shadow-md"
+            className="flex flex-col group justify-between w-[300px] h-[150px] border-solid border p-3 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition rounded-sm hover:cursor-pointer"
         >
             <div className="flex justify-between w-full">
                 <h2 className="text-2xl font-bold capitalize">{name}</h2>
-                <BsChevronRight className="group-hover:translate-x-2 duration-100" />
+                <BsChevronRight className="text-lg" />
             </div>
             <div className="flex justify-between">
                 <span className="flex items-center gap-2">

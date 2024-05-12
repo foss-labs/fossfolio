@@ -198,6 +198,9 @@ export class EventsService {
                         gt: 0,
                     },
                 },
+                orderBy: {
+                    createdAt: 'asc',
+                },
             });
         } catch {
             throw {
@@ -668,6 +671,30 @@ export class EventsService {
             .$queryRaw`UPDATE public."Events" SET embedding_description = ${embedDescription} WHERE id = ${event.id}`;
         await this.prismaService
             .$queryRaw`UPDATE public."Events" SET embedding_title = ${embedName} WHERE id = ${event.id}`;
+<<<<<<< HEAD
+=======
+    }
+
+    async deleteForm(slug: string) {
+        try {
+            await this.prismaService.events.update({
+                where: {
+                    slug,
+                },
+                data: {
+                    form: {
+                        deleteMany: {},
+                    },
+                },
+            });
+            return {
+                ok: true,
+                message: 'form deleted successfully',
+            };
+        } catch {
+            throw new InternalServerErrorException();
+        }
+>>>>>>> dev
     }
 }
 

@@ -1,9 +1,9 @@
-import {Injectable} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
-import {z} from 'zod';
+import { z } from 'zod';
 import zodToJsonSchema from 'zod-to-json-schema';
-import {ChatCompletionMessageParam} from 'openai/resources/chat/completions';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 type Message = {
     text: string;
@@ -83,14 +83,16 @@ export class AiService {
             response_format: { type: 'json_object', schema: jsonSchema },
         });
 
-        const jsonExtract = chat.choices[0].message.content!.match(/[{\[]{1}([,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]|".*?")+[}\]]{1}/gis);
+        const jsonExtract = chat.choices[0].message.content!.match(
+            /[{\[]{1}([,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]|".*?")+[}\]]{1}/gis,
+        );
 
         if (!jsonExtract) {
             console.log('No JSON found in the response');
-            console.log('Retrying!!!!')
+            console.log('Retrying!!!!');
             return this.gptComplete(prompt, messages);
         }
-        
+
         return JSON.parse(jsonExtract[0]);
     }
 
@@ -102,7 +104,6 @@ export class AiService {
             });
 
             return res.data[0].embedding;
-
         } catch (error) {
             console.error(error);
             return '';

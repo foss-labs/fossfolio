@@ -26,7 +26,7 @@ import { AiModule } from './ai/ai.module';
         ThrottlerModule.forRoot([
             {
                 ttl: 60000,
-                limit: 10,
+                limit: 50,
             },
         ]),
         ConfigModule.forRoot({

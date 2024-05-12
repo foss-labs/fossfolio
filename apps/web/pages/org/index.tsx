@@ -16,13 +16,13 @@ const Index: NextPageWithLayout = () => {
         <div className="p-[20px]">
             <Separator className="mb-5" />
             <NewOrgDialog isOpen={isOpen} onClose={setOpen.off} />
-            <div className="flex items-center justify-between">
+            <div className="flex items-center flex-wrap justify-between">
                 <h4 className="text-xl font-semibold md:text-[40px]">
                     {user?.displayName.split(' ')[0]}&apos;s organisations
                 </h4>
                 <Button onClick={setOpen.on}>New Organisation</Button>
             </div>
-            <div className="flex flex-wrap mt-10 gap-5">
+            <div className="flex justify-center md:justify-start flex-wrap mt-10 gap-5">
                 {isLoading ? (
                     <div className="flex flex-col flex-wrap gap-5 md:flex-row">
                         <OrgLoader />
@@ -30,11 +30,13 @@ const Index: NextPageWithLayout = () => {
                 ) : (
                     <>
                         <div
-                            className="w-[300px] h-[150px] border-2 flex justify-center items-center border-dotted flex-col hover:cursor-pointer"
+                            className="w-[300px] h-[150px] border-2 group p-3 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition flex justify-center items-center border-dotted flex-col hover:cursor-pointer"
                             onClick={setOpen.on}
                         >
-                            <GoOrganization className="border-black border-2 rounded-full text-3xl p-1" />
-                            Create a new organisation
+                            <div className="flex flex-col items-center group-hover:scale-110 transition justify-center gap-2">
+                                <GoOrganization className="border-black border-2 rounded-full text-3xl p-1" />
+                                Create a new organisation
+                            </div>
                         </div>
                         {data?.data.map((el) => (
                             <OrgCard
