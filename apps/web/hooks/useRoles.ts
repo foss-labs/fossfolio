@@ -60,7 +60,5 @@ export const useRoles = () => {
     if (!role) {
         return Properties['NO_ACCESS'];
     }
-    console.log('role', role, Properties[role].canEditEvent);
-
     return Properties[role];
 };
