@@ -72,7 +72,7 @@ export const DashNav = () => {
                 <Tabs defaultValue="Event" className="w-[400px]">
                     <TabsList>
                         {ROUTES.map(({ name, icon }) => {
-                            if (name === 'Revenue' && !isPaidEvent) return;
+                            if ((name === 'Revenue' && !isPaidEvent) || name === 'Tasks') return;
                             return (
                                 <TabsTrigger
                                     onClick={() => {

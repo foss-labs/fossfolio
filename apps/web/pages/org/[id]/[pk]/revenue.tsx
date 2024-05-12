@@ -21,24 +21,22 @@ const Revenue = () => {
     return (
         <div className="bg-gray-100 min-h-screen items-center justify-center">
             <div className="flex flex-wrap  p-6 sm:gap-4 justify-start">
-                <div className="rounded-md h-32 w-56  bg-gradient-to-b from-purple-300 via-purple-100 to-white flex flex-col justify-center items-center shadow-md">
-                    <h1 className=" text-2xl text-center font-bold mb-2">
-                        {statsData?.data.totalRevenue || 0} rs
+                <div className="rounded-md h-32 bg-white w-56 p-3 justify-center border flex flex-col shadow-sm">
+                    <h1 className="text-4xl font-bold mb-2">
+                        ₹ {statsData?.data.totalRevenue || 0}
                     </h1>
-                    <p className="  text-brand-purple-700 font-bold   text-center">Total Revenue</p>
+                    <p className="text-brand-purple-700 mt-2 font-medium text-xl">Total Revenue</p>
                 </div>
 
-                <div className="rounded-md h-32 w-56 bg-gradient-to-b from-purple-300 via-purple-100 to-white  bg-blue-100 flex flex-col justify-center items-center shadow-md">
-                    <h1 className="text-2xl text-center font-bold mb-2">
-                        {statsData?.data.totalTickets || 0}
-                    </h1>
-                    <p className="text-brand-purple-700 font-bold  text-center ">
+                <div className="rounded-md h-32 bg-white w-56 p-3 justify-center border flex flex-col shadow-sm">
+                    <h1 className="text-4xl font-bold mb-2">{statsData?.data.totalTickets || 0}</h1>
+                    <p className="text-brand-purple-700 mt-2 font-medium text-xl">
                         Tickets Generated
                     </p>
                 </div>
             </div>
             <div className="flex justify-between gap-10 p-6  h-[calc(100vh-260px)] sm:flex-col lg:flex-row">
-                <div className="bg-white shadow-md w-full">
+                <div className="bg-white shadow-sm rounded-md w-full">
                     <div className="flex flex-wrap justify-between p-6">
                         <h1 className="font-bold">Revenue</h1>
                         <p>Total revenue : {statsData?.data.totalRevenue || 0}</p>

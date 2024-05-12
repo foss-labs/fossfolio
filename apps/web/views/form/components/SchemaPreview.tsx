@@ -25,9 +25,16 @@ type Prop = {
     isPublic: boolean;
     closeModal?: () => void;
     eventId: string;
+    isAIgenerated?: boolean;
 };
 
-export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: Prop) => {
+export const SchemaPreview = ({
+    data,
+    closeModal,
+    isPublic = false,
+    eventId,
+    isAIgenerated = false,
+}: Prop) => {
     const { refetch: refetchStatus } = useUserRegistrationStatus();
     const { refetch } = useFormSchema();
     const router = useRouter();
@@ -86,7 +93,7 @@ export const SchemaPreview = ({ data, closeModal, isPublic = false, eventId }: P
             <CardHeader>
                 <CardTitle className="flex">
                     Please fill The form
-                    {!isPublic && (
+                    {!isPublic && !isAIgenerated && (
                         <MdDeleteOutline
                             className="ml-2 w-4 hover:text-red-500 hover:cursor-pointer hidden group-hover:block"
                             onClick={() => mutate()}

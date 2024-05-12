@@ -451,6 +451,7 @@ const Form: NextPageWithLayout = () => {
                                 <>
                                     <SchemaPreview
                                         data={tempForm}
+                                        isAIgenerated={true}
                                         isPublic={false}
                                         eventId={eventInfo?.data.id as string}
                                     />
