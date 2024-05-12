@@ -31,6 +31,8 @@
         "MISTRAL_API_KEY",
         "NODE_ENV",
         "PORT",
+        "NEXT_PUBLIC_POSTHOG_KEY",
+        "NEXT_PUBLIC_POSTHOG_HOST",
         "CI",
         "OPEN_AI_TOKEN",
         "AWS_ACCESS_KEY",
