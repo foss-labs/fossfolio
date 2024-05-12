@@ -4,9 +4,18 @@ import { EventCard, PreLoader, NoData } from '@app/components/events';
 import { useAllEvents } from '@app/hooks/api/Events';
 import { Error } from '@app/components/Error';
 import { da } from 'date-fns/locale';
+import { Input } from '@app/ui/components/input';
+import { useEffect, useState } from 'react';
 
 const Events: NextPageWithLayout = () => {
-    const { isLoading, data, error } = useAllEvents();
+    const [query, setQuery] = useState<string>('');
+
+    const { isLoading, data, error, refetch } = useAllEvents(query);
+
+    useEffect(() => {
+        refetch();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [query]);
 
     if (error) {
         return <Error />;
@@ -15,6 +24,13 @@ const Events: NextPageWithLayout = () => {
     return (
         <div className="p-6 flex flex-col items-center">
             <h1 className="text-center text-5xl">Find Events</h1>
+            <Input
+                className="my-8"
+                placeholder="Search for events"
+                onChange={(val) => {
+                    setQuery(val.target.value);
+                }}
+            />
             {isLoading ? (
                 <PreLoader count={10} />
             ) : (

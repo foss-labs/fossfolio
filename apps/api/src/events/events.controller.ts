@@ -34,8 +34,8 @@ export class EventsController {
     @Get('/')
     @ApiTags('events')
     @ApiOperation({ summary: 'returns all upcoming events' })
-    async getAllEvents() {
-        return await this.events.getAllEvents();
+    async getAllEvents(@Query('search') query) {
+        return await this.events.getAllEvents(query);
     }
 
     @Get('/:eventId')

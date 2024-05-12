@@ -21,12 +21,18 @@ type Events = {
     slug: string;
 };
 
-const getAllEvents = async () => {
-    const { data } = await apiHandler.get('/events');
+const getAllEvents = async (query: string) => {
+    const { data } = await apiHandler.get('/events' + '?search=' + query);
     return data;
 };
 
-export const useAllEvents = () => {
-    const events = useQuery<Array<Events>>({ queryKey: ['all-events'], queryFn: getAllEvents });
+export const useAllEvents = (query: string) => {
+    const queryKey = ['events', query];
+
+    const events = useQuery<Array<Events>>({
+        queryKey: queryKey,
+        queryFn: () => getAllEvents(query),
+    });
+
     return events;
 };

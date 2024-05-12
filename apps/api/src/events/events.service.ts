@@ -59,7 +59,7 @@ export class EventsService {
                 slug = d.name;
             }
 
-         await this.prismaService.organization.update({
+            await this.prismaService.organization.update({
                 where: {
                     id: d.organizationId,
                 },
@@ -189,10 +189,14 @@ export class EventsService {
         }
     }
 
-    async getAllEvents() {
+    async getAllEvents(query = '') {
         try {
             return await this.prismaService.events.findMany({
                 where: {
+                    name: {
+                        contains: query,
+                        mode: 'insensitive',
+                    },
                     lastDate: {
                         gte: new Date(),
                     },
