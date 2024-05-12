@@ -2,10 +2,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@app/ui/
 import { Button } from '@app/components/ui/Button';
 import Qrcode from 'qrcode';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Info } from '@app/hooks/api/user/useTickets';
 import { format } from 'date-fns';
 import { useAuth } from '@app/hooks';
+import { useReactToPrint } from 'react-to-print';
 
 type IModal = {
     isOpen: boolean;
@@ -27,6 +28,11 @@ export const TicketModal = ({ isOpen, onClose, data }: IModal) => {
         }
     };
 
+    const componentRef = useRef<HTMLImageElement>(null);
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+    });
+
     useEffect(() => {
         generateQRCode();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,7 +43,7 @@ export const TicketModal = ({ isOpen, onClose, data }: IModal) => {
             <DialogContent className="w-[450px] h-[600px]">
                 <DialogHeader>
                     <DialogDescription className="mt-3" />
-                    <div className="border border-gray-400 rounded p-4 h-full">
+                    <div ref={componentRef} className="border border-gray-400 rounded p-4 h-full">
                         <div className="flex items-center mb-4 rounded h-[100px]">
                             <div className="w-1/2 pl-4">
                                 <p className="text-lg font-bold">{data?.name}</p>
@@ -70,7 +76,11 @@ export const TicketModal = ({ isOpen, onClose, data }: IModal) => {
                     </div>
 
                     <div className="flex justify-between gap-2 mt-6">
-                        <Button variant="outline" className="flex-1 rounded-sm ">
+                        <Button
+                            onClick={handlePrint}
+                            variant="outline"
+                            className="flex-1 rounded-sm "
+                        >
                             Print
                         </Button>
                         <Button className="flex-1">Download</Button>
