@@ -27,4 +27,27 @@ export class CreateEventDto {
     @ApiProperty()
     @IsNumber()
     ticketPrice: number;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    eventDate: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    isPaidEvent: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    lastDate: string;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    maxTicketCount: number;
+
+
+
 }

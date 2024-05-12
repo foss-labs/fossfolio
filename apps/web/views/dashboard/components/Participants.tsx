@@ -33,7 +33,7 @@ export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: D
     const [userToBeDeleted, setDeleteId] = useState('');
     const [userMoreInfoId, setUserMoreInfo] = useState('');
     return (
-        <Table className="border-1/4 border-brand-purple-200 rounded-full">
+        <Table className="border border-brand-purple-200 rounded-full">
             <DeleteModal
                 isOpen={isModalOpen}
                 onClose={toggleModal.off}
@@ -43,9 +43,6 @@ export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: D
             />
             <FormDrawer open={isDrawerOpen} onClose={toggleDrawer.off} userId={userMoreInfoId} />
             <TableHeader className="bg-[#F9FAFB] rounded-lg">
-                <TableRow style={{ background: 'white', height: '67px' }}>
-                    <TableCell className="font-medium">Participants</TableCell>
-                </TableRow>
                 <TableRow>
                     <TableHead>Photo</TableHead>
                     <TableHead>Name</TableHead>

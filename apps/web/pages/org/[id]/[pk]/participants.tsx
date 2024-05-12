@@ -19,8 +19,8 @@ const Dashboard: NextPageWithLayout = () => {
 
     if (data) {
         return (
-            <div>
-                <h2 className="mb-3 mt-3 font-semibold text-2xl p-4">All Registred Particpants</h2>
+            <div className="p-4 ">
+                <h2 className="font-semibold text-2xl p-4">All Registred Particpants</h2>
                 <Participants
                     data={data?.data}
                     doesEventHaveForm={eventData?.data.isFormPublished ? true : false}
