@@ -34,6 +34,20 @@ export class MailService {
             },
         });
     }
+
+    @OnEvent('payment.success')
+    async onPaymentSuccess(payload: PaymentSuccessEvent) {
+        await this.mailerService.sendMail({
+            to: payload.email,
+            subject: 'Payment Success',
+            template: 'payment-succesfull',
+            context: {
+                from: payload.from,
+                email: payload.email,
+                amount: payload.amount,
+            },
+        });
+    }
 }
 
 export interface OrgInviteEvent {
@@ -48,4 +62,10 @@ export interface UserRegisteredEvent {
     email: string;
     name: string;
     avatarUrl: string;
+}
+
+export interface PaymentSuccessEvent{
+    from : string;
+    email : string;
+    amount : number;
 }

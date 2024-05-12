@@ -3,6 +3,7 @@ import { Events } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import Stripe from 'stripe';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class StripeService {
@@ -10,7 +11,11 @@ export class StripeService {
     private readonly prisma: PrismaService;
     private readonly configService: ConfigService;
 
-    constructor(prisma: PrismaService, config: ConfigService) {
+    constructor(
+        prisma: PrismaService,
+        config: ConfigService,
+        private readonly eventEmitter: EventEmitter2,
+    ) {
         this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
             apiVersion: '2023-10-16',
         });
@@ -50,6 +55,18 @@ export class StripeService {
                             },
                             maxTicketCount: event.maxTicketCount - 1,
                         },
+                    });
+
+                    const user = await this.prisma.user.findUnique({
+                        where: {
+                            uid: user_id,
+                        },
+                    });
+
+                    this.eventEmitter.emit('payment.success', {
+                        from: user.displayName ?? user.email.split('@')[0],
+                        email: user.email,
+                        amount: event.ticketPrice,
                     });
                 }
             }
