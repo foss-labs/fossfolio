@@ -1,11 +1,11 @@
-import {Injectable} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
-import {JwtService} from '@nestjs/jwt';
-import {User} from '@prisma/client';
-import {hash, verify} from 'argon2';
-import {Profile} from 'passport';
-import {PrismaService} from '../prisma/prisma.service';
-import {UserService} from '../user/user.service';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
+import { hash, verify } from 'argon2';
+import { Profile } from 'passport';
+import { PrismaService } from '../prisma/prisma.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
