@@ -21,10 +21,10 @@ export const Events = () => {
         return <PreLoader count={5} />;
     }
     return (
-        <div className="flex flex-wrap gap-4 lg:w-[90%] ">
+        <div className="flex flex-wrap justify-center md:justify-start gap-4 lg:w-[90%] ">
             {canCreateEvent && (
                 <div
-                    className="w-[300px] h-[150px] mt-6 border-2 group p-3 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition flex justify-center items-center border-dotted rounded-md flex-col hover:cursor-pointer"
+                    className="w-[300px] h-[150px] mt-6 border-2 group p-3  border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition flex justify-center items-center border-dotted rounded-md flex-col hover:cursor-pointer"
                     onClick={toggleOpen.on}
                 >
                     <BsCalendarEvent className="text-3xl p-1" />

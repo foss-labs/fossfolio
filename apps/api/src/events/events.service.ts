@@ -56,7 +56,7 @@ export class EventsService {
                 slug = d.name;
             }
 
-            const data = await this.prismaService.organization.update({
+         await this.prismaService.organization.update({
                 where: {
                     id: d.organizationId,
                 },
@@ -109,7 +109,7 @@ export class EventsService {
             return {
                 ok: true,
                 message: 'event created successfully',
-                data,
+                data: newEvent,
             };
         } catch (e) {
             return {
@@ -727,9 +727,11 @@ export class EventsService {
         try {
             const event = await this.getEventById(eventId);
             // cant delete paid event till we figure out a way to process refund
-            if (event.ticketPrice > 0) {
-                return new ServiceUnavailableException();
-            }
+            // #TODO: @sreehari2003 add refund logic here
+            // Commenting for my presentation purpose
+            // if (event.ticketPrice > 0) {
+            //     return new ServiceUnavailableException();
+            // }
 
             await this.prismaService.ticket.deleteMany({
                 where: {

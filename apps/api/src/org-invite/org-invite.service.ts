@@ -68,7 +68,8 @@ export class OrganizationInviteService {
                 const inviteURL = `${localPort}/verify?id=${inviteId}`;
 
                 // we dont want to send invite on local
-                if (process.env.NODE_ENV === 'production') {
+                // @sreehari2003 Removing this for presentation
+                // if (process.env.NODE_ENV === 'production') {
                     await this.eventEmitter.emit('org.invite', {
                         to: email,
                         inviteUrl: inviteURL,
@@ -76,7 +77,7 @@ export class OrganizationInviteService {
                         orgName: data.name,
                         fromEmail: inviter.email,
                     });
-                }
+                // }
 
                 return inviteURL;
             });
