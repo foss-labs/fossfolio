@@ -7,7 +7,7 @@ interface LoaderProp {
 
 export const Loader = ({ className = 'h-screen' }: LoaderProp) => {
     return (
-        <div className={twMerge('flex items-center justify-center p-4', className)}>
+        <div className={twMerge('flex items-center flex-wrap justify-center p-4', className)}>
             <RiLoaderFill className="animate-spin h-8 w-8" />
         </div>
     );

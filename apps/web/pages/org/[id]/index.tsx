@@ -133,8 +133,10 @@ const Org: NextPageWithLayout = () => {
                                         control={form.control}
                                         name="orgName"
                                         render={({ field }) => (
-                                            <FormItem className="items-center border border-gray-300 p-5 rounded-md w-full max-w-2xl">
-                                                <FormLabel>Organization Name</FormLabel>
+                                            <FormItem className="border border-gray-200 p-5 rounded-md w-full max-w-2xl">
+                                                <FormLabel className="mb-1">
+                                                    Organization Name
+                                                </FormLabel>
                                                 <FormDescription>
                                                     Pleae enter a Organization name you are
                                                     comfortable with being public
@@ -159,8 +161,10 @@ const Org: NextPageWithLayout = () => {
                                         control={form.control}
                                         name="slug"
                                         render={({ field }) => (
-                                            <FormItem className="items-center mt-5 border  border-gray-300 p-5 rounded-md w-full max-w-2xl">
-                                                <FormLabel>Organization Slug</FormLabel>
+                                            <FormItem className="mt-5 border  border-gray-200 p-5 rounded-md w-full max-w-2xl">
+                                                <FormLabel className="mb-1">
+                                                    Organization Slug
+                                                </FormLabel>
                                                 <FormDescription>
                                                     Pleae enter a valid Slug. The slug can be used
                                                     to visit your organization page

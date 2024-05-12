@@ -6,7 +6,7 @@ import { DeleteModal } from './DeleteModal';
 export const DeleteOrg = () => {
     const [isOpen, triggerModal] = useToggle(false);
     return (
-        <Card className="border border-[red] max-w-2xl">
+        <Card className="border border-red-100 max-w-2xl">
             <DeleteModal isOpen={isOpen} onClose={triggerModal.off} />
             <CardContent className="pt-6 ">
                 <div className="space-y-2">
@@ -14,9 +14,11 @@ export const DeleteOrg = () => {
                         Deleting the organisation will delete its all members and all the events
                         associated with the organization
                     </p>
-                    <Button className="bg-[red] hover:bg-[#ff0000c2]" onClick={triggerModal.on}>
-                        Delete Organization
-                    </Button>
+                    <div className="flex justify-end">
+                        <Button className="bg-[red] hover:bg-[#ff0000c2]" onClick={triggerModal.on}>
+                            Delete Organization
+                        </Button>
+                    </div>
                 </div>
             </CardContent>
         </Card>
