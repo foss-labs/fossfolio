@@ -15,13 +15,6 @@ import { Button } from '@app/components/ui/Button';
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@app/ui/components/select';
-import {
     Form,
     FormControl,
     FormField,

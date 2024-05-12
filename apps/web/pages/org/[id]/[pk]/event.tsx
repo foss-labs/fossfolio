@@ -2,13 +2,9 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Editor } from 'novel';
 import { toast } from 'sonner';
-import { useMutation } from '@tanstack/react-query';
-import { useToggle } from '@app/hooks';
 import { DashboardLayout } from '@app/layout';
 import { apiHandler } from '@app/config';
-import { PublishModal } from '@app/views/dashboard';
 import { useEvent } from '@app/hooks/api/Events';
-import { Button } from '@app/components/ui/Button';
 import { Loader } from '@app/components/preloaders';
 
 const defaultEditorContent = {
@@ -23,31 +19,9 @@ const defaultEditorContent = {
 };
 
 const Event = () => {
-    const [isOpen, triggerModal] = useToggle(false);
-    const { data, isLoading, refetch } = useEvent('event');
+    const { data, isLoading } = useEvent('event');
     const router = useRouter();
     const { id, pk } = router.query;
-
-    const publishEvent = async () => {
-        try {
-            const { status, data } = await apiHandler.get(`/events/publish/${id}/${pk}`);
-            if (status === 200) {
-                toast.success('Event was published successfully');
-                return data;
-            } else {
-                throw new Error();
-            }
-        } catch (e: any) {
-            if (e.response.status === 422) {
-                // open the more info of event modal
-                triggerModal.on();
-            } else if (e.response.status === 404) {
-                toast.error(e.response.data.message);
-            } else {
-                toast.error('something went wrong');
-            }
-        }
-    };
 
     useEffect(() => {
         // remove description when ever component unmounts
@@ -90,65 +64,12 @@ const Event = () => {
         }
     };
 
-    const unPublishEvent = async () => {
-        try {
-            const response = await apiHandler.patch(`/events/edit`, {
-                isPublished: false,
-                organizationId: id,
-                eventSlug: pk,
-            });
-
-            return response.data || null;
-        } catch (error) {
-            console.error('Error unpublishing event');
-            throw error;
-        }
-    };
-
-    const { mutate: unPublish, isLoading: isUnPublishing } = useMutation(unPublishEvent, {
-        onSuccess: () => {
-            refetch();
-            toast.success('event was UnPublished successfully');
-        },
-        onError: () => {
-            toast.error('Error unpublishing event');
-        },
-    });
-    const { mutate: publish, isLoading: isPublishing } = useMutation(publishEvent, {
-        onSuccess: () => {
-            refetch();
-        },
-        onError: () => {
-            toast.error('Error publishing event');
-        },
-    });
-
-    const handleUnPublishClick = () => {
-        unPublish();
-    };
-
-    const handlePublishClick = () => {
-        publish();
-    };
-
     if (isLoading) {
         return <Loader />;
     }
 
     return (
         <div className="p-4">
-            <PublishModal isOpen={isOpen} onClose={triggerModal.off} />
-            <div className="flex justify-end">
-                {!data?.data.isPublished ? (
-                    <Button size="sm" onClick={handlePublishClick} isLoading={isPublishing}>
-                        Publish Event
-                    </Button>
-                ) : (
-                    <Button size="sm" onClick={handleUnPublishClick} isLoading={isUnPublishing}>
-                        UnPublish Event
-                    </Button>
-                )}
-            </div>
             <Editor
                 className="w-full"
                 defaultValue={
