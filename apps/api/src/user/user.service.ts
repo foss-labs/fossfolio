@@ -5,10 +5,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
 import { fakerEN } from '@faker-js/faker';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly eventEmitter: EventEmitter2,
+    ) {}
 
     async findUserByEmail(email: string) {
         try {
@@ -48,7 +52,6 @@ export class UserService {
             break;
         }
 
-
         const createdUser = await this.prismaService.user.create({
             data: {
                 displayName: userDisplayName,
@@ -57,13 +60,19 @@ export class UserService {
                 slug,
                 providerAccounts: {
                     create: {
-                        provider: profile.provider ,
+                        provider: profile.provider,
                         providerAccountId: profile.id,
                         providerRefreshToken: refreshToken,
                         providerAccessToken: accessToken,
                     },
                 },
             },
+        });
+
+        this.eventEmitter.emit('user.registered', {
+            email: createdUser.email,
+            name: createdUser.displayName,
+            avatarUrl: createdUser.photoURL,
         });
 
         return createdUser;

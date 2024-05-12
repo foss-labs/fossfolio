@@ -20,6 +20,20 @@ export class MailService {
             },
         });
     }
+
+    @OnEvent('user.registered')
+    async onUserRegistered(payload: UserRegisteredEvent) {
+        await this.mailerService.sendMail({
+            to: payload.email,
+            subject: 'Welcome to Fossfolio',
+            template: 'welcome',
+            context: {
+                name: payload.name,
+                email: payload.email,
+                avatarUrl: payload.avatarUrl,
+            },
+        });
+    }
 }
 
 export interface OrgInviteEvent {
@@ -28,4 +42,10 @@ export interface OrgInviteEvent {
     orgName: string;
     fromEmail: string;
     to: string;
+}
+
+export interface UserRegisteredEvent {
+    email: string;
+    name: string;
+    avatarUrl: string;
 }
