@@ -32,7 +32,7 @@ import { Iform } from '@app/types';
 import { toast } from 'sonner';
 import { IoIosAdd } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
-import { useToggle } from '@app/hooks';
+import { useRoles, useToggle } from '@app/hooks';
 import { useEffect, useState } from 'react';
 import { Textarea } from '@app/ui/components/textarea';
 import { Loader } from '@app/components/preloaders';
@@ -64,6 +64,8 @@ const Form: NextPageWithLayout = () => {
     const { data: eventInfo } = useEvent('event');
     const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
     const [isAiForm, setAiForm] = useToggle();
+    const { canEditEvent } = useRoles();
+
     const [savingAIForm, setSavingAIForm] = useState(false);
     const [prompt, setPrompt] = useState<string>('');
     const [isFormLoading, setFormLoading] = useState(false);
@@ -213,6 +215,7 @@ const Form: NextPageWithLayout = () => {
         <div className="pt-5 pr-3">
             {!eventInfo?.data.isFormPublished && (
                 <Button
+                    disabled={!canEditEvent}
                     className="float-right"
                     onClick={() => publishForm(true)}
                     isLoading={isFormStatusChanging}
@@ -222,6 +225,7 @@ const Form: NextPageWithLayout = () => {
             )}
             {eventInfo?.data.isFormPublished && (
                 <Button
+                    disabled={!canEditEvent}
                     className="float-right"
                     onClick={() => publishForm(false)}
                     isLoading={isFormStatusChanging}
@@ -253,6 +257,7 @@ const Form: NextPageWithLayout = () => {
                                                             <FormLabel>Question</FormLabel>
                                                             <FormControl>
                                                                 <Input
+                                                                    disabled={!canEditEvent}
                                                                     placeholder="Enter your question"
                                                                     {...field}
                                                                 />
@@ -273,6 +278,7 @@ const Form: NextPageWithLayout = () => {
                                                             </FormLabel>
                                                             <FormControl>
                                                                 <Input
+                                                                    disabled={!canEditEvent}
                                                                     placeholder="Enter Placeholder"
                                                                     {...field}
                                                                 />
@@ -292,6 +298,7 @@ const Form: NextPageWithLayout = () => {
                                                                 Question Type
                                                             </FormLabel>
                                                             <Select
+                                                                disabled={!canEditEvent}
                                                                 onValueChange={field.onChange}
                                                                 defaultValue={field.value}
                                                             >
@@ -346,6 +353,9 @@ const Form: NextPageWithLayout = () => {
                                                                         </FormLabel>
                                                                         <FormControl>
                                                                             <Input
+                                                                                disabled={
+                                                                                    !canEditEvent
+                                                                                }
                                                                                 className="w-full"
                                                                                 {...field}
                                                                             />
@@ -360,6 +370,7 @@ const Form: NextPageWithLayout = () => {
                                                         className="w-full mt-4"
                                                         variant="outline"
                                                         onClick={addNewField}
+                                                        disabled={!canEditEvent}
                                                     >
                                                         <IoIosAdd className="text-xl" />
                                                     </Button>
@@ -374,6 +385,7 @@ const Form: NextPageWithLayout = () => {
                                                             <FormLabel>Required</FormLabel>
                                                             <FormControl>
                                                                 <Checkbox
+                                                                    disabled={!canEditEvent}
                                                                     checked={field.value}
                                                                     onCheckedChange={field.onChange}
                                                                 />
@@ -386,13 +398,18 @@ const Form: NextPageWithLayout = () => {
                                         </CardContent>
                                         <CardFooter className="flex justify-between">
                                             <Button
+                                                disabled={!canEditEvent}
                                                 variant="outline"
                                                 onClick={handleCancel}
                                                 type="reset"
                                             >
                                                 Cancel
                                             </Button>
-                                            <Button type="submit" isLoading={isSchemaUpdating}>
+                                            <Button
+                                                type="submit"
+                                                disabled={!canEditEvent}
+                                                isLoading={isSchemaUpdating}
+                                            >
                                                 Add Question
                                             </Button>
                                         </CardFooter>
@@ -414,6 +431,7 @@ const Form: NextPageWithLayout = () => {
                             <h1 className="py-4 text-lg">Generate Form With AI</h1>
                             <div className="flex flex-col">
                                 <Textarea
+                                    disabled={!canEditEvent}
                                     className="mb-1"
                                     placeholder="Enter prompt"
                                     onChange={(t) => {
@@ -421,6 +439,7 @@ const Form: NextPageWithLayout = () => {
                                     }}
                                 />
                                 <Button
+                                    disabled={!canEditEvent}
                                     isLoading={isFormLoading}
                                     onClick={generateForm}
                                     className="mt-3"

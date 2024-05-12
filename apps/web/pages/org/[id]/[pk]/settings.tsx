@@ -23,10 +23,13 @@ import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
-import { useToggle } from '@app/hooks';
+import { useRoles, useToggle } from '@app/hooks';
+import { useEffect } from 'react';
 
 const Settings = () => {
     const { data, isLoading } = useEvent('event');
+
+    const { canEditEvent } = useRoles();
     const [isEventDeleting, setDelete] = useToggle();
     const router = useRouter();
     const { id } = router.query;
@@ -55,11 +58,19 @@ const Settings = () => {
 
     const form = useForm<IProfile>({
         defaultValues: {
-            eventDate: data?.data.eventDate,
-            lastDate: data?.data.lastDate,
+            eventDate: data?.data?.eventDate ? new Date(data?.data?.eventDate) : new Date(),
+            lastDate: data?.data?.lastDate ? new Date(data?.data?.lastDate) : new Date(),
             maxTicketCount: data?.data.maxTicketCount,
         },
     });
+
+    useEffect(() => {
+        form.reset({
+            eventDate: data?.data?.eventDate ? new Date(data?.data?.eventDate) : undefined,
+            lastDate: data?.data?.lastDate ? new Date(data?.data?.lastDate) : undefined,
+            maxTicketCount: data?.data.maxTicketCount,
+        });
+    }, [data, form]);
 
     const handleUpdates = () => {};
 
@@ -107,6 +118,7 @@ const Settings = () => {
                                             <FormLabel>Total Tickets left</FormLabel>
                                             <FormControl>
                                                 <Input
+                                                    disabled={!canEditEvent}
                                                     min={1}
                                                     placeholder="0"
                                                     {...field}
@@ -128,6 +140,7 @@ const Settings = () => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button
+                                                            disabled={!canEditEvent}
                                                             variant="outline"
                                                             className={cn(
                                                                 'w-full  text-start font-normal text-black',
@@ -145,6 +158,7 @@ const Settings = () => {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0 bg-white shadow-md">
                                                     <Calendar
+                                                        disabled={!canEditEvent}
                                                         mode="single"
                                                         selected={field.value}
                                                         onSelect={field.onChange}
@@ -166,6 +180,7 @@ const Settings = () => {
                                                 <PopoverTrigger asChild>
                                                     <FormControl>
                                                         <Button
+                                                            disabled={!canEditEvent}
                                                             variant="outline"
                                                             className={cn(
                                                                 'w-full  text-start font-normal text-black',
@@ -183,6 +198,7 @@ const Settings = () => {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0 bg-white shadow-md">
                                                     <Calendar
+                                                        disabled={!canEditEvent}
                                                         mode="single"
                                                         selected={field.value}
                                                         onSelect={field.onChange}
