@@ -1,4 +1,4 @@
-import { useToggle } from '@app/hooks';
+import { useRoles, useToggle } from '@app/hooks';
 import {
     Table,
     TableBody,
@@ -30,6 +30,8 @@ export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: D
     const [isModalOpen, toggleModal] = useToggle(false);
     const [isDrawerOpen, toggleDrawer] = useToggle(false);
 
+    const { canChangeParticipantStatus } = useRoles();
+
     const [userToBeDeleted, setDeleteId] = useState('');
     const [userMoreInfoId, setUserMoreInfo] = useState('');
     return (
@@ -41,7 +43,13 @@ export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: D
                 refetch={refetch}
                 eventId={id}
             />
-            <FormDrawer open={isDrawerOpen} onClose={toggleDrawer.off} userId={userMoreInfoId} />
+            {userMoreInfoId && userMoreInfoId.length > 0 && (
+                <FormDrawer
+                    open={isDrawerOpen}
+                    onClose={toggleDrawer.off}
+                    userId={userMoreInfoId}
+                />
+            )}
             <TableHeader className="bg-[#F9FAFB] rounded-lg">
                 <TableRow>
                     <TableHead>Photo</TableHead>
@@ -49,7 +57,7 @@ export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: D
                     <TableHead>Student / Pro</TableHead>
                     <TableHead>Email address</TableHead>
                     <TableHead></TableHead>
-                    <TableHead></TableHead>
+                    {canChangeParticipantStatus && <TableHead></TableHead>}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -78,15 +86,17 @@ export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: D
                                 <IoIosMore className="hover:text-red-500 cursor-pointer text-lg" />
                             </TableCell>
                         )}
-                        <TableCell
-                            className="text-right"
-                            onClick={() => {
-                                setDeleteId(el.uid);
-                                toggleModal.on();
-                            }}
-                        >
-                            <AiOutlineDelete className="hover:text-red-500 cursor-pointer text-lg" />
-                        </TableCell>
+                        {canChangeParticipantStatus && (
+                            <TableCell
+                                className="text-right"
+                                onClick={() => {
+                                    setDeleteId(el.uid);
+                                    toggleModal.on();
+                                }}
+                            >
+                                <AiOutlineDelete className="hover:text-red-500 cursor-pointer text-lg" />
+                            </TableCell>
+                        )}
                     </TableRow>
                 ))}
             </TableBody>

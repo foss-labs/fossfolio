@@ -5,11 +5,13 @@ import { Tabs, TabsList, TabsTrigger } from '@app/ui/components/tabs';
 import { FiArrowLeft } from 'react-icons/fi';
 import { apiHandler } from '@app/config';
 import { toast } from 'sonner';
-import { useToggle } from '@app/hooks';
+import { useRoles, useToggle } from '@app/hooks';
 import { Button } from '@app/components/ui/Button';
 
 export const DashNav = () => {
     const router = useRouter();
+
+    const { canEditEvent } = useRoles();
 
     const { id, pk } = router.query;
 
@@ -86,17 +88,19 @@ export const DashNav = () => {
                     </TabsList>
                 </Tabs>
             </div>
-            <Button
-                disabled={isEventLoading || isLoading}
-                isLoading={isLoading}
-                onClick={toggleEventPublish}
-            >
-                {data?.data.isPublished ? (
-                    <span className="text-white">UnPublish Event</span>
-                ) : (
-                    <span className="text-white">Publish Event</span>
-                )}
-            </Button>
+            {canEditEvent && (
+                <Button
+                    disabled={isEventLoading || isLoading}
+                    isLoading={isLoading}
+                    onClick={toggleEventPublish}
+                >
+                    {data?.data.isPublished ? (
+                        <span className="text-white">UnPublish Event</span>
+                    ) : (
+                        <span className="text-white">Publish Event</span>
+                    )}
+                </Button>
+            )}
         </div>
     );
 };

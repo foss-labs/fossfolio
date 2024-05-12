@@ -183,7 +183,7 @@ export class FormService {
 
             schema.form.forEach((el) => {
                 // @ts-ignore
-                if (el.id in data[0].data) {
+                if (data[0] && el.id in data[0].data) {
                     result[el.label] = data[0].data[el.id];
                 }
             });

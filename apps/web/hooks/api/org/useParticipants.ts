@@ -56,7 +56,7 @@ export const useEventParticipantsFormSubmissions = (id: string) => {
     const router = useRouter();
     const [eventId, setEventId] = useState('');
     const [orgId, setOrgId] = useState('');
-    const orgEventQueryKey = ['org-info', 'forms', eventId];
+    const orgEventQueryKey = ['org-info', 'forms', eventId, id];
     useEffect(() => {
         if (router.isReady) {
             const { pk, id } = router.query;

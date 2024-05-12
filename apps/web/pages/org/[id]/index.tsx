@@ -42,7 +42,7 @@ const Org: NextPageWithLayout = () => {
     const [activeTab, setTab] = useState('events');
     const [inviteLink, setInviteLink] = useState('');
     const [isOpen, toggleOpen] = useToggle();
-    const { canDeleteOrg } = useRoles();
+    const { canDeleteOrg, canEditOrg } = useRoles();
     const router = useRouter();
     const { id } = router.query;
 
@@ -133,7 +133,10 @@ const Org: NextPageWithLayout = () => {
                                         control={form.control}
                                         name="orgName"
                                         render={({ field }) => (
-                                            <FormItem className="border border-gray-200 p-5 rounded-md w-full max-w-2xl">
+                                            <FormItem
+                                                disa
+                                                className="border border-gray-200 p-5 rounded-md w-full max-w-2xl"
+                                            >
                                                 <FormLabel className="mb-1">
                                                     Organization Name
                                                 </FormLabel>
@@ -144,13 +147,18 @@ const Org: NextPageWithLayout = () => {
 
                                                 <FormControl>
                                                     <Input
+                                                        disabled={!canEditOrg}
                                                         placeholder={data.data.name}
                                                         {...field}
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
                                                 <div className="flex w-full max-w-2xl justify-end">
-                                                    <Button className="p-3 mt-3" type="submit">
+                                                    <Button
+                                                        disabled={!canEditOrg}
+                                                        className="p-3 mt-3"
+                                                        type="submit"
+                                                    >
                                                         Update
                                                     </Button>
                                                 </div>
@@ -171,6 +179,7 @@ const Org: NextPageWithLayout = () => {
                                                 </FormDescription>
                                                 <FormControl>
                                                     <Input
+                                                        disabled={!canEditOrg}
                                                         placeholder={data.data.slug}
                                                         {...field}
                                                     />
@@ -178,7 +187,11 @@ const Org: NextPageWithLayout = () => {
 
                                                 <FormMessage />
                                                 <div className="flex w-full max-w-2xl justify-end">
-                                                    <Button className="p-3 mt-3" type="submit">
+                                                    <Button
+                                                        disabled={!canEditOrg}
+                                                        className="p-3 mt-3"
+                                                        type="submit"
+                                                    >
                                                         Update
                                                     </Button>
                                                 </div>

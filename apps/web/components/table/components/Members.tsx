@@ -119,62 +119,66 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
 
     return (
         <div className="p-none md:p-5">
-            <Form {...form}>
-                <RemoveMemberModal
-                    isOpen={isOpen}
-                    onClose={triggerModal.off}
-                    MemberName={removingMemberInfo.userName}
-                    MemberId={removingMemberInfo.userId}
-                    refetch={refetch}
-                />
-                <form onSubmit={form.handleSubmit(sendEmailInvite)}>
-                    <div className="flex gap-2 justify-end items-center mb-10 flex-wrap">
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter the email to send invite"
-                                            {...field}
-                                            className="w-60"
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
+            {canSendInvite && (
+                <Form {...form}>
+                    <RemoveMemberModal
+                        isOpen={isOpen}
+                        onClose={triggerModal.off}
+                        MemberName={removingMemberInfo.userName}
+                        MemberId={removingMemberInfo.userId}
+                        refetch={refetch}
+                    />
 
-                        <FormField
-                            control={form.control}
-                            name="role"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
+                    <form onSubmit={form.handleSubmit(sendEmailInvite)}>
+                        <div className="flex gap-2 justify-end items-center mb-10 flex-wrap">
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
                                         <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="role" />
-                                            </SelectTrigger>
+                                            <Input
+                                                placeholder="Enter the email to send invite"
+                                                {...field}
+                                                className="w-60"
+                                            />
                                         </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value={Roles.Admin}>Admin</SelectItem>
-                                            <SelectItem value={Roles.Editor}>Editor</SelectItem>
-                                            <SelectItem value={Roles.Viewer}>Viewer</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    </FormItem>
+                                )}
+                            />
 
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                            <FormField
+                                control={form.control}
+                                name="role"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="role" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value={Roles.Admin}>Admin</SelectItem>
+                                                <SelectItem value={Roles.Editor}>Editor</SelectItem>
+                                                <SelectItem value={Roles.Viewer}>Viewer</SelectItem>
+                                            </SelectContent>
+                                        </Select>
 
-                        <Button type="submit">Send Invite</Button>
-                    </div>
-                </form>
-            </Form>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <Button type="submit">Send Invite</Button>
+                        </div>
+                    </form>
+                </Form>
+            )}
+
             {isLoading ? (
                 <div className="h-[50vh] flex justify-center items-center">
                     <RiLoaderFill className="animate-spin h-8 w-8" />
