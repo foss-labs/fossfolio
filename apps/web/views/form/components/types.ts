@@ -9,6 +9,7 @@ type Iinput =
     | 'URL'
     | 'PhoneNumber'
     | 'Attachment';
+    
 
 // v0 does not support attachment
 export type IFormInput = Exclude<Iinput, 'Attachment'>;
@@ -35,20 +36,28 @@ export const InputOption: IinputOption[] = [
         label: 'Multi select',
         value: 'MultiSelect',
     },
-    // {
-    //     label: 'Checkbox',
-    //     value: 'Checkbox',
-    // },
+    {
+         label: 'Checkbox',
+         value: 'Checkbox',
+     },
     {
         label: 'Email',
         value: 'Email',
     },
-    // {
-    //     label: 'URL',
-    //     value: 'URL',
-    // },
-    // {
-    //     label: 'PhoneNumber',
-    //     value: 'PhoneNumber',
-    // },
+    {
+        label: 'Number',
+        value: 'Number',
+    },
+    {
+        label: 'Email',
+        value: 'Email',
+    },
+     {
+         label: 'URL',
+         value: 'URL',
+     },
+     {
+         label: 'PhoneNumber',
+         value: 'PhoneNumber',
+     },
 ];

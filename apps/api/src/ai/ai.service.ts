@@ -76,7 +76,7 @@ export class AiService {
             stream: false,
             model: 'mistralai/Mistral-7B-Instruct-v0.1',
             messages: history,
-            max_tokens: 4000,
+            max_tokens: 5000,
             temperature: 0.7,
             frequency_penalty: 0.5,
             // @ts-ignore – Together.ai supports schema while OpenAI does not
@@ -90,7 +90,7 @@ export class AiService {
         if (!jsonExtract) {
             console.log('No JSON found in the response');
             console.log('Retrying!!!!');
-            return this.gptComplete(prompt, messages);
+            return await this.gptComplete(prompt, messages);
         }
 
         return JSON.parse(jsonExtract[0]);
