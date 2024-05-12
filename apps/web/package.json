@@ -59,6 +59,7 @@
         "react-hook-form": "^7.43.4",
         "react-icons": "^4.8.0",
         "react-modern-drawer": "^1.2.2",
+        "react-to-pdf": "^1.0.1",
         "react-to-print": "^2.15.1",
         "recharts": "^2.12.2",
         "sonner": "^0.6.2",

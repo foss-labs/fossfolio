@@ -2,6 +2,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@app/ui/
 import { Button } from '@app/components/ui/Button';
 import Qrcode from 'qrcode';
 import Image from 'next/image';
+import generatePDF from 'react-to-pdf';
+
 import { useEffect, useRef, useState } from 'react';
 import type { Info } from '@app/hooks/api/user/useTickets';
 import { format } from 'date-fns';
@@ -83,7 +85,12 @@ export const TicketModal = ({ isOpen, onClose, data }: IModal) => {
                         >
                             Print
                         </Button>
-                        <Button className="flex-1">Download</Button>
+                        <Button
+                            onClick={() => generatePDF(componentRef, { filename: 'ticket.pdf' })}
+                            className="flex-1"
+                        >
+                            Download
+                        </Button>
                     </div>
                 </DialogHeader>
             </DialogContent>
