@@ -16,11 +16,13 @@ const Index: NextPageWithLayout = () => {
         <div className="p-[20px]">
             <Separator className="mb-5" />
             <NewOrgDialog isOpen={isOpen} onClose={setOpen.off} />
-            <div className="flex items-center flex-wrap justify-between">
+            <div className="flex items-center gap-y-2 flex-wrap justify-between">
                 <h4 className="text-xl font-semibold md:text-[40px]">
                     {user?.displayName.split(' ')[0]}&apos;s organisations
                 </h4>
-                <Button onClick={setOpen.on}>New Organisation</Button>
+                <div className="flex md:w-auto justify-end w-full">
+                    <Button onClick={setOpen.on}>New Organisation</Button>
+                </div>
             </div>
             <div className="flex justify-center md:justify-start flex-wrap mt-10 gap-5">
                 {isLoading ? (

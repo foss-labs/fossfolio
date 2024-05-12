@@ -39,7 +39,7 @@ export const EventCard = ({
         router.push(`/events/${slug}`);
     };
     return (
-        <Card className="w-[330px] md:w-25 mt-6 border-solid border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition rounded-sm hover:cursor-pointer">
+        <Card className="w-[300px] md:w-25 mt-6 border-solid border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition rounded-sm hover:cursor-pointer">
             <CardHeader className="grid items-start gap-4 space-y-0">
                 <CardTitle>{name}</CardTitle>
                 <CardDescription>{description}</CardDescription>
@@ -53,7 +53,7 @@ export const EventCard = ({
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="flex  text-sm text-muted-foreground flex-wrap gap-3 w-full">
+                <div className="flex text-sm text-muted-foreground flex-wrap gap-3 w-full">
                     {coverImage && (
                         <Image src={coverImage} width={500} height={300} alt="event banner" />
                     )}
