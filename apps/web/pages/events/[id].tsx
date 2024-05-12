@@ -12,9 +12,10 @@ import { Editor } from 'novel';
 import { RiLoaderFill } from 'react-icons/ri';
 import { toast } from 'sonner';
 import { Error } from '@app/components/Error';
+import { Loader } from '@app/components/preloaders';
 
 const Event: NextPageWithLayout = () => {
-    const { data, refetch, error } = useEvent('public');
+    const { data, refetch, error, isLoading: eventisLoading } = useEvent('public');
     const { data: registerStatus, refetch: refetchStatus } = useUserRegistrationStatus();
     const [isFormOpen, toggleForm] = useToggle(false);
     const router = useRouter();
@@ -51,6 +52,10 @@ const Event: NextPageWithLayout = () => {
         mutate();
     };
 
+    if (eventisLoading) {
+        return <Loader />;
+    }
+
     if (error) {
         return <Error />;
     }
@@ -58,25 +63,28 @@ const Event: NextPageWithLayout = () => {
     if (data) {
         return (
             <div className="mt-5">
-                <PublicFormModal
-                    isOpen={isFormOpen}
-                    onClose={toggleForm.off}
-                    schema={data.data.form}
-                />
+                {data?.data?.isFormPublished && (
+                    <PublicFormModal
+                        isOpen={isFormOpen}
+                        onClose={toggleForm.off}
+                        schema={data.data.form}
+                    />
+                )}
+
                 <section>
-                    <h1 className="text-5xl font-bold text-center uppercase">{data.data.name}</h1>
+                    <h1 className="text-5xl font-bold text-center uppercase">{data.data?.name}</h1>
                 </section>
                 <section className="flex p-4 flex-col md:flex-row">
                     <Editor
                         className="w-full"
-                        defaultValue={JSON.parse(data.data.description as string)}
+                        defaultValue={JSON.parse(data.data?.description as string)}
                         editorProps={{
                             editable: () => false,
                         }}
                     />
                     <div className="flex flex-col rounded-md">
                         <Image
-                            src={data.data.coverImage as string}
+                            src={data.data?.coverImage as string}
                             width={500}
                             height={300}
                             alt="event banner"

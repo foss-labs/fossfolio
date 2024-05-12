@@ -23,7 +23,6 @@ type Fetch = 'event' | 'public';
 export const useEvent = (type: Fetch = 'event') => {
     const router = useRouter();
     const [Id, setId] = useState('');
-    const eventQueryKey = ['events', Id];
 
     useEffect(() => {
         // id is the primary key of event in events page
@@ -41,6 +40,8 @@ export const useEvent = (type: Fetch = 'event') => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.isReady]);
+
+    const eventQueryKey = ['all-events', Id];
 
     const events = useQuery<IData>({
         queryKey: eventQueryKey,
