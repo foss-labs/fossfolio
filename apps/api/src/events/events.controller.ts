@@ -4,9 +4,7 @@ import {
     Delete,
     FileTypeValidator,
     Get,
-    InternalServerErrorException,
     MaxFileSizeValidator,
-    NotFoundException,
     Param,
     ParseFilePipe,
     Patch,
@@ -25,10 +23,8 @@ import { AuthUser } from '../auth/decorators/user.decorator';
 import { RbacGuard } from '../organization/guards/rbac-member.guard';
 import { CreateEventDto } from './dto/create-events.dto';
 import { Roles } from '../organization/decorators/roles.decorator';
-import { UpdateEventDto } from './dto/updtate-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 import { RegisterEventDto } from './dto/register-event.dto';
-import { FormPayLoad } from './dto/create-form.dto';
-import { ToggleFormPublishStatus } from './dto/publishForm.dto';
 import { DeleteEventDto } from './dto/delete-event.dto';
 import { RemoveUserDto } from './dto/remove-user.dto';
 @Controller('events')
@@ -93,18 +89,6 @@ export class EventsController {
         return await this.events.getEventParticipants(id);
     }
 
-    @Get('/participants/:orgID/:id/:userId/form')
-    @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR', 'VIEWER')
-    @ApiOperation({ summary: 'Get all the form submissipn from participant' })
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getregisterParticipantsFormSubmissions(
-        @Param('id') id: string,
-        @Param('userId') uid: string,
-    ) {
-        return await this.events.getregisterParticipantsFormSubmissions(id, uid);
-    }
-
     @Delete('/participants/delete')
     @ApiTags('events')
     @Roles('ADMIN', 'EDITOR')
@@ -130,24 +114,6 @@ export class EventsController {
         return await this.events.getEventStats(id);
     }
 
-    @Post('/form')
-    @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR')
-    @ApiOperation({ summary: 'Create form for each event' })
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async createForm(@Body() payload: FormPayLoad) {
-        return await this.events.createForm(payload);
-    }
-
-    @Delete('/form/bulk-delete/:slug')
-    @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR')
-    @ApiOperation({ summary: 'Bulk delete form for each event' })
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async bulkDeleteForm(@Param('slug') eventName: string) {
-        return await this.events.deleteForm(eventName);
-    }
-
     @Patch('/edit/cover')
     @Roles('ADMIN', 'EDITOR')
     @ApiTags('events')
@@ -168,47 +134,6 @@ export class EventsController {
         @Query('event') event: string,
     ) {
         return await this.events.uploadEventCover(file, event);
-    }
-
-    @Get('/form/:orgID/:eventId')
-    @ApiTags('events')
-    @Roles('ADMIN', 'EDITOR', 'VIEWER')
-    @ApiOperation({ summary: 'get form schema of a specific event' })
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async getFormSchema(@Param('eventId') slugId: string) {
-        return await this.events.getEventFormScheme(slugId);
-    }
-
-    @Post('/form/:eventId')
-    @ApiTags('events')
-    @ApiOperation({ summary: 'users register form via this route' })
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async postFormResponse(
-        @Param('eventId') eventId: string,
-        @Body() data: Record<string, string | Array<string>>,
-        @AuthUser() user: User,
-    ) {
-        try {
-            const event = await this.events.getEventById(eventId);
-            if (event.maxTicketCount < 1) {
-                throw new NotFoundException();
-            }
-            await this.events.addUserFormSubmission(data, eventId, user.uid);
-            return await this.events.registerEvent(event.slug, user.uid);
-        } catch (e) {
-            if (e instanceof NotFoundException) throw new NotFoundException();
-
-            throw new InternalServerErrorException();
-        }
-    }
-
-    @Post('/publish/form/:id')
-    @ApiTags('events')
-    @ApiOperation({ summary: 'publish event , by doing this we lets public to register for event' })
-    @Roles('ADMIN', 'EDITOR')
-    @UseGuards(AuthGuard('jwt'), RbacGuard)
-    async publishForm(@Param('id') data: string, @Body() payload: ToggleFormPublishStatus) {
-        return await this.events.toggleFormPublishStatus(data, payload.shouldFormPublish);
     }
 
     @Get('/ticket/:eventId')
