@@ -3,12 +3,14 @@ import { HomeLayout } from '@app/layout';
 import { EventCard, PreLoader, NoData } from '@app/components/events';
 import { useAllEvents } from '@app/hooks/api/Events';
 import { Error } from '@app/components/Error';
-import { da } from 'date-fns/locale';
 import { Input } from '@app/ui/components/input';
 import { useEffect, useState } from 'react';
+import { debounce } from '@app/utils';
 
 const Events: NextPageWithLayout = () => {
     const [query, setQuery] = useState<string>('');
+
+    const debouncedSearch = debounce((search: string) => setQuery(search));
 
     const { isLoading, data, error, refetch } = useAllEvents(query);
 
@@ -27,8 +29,8 @@ const Events: NextPageWithLayout = () => {
             <Input
                 className="my-8"
                 placeholder="Search for events"
-                onChange={(val) => {
-                    setQuery(val.target.value);
+                onChange={(val: React.ChangeEvent<HTMLInputElement>) => {
+                    debouncedSearch(val.target.value);
                 }}
             />
             {isLoading ? (
