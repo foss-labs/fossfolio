@@ -5,7 +5,7 @@ import { apiHandler } from '@app/config';
 import type { OrgEvents, Roles } from '@app/types';
 import { useAuth } from '@app/hooks/useAuth';
 
-type IData = {
+export type IOrgEvents = {
     event: OrgEvents[];
     role: Roles;
 };
@@ -28,7 +28,7 @@ export const useOrgEvents = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.isReady]);
 
-    const events = useQuery<IData>({
+    const events = useQuery<IOrgEvents>({
         queryKey: orgEventQueryKey,
         queryFn: () => getAllEventsInOrg(orgId),
         onSuccess: (data) => {
