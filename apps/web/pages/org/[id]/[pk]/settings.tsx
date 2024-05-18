@@ -76,19 +76,25 @@ const Settings = () => {
 
     if (!data?.data.isPublished) {
         return (
-            <div className="flex flex-col justify-center w-full ml-10 h-screen items-center">
+            <div className="flex flex-col justify-center w-full h-screen items-center">
                 <div className="h-[70vh]">
-                    <h2 className="text-3xl mt-8 mb-5 font-medium h-full flex justify-center items-center">
+                    <h2 className="text-xl md:text-3xl mt-8 mb-5 font-medium h-full flex text-center items-center">
                         Please publish the Event to access the settings
                     </h2>
                 </div>
-                <Card className="border-2 border-red-400 max-w-2xl mt-5 flex w-full">
+                <Card className="border-2 border-red-400 mt-5 max-w-2xl w-full">
                     <CardContent className="pt-6">
                         <div className="space-y-2">
-                            <p>Deleting the Events will delete its all data</p>
-                            <Button className="!bg-red-600" onClick={deleteEvent}>
-                                Delete Event
-                            </Button>
+                            <p className="mb-1">Delete this Event</p>
+                            <p className="text-sm text-muted-foreground">
+                                Deleting this event will delete all its data including participants
+                                info
+                            </p>
+                            <div className="flex justify-end">
+                                <Button className="!bg-red-600" onClick={deleteEvent}>
+                                    Delete Event
+                                </Button>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

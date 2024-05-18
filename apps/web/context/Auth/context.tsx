@@ -76,7 +76,7 @@ export const AuthGuard = ({ children }: Child): JSX.Element => {
     useEffect(() => {
         // when user reloads the page from event dashboard this needs to evoked to get the user role
         // TODO - try getting the user role from rtk cache
-        if (!ctx.role) {
+        if (!ctx.role && router.isReady) {
             (async () => {
                 try {
                     const { data } = await apiHandler.get<IOrgEvents>(
@@ -88,7 +88,7 @@ export const AuthGuard = ({ children }: Child): JSX.Element => {
                 }
             })();
         }
-    }, []);
+    }, [router.isReady]);
 
     return ctx.isLoading ? <PageLoader /> : <>{children}</>;
 };
