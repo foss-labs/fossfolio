@@ -133,10 +133,7 @@ const Org: NextPageWithLayout = () => {
                                         control={form.control}
                                         name="orgName"
                                         render={({ field }) => (
-                                            <FormItem
-                                                disa
-                                                className="border border-gray-200 p-5 rounded-md w-full max-w-2xl"
-                                            >
+                                            <FormItem className="border border-gray-200 p-5 rounded-md w-full max-w-2xl">
                                                 <FormLabel className="mb-1">
                                                     Organization Name
                                                 </FormLabel>

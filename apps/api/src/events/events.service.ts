@@ -81,32 +81,7 @@ export class EventsService {
 
             const newEvent = await this.getEventBySlug(slug);
 
-            // By default these kanban boards are created for each event
-            await this.prismaService.events.update({
-                where: {
-                    id: newEvent.id,
-                },
-                data: {
-                    kanban: {
-                        createMany: {
-                            data: [
-                                {
-                                    userUid: userId,
-                                    title: 'Todo',
-                                },
-                                {
-                                    userUid: userId,
-                                    title: 'In process',
-                                },
-                                {
-                                    userUid: userId,
-                                    title: 'completed',
-                                },
-                            ],
-                        },
-                    },
-                },
-            });
+            this.eventEmitter.emit('event.created', newEvent, userId);
 
             return {
                 ok: true,
@@ -541,10 +516,9 @@ export class EventsService {
             const event = await this.getEventById(eventId);
             // cant delete paid event till we figure out a way to process refund
             // #TODO: @sreehari2003 add refund logic here
-            // Commenting for my presentation purpose
-            // if (event.ticketPrice > 0) {
-            //     return new ServiceUnavailableException();
-            // }
+            if (event.ticketPrice > 0) {
+                return new ServiceUnavailableException();
+            }
 
             await this.prismaService.ticket.deleteMany({
                 where: {
@@ -680,6 +654,36 @@ export class EventsService {
             .$queryRaw`UPDATE public."Events" SET embedding_description = ${embedDescription} WHERE id = ${event.id}`;
         await this.prismaService
             .$queryRaw`UPDATE public."Events" SET embedding_title = ${embedName} WHERE id = ${event.id}`;
+    }
+
+    @OnEvent('event.created')
+    async addSeedKanbanBoards(newEvent: Events, userId: string) {
+        // By default these kanban boards are created for each event
+        await this.prismaService.events.update({
+            where: {
+                id: newEvent.id,
+            },
+            data: {
+                kanban: {
+                    createMany: {
+                        data: [
+                            {
+                                userUid: userId,
+                                title: 'Todo',
+                            },
+                            {
+                                userUid: userId,
+                                title: 'In process',
+                            },
+                            {
+                                userUid: userId,
+                                title: 'completed',
+                            },
+                        ],
+                    },
+                },
+            },
+        });
     }
 
     async deleteForm(slug: string) {
