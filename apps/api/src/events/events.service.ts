@@ -670,14 +670,17 @@ export class EventsService {
                             {
                                 userUid: userId,
                                 title: 'Todo',
+                                order: 1,
                             },
                             {
                                 userUid: userId,
                                 title: 'In process',
+                                order: 2,
                             },
                             {
                                 userUid: userId,
                                 title: 'completed',
+                                order: 3,
                             },
                         ],
                     },

@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { Comment, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTask } from './dto/create-task.dto';
 
@@ -38,7 +38,7 @@ export class KanbanService {
                             _count: true,
                         },
                         orderBy: {
-                            createdAt: 'asc',
+                            order: 'asc',
                         },
                     },
                 },
@@ -135,6 +135,54 @@ export class KanbanService {
             throw new InternalServerErrorException({
                 error: e,
             });
+        }
+    }
+
+    async deleteBoard(boardId: string, slug: string) {
+        try {
+            await this.prismaService.events.update({
+                where: {
+                    slug,
+                },
+                data: {
+                    kanban: {
+                        delete: {
+                            id: boardId,
+                        },
+                    },
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'kanban deleted successfully',
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException();
+            }
+
+            throw new InternalServerErrorException();
+        }
+    }
+
+    async updateTaskBoard(taskId: string, boardId: string) {
+        try {
+            await this.prismaService.task.update({
+                where: {
+                    id: taskId,
+                },
+                data: {
+                    kanbanId: boardId,
+                },
+            });
+
+            return {
+                ok: true,
+                message: 'Task moved successfully',
+            };
+        } catch {
+            throw new InternalServerErrorException();
         }
     }
 }

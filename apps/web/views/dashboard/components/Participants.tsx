@@ -62,7 +62,7 @@ export const Participants = ({ data, doesEventHaveForm = false, refetch, id }: D
             </TableHeader>
             <TableBody>
                 {data.map((el) => (
-                    <TableRow>
+                    <TableRow key={el.uid}>
                         <TableCell>
                             <Avatar>
                                 <AvatarImage src={el.photoURL} />
