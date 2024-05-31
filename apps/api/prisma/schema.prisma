@@ -169,12 +169,13 @@ model Kanban {
   id        String @id @default(cuid())
   title     String
   tasks     Task[]
+  order     Int    @default(1)
   createdBy User   @relation(fields: [userUid], references: [uid])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userUid   String
-  Events    Events?  @relation(fields: [eventsId], references: [id])
+  Events    Events?  @relation(fields: [eventsId], references: [id], onDelete: Cascade)
   eventsId  String?
 }
 
@@ -184,7 +185,7 @@ model Task {
   createdBy User      @relation(fields: [userUid], references: [uid])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Kanban    Kanban?   @relation(fields: [kanbanId], references: [id])
+  Kanban    Kanban?   @relation(fields: [kanbanId], references: [id], onDelete: Cascade)
   kanbanId  String?
   userUid   String
   Comment   Comment[]
@@ -192,7 +193,7 @@ model Task {
 
 model Comment {
   id      String @id @default(cuid())
-  task    Task   @relation(fields: [taskId], references: [id])
+  task    Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId  String
   data    Json
   user    User   @relation(fields: [userUid], references: [uid])
@@ -200,13 +201,13 @@ model Comment {
 }
 
 model SamlConfig {
-  id           String @id @default(cuid())
-  issuer       String @unique
-  cert         String
-  entryPoint   String
+  id                   String   @id @default(cuid())
+  issuer               String   @unique
+  cert                 String
+  entryPoint           String
   wantAssertionsSigned Boolean
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 enum Role {

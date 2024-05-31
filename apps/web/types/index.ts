@@ -115,6 +115,7 @@ export interface Task extends DbProps {
     title: string;
     createdBy: UserInKanban;
     Comment: Comments[];
+    kanbanId: string;
 }
 
 export interface Comments {
