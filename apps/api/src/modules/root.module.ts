@@ -1,0 +1,171 @@
+import { Module } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LoggerModule } from 'nestjs-pino';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthController } from '../controllers/auth.controller';
+import { AuthService } from '../services/auth/auth.service';
+import { GithubStrategy } from '../services/auth/strategy/github.strategy';
+import { GoogleStrategy } from '../services/auth/strategy/google.strategy';
+import { SamlStrategy } from '../services/auth/strategy/saml.strategy';
+import { UserService } from '../services/user.service';
+import { JwtStrategy } from '../services/auth/strategy/jwt.strategy';
+import { RefreshStrategy } from '../services/auth/strategy/refresh.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { AiController } from '../controllers/ai.controller';
+import { AiService } from '../services/ai.service';
+import { S3Service } from '../services/cloud.service';
+import { EventsController } from '../controllers/events.controller';
+import { StripeService } from '../services/stripe.service';
+import { EventsService } from '../services/events.service';
+import { FormService } from '../services/form.service';
+import { FormController } from '../controllers/form.controller';
+import { KanbanService } from '../services/kanban.service';
+import { KanbanController } from '../controllers/kanban.controller';
+import { MailService } from '../services/mail/mail.service';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { join } from 'node:path';
+import { ReactAdapter } from '@webtre/nestjs-mailer-react-adapter';
+import { OrganizationInviteService } from '../services/org-invite.service';
+import { OrgInviteController } from '../controllers/org-invite.controller';
+import { OrgMemberController } from '../controllers/org-member.controller';
+import { OrganizationMemberService } from '../services/org-member.service';
+import { OrganizationService } from '../services/organization.service';
+import { OrganizationController } from '../controllers/organization.controller';
+import { PrismaService } from '../services/prisma.service';
+import { StripeController } from '../controllers/stripe.controller';
+import { UserController } from '../controllers/user.controller';
+import * as Joi from 'joi';
+
+const AuthProviders = [
+	AuthService,
+	GithubStrategy,
+	GoogleStrategy,
+	SamlStrategy,
+	UserService,
+	JwtStrategy,
+	RefreshStrategy,
+];
+
+const AuthModules = [
+	PassportModule,
+	JwtModule.register({
+		secret: process.env.JWT_SECRET,
+		signOptions: { expiresIn: process.env.ACCESS_TOKEN_VALIDITY },
+	}),
+];
+
+const GlobalModules = [
+	ConfigModule.forRoot({
+		isGlobal: true,
+		validationSchema: Joi.object({
+			DATABASE_URL: Joi.string(),
+			GITHUB_CLIENT_ID: Joi.string(),
+			GITHUB_CLIENT_SECRET: Joi.string(),
+			GITHUB_CALLBACK_URL: Joi.string(),
+			GITHUB_SCOPE: Joi.string(),
+			ACCESS_TOKEN_VALIDITY: Joi.string(),
+			API_BASE_URL: Joi.string(),
+			GOOGLE_CLIENT_ID: Joi.string(),
+			GOOGLE_CLIENT_SECRET: Joi.string(),
+			GOOGLE_CALLBACK_URL: Joi.string(),
+			GOOGLE_SCOPE: Joi.string(),
+			WEB_URL: Joi.string(),
+			MAIL_HOST: Joi.string(),
+			MAIL_PORT: Joi.number(),
+			MAIL_USER: Joi.string(),
+			MAIL_PASSWORD: Joi.string(),
+			AWS_ACCESS_KEY: Joi.string(),
+			AWS_SECRET_KEY: Joi.string(),
+			AWS_REGION: Joi.string(),
+			STRIPE_SECRET_KEY: Joi.string(),
+			STRIPE_WEBHOOK_SECRET: Joi.string(),
+			AI_KEY: Joi.string(),
+		}),
+		validationOptions: {
+			allowUnknown: true,
+			abortEarly: true,
+		},
+	}),
+	EventEmitterModule.forRoot(),
+	ThrottlerModule.forRoot([
+		{
+			ttl: 60000,
+			limit: 50,
+		},
+	]),
+	LoggerModule.forRoot({
+		pinoHttp: {
+			level: 'info',
+			redact: ['req.headers', 'req.remoteAddress', 'res.headers'],
+		},
+	}),
+	MailerModule.forRootAsync({
+		useFactory: async (configService: ConfigService) => ({
+			transport: {
+				host: configService.get('MAIL_HOST'),
+				port: configService.get('MAIL_PORT'),
+				secure: false,
+				auth: {
+					user: configService.get('MAIL_USER'),
+					pass: configService.get('MAIL_PASSWORD'),
+				},
+				tls: {
+					rejectUnauthorized: false,
+				},
+			},
+			defaults: {
+				from: configService.get('MAIL_FROM'),
+			},
+			template: {
+				dir: join(__dirname, 'templates'),
+				adapter: new ReactAdapter({
+					pretty: false,
+					plainText: false,
+				}),
+				options: {
+					strict: true,
+				},
+			},
+		}),
+		inject: [ConfigService],
+	}),
+];
+
+@Module({
+	imports: [...GlobalModules, ...AuthModules],
+	controllers: [
+		AuthController,
+		AiController,
+		EventsController,
+		FormController,
+		KanbanController,
+		OrgInviteController,
+		OrgMemberController,
+		OrganizationController,
+		StripeController,
+		UserController,
+	],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
+		...AuthProviders,
+		AiService,
+		S3Service,
+		StripeService,
+		EventsService,
+		FormService,
+		KanbanService,
+		MailService,
+		OrganizationInviteService,
+		OrganizationMemberService,
+		OrganizationService,
+		PrismaService,
+		UserService,
+	],
+})
+export class RootModule {}

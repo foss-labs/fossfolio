@@ -12,6 +12,8 @@ tmp
 .pnp.js
 /dist
 
+apps/api/dist
+
 # testing
 /coverage
 
