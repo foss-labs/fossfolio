@@ -98,7 +98,7 @@ const GlobalModules = [
 	]),
 	LoggerModule.forRoot({
 		pinoHttp: {
-			level: 'info',
+			level: 'error',
 			redact: ['req.headers', 'req.remoteAddress', 'res.headers'],
 		},
 	}),

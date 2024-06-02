@@ -32,4 +32,12 @@ export default class BaseContext {
 	public async destroy() {
 		await BaseContext.knex.destroy();
 	}
+
+	public async getTransaction() {
+		return BaseContext.knex.transaction();
+	}
+
+	public async commitTransaction(trx: Knex.Transaction) {
+		await trx.commit();
+	}
 }

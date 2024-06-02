@@ -9,6 +9,7 @@
 		"build": "npx prisma generate && nest build",
 		"start": "nest start",
 		"dev": "node -r '@swc-node/register' --watch --enable-source-maps src/main.ts | pino-pretty",
+		"dev-new": "concurrently \"tsc --noEmit --watch\"  \"node -r '@swc-node/register' --watch --enable-source-maps src/main.ts | pino-pretty \"",
 		"start:prod": "node dist/main",
 		"db:seed": "ts-node prisma/seed.ts"
 	},
@@ -73,6 +74,7 @@
 		"@types/passport-google-oauth20": "^2.0.14",
 		"@types/passport-jwt": "^4.0.1",
 		"@types/react": "^18.2.58",
+		"concurrently": "^8.2.2",
 		"prisma": "^5.10.2",
 		"react": "^18.3.1",
 		"ts-node": "^10.9.2",
