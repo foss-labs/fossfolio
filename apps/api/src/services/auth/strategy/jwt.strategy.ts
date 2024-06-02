@@ -1,9 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import type { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserService } from '../../user.service';
+import { UserService } from '@api/services/user.service';
+import { FFError } from '@api/utils/error';
+import { UserModel } from '@api/models';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -18,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 				(request: Request) => {
 					const data = request?.cookies.access_token;
 					if (!data) {
-						throw new UnauthorizedException('ACCESS_TOKEN_NOT_FOUND');
+						FFError.unauthorized('Access Token not found');
 					}
 					return data;
 				},
@@ -26,14 +28,15 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		});
 	}
 
-	async validate(payload: any) {
-		if (payload === null) {
-			throw new UnauthorizedException();
-		}
-		const user = await this.userService.findUserById(payload.sub);
+	async validate(payload: {
+		iss: string;
+		sub: string;
+		iat: number;
+	}) {
+		const user = await UserModel.findById(payload.sub);
 
 		if (!user) {
-			throw new UnauthorizedException('INVALID_USER');
+			FFError.unauthorized('Invalid user');
 		}
 		return user;
 	}

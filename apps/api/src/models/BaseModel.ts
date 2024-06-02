@@ -30,7 +30,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.first();
 				return (data as M) || null;
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -50,11 +50,11 @@ export default function createBaseModel<T extends SystemTable, M>(
 				const data = await qb;
 				return data as M[];
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
-		static async insert(data: CreateSchema<T>, trx?: Knex) {
+		static async insert(data: CreateSchema<T>, trx?: Knex): Promise<M> {
 			try {
 				const insertData = {
 					...data,
@@ -65,7 +65,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.returning('*');
 				return res[0] as M;
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -80,7 +80,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.returning('*');
 				return res as M[];
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -92,7 +92,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.returning('*');
 				return res as M[];
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -118,7 +118,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 			try {
 				return (trx ?? BaseContext.knex)<T>(tableName).where(where).del();
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -130,7 +130,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.count();
 				return Number.parseInt(data[0].count as string, 10);
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -160,7 +160,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 				const data = await qb;
 				return data as M[];
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -174,7 +174,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 			try {
 				return (trx ?? BaseContext.knex).raw(query);
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				throw FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 	}

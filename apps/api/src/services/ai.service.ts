@@ -83,8 +83,8 @@ export class AiService {
 			response_format: { type: 'json_object', schema: jsonSchema },
 		});
 
-		const jsonExtract = chat.choices[0].message.content.match(
-			/[{\[]{1}([,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]|".*?")+[}\]]{1}/gis,
+		const jsonExtract = chat.choices[0].message.content?.match(
+			/[{\[]([,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]|".*?")+[}\]]/gis,
 		);
 
 		if (!jsonExtract) {

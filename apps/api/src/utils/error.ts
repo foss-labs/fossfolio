@@ -27,6 +27,8 @@ export class InternalServerError
 
 export class ExternalError extends Error implements RootError {}
 
+export class UploadAttachmentError extends RootError {}
+
 export class DatabaseError extends RootError {
 	constructor(message: string, error: unknown) {
 		super(message);
@@ -63,6 +65,10 @@ export class FFError {
 
 	static databaseError(message: string, error: unknown) {
 		throw new DatabaseError(message, error);
+	}
+
+	static uploadAttachmentError(message: string) {
+		throw new UploadAttachmentError(message);
 	}
 }
 

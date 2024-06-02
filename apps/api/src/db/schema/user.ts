@@ -10,7 +10,7 @@ export const UserSchema = z.object({
 	college_name: z.string().optional(),
 	is_student: z.boolean().optional(),
 
-	refresh_token: z.string().optional(),
+	refresh_token: z.string(),
 
 	created_at: z.date(),
 	updated_at: z.date(),

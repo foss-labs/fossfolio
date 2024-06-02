@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { FFError } from '@api/utils/error';
 
 @Injectable()
 export class S3Service {
@@ -15,10 +16,11 @@ export class S3Service {
 		});
 	}
 
-	async uploadFile(file: Express.Multer.File): Promise<string> {
+	async uploadFile(file: Express.Multer.File) {
 		try {
 			const { mimetype, originalname } = file;
 			const command = new PutObjectCommand({
+				// TODO: @DarkPhoenix2704 - Make the Bucket name Configurable
 				Bucket: 'fossfolio',
 				Key: originalname.split(' ').join('-'),
 				Body: file.buffer,
@@ -28,9 +30,7 @@ export class S3Service {
 
 			return `https://${command.input.Bucket}.s3.amazonaws.com/${command.input.Key}`;
 		} catch (error) {
-			// Handle error gracefully
-			console.error(error);
-			return;
+			FFError.uploadAttachmentError('Error uploading attachment');
 		}
 	}
 }

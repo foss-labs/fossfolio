@@ -6,6 +6,8 @@ import type { UpdateUserDto } from './dto/update-user.dto';
 import type { User } from '@prisma/client';
 import { fakerEN } from '@faker-js/faker';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UserModel } from '@api/models/User';
+import { AccountModel } from '@api/models';
 
 @Injectable()
 export class UserService {
@@ -13,19 +15,6 @@ export class UserService {
 		private readonly prismaService: PrismaService,
 		private readonly eventEmitter: EventEmitter2,
 	) {}
-
-	async findUserByEmail(email: string) {
-		try {
-			const user = await this.prismaService.user.findUnique({
-				where: {
-					email: email,
-				},
-			});
-			return user;
-		} catch (error) {
-			return null;
-		}
-	}
 
 	async findUserBySlug(slug: string) {
 		try {
@@ -44,9 +33,10 @@ export class UserService {
 		accessToken: string,
 		refreshToken: string,
 		profile: Profile,
+		email: string,
 	) {
-		const userDisplayName = profile.displayName ? profile.displayName : null;
-		const userPhotoURL = profile.photos ? profile.photos[0].value : null;
+		const userDisplayName = profile.displayName ? profile.displayName : '';
+		const userPhotoURL = profile.photos ? profile.photos[0].value : '';
 
 		let slug: string;
 		while (true) {
@@ -56,60 +46,33 @@ export class UserService {
 			break;
 		}
 
-		const createdUser = await this.prismaService.user.create({
-			data: {
-				displayName: userDisplayName,
-				email: profile.emails[0].value,
-				photoURL: userPhotoURL,
-				slug,
-				providerAccounts: {
-					create: {
-						provider: profile.provider,
-						providerAccountId: profile.id,
-						providerRefreshToken: refreshToken,
-						providerAccessToken: accessToken,
-					},
-				},
-			},
+		const user = await UserModel.insert({
+			display_name: userDisplayName,
+			email,
+			photo_url: userPhotoURL,
+			slug,
+			refresh_token: '',
+		});
+
+		await AccountModel.insert({
+			provider: profile.provider,
+			provider_account_id: profile.id,
+			provider_access_token: accessToken,
+			provider_refresh_token: refreshToken,
+			fk_user_id: user.id,
 		});
 
 		this.eventEmitter.emit('user.registered', {
-			email: createdUser.email,
-			name: createdUser.displayName,
-			avatarUrl: createdUser.photoURL,
+			email: user.email,
+			name: user.display_name,
+			avatarUrl: user.photo_url,
 		});
 
-		return createdUser;
+		return user;
 	}
 
-	async updateRefreshToken(uid: string, refreshToken: string | null) {
-		try {
-			const updatedUser = await this.prismaService.user.update({
-				where: {
-					uid: uid,
-				},
-				data: {
-					refreshToken: refreshToken,
-				},
-			});
-			return updatedUser;
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	async findUserById(uid: string) {
-		try {
-			const user = await this.prismaService.user.findUnique({
-				where: {
-					uid: uid,
-				},
-			});
-
-			return user;
-		} catch (error) {
-			return null;
-		}
+	async findUserById(id: string) {
+		return await UserModel.findById(id);
 	}
 
 	async updateUser(authUser: User, updateUserDto: UpdateUserDto) {
