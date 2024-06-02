@@ -1,34 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import type { User } from '@prisma/client';
 import { hash, verify } from 'argon2';
 import type { Profile } from 'passport';
-import { PrismaService } from '../prisma.service';
-import { UserService } from '../user.service';
+import { User } from '@api/db/schema';
+import { AccountModel, UserModel } from '@api/models';
+import { FFError } from '@api/utils/error';
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private readonly prismaService: PrismaService,
 		private readonly jwtService: JwtService,
-		private readonly userService: UserService,
 		private readonly configService: ConfigService,
 	) {}
 
 	async checkIfProviderAccountExists(OAuthUserData: Profile) {
-		const provider = await this.prismaService.account.findUnique({
-			where: {
-				verify_provider_account: {
-					provider: OAuthUserData.provider,
-					providerAccountId: OAuthUserData.id,
-				},
-			},
+		const provider = await AccountModel.find({
+			provider: OAuthUserData.provider,
+			provider_account_id: OAuthUserData.id,
 		});
 
-		if (!provider) return null;
-
-		return provider;
+		if (!provider || !provider.length) return null;
+		return provider[0];
 	}
 
 	async createProviderAccount(
@@ -37,36 +30,26 @@ export class AuthService {
 		accessToken: string,
 		refreshToken: string,
 	) {
-		try {
-			const createdProviderAccount = await this.prismaService.account.create({
-				data: {
-					provider: profile.provider,
-					providerAccountId: profile.id,
-					providerAccessToken: accessToken,
-					providerRefreshToken: refreshToken,
-					user: {
-						connect: {
-							uid: user.uid,
-						},
-					},
-				},
-			});
+		const account = await AccountModel.insert({
+			provider: profile.provider,
+			provider_account_id: profile.id,
+			provider_access_token: accessToken,
+			provider_refresh_token: refreshToken,
+			fk_user_id: user.id,
+		});
 
-			return createdProviderAccount;
-		} catch (error) {
-			return null;
-		}
+		return account;
 	}
 
-	async generateAuthToken(uid: string) {
+	async generateAuthToken(id: string) {
 		const payload = {
 			iss: this.configService.get('API_BASE_URL'),
-			sub: uid,
+			sub: id,
 			iat: new Date().getTime(),
 		};
 
 		const accessToken = await this.jwtService.signAsync(payload);
-		const refreshToken = await this.generateRefreshToken(uid);
+		const refreshToken = await this.generateRefreshToken(id);
 
 		return {
 			accessToken,
@@ -74,9 +57,9 @@ export class AuthService {
 		};
 	}
 
-	async generateRefreshToken(uid: string) {
+	async generateRefreshToken(id: string) {
 		const payload = {
-			sub: uid,
+			sub: id,
 			iss: this.configService.get('API_BASE_URL'),
 			iat: new Date().getTime(),
 		};
@@ -84,12 +67,7 @@ export class AuthService {
 
 		const hashedRefreshToken = await hash(refreshToken);
 
-		const updatedUser = await this.userService.updateRefreshToken(
-			uid,
-			hashedRefreshToken,
-		);
-
-		if (!updatedUser) throw new Error('REFRESH_TOKEN_NOT_UPDATED');
+		await UserModel.update({ id: id }, { refresh_token: hashedRefreshToken });
 
 		return refreshToken;
 	}
@@ -97,11 +75,10 @@ export class AuthService {
 	async refreshAuthToken(user: User, hashedToken: string) {
 		if (!user) throw new Error('USER_NOT_FOUND');
 
-		const isRefreshTokenValid = await verify(user.refreshToken, hashedToken);
+		const isRefreshTokenValid = await verify(user.refresh_token, hashedToken);
 
-		if (!isRefreshTokenValid)
-			throw new Error('AFTER_GENERATION_INVALID_REFRESH_TOKEN');
+		if (!isRefreshTokenValid) FFError.unauthorized('Invalid refresh token');
 
-		return await this.generateAuthToken(user.uid);
+		return await this.generateAuthToken(user.id);
 	}
 }
