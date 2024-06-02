@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { FFError } from '@api/utils/error';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class S3Service {
 	private readonly s3Client: S3Client;
 
-	constructor() {
+	constructor(private readonly configService: ConfigService) {
 		this.s3Client = new S3Client({
-			region: process.env.AWS_REGION,
+			region: this.configService.get('AWS_REGION') as string,
 			credentials: {
-				accessKeyId: process.env.AWS_ACCESS_KEY,
-				secretAccessKey: process.env.AWS_SECRET_KEY,
+				accessKeyId: this.configService.get('AWS_ACCESS_KEY') as string,
+				secretAccessKey: this.configService.get('AWS_SECRET_KEY') as string,
 			},
 		});
 	}

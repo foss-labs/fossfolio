@@ -37,37 +37,37 @@ export class DatabaseError extends RootError {
 	}
 }
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+// biome-ignore lint/complexity/noStaticOnlyClass: Incorrectly flagged here. This class is used to create instances of the error classes.
 export class FFError {
-	static notFound(message: string) {
+	static notFound(message: string): never {
 		throw new NotFound(message);
 	}
 
-	static forbidden(message: string) {
+	static forbidden(message: string): never {
 		throw new Forbidden(message);
 	}
 
-	static unauthorized(message: string) {
+	static unauthorized(message: string): never {
 		throw new Unauthorized(message);
 	}
 
-	static badRequest(message: string | unknown) {
+	static badRequest(message: string | unknown): never {
 		throw new BadRequest(message);
 	}
 
-	static internalServerError(message: string) {
+	static internalServerError(message: string): never {
 		throw new InternalServerError(message);
 	}
 
-	static externalError(message: string) {
+	static externalError(message: string): never {
 		throw new ExternalError(message);
 	}
 
-	static databaseError(message: string, error: unknown) {
+	static databaseError(message: string, error: unknown): never {
 		throw new DatabaseError(message, error);
 	}
 
-	static uploadAttachmentError(message: string) {
+	static uploadAttachmentError(message: string): never {
 		throw new UploadAttachmentError(message);
 	}
 }
