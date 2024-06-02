@@ -20,7 +20,6 @@
 		"strictBindCallApply": false,
 		"forceConsistentCasingInFileNames": false,
 		"noFallthroughCasesInSwitch": true,
-		"types": ["src/types/*.d.ts"],
 		"paths": {
 			"@api/*": ["src/*"]
 		}

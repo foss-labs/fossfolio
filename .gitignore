@@ -13,6 +13,7 @@ tmp
 /dist
 
 apps/api/dist
+apps/api/prisma/seed.js
 
 # testing
 /coverage
