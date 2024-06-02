@@ -28,7 +28,7 @@ export class InternalServerError
 export class ExternalError extends Error implements RootError {}
 
 export class DatabaseError extends RootError {
-	constructor(message: string, error: Error) {
+	constructor(message: string, error: unknown) {
 		super(message);
 		this.message =
 			message + extractDBError(error as unknown as { code: string });
@@ -61,7 +61,7 @@ export class FFError {
 		throw new ExternalError(message);
 	}
 
-	static databaseError(message: string, error: Error) {
+	static databaseError(message: string, error: unknown) {
 		throw new DatabaseError(message, error);
 	}
 }
