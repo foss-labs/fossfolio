@@ -23,10 +23,7 @@ export class UserModel extends BaseModel<SystemTable.User, User>(
 				.first();
 			return user;
 		} catch (error) {
-			throw FFError.databaseError(
-				`${SystemTable.User}: Query Failed : `,
-				error,
-			);
+			FFError.databaseError(`${SystemTable.User}: Query Failed : `, error);
 		}
 	}
 }

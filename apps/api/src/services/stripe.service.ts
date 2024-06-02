@@ -7,21 +7,23 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class StripeService {
-	private readonly stripe: Stripe;
-	private readonly prisma: PrismaService;
-	private readonly configService: ConfigService;
+	private stripe: Stripe;
 
 	constructor(
-		prisma: PrismaService,
-		config: ConfigService,
+		private readonly configService: ConfigService,
 		private readonly eventEmitter: EventEmitter2,
+		private readonly prismaService: PrismaService,
 	) {
-		this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-			apiVersion: '2023-10-16',
-		});
+		this.initStripe();
+	}
 
-		this.prisma = prisma;
-		this.configService = config;
+	initStripe() {
+		this.stripe = new Stripe(
+			this.configService.get('STRIPE_SECRET_KEY') as string,
+			{
+				apiVersion: '2023-10-16',
+			},
+		);
 	}
 
 	async handleWebHookEvent(body, signature) {
@@ -29,7 +31,7 @@ export class StripeService {
 			const event = this.stripe.webhooks.constructEvent(
 				body,
 				signature,
-				process.env.STRIPE_WEBHOOK_SECRET,
+				this.configService.get('STRIPE_WEBHOOK_SECRET') as string,
 			);
 			if (event.type === 'payment_intent.created') {
 				const eventInfo = event.data.object.metadata;
@@ -37,13 +39,13 @@ export class StripeService {
 				if (!event_id || !user_id) {
 					throw new Error('Invalid metadata');
 				} else {
-					const event = await this.prisma.events.findUnique({
+					const event = await this.prismaService.events.findUnique({
 						where: {
 							id: event_id,
 						},
 					});
 
-					await this.prisma.events.update({
+					await this.prismaService.events.update({
 						where: {
 							id: event_id,
 						},
@@ -57,7 +59,7 @@ export class StripeService {
 						},
 					});
 
-					const user = await this.prisma.user.findUnique({
+					const user = await this.prismaService.user.findUnique({
 						where: {
 							uid: user_id,
 						},
@@ -88,7 +90,7 @@ export class StripeService {
 				},
 			});
 
-			await this.prisma.events.update({
+			await this.prismaService.events.update({
 				where: {
 					id: event.id,
 				},
@@ -118,7 +120,7 @@ export class StripeService {
 				currency: 'inr',
 			});
 
-			await this.prisma.events.update({
+			await this.prismaService.events.update({
 				where: {
 					id: event.id,
 				},
@@ -165,9 +167,10 @@ export class StripeService {
 				],
 				mode: 'payment',
 				// might need to create a success page then redirect to tickets page
+				// biome-ignore lint/style/useTemplate: <explanation>
 				success_url: webUrl + '/tickets',
 				// can show a toast in frontend
-				cancel_url: webUrl + '/events?payment_error=true',
+				cancel_url: `${webUrl}/events?payment_error=true`,
 			});
 
 			return { sessionId: session.id, url: session.url };

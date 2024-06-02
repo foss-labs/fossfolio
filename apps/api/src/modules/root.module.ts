@@ -37,135 +37,115 @@ import { OrganizationController } from '../controllers/organization.controller';
 import { PrismaService } from '../services/prisma.service';
 import { StripeController } from '../controllers/stripe.controller';
 import { UserController } from '../controllers/user.controller';
-import * as Joi from 'joi';
+import { envSchema, parsedEnv } from '@api/utils/envSchema';
 
 const AuthProviders = [
-	AuthService,
-	GithubStrategy,
-	GoogleStrategy,
-	SamlStrategy,
-	UserService,
-	JwtStrategy,
-	RefreshStrategy,
+    AuthService,
+    GithubStrategy,
+    GoogleStrategy,
+    SamlStrategy,
+    UserService,
+    JwtStrategy,
+    RefreshStrategy,
 ];
 
 const AuthModules = [
-	PassportModule,
-	JwtModule.register({
-		secret: process.env.JWT_SECRET,
-		signOptions: { expiresIn: process.env.ACCESS_TOKEN_VALIDITY },
-	}),
+    PassportModule,
+    JwtModule.registerAsync({
+        useFactory: async (configService: ConfigService) => ({
+            secret: configService.get('JWT_SECRET'),
+            signOptions: { expiresIn: configService.get('ACCESS_TOKEN_VALIDITY') },
+        }),
+        inject: [ConfigService],
+    }),
 ];
 
 const GlobalModules = [
-	ConfigModule.forRoot({
-		isGlobal: true,
-		validationSchema: Joi.object({
-			DATABASE_URL: Joi.string(),
-			GITHUB_CLIENT_ID: Joi.string(),
-			GITHUB_CLIENT_SECRET: Joi.string(),
-			GITHUB_CALLBACK_URL: Joi.string(),
-			GITHUB_SCOPE: Joi.string(),
-			ACCESS_TOKEN_VALIDITY: Joi.string(),
-			API_BASE_URL: Joi.string(),
-			GOOGLE_CLIENT_ID: Joi.string(),
-			GOOGLE_CLIENT_SECRET: Joi.string(),
-			GOOGLE_CALLBACK_URL: Joi.string(),
-			GOOGLE_SCOPE: Joi.string(),
-			WEB_URL: Joi.string(),
-			MAIL_HOST: Joi.string(),
-			MAIL_PORT: Joi.number(),
-			MAIL_USER: Joi.string(),
-			MAIL_PASSWORD: Joi.string(),
-			AWS_ACCESS_KEY: Joi.string(),
-			AWS_SECRET_KEY: Joi.string(),
-			AWS_REGION: Joi.string(),
-			STRIPE_SECRET_KEY: Joi.string(),
-			STRIPE_WEBHOOK_SECRET: Joi.string(),
-			AI_KEY: Joi.string(),
-		}),
-		validationOptions: {
-			allowUnknown: true,
-			abortEarly: true,
-		},
-	}),
-	EventEmitterModule.forRoot(),
-	ThrottlerModule.forRoot([
-		{
-			ttl: 60000,
-			limit: 50,
-		},
-	]),
-	LoggerModule.forRoot({
-		pinoHttp: {
-			level: 'error',
-			redact: ['req.headers', 'req.remoteAddress', 'res.headers'],
-		},
-	}),
-	MailerModule.forRootAsync({
-		useFactory: async (configService: ConfigService) => ({
-			transport: {
-				host: configService.get('MAIL_HOST'),
-				port: configService.get('MAIL_PORT'),
-				secure: false,
-				auth: {
-					user: configService.get('MAIL_USER'),
-					pass: configService.get('MAIL_PASSWORD'),
-				},
-				tls: {
-					rejectUnauthorized: false,
-				},
-			},
-			defaults: {
-				from: configService.get('MAIL_FROM'),
-			},
-			template: {
-				dir: join(__dirname, 'templates'),
-				adapter: new ReactAdapter({
-					pretty: false,
-					plainText: false,
-				}),
-				options: {
-					strict: true,
-				},
-			},
-		}),
-		inject: [ConfigService],
-	}),
+    ConfigModule.forRoot({
+        isGlobal: true,
+        validate: envSchema.parse,
+        validationOptions: {
+            abortEarly: true,
+        },
+    }),
+    EventEmitterModule.forRoot(),
+    ThrottlerModule.forRoot([
+        {
+            ttl: 60000,
+            limit: 50,
+        },
+    ]),
+    LoggerModule.forRoot({
+        pinoHttp: {
+            level: 'error',
+            redact: ['req.headers', 'req.remoteAddress', 'res.headers'],
+        },
+    }),
+    MailerModule.forRootAsync({
+        useFactory: async (configService: ConfigService) => ({
+            transport: {
+                host: configService.get('MAIL_HOST'),
+                port: configService.get('MAIL_PORT'),
+                secure: false,
+                auth: {
+                    user: configService.get('MAIL_USER'),
+                    pass: configService.get('MAIL_PASSWORD'),
+                },
+                tls: {
+                    rejectUnauthorized: false,
+                },
+            },
+            defaults: {
+                from: configService.get('MAIL_FROM'),
+            },
+            template: {
+                dir: join(__dirname, 'templates'),
+                adapter: new ReactAdapter({
+                    pretty: false,
+                    plainText: false,
+                }),
+                options: {
+                    strict: true,
+                },
+            },
+        }),
+        inject: [ConfigService],
+    }),
 ];
 
 @Module({
-	imports: [...GlobalModules, ...AuthModules],
-	controllers: [
-		AuthController,
-		AiController,
-		EventsController,
-		FormController,
-		KanbanController,
-		OrgInviteController,
-		OrgMemberController,
-		OrganizationController,
-		StripeController,
-		UserController,
-	],
-	providers: [
-		{
-			provide: APP_GUARD,
-			useClass: ThrottlerGuard,
-		},
-		...AuthProviders,
-		AiService,
-		S3Service,
-		StripeService,
-		EventsService,
-		FormService,
-		KanbanService,
-		MailService,
-		OrganizationInviteService,
-		OrganizationMemberService,
-		OrganizationService,
-		PrismaService,
-		UserService,
-	],
+    imports: [...GlobalModules, ...AuthModules],
+    controllers: [
+        AuthController,
+        AiController,
+        EventsController,
+        FormController,
+        KanbanController,
+        OrgInviteController,
+        OrgMemberController,
+        OrganizationController,
+        StripeController,
+        UserController,
+    ],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+        ...AuthProviders,
+        AiService,
+        S3Service,
+        StripeService,
+        EventsService,
+        FormService,
+        KanbanService,
+        MailService,
+        OrganizationInviteService,
+        OrganizationMemberService,
+        OrganizationService,
+        PrismaService,
+        UserService,
+    ],
 })
-export class RootModule {}
+export class RootModule {
+}

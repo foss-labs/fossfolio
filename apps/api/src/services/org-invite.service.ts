@@ -2,12 +2,15 @@ import { PrismaService } from './prisma.service';
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import type { Role } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ConfigService } from '@nestjs/config';
+import BaseContext from '@api/BaseContext';
 
 @Injectable()
 export class OrganizationInviteService {
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly eventEmitter: EventEmitter2,
+		private readonly configService: ConfigService,
 	) {}
 
 	async inviteToOrg(
@@ -72,7 +75,8 @@ export class OrganizationInviteService {
 					(el) => el.inviteeEmail === email,
 				).id;
 				//  finding the id of new invite
-				const localPort = process.env.CLIENT_URL || 'http://localhost:3000';
+				const localPort =
+					this.configService.get('CLIENT_URL') || 'http://localhost:3000';
 				const inviteURL = `${localPort}/verify?id=${inviteId}`;
 
 				// we dont want to send invite on local
@@ -92,7 +96,10 @@ export class OrganizationInviteService {
 
 			return {
 				ok: true,
-				data: process.env.NODE_ENV !== 'production' ? inviteUrl : null,
+				data:
+					this.configService.get('NODE_ENV') !== 'production'
+						? inviteUrl
+						: null,
 				message: 'email sent successfully , please check your mailbox',
 			};
 		} catch {
