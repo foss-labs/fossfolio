@@ -1,20 +1,74 @@
+import {
+	BadRequestException,
+	ForbiddenException,
+	InternalServerErrorException,
+	NotFoundException,
+	UnauthorizedException,
+} from '@nestjs/common';
+
 class RootError extends Error {
 	constructor(message: string) {
 		super(message);
-		this.name = 'RootError';
 		this.message = message;
 	}
 }
 
+export class NotFound extends NotFoundException implements RootError {}
+
+export class Forbidden extends ForbiddenException implements RootError {}
+
+export class Unauthorized extends UnauthorizedException implements RootError {}
+
+export class BadRequest extends BadRequestException implements RootError {}
+
+export class InternalServerError
+	extends InternalServerErrorException
+	implements RootError {}
+
+export class ExternalError extends Error implements RootError {}
+
 export class DatabaseError extends RootError {
 	constructor(message: string, error: Error) {
 		super(message);
-		this.name = 'DatabaseError';
-		this.message = message + extractDBError(error);
+		this.message =
+			message + extractDBError(error as unknown as { code: string });
 	}
 }
 
-const extractDBError = (error: any) => {
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+export class FFError {
+	static notFound(message: string) {
+		throw new NotFound(message);
+	}
+
+	static forbidden(message: string) {
+		throw new Forbidden(message);
+	}
+
+	static unauthorized(message: string) {
+		throw new Unauthorized(message);
+	}
+
+	static badRequest(message: string) {
+		throw new BadRequest(message);
+	}
+
+	static internalServerError(message: string) {
+		throw new InternalServerError(message);
+	}
+
+	static externalError(message: string) {
+		throw new ExternalError(message);
+	}
+
+	static databaseError(message: string, error: Error) {
+		throw new DatabaseError(message, error);
+	}
+}
+
+const extractDBError = (error: {
+	code: string;
+}) => {
 	switch (error.code) {
 		case '23505':
 			return 'Unique constraint violation';
