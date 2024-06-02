@@ -168,17 +168,41 @@ export default function createBaseModel<T extends SystemTable, M>(
 			}
 		}
 
-		static async dangerousRawQuery(query: string, trx?: Knex) {
+		static async rawQuery(query: string, trx?: Knex) {
 			if (!query.toLowerCase().includes(tableName)) {
-				throw new Error('Only raw queries for the current table are allowed');
+				throw new Error(
+					'Only raw queries for the scoped table are allowed here. For executing in global scope, use BaseContext.execRawQuery()',
+				);
 			}
+
 			if (!query.toLowerCase().includes('where')) {
-				throw new Error('Raw query must contain a where clause');
+				throw new Error(
+					'Raw query must contain a where clause. For unrestricted usage, use dangerousExecRawQuery()',
+				);
 			}
 			try {
 				return (trx ?? BaseContext.knex).raw(query);
 			} catch (error: unknown) {
-				FFError.databaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(
+					`${tableName}: Raw Query Failed ${query} : `,
+					error,
+				);
+			}
+		}
+
+		static async dangerousRawQuery(query: string, trx?: Knex) {
+			if (!query.toLowerCase().includes(tableName)) {
+				throw new Error(
+					'Only raw queries for the scoped table are allowed here. For executing in global scope, use BaseContext.execRawQuery()',
+				);
+			}
+			try {
+				return (trx ?? BaseContext.knex).raw(query);
+			} catch (error: unknown) {
+				FFError.databaseError(
+					`${tableName}: DangerousRawQuery Failed ${query} : `,
+					error,
+				);
 			}
 		}
 	}
