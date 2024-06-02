@@ -49,7 +49,7 @@ export class FFError {
 		throw new Unauthorized(message);
 	}
 
-	static badRequest(message: string) {
+	static badRequest(message: string | unknown) {
 		throw new BadRequest(message);
 	}
 
