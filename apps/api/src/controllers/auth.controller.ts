@@ -1,10 +1,13 @@
-import { Controller, Get, Request, Response, UseGuards } from '@nestjs/common';
-import { GithubAuthGuard } from '../services/auth/guards/github-oauth.guard';
-import { AuthService } from '../services/auth/auth.service';
-import { cookieHandler } from '../services/auth/cookieHandler';
-import { RefreshGuard } from '../services/auth/guards/refresh.guard';
-import { GoogleAuthGuard } from '../services/auth/guards/google-oauth.guard';
-import { SamlAuthGuard } from '../services/auth/guards/saml-oauth.guard';
+import { Controller, Get, Response, UseGuards, Request } from '@nestjs/common';
+import { GithubAuthGuard } from '@api/services/auth/guards/github-oauth.guard';
+import { AuthService } from '@api/services/auth/auth.service';
+import { cookieHandler } from '@api/services/auth/cookieHandler';
+import { RefreshGuard } from '@api/services/auth/guards/refresh.guard';
+import { GoogleAuthGuard } from '@api/services/auth/guards/google-oauth.guard';
+import { SamlAuthGuard } from '@api/services/auth/guards/saml-oauth.guard';
+import { Response as EResponse, Request as ERequest } from 'express';
+import { AuthUser } from '@api/services/auth/decorators/user.decorator';
+import { User } from '@api/db/schema';
 
 @Controller('auth')
 export class AuthController {
@@ -18,8 +21,11 @@ export class AuthController {
 	// Route to Handle GitHub OAuth Callback
 	@Get('/github/callback')
 	@UseGuards(GithubAuthGuard)
-	async githubOAuthCallback(@Request() req, @Response() res) {
-		const authToken = await this.authService.generateAuthToken(req.user.uid);
+	async githubOAuthCallback(
+		@AuthUser() user: User,
+		@Response() res: EResponse,
+	) {
+		const authToken = await this.authService.generateAuthToken(user.id);
 		cookieHandler(res, authToken, true);
 	}
 
@@ -29,8 +35,11 @@ export class AuthController {
 
 	@Get('/google/callback')
 	@UseGuards(GoogleAuthGuard)
-	async googleOAuthCallback(@Request() req, @Response() res) {
-		const authToken = await this.authService.generateAuthToken(req.user.uid);
+	async googleOAuthCallback(
+		@AuthUser() user: User,
+		@Response() res: EResponse,
+	) {
+		const authToken = await this.authService.generateAuthToken(user.id);
 		cookieHandler(res, authToken, true);
 	}
 
@@ -40,9 +49,13 @@ export class AuthController {
 
 	@Get('/saml//callback')
 	@UseGuards(SamlAuthGuard)
-	async samlOAuthCallback(@Request() req, @Response() res) {
+	async samlOAuthCallback(
+		@Request() req: ERequest,
+		@AuthUser() user: User,
+		@Response() res: EResponse,
+	) {
 		const genToken = await this.authService.refreshAuthToken(
-			req.user,
+			user,
 			req.cookies.refresh_token,
 		);
 		cookieHandler(res, genToken, false);
@@ -50,9 +63,13 @@ export class AuthController {
 
 	@Get('/refresh')
 	@UseGuards(RefreshGuard)
-	async refresh(@Request() req, @Response() res) {
+	async refresh(
+		@Request() req: ERequest,
+		@AuthUser() user: User,
+		@Response() res: EResponse,
+	) {
 		const genToken = await this.authService.refreshAuthToken(
-			req.user,
+			user,
 			req.cookies.refresh_token,
 		);
 
@@ -60,10 +77,12 @@ export class AuthController {
 	}
 
 	@Get('/logout')
-	async logout(@Response() res) {
+	async logout(@Response() res: EResponse) {
 		res.clearCookie('access_token');
 		res.clearCookie('refresh_token');
 
-		res.redirect(process.env.CLIENT_REDIRECT_URI);
+		// TODO: @DarkPhoenix2704 - Redirect to the client's home page
+		// Make a Typesafe way to fetch environment variables
+		// res.redirect(process.env.CLIENT_REDIRECT_URI);
 	}
 }
