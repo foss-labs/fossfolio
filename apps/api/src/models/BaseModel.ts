@@ -2,7 +2,7 @@ import BaseContext from '@api/BaseContext';
 import { CreateSchema, UpdateSchema } from '@api/db/schema';
 import { SystemTable, generateID } from '@api/utils/db';
 import { Logger } from '@nestjs/common';
-import { DatabaseError } from '@api/utils/error';
+import { DatabaseError, FFError } from '@api/utils/error';
 import { Knex } from 'knex';
 
 export type OrderBy<M> = {
@@ -22,7 +22,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 			this.logger = logger || new Logger();
 		}
 
-		static async findById(id: string, trx?: Knex): Promise<M | null> {
+		static async findById(id: string, trx?: Knex) {
 			try {
 				const data = await (trx ?? BaseContext.knex)<T>(tableName)
 					.where(id)
@@ -30,15 +30,11 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.first();
 				return (data as M) || null;
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
-		static async find(
-			where: Partial<M>,
-			orderBy?: OrderBy<M>,
-			trx?: Knex,
-		): Promise<M[]> {
+		static async find(where: Partial<M>, orderBy?: OrderBy<M>, trx?: Knex) {
 			try {
 				const qb = (trx ?? BaseContext.knex)<T>(tableName)
 					.where(where)
@@ -54,11 +50,11 @@ export default function createBaseModel<T extends SystemTable, M>(
 				const data = await qb;
 				return data as M[];
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
-		static async insert(data: CreateSchema<T>, trx?: Knex): Promise<M> {
+		static async insert(data: CreateSchema<T>, trx?: Knex) {
 			try {
 				const insertData = {
 					...data,
@@ -69,11 +65,11 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.returning('*');
 				return res[0] as M;
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
-		static async insertMany(data: CreateSchema<T>[], trx?: Knex): Promise<M[]> {
+		static async insertMany(data: CreateSchema<T>[], trx?: Knex) {
 			try {
 				const insertData = data.map((d) => ({
 					...d,
@@ -84,15 +80,11 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.returning('*');
 				return res as M[];
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
-		static async update(
-			where: Partial<M>,
-			data: UpdateSchema<T>,
-			trx?: Knex,
-		): Promise<M[]> {
+		static async update(where: Partial<M>, data: UpdateSchema<T>, trx?: Knex) {
 			try {
 				const res = await (trx ?? BaseContext.knex)<T>(tableName)
 					.where(where)
@@ -100,7 +92,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.returning('*');
 				return res as M[];
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -126,11 +118,11 @@ export default function createBaseModel<T extends SystemTable, M>(
 			try {
 				return (trx ?? BaseContext.knex)<T>(tableName).where(where).del();
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
-		static async count(where: Partial<M>, trx?: Knex): Promise<number> {
+		static async count(where: Partial<M>, trx?: Knex) {
 			try {
 				const data = await (trx ?? BaseContext.knex)<T>(tableName)
 					.where(where)
@@ -138,7 +130,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 					.count();
 				return Number.parseInt(data[0].count as string, 10);
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -148,7 +140,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 			limit: number,
 			orderBy?: OrderBy<M>,
 			trx?: Knex,
-		): Promise<M[]> {
+		) {
 			try {
 				const qb = (trx ?? BaseContext.knex)<T>(tableName)
 					.where(where)
@@ -168,7 +160,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 				const data = await qb;
 				return data as M[];
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 
@@ -182,7 +174,7 @@ export default function createBaseModel<T extends SystemTable, M>(
 			try {
 				return (trx ?? BaseContext.knex).raw(query);
 			} catch (error) {
-				throw new DatabaseError(`${tableName}: Query Failed : `, error);
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
 			}
 		}
 	}
