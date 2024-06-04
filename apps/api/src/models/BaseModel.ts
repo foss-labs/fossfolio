@@ -34,6 +34,18 @@ export default function createBaseModel<T extends SystemTable, M>(
 			}
 		}
 
+		static async findOne(where: Partial<M>, trx?: Knex): Promise<M | null> {
+			try {
+				const data = await (trx ?? BaseContext.knex)<T>(tableName)
+					.where(where)
+					.andWhere('is_deleted', false)
+					.first();
+				return (data as M) || null;
+			} catch (error: unknown) {
+				FFError.databaseError(`${tableName}: Query Failed : `, error);
+			}
+		}
+
 		static async find(
 			where: Partial<M>,
 			orderBy?: OrderBy<M>,

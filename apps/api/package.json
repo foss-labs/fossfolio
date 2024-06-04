@@ -26,7 +26,6 @@
 		"@nestjs/schematics": "^10.1.1",
 		"@nestjs/swagger": "^7.3.0",
 		"@nestjs/throttler": "^5.1.2",
-		"@node-saml/passport-saml": "^5.0.0",
 		"@prisma/client": "^5.10.2",
 		"@webtre/nestjs-mailer-react-adapter": "^0.1.2",
 		"argon2": "^0.40.1",

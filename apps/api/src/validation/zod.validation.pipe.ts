@@ -9,7 +9,7 @@ import { FFError } from '@api/utils/error';
 export class ZodValidationPipe implements PipeTransform {
 	constructor(
 		private schema: ZodSchema,
-		private type: 'body' | 'query',
+		private type: 'body' | 'query' | 'param',
 	) {}
 
 	transform(value: unknown, metadata: ArgumentMetadata) {

@@ -3,18 +3,16 @@ import {
 	type ExecutionContext,
 	Injectable,
 	ForbiddenException,
-	NotFoundException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ORG_ID_NOT_FOUND, NO_ROLE_ACCESS } from '../../error';
-import { PrismaService } from '../prisma.service';
+import { NO_ROLE_ACCESS } from '../../error';
+import { FFError } from '@api/utils/error';
+import { OrgMemberModel } from '@api/models';
+import { User } from '@api/db/schema';
 
 @Injectable()
 export class RbacGuard implements CanActivate {
-	constructor(
-		private reflector: Reflector,
-		private prisma: PrismaService,
-	) {}
+	constructor(private reflector: Reflector) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const roles = this.reflector.get<string[]>('roles', context.getHandler());
@@ -23,31 +21,21 @@ export class RbacGuard implements CanActivate {
 		}
 
 		const request = context.switchToHttp().getRequest();
-		const user = request.user;
+		const user = request.user as User | undefined;
+		const organizationId = request.params.orgId;
 
-		const organizationId =
-			request.method === 'GET'
-				? request.params.orgID
-				: request.body.organizationId;
-
-		if (!organizationId) {
-			throw new NotFoundException(ORG_ID_NOT_FOUND);
+		if (!organizationId || !user) {
+			FFError.forbidden('');
 		}
 
-		const organizationMember = await this.prisma.organizationMember.findUnique({
-			where: {
-				userUid_organizationId: {
-					userUid: user.uid,
-					organizationId,
-				},
-			},
+		const organizationMember = await OrgMemberModel.findOne({
+			fk_organization_id: organizationId,
+			fk_user_id: user.id,
 		});
 
 		if (!organizationMember) {
 			throw new ForbiddenException(NO_ROLE_ACCESS);
 		}
-
-		// setting role in request so that we can access the role via decorator
 		request.role = organizationMember.role;
 
 		return roles.includes(organizationMember.role);
