@@ -10,7 +10,7 @@ export const EventSchema = z.object({
 
 	fk_organization_id: z.string().length(25),
 
-	description: z.string(),
+	description: z.string().optional(),
 
 	website: z.string().url().optional(),
 

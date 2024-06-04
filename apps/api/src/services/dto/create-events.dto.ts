@@ -6,15 +6,6 @@ export class CreateEventDto {
 	@IsString()
 	@IsNotEmpty()
 	organizationId: string;
-
-	@ApiProperty()
-	@IsString()
-	@IsNotEmpty()
-	name: string;
-
-	@ApiProperty()
-	description: JSON;
-
 	@ApiProperty()
 	@IsString()
 	website: string;

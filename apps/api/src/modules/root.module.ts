@@ -8,7 +8,6 @@ import { AuthController } from '../controllers/auth.controller';
 import { AuthService } from '../services/auth/auth.service';
 import { GithubStrategy } from '../services/auth/strategy/github.strategy';
 import { GoogleStrategy } from '../services/auth/strategy/google.strategy';
-import { SamlStrategy } from '../services/auth/strategy/saml.strategy';
 import { UserService } from '../services/user.service';
 import { JwtStrategy } from '../services/auth/strategy/jwt.strategy';
 import { RefreshStrategy } from '../services/auth/strategy/refresh.strategy';
@@ -40,112 +39,110 @@ import { UserController } from '../controllers/user.controller';
 import { envSchema, parsedEnv } from '@api/utils/envSchema';
 
 const AuthProviders = [
-    AuthService,
-    GithubStrategy,
-    GoogleStrategy,
-    SamlStrategy,
-    UserService,
-    JwtStrategy,
-    RefreshStrategy,
+	AuthService,
+	GithubStrategy,
+	GoogleStrategy,
+	UserService,
+	JwtStrategy,
+	RefreshStrategy,
 ];
 
 const AuthModules = [
-    PassportModule,
-    JwtModule.registerAsync({
-        useFactory: async (configService: ConfigService) => ({
-            secret: configService.get('JWT_SECRET'),
-            signOptions: { expiresIn: configService.get('ACCESS_TOKEN_VALIDITY') },
-        }),
-        inject: [ConfigService],
-    }),
+	PassportModule,
+	JwtModule.registerAsync({
+		useFactory: async (configService: ConfigService) => ({
+			secret: configService.get('JWT_SECRET'),
+			signOptions: { expiresIn: configService.get('ACCESS_TOKEN_VALIDITY') },
+		}),
+		inject: [ConfigService],
+	}),
 ];
 
 const GlobalModules = [
-    ConfigModule.forRoot({
-        isGlobal: true,
-        validate: envSchema.parse,
-        validationOptions: {
-            abortEarly: true,
-        },
-    }),
-    EventEmitterModule.forRoot(),
-    ThrottlerModule.forRoot([
-        {
-            ttl: 60000,
-            limit: 50,
-        },
-    ]),
-    LoggerModule.forRoot({
-        pinoHttp: {
-            level: 'error',
-            redact: ['req.headers', 'req.remoteAddress', 'res.headers'],
-        },
-    }),
-    MailerModule.forRootAsync({
-        useFactory: async (configService: ConfigService) => ({
-            transport: {
-                host: configService.get('MAIL_HOST'),
-                port: configService.get('MAIL_PORT'),
-                secure: false,
-                auth: {
-                    user: configService.get('MAIL_USER'),
-                    pass: configService.get('MAIL_PASSWORD'),
-                },
-                tls: {
-                    rejectUnauthorized: false,
-                },
-            },
-            defaults: {
-                from: configService.get('MAIL_FROM'),
-            },
-            template: {
-                dir: join(__dirname, 'templates'),
-                adapter: new ReactAdapter({
-                    pretty: false,
-                    plainText: false,
-                }),
-                options: {
-                    strict: true,
-                },
-            },
-        }),
-        inject: [ConfigService],
-    }),
+	ConfigModule.forRoot({
+		isGlobal: true,
+		validate: envSchema.parse,
+		validationOptions: {
+			abortEarly: true,
+		},
+	}),
+	EventEmitterModule.forRoot(),
+	ThrottlerModule.forRoot([
+		{
+			ttl: 60000,
+			limit: 50,
+		},
+	]),
+	LoggerModule.forRoot({
+		pinoHttp: {
+			level: 'error',
+			redact: ['req.headers', 'req.remoteAddress', 'res.headers'],
+		},
+	}),
+	MailerModule.forRootAsync({
+		useFactory: async (configService: ConfigService) => ({
+			transport: {
+				host: configService.get('MAIL_HOST'),
+				port: configService.get('MAIL_PORT'),
+				secure: false,
+				auth: {
+					user: configService.get('MAIL_USER'),
+					pass: configService.get('MAIL_PASSWORD'),
+				},
+				tls: {
+					rejectUnauthorized: false,
+				},
+			},
+			defaults: {
+				from: configService.get('MAIL_FROM'),
+			},
+			template: {
+				dir: join(__dirname, 'templates'),
+				adapter: new ReactAdapter({
+					pretty: false,
+					plainText: false,
+				}),
+				options: {
+					strict: true,
+				},
+			},
+		}),
+		inject: [ConfigService],
+	}),
 ];
 
 @Module({
-    imports: [...GlobalModules, ...AuthModules],
-    controllers: [
-        AuthController,
-        AiController,
-        EventsController,
-        FormController,
-        KanbanController,
-        OrgInviteController,
-        OrgMemberController,
-        OrganizationController,
-        StripeController,
-        UserController,
-    ],
-    providers: [
-        {
-            provide: APP_GUARD,
-            useClass: ThrottlerGuard,
-        },
-        ...AuthProviders,
-        AiService,
-        S3Service,
-        StripeService,
-        EventsService,
-        FormService,
-        KanbanService,
-        MailService,
-        OrganizationInviteService,
-        OrganizationMemberService,
-        OrganizationService,
-        PrismaService,
-        UserService,
-    ],
+	imports: [...GlobalModules, ...AuthModules],
+	controllers: [
+		AuthController,
+		AiController,
+		EventsController,
+		FormController,
+		KanbanController,
+		OrgInviteController,
+		OrgMemberController,
+		OrganizationController,
+		StripeController,
+		UserController,
+	],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
+		...AuthProviders,
+		AiService,
+		S3Service,
+		StripeService,
+		EventsService,
+		FormService,
+		KanbanService,
+		MailService,
+		OrganizationInviteService,
+		OrganizationMemberService,
+		OrganizationService,
+		PrismaService,
+		UserService,
+	],
 })
-export class RootModule {
-}
+export class RootModule {}
