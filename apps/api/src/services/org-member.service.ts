@@ -70,9 +70,8 @@ export class OrganizationMemberService {
         throw new NotFoundException({
           ORG_MEMBER_NOT_FOUND,
         });
-      } else {
-        return e;
       }
+      return e;
     }
   }
 
@@ -102,9 +101,8 @@ export class OrganizationMemberService {
         throw new NotFoundException({
           ROLE_UPDATE_FAILED,
         });
-      } else {
-        return e;
       }
+      return e;
     }
   }
 }

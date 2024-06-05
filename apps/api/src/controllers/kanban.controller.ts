@@ -15,7 +15,7 @@ import { RbacGuard } from "../services/guards/rbac-member.guard";
 import { AuthUser } from "../services/auth/decorators/user.decorator";
 import { UpdateTaskBoard, IUpdateTaskBoard } from "@api/dto/update-task.dto";
 import { ZodValidator } from "@api/validation/zod.validation.decorator";
-import type { User } from "@prisma/client";
+import { User } from "@api/db/schema";
 import type { CreateTask } from "../services/dto/create-task.dto";
 
 @Controller("/events/kanban")
@@ -33,19 +33,13 @@ export class KanbanController {
   @ApiOperation({ summary: "create a new task in kanban board" })
   @ApiTags("kanban")
   @UseGuards(AuthGuard("jwt"), RbacGuard)
-  @Post("/:slug/:boardId")
+  @Post("/:boardId")
   async createTask(
-    @Param("slug") slug: string,
     @Param("boardId") boardId: string,
     @Body() payload: CreateTask,
     @AuthUser() user: User
   ) {
-    return await this.kanbanService.createTask(
-      payload,
-      slug,
-      boardId,
-      user.uid
-    );
+    return await this.kanbanService.createTask(payload, boardId, user.id);
   }
 
   @ApiOperation({ summary: "delete a board" })

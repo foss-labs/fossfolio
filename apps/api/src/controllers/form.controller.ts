@@ -19,23 +19,27 @@ import {
   CreateFormFieldDto,
   CreateFormFieldSchema,
 } from "@api/dto/form-field.dto";
-import type { User } from "@prisma/client";
 import { AuthUser } from "../services/auth/decorators/user.decorator";
-import type { ToggleFormPublishStatus } from "../services/dto/publish-form.dto";
 import { ZodValidator } from "@api/validation/zod.validation.decorator";
 import { Role } from "@api/utils/db";
+import { EventTicketModel } from "@api/models";
+import type { User } from "@prisma/client";
+import type { ToggleFormPublishStatus } from "../services/dto/publish-form.dto";
 
 @Controller("/events")
 export class FormController {
   constructor(private form: FormService, private events: EventsService) {}
 
-  @Get("/form/:orgID/:eventId")
+  @Get("/form/:orgID/:eventId/:formId")
   @ApiTags("events")
   @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
   @ApiOperation({ summary: "get form schema of a specific event" })
   @UseGuards(AuthGuard("jwt"), RbacGuard)
-  async getFormSchema(@Param("eventId") slugId: string) {
-    return await this.form.getEventFormScheme(slugId);
+  async getFormSchema(
+    @Param("eventId") eventId: string,
+    @Param("formId") formId: string
+  ) {
+    return await this.form.getEventFormScheme(eventId, formId);
   }
 
   @Post("/form/:eventId")
@@ -48,8 +52,10 @@ export class FormController {
     @AuthUser() user: User
   ) {
     try {
-      const event = await this.events.getEventById(eventId);
-      if (!event || event?.maxTicketCount < 1) {
+      const event = await EventTicketModel.findOne({
+        fk_event_id: eventId,
+      });
+      if (!event || event?.price > 0) {
         throw new NotFoundException();
       }
       await this.form.addUserFormSubmission(data, eventId, user.uid);
