@@ -8,6 +8,8 @@ import { AiService } from "./ai.service";
 import { EventsService } from "./events.service";
 import { EventModel, FormFieldsModel, FormModel } from "@api/models";
 import { CreateFormFieldDto } from "@api/dto/form-field.dto";
+import BaseContext from "@api/BaseContext";
+import { SystemTable } from "@api/utils/db";
 
 @Injectable()
 export class FormService {
@@ -61,9 +63,8 @@ export class FormService {
     } catch (e) {
       if (e instanceof NotFoundException) {
         throw new NotFoundException();
-      } else {
-        throw e;
       }
+      throw e;
     }
   }
 
@@ -113,16 +114,9 @@ export class FormService {
     }
   }
 
-  async getEventFormScheme(eventSlug: string) {
+  async getEventFormScheme(eventId: string, formId: string) {
     try {
-      const eventSchema = await this.prismaService.events.findUnique({
-        where: {
-          slug: eventSlug,
-        },
-        select: {
-          form: true,
-        },
-      });
+      const eventSchema = await BaseContext.knex(SystemTable.Form).select();
 
       if (!eventSchema) {
         throw new NotFoundException();
@@ -136,9 +130,8 @@ export class FormService {
     } catch (e) {
       if (e instanceof NotFoundException) {
         throw new NotFoundException();
-      } else {
-        throw e;
       }
+      throw e;
     }
   }
 
@@ -209,9 +202,8 @@ export class FormService {
     } catch (e) {
       if (e instanceof NotFoundException) {
         throw new NotFoundException();
-      } else {
-        throw e;
       }
+      throw e;
     }
   }
 }

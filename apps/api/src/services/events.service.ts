@@ -7,8 +7,9 @@ import {
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { CommentModel, EventModel, FormModel, KanbanModal } from "@api/models";
 import { User } from "@api/db/schema";
-import { stripUndefinedOrNull, exclude } from "@api/utils";
+import { stripUndefinedOrNull } from "@api/utils";
 import { FFError } from "@api/utils/error";
+import { hyphenate } from "@api/utils/hyphenate";
 
 @Injectable()
 export class EventsService {
@@ -28,7 +29,7 @@ export class EventsService {
     orgId: string;
   }) {
     const isEventWithSlugExist = await EventModel.find({
-      slug: newEvent.name,
+      slug: hyphenate(newEvent.name),
     });
 
     let slug: string;
@@ -38,8 +39,9 @@ export class EventsService {
         slug: newEvent.name,
       });
       slug = `${newEvent.name}-${totalEventCount}`;
+      slug = hyphenate(slug);
     } else {
-      slug = newEvent.name;
+      slug = hyphenate(newEvent.name);
     }
 
     const event = await EventModel.insert({

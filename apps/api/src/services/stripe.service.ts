@@ -1,187 +1,186 @@
-import { Injectable } from '@nestjs/common';
-import type { Events } from '@prisma/client';
-import { ConfigService } from '@nestjs/config';
-import { PrismaService } from './prisma.service';
-import Stripe from 'stripe';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Injectable } from "@nestjs/common";
+import type { Events } from "@prisma/client";
+import { ConfigService } from "@nestjs/config";
+import { PrismaService } from "./prisma.service";
+import Stripe from "stripe";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class StripeService {
-	private stripe: Stripe;
+  private stripe: Stripe;
 
-	constructor(
-		private readonly configService: ConfigService,
-		private readonly eventEmitter: EventEmitter2,
-		private readonly prismaService: PrismaService,
-	) {
-		this.initStripe();
-	}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly prismaService: PrismaService
+  ) {
+    this.initStripe();
+  }
 
-	initStripe() {
-		this.stripe = new Stripe(
-			this.configService.get('STRIPE_SECRET_KEY') as string,
-			{
-				apiVersion: '2023-10-16',
-			},
-		);
-	}
+  initStripe() {
+    this.stripe = new Stripe(
+      this.configService.get("STRIPE_SECRET_KEY") as string,
+      {
+        apiVersion: "2023-10-16",
+      }
+    );
+  }
 
-	async handleWebHookEvent(body, signature) {
-		try {
-			const event = this.stripe.webhooks.constructEvent(
-				body,
-				signature,
-				this.configService.get('STRIPE_WEBHOOK_SECRET') as string,
-			);
-			if (event.type === 'payment_intent.created') {
-				const eventInfo = event.data.object.metadata;
-				const { event_id, user_id } = eventInfo;
-				if (!event_id || !user_id) {
-					throw new Error('Invalid metadata');
-				} else {
-					const event = await this.prismaService.events.findUnique({
-						where: {
-							id: event_id,
-						},
-					});
+  async handleWebHookEvent(body, signature) {
+    try {
+      const event = this.stripe.webhooks.constructEvent(
+        body,
+        signature,
+        this.configService.get("STRIPE_WEBHOOK_SECRET") as string
+      );
+      if (event.type === "payment_intent.created") {
+        const eventInfo = event.data.object.metadata;
+        const { event_id, user_id } = eventInfo;
+        if (!event_id || !user_id) {
+          throw new Error("Invalid metadata");
+        }
+        const event = await this.prismaService.events.findUnique({
+          where: {
+            id: event_id,
+          },
+        });
 
-					await this.prismaService.events.update({
-						where: {
-							id: event_id,
-						},
-						data: {
-							Ticket: {
-								create: {
-									userUid: user_id,
-								},
-							},
-							maxTicketCount: event.maxTicketCount - 1,
-						},
-					});
+        await this.prismaService.events.update({
+          where: {
+            id: event_id,
+          },
+          data: {
+            Ticket: {
+              create: {
+                userUid: user_id,
+              },
+            },
+            maxTicketCount: event.maxTicketCount - 1,
+          },
+        });
 
-					const user = await this.prismaService.user.findUnique({
-						where: {
-							uid: user_id,
-						},
-					});
+        const user = await this.prismaService.user.findUnique({
+          where: {
+            uid: user_id,
+          },
+        });
 
-					this.eventEmitter.emit('payment.success', {
-						from: user.displayName ?? user.email.split('@')[0],
-						email: user.email,
-						amount: event.ticketPrice,
-					});
-				}
-			}
-		} catch (e) {
-			console.log(e);
-			throw new Error('Failed to handle payments');
-		}
-	}
+        this.eventEmitter.emit("payment.success", {
+          from: user.displayName ?? user.email.split("@")[0],
+          email: user.email,
+          amount: event.ticketPrice,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      throw new Error("Failed to handle payments");
+    }
+  }
 
-	async createProductObject(event: Events): Promise<string> {
-		try {
-			const product = await this.stripe.products.create({
-				name: event.name,
-				description: event.name,
-				images: [event.coverImage],
-				shippable: false,
-				metadata: {
-					event_id: event.id,
-				},
-			});
+  async createProductObject(event: Events): Promise<string> {
+    try {
+      const product = await this.stripe.products.create({
+        name: event.name,
+        description: event.name,
+        images: [event.coverImage],
+        shippable: false,
+        metadata: {
+          event_id: event.id,
+        },
+      });
 
-			await this.prismaService.events.update({
-				where: {
-					id: event.id,
-				},
-				data: {
-					stripe_product_object: product.id,
-				},
-			});
+      await this.prismaService.events.update({
+        where: {
+          id: event.id,
+        },
+        data: {
+          stripe_product_object: product.id,
+        },
+      });
 
-			return product.id;
-		} catch (error) {
-			console.error('Stripe API Error:', error);
-			throw new Error('Failed to create product  object');
-		}
-	}
+      return product.id;
+    } catch (error) {
+      console.error("Stripe API Error:", error);
+      throw new Error("Failed to create product  object");
+    }
+  }
 
-	async createProductPricingObject(event: Events): Promise<string> {
-		try {
-			let stripe_product_object = '';
-			if (!event.stripe_product_object) {
-				stripe_product_object = await this.createProductObject(event);
-			} else {
-				stripe_product_object = event.stripe_product_object;
-			}
-			const price = await this.stripe.prices.create({
-				product: stripe_product_object,
-				unit_amount: event.ticketPrice * 100, // amount in inr , stripe default takes paisa in inr so we conver that to rupee
-				currency: 'inr',
-			});
+  async createProductPricingObject(event: Events): Promise<string> {
+    try {
+      let stripe_product_object = "";
+      if (!event.stripe_product_object) {
+        stripe_product_object = await this.createProductObject(event);
+      } else {
+        stripe_product_object = event.stripe_product_object;
+      }
+      const price = await this.stripe.prices.create({
+        product: stripe_product_object,
+        unit_amount: event.ticketPrice * 100, // amount in inr , stripe default takes paisa in inr so we conver that to rupee
+        currency: "inr",
+      });
 
-			await this.prismaService.events.update({
-				where: {
-					id: event.id,
-				},
-				data: {
-					stripe_price_object: price.id,
-				},
-			});
+      await this.prismaService.events.update({
+        where: {
+          id: event.id,
+        },
+        data: {
+          stripe_price_object: price.id,
+        },
+      });
 
-			return price.id;
-		} catch (error) {
-			console.error('Stripe API Error:', error);
-			throw new Error('Failed to create product pricing object');
-		}
-	}
+      return price.id;
+    } catch (error) {
+      console.error("Stripe API Error:", error);
+      throw new Error("Failed to create product pricing object");
+    }
+  }
 
-	async createCheckoutSession(
-		items: Events,
-		user: string,
-	): Promise<CheckOutReturnProp> {
-		try {
-			const webUrl = this.configService.get<string>('WEB_URL');
-			// if there is already stripe_payment_object we will use it else we will create another one
-			let price_object = '';
-			if (!items.stripe_price_object) {
-				price_object = await this.createProductPricingObject(items);
-			} else {
-				price_object = items.stripe_price_object;
-			}
+  async createCheckoutSession(
+    items: Events,
+    user: string
+  ): Promise<CheckOutReturnProp> {
+    try {
+      const webUrl = this.configService.get<string>("WEB_URL");
+      // if there is already stripe_payment_object we will use it else we will create another one
+      let price_object = "";
+      if (!items.stripe_price_object) {
+        price_object = await this.createProductPricingObject(items);
+      } else {
+        price_object = items.stripe_price_object;
+      }
 
-			const session = await this.stripe.checkout.sessions.create({
-				metadata: {
-					user_id: user,
-					event_id: items.id,
-					event_image: items.coverImage,
-					event_name: items.name,
-				},
-				payment_method_types: ['card'],
-				line_items: [
-					{
-						price: price_object,
-						quantity: 1,
-						// one user can only buy one ticket for now
-					},
-				],
-				mode: 'payment',
-				// might need to create a success page then redirect to tickets page
-				// biome-ignore lint/style/useTemplate: <explanation>
-				success_url: webUrl + '/tickets',
-				// can show a toast in frontend
-				cancel_url: `${webUrl}/events?payment_error=true`,
-			});
+      const session = await this.stripe.checkout.sessions.create({
+        metadata: {
+          user_id: user,
+          event_id: items.id,
+          event_image: items.coverImage,
+          event_name: items.name,
+        },
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: price_object,
+            quantity: 1,
+            // one user can only buy one ticket for now
+          },
+        ],
+        mode: "payment",
+        // might need to create a success page then redirect to tickets page
+        // biome-ignore lint/style/useTemplate: <explanation>
+        success_url: webUrl + "/tickets",
+        // can show a toast in frontend
+        cancel_url: `${webUrl}/events?payment_error=true`,
+      });
 
-			return { sessionId: session.id, url: session.url };
-		} catch (error) {
-			console.log('Stripe API Error:', error);
-			throw new Error('Failed to create checkout');
-		}
-	}
+      return { sessionId: session.id, url: session.url };
+    } catch (error) {
+      console.log("Stripe API Error:", error);
+      throw new Error("Failed to create checkout");
+    }
+  }
 }
 
 type CheckOutReturnProp = {
-	sessionId: string;
-	url: string;
+  sessionId: string;
+  url: string;
 };
