@@ -35,6 +35,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 	}) {
 		const user = await UserModel.findById(payload.sub);
 
+		console.log(user)
+
 		if (!user) {
 			FFError.unauthorized('Invalid user');
 		}

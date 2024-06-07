@@ -3,9 +3,10 @@ import type { Profile } from 'passport';
 import { USER_UPDATE_ERROR } from '../error';
 import { PrismaService } from './prisma.service';
 import type { UpdateUserDto } from './dto/update-user.dto';
-import type { User } from '@prisma/client';
+import { User } from '@api/db/schema';
 import { fakerEN } from '@faker-js/faker';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ConfigService } from '@nestjs/config'; 
 import { UserModel } from '@api/models/User';
 import { AccountModel } from '@api/models';
 
@@ -14,6 +15,7 @@ export class UserService {
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly eventEmitter: EventEmitter2,
+		private readonly configService:ConfigService
 	) {}
 
 	async findUserBySlug(slug: string) {
@@ -62,12 +64,16 @@ export class UserService {
 			fk_user_id: user.id,
 		});
 
-		this.eventEmitter.emit('user.registered', {
-			email: user.email,
-			name: user.display_name,
-			avatarUrl: user.photo_url,
-		});
-
+		const isProd = Boolean(this.configService.get("NODE_ENV"));
+    
+		if(isProd){
+			this.eventEmitter.emit('user.registered', {
+				email: user.email,
+				name: user.display_name,
+				avatarUrl: user.photo_url,
+			});
+		}
+	
 		return user;
 	}
 
@@ -79,20 +85,20 @@ export class UserService {
 		try {
 			const user = await this.prismaService.user.update({
 				where: {
-					uid: authUser.uid,
+					uid: authUser.id,
 				},
 				data: {
 					slug: updateUserDto.slug ? updateUserDto.slug : authUser.slug,
 					photoURL: updateUserDto.photoUrl
 						? updateUserDto.photoUrl
-						: authUser.photoURL,
+						: authUser.photo_url,
 					displayName: updateUserDto.displayName
 						? updateUserDto.displayName
-						: authUser.displayName,
+						: authUser.display_name,
 					isStudent: Object.hasOwn(updateUserDto, 'isCollegeStudent')
 						? updateUserDto.isCollegeStudent
-						: authUser.isStudent,
-					collegeName: updateUserDto.collegeName || authUser.collegeName,
+						: authUser.is_student,
+					collegeName: updateUserDto.collegeName || authUser.college_name,
 				},
 			});
 

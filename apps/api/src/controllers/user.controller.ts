@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthUser } from '../services/auth/decorators/user.decorator';
-import type { User } from '@prisma/client';
 import { OrganizationService } from '../services/organization.service';
 import { UserService } from '../services/user.service';
+import { User } from '@api/db/schema'; 
 import type { UpdateUserDto } from '../services/dto/update-user.dto';
 
 @Controller('user')
@@ -16,13 +16,13 @@ export class UserController {
 	@Get('/orgs')
 	@UseGuards(AuthGuard('jwt'))
 	async findOrgs(@AuthUser() user: User) {
-		return this.organizationService.findOrgsByUser(user.uid);
+		return this.organizationService.findOrgsByUser(user.id);
 	}
 
 	@Get('/')
 	@UseGuards(AuthGuard('jwt'))
 	async getUser(@AuthUser() user: User) {
-		return this.userService.findUserById(user.uid);
+		return this.userService.findUserById(user.id);
 	}
 
 	@Patch('/')
@@ -37,6 +37,6 @@ export class UserController {
 	@Get('/tickets')
 	@UseGuards(AuthGuard('jwt'))
 	async getUserTickets(@AuthUser() user: User) {
-		return this.userService.getReservedTickets(user.uid);
+		return this.userService.getReservedTickets(user.id);
 	}
 }
