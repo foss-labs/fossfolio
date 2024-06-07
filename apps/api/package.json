@@ -6,12 +6,10 @@
   "type": "commonjs",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npx prisma generate && nest build",
     "start": "nest start",
     "dev": "node -r '@swc-node/register' --watch --enable-source-maps src/main.ts | pino-pretty",
     "dev-new": "concurrently \"tsc --noEmit --watch\"  \"node -r '@swc-node/register' --watch --enable-source-maps src/main.ts | pino-pretty \"",
     "start:prod": "node dist/main",
-    "db:seed": "ts-node prisma/seed.ts",
     "lint": "biome lint --error-on-warnings ./src",
     "format": "npx @biomejs/biome format ./src"
   },

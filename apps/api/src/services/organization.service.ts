@@ -1,9 +1,15 @@
-import { Role } from "@api/utils/db";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Role, SystemTable } from "@api/utils/db";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
 import { ORG_EXISTS, ORG_NOT_FOUND } from "../error";
 import type { CreateOrgDto } from "./dto/create-org.dto";
 import type { UpdateOrgDto } from "./dto/update-org.dto";
+import { OrgMemberModel, OrgModel } from "@api/models";
+import BaseContext from "@api/BaseContext";
 
 @Injectable()
 export class OrganizationService {
@@ -13,22 +19,37 @@ export class OrganizationService {
     try {
       const { name, slug } = createOrgDto;
 
-      const org = await this.prismaService.organization.create({
-        data: {
-          name,
-          slug,
-          members: {
-            create: {
-              role: "ADMIN",
-              userUid: uid,
-            },
-          },
-        },
+      const newOrg = await OrgModel.insert({
+        name,
+        slug,
       });
 
-      return org;
+      await OrgMemberModel.insert({
+        fk_organization_id: newOrg.id,
+        fk_user_id: uid,
+        role: Role.ADMIN,
+      });
+
+      const getOrgWithMemberInfo = BaseContext.knex(SystemTable.Org)
+        .select("*")
+        .where({
+          name,
+        })
+        .leftJoin(
+          SystemTable.Org,
+          `${SystemTable.Org}.id`,
+          `${SystemTable.OrgMember}.fk_organization_id`
+        );
+
+      return getOrgWithMemberInfo;
     } catch (error) {
-      return ORG_EXISTS;
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException();
+      }
+
+      throw new InternalServerErrorException({
+        error,
+      });
     }
   }
 

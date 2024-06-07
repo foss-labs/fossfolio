@@ -6,6 +6,9 @@ export const EventTicketSchema = z.object({
 
   fk_event_id: z.string().length(25),
 
+  // id of the user who is registering
+  fk_user_id: z.string(),
+
   name: z.string().min(3).max(255),
 
   description: z.string(),

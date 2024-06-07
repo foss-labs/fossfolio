@@ -23,7 +23,7 @@ import { AuthUser } from "../services/auth/decorators/user.decorator";
 import { ZodValidator } from "@api/validation/zod.validation.decorator";
 import { Role } from "@api/utils/db";
 import { EventTicketModel } from "@api/models";
-import type { User } from "@prisma/client";
+import { User } from "@api/db/schema";
 import type { ToggleFormPublishStatus } from "../services/dto/publish-form.dto";
 
 @Controller("/events")
@@ -56,10 +56,12 @@ export class FormController {
         fk_event_id: eventId,
       });
       if (!event || event?.price > 0) {
+        // temporary we dont support paid event
+        // @reenphygeorge
         throw new NotFoundException();
       }
-      await this.form.addUserFormSubmission(data, eventId, user.uid);
-      return await this.events.registerEvent(event.slug, user.uid);
+      await this.form.addUserFormSubmission(data, eventId, user.id);
+      return await this.events.registerEvent(event.slug, user.id);
     } catch (e) {
       if (e instanceof NotFoundException) throw new NotFoundException();
 
