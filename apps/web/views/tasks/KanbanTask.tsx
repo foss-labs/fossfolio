@@ -1,3 +1,3 @@
 export const KanbanTask = () => {
-    return <div>Task</div>;
+  return <div>Task</div>;
 };

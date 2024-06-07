@@ -1,1 +1,1 @@
-export { Truncate } from './Truncate';
+export { Truncate } from "./Truncate";
