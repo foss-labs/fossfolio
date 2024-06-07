@@ -12,7 +12,7 @@ export type OrderBy<M> = {
 	};
 };
 
-export default function createBaseModel<T extends SystemTable, M>(
+export default function createBaseModel<T extends SystemTable, M extends {}>(
 	tableName: SystemTable,
 ) {
 	abstract class BaseModel {
@@ -24,8 +24,9 @@ export default function createBaseModel<T extends SystemTable, M>(
 
 		static async findById(id: string, trx?: Knex) {
 			try {
-				const data = await (trx ?? BaseContext.knex)<T>(tableName)
-					.where(id)
+				const queryBuilder = trx ?? BaseContext.knex;
+				const data = await queryBuilder<M>(tableName)
+					.where("id",id)
 					.andWhere('is_deleted', false)
 					.first();
 				return (data as M) || null;
