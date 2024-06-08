@@ -98,8 +98,6 @@ export class AuthService {
 
         if (!isRefreshTokenValid) throw new Error('AFTER_GENERATION_INVALID_REFRESH_TOKEN');
 
-        const newAccessToken = await this.generateAuthToken(user.uid);
-
-        return newAccessToken;
+        return await this.generateAuthToken(user.uid);
     }
 }

@@ -5,6 +5,8 @@ import { RbacGuard } from '../organization/guards/rbac-member.guard';
 import { Roles } from '../organization/decorators/roles.decorator';
 import { RemoveMember } from './dto/member-remove.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateMemberRole } from './dto/update-role.dto';
+import { Role } from '@prisma/client';
 
 @Controller('org/member')
 export class OrgMemberController {
@@ -12,6 +14,7 @@ export class OrgMemberController {
 
     @Get('/:orgID')
     @Roles('ADMIN', 'EDITOR', 'VIEWER')
+    @ApiTags('org-members')
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async getMembers(@Param('orgID') orgID: string) {
         return await this.orgMemberService.getMembers(orgID);
@@ -25,5 +28,20 @@ export class OrgMemberController {
     @UseGuards(AuthGuard('jwt'), RbacGuard)
     async removeUser(@Body() data: RemoveMember) {
         return await this.orgMemberService.removeMember(data.organizationId, data.memberId);
+    }
+
+    @Patch('/role')
+    @ApiTags('org-members')
+    @ApiOperation({ summary: 'Update member role in org' })
+    @ApiResponse({ status: 200, description: 'User role will be updated' })
+    @Roles('ADMIN')
+    @UseGuards(AuthGuard('jwt'), RbacGuard)
+    async updateUserRole(@Body() data: UpdateMemberRole) {
+        return await this.orgMemberService.updateRole(
+            data.organizationId,
+            data.memberId,
+            data.role as Role,
+        );
+        // swagger was throwing circular error so i had to define type as this way
     }
 }

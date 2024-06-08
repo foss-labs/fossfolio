@@ -6,6 +6,7 @@ import { apiHandler } from '@app/config';
 import { Child, Roles, User } from '@app/types';
 import { useToggle } from '@app/hooks';
 import { PageLoader } from '@app/components/preloaders';
+import { IOrgEvents } from '@app/hooks/api/org/useOrgEvents';
 
 interface IAuthTypes {
     user: User | null;
@@ -71,6 +72,23 @@ export const AuthGuard = ({ children }: Child): JSX.Element => {
             router.push('/');
         }
     }, [router, ctx.user, ctx.isLoading]);
+
+    useEffect(() => {
+        // when user reloads the page from event dashboard this needs to evoked to get the user role
+        // TODO - try getting the user role from rtk cache
+        if (!ctx.role && router.isReady) {
+            (async () => {
+                try {
+                    const { data } = await apiHandler.get<IOrgEvents>(
+                        `/org/events/${router.query.id}`,
+                    );
+                    ctx.setRole(data.role);
+                } catch {
+                    console.error('Error getting user role');
+                }
+            })();
+        }
+    }, [router.isReady]);
 
     return ctx.isLoading ? <PageLoader /> : <>{children}</>;
 };

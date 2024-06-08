@@ -34,7 +34,7 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
                 <DialogHeader>
                     Delete Org
                     <DialogDescription className="mt-3">
-                        Are you sure You want to delete the organisation ? you can&apos;t undo this
+                        Are you sure You want to delete the organisation ? You can&apos;t undo this
                         action afterwards.
                         <div className="flex justify-end space-x-2 mt-5">
                             <Button
@@ -44,10 +44,10 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
                                 Cancel
                             </Button>
                             <Button
-                                className="bg-[red]  border-1.4 hover:bg-[#ff0000c2]"
+                                className="bg-[red] border-1.4 hover:bg-[#ff0000c2]"
                                 onClick={handleDeleteClick}
                             >
-                                Delete
+                                Confirm
                             </Button>
                         </div>
                     </DialogDescription>

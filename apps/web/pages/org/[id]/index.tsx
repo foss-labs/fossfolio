@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@app/ui/components/tab
 import { Events, DeleteOrg, LeaveOrg, InviteModal } from '@app/views/org';
 import { useRoles, useToggle } from '@app/hooks';
 import { useOrgInfo } from '@app/hooks/api/org';
-import { RiLoaderFill } from 'react-icons/ri';
 import {
     Form,
     FormControl,
@@ -24,6 +23,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { apiHandler } from '@app/config';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
+import { Loader } from '@app/components/preloaders';
 
 const TabName = [
     { value: 'events', title: 'All Events' },
@@ -42,9 +42,22 @@ const Org: NextPageWithLayout = () => {
     const [activeTab, setTab] = useState('events');
     const [inviteLink, setInviteLink] = useState('');
     const [isOpen, toggleOpen] = useToggle();
-    const { canDeleteOrg } = useRoles();
+    const { canDeleteOrg, canEditOrg } = useRoles();
     const router = useRouter();
     const { id } = router.query;
+
+    useEffect(() => {
+        if (router.isReady) {
+            router.replace({
+                query: {
+                    ...router.query,
+                    tab: activeTab,
+                },
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab]);
+
     // api is only called when tab becomes settings
     const { data, isLoading } = useOrgInfo(activeTab === 'settings');
     const form = useForm<IOrgVal>({
@@ -81,7 +94,7 @@ const Org: NextPageWithLayout = () => {
         <div className="mt-4 p-4 h-[92vh]">
             <Tabs
                 value={activeTab}
-                defaultValue="events"
+                defaultValue={activeTab}
                 className="h-full"
                 onValueChange={(el: string) => setTab(el)}
             >
@@ -96,7 +109,7 @@ const Org: NextPageWithLayout = () => {
                 </div>
                 <TabsContent
                     value="events"
-                    className="flex md:flex-row flex-wrap gap-5 sm:justify-center "
+                    className="flex md:flex-row flex-wrap gap-5 sm:justify-center"
                 >
                     <Events />
                 </TabsContent>
@@ -106,13 +119,9 @@ const Org: NextPageWithLayout = () => {
                 </TabsContent>
                 <TabsContent
                     value="settings"
-                    className="flex justify-end items-center flex-col gap-3"
+                    className="flex justify-end items-center pb-3 flex-col gap-3"
                 >
-                    {isLoading && (
-                        <div className="h-[300px]  flex items-center justify-center">
-                            <RiLoaderFill className="animate-spin h-5 w-5" />
-                        </div>
-                    )}
+                    {isLoading && <Loader />}
                     {data && (
                         <div className="flex gap-4 py-4 w-full">
                             <Form {...form}>
@@ -124,22 +133,29 @@ const Org: NextPageWithLayout = () => {
                                         control={form.control}
                                         name="orgName"
                                         render={({ field }) => (
-                                            <FormItem className="items-center border-2 border-gray-300 p-5 rounded-md w-full max-w-2xl">
-                                                <FormLabel>Org Name</FormLabel>
+                                            <FormItem className="border border-gray-200 p-5 rounded-md w-full max-w-2xl">
+                                                <FormLabel className="mb-1">
+                                                    Organization Name
+                                                </FormLabel>
                                                 <FormDescription>
-                                                    Pleae enter a org name you are comfortable with
-                                                    bieng public
+                                                    Pleae enter a Organization name you are
+                                                    comfortable with being public
                                                 </FormDescription>
 
                                                 <FormControl>
                                                     <Input
+                                                        disabled={!canEditOrg}
                                                         placeholder={data.data.name}
                                                         {...field}
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
                                                 <div className="flex w-full max-w-2xl justify-end">
-                                                    <Button className="p-3 mt-3" type="submit">
+                                                    <Button
+                                                        disabled={!canEditOrg}
+                                                        className="p-3 mt-3"
+                                                        type="submit"
+                                                    >
                                                         Update
                                                     </Button>
                                                 </div>
@@ -150,21 +166,29 @@ const Org: NextPageWithLayout = () => {
                                         control={form.control}
                                         name="slug"
                                         render={({ field }) => (
-                                            <FormItem className="items-center mt-5 border-2  border-gray-300 p-5 rounded-md w-full max-w-2xl">
-                                                <FormLabel>Org URL</FormLabel>
+                                            <FormItem className="mt-5 border  border-gray-200 p-5 rounded-md w-full max-w-2xl">
+                                                <FormLabel className="mb-1">
+                                                    Organization Slug
+                                                </FormLabel>
                                                 <FormDescription>
-                                                    Pleae enter a valid URL ,this URL can be
-                                                    acccessible by anyone
+                                                    Pleae enter a valid Slug. The slug can be used
+                                                    to visit your organization page
                                                 </FormDescription>
                                                 <FormControl>
                                                     <Input
+                                                        disabled={!canEditOrg}
                                                         placeholder={data.data.slug}
                                                         {...field}
                                                     />
                                                 </FormControl>
+
                                                 <FormMessage />
                                                 <div className="flex w-full max-w-2xl justify-end">
-                                                    <Button className="p-3 mt-3" type="submit">
+                                                    <Button
+                                                        disabled={!canEditOrg}
+                                                        className="p-3 mt-3"
+                                                        type="submit"
+                                                    >
                                                         Update
                                                     </Button>
                                                 </div>

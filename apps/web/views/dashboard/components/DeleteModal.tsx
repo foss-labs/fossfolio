@@ -3,28 +3,37 @@ import { useRouter } from 'next/router';
 import { apiHandler } from '@app/config';
 import { Button } from '@app/ui/components/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@app/ui/components/dialog';
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
+import { IData } from '@app/hooks/api/org/useParticipants';
 
 type IModal = {
     isOpen: boolean;
+    eventId: string;
     onClose: () => void;
+    userId: string;
+    refetch: <TPageData>(
+        options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
+    ) => Promise<QueryObserverResult<IData, unknown>>;
 };
 
-export const DeleteModal = ({ isOpen, onClose }: IModal) => {
+export const DeleteModal = ({ isOpen, onClose, userId, refetch, eventId }: IModal) => {
     const router = useRouter();
 
     const handleDeleteClick = async () => {
         try {
             // todo route is diffrent
-            const { data } = await apiHandler.delete('/org/delete', {
-                data: { organizationId: router.query?.id },
+            const { data } = await apiHandler.delete('/events/participants/delete', {
+                data: { organizationId: router.query?.id, eventId: eventId, userId },
             });
             if (!data.ok) {
                 throw new Error();
             }
-            onClose();
+            refetch();
             toast.success('user was removed');
         } catch {
             toast.error('could not remove the user');
+        } finally {
+            onClose();
         }
     };
 

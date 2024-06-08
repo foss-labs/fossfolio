@@ -10,6 +10,8 @@ const Properties = {
         canViewDashboard: true,
         canChangeParticipantStatus: true,
         canSeeRevenue: true,
+        canDeleteEvent: true,
+        canEditOrg: true,
     },
     EDITOR: {
         canDeleteOrg: false,
@@ -20,6 +22,9 @@ const Properties = {
         canRemoveOrgUser: false,
         canChangeParticipantStatus: true,
         canSeeRevenue: false,
+        canDeleteEvent: false,
+        canEditOrg: false,
+
     },
     VIEWER: {
         canDeleteOrg: false,
@@ -30,6 +35,9 @@ const Properties = {
         canViewDashboard: true,
         canChangeParticipantStatus: true,
         canSeeRevenue: false,
+        canDeleteEvent: false,
+        canEditOrg: false,
+
     },
     NO_ACCESS: {
         canDeleteOrg: false,
@@ -40,6 +48,9 @@ const Properties = {
         canViewDashboard: true,
         canChangeParticipantStatus: false,
         canSeeRevenue: false,
+        canDeleteEvent: false,
+        canEditOrg: false,
+
     },
 };
 
@@ -49,6 +60,5 @@ export const useRoles = () => {
     if (!role) {
         return Properties['NO_ACCESS'];
     }
-
     return Properties[role];
 };

@@ -6,6 +6,7 @@ export type Info = {
     eventDate: Date;
     location: string;
     id: string;
+    coverImage: string;
 };
 
 export interface Data {

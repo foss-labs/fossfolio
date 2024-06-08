@@ -5,10 +5,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
 import { fakerEN } from '@faker-js/faker';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly eventEmitter: EventEmitter2,
+    ) {}
 
     async findUserByEmail(email: string) {
         try {
@@ -47,6 +51,7 @@ export class UserService {
             if (user) continue;
             break;
         }
+
         const createdUser = await this.prismaService.user.create({
             data: {
                 displayName: userDisplayName,
@@ -62,6 +67,12 @@ export class UserService {
                     },
                 },
             },
+        });
+
+        this.eventEmitter.emit('user.registered', {
+            email: createdUser.email,
+            name: createdUser.displayName,
+            avatarUrl: createdUser.photoURL,
         });
 
         return createdUser;
@@ -127,24 +138,23 @@ export class UserService {
                 where: {
                     uid: id,
                 },
+
                 select: {
-                    registeredEventsId: {
+                    Ticket: {
                         select: {
-                            name: true,
-                            eventDate: true,
-                            location: true,
-                            id: true,
+                            event: true,
                         },
                     },
                 },
             });
+
             if (!data) {
                 throw new NotFoundException();
             }
             return {
                 ok: true,
                 message: 'Ticket found successfully',
-                data: data.registeredEventsId,
+                data: data.Ticket.map((el) => el.event),
             };
         } catch (e) {
             if (e instanceof NotFoundException) {
@@ -155,7 +165,7 @@ export class UserService {
         }
     }
 
-    generateSlug() {
+    private generateSlug() {
         return fakerEN.lorem.slug({
             min: 1,
             max: 2,

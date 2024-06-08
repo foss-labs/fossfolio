@@ -15,19 +15,15 @@ type Status = {
     message: string;
 };
 
-export const useUserRegistartionStatus = () => {
+export const useUserRegistrationStatus = () => {
     const { user } = useAuth();
     const [id, setId] = useState('');
     const router = useRouter();
 
     useEffect(() => {
         // id is the primary key of event in events page
-        // pk is the primary key of event in org dashboard page
-
         if (router.isReady) {
-            // this is done to reuse same function event info page and org dashboard
             const { id } = router.query;
-
             setId(id as string);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

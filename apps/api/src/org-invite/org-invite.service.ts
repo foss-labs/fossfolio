@@ -1,5 +1,5 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -68,7 +68,8 @@ export class OrganizationInviteService {
                 const inviteURL = `${localPort}/verify?id=${inviteId}`;
 
                 // we dont want to send invite on local
-                if (process.env.NODE_ENV === 'production') {
+                // @sreehari2003 Removing this for presentation
+                // if (process.env.NODE_ENV === 'production') {
                     await this.eventEmitter.emit('org.invite', {
                         to: email,
                         inviteUrl: inviteURL,
@@ -76,7 +77,7 @@ export class OrganizationInviteService {
                         orgName: data.name,
                         fromEmail: inviter.email,
                     });
-                }
+                // }
 
                 return inviteURL;
             });
@@ -94,7 +95,7 @@ export class OrganizationInviteService {
         }
     }
 
-    async verifyEmailInvite(id: string, ownerId: string) {
+    async verifyEmailInvite(id: string, ownerId: string, authUserEmail: string) {
         // TODO
         // convert to transaction
         try {
@@ -103,6 +104,9 @@ export class OrganizationInviteService {
                     id: id,
                 },
             });
+            if (data.inviteeEmail !== authUserEmail) {
+                throw new ServiceUnavailableException();
+            }
             const orgData = await this.prismaService.organization.update({
                 where: {
                     id: data.organizationId,
@@ -129,7 +133,10 @@ export class OrganizationInviteService {
                 };
             }
             throw new Error();
-        } catch {
+        } catch (e) {
+            if (e instanceof ServiceUnavailableException) {
+                throw new ServiceUnavailableException();
+            }
             return {
                 ok: false,
                 message: 'couldnt verify the invite',

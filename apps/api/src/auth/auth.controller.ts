@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { cookieHandler } from './cookieHandler';
 import { RefreshGuard } from './guards/refresh.guard';
 import { GoogleAuthGuard } from './guards/google-oauth.guard';
+import { SamlAuthGuard } from './guards/saml-oauth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -31,6 +32,20 @@ export class AuthController {
     async googleOAuthCallback(@Request() req, @Response() res) {
         const authToken = await this.authService.generateAuthToken(req.user.uid);
         cookieHandler(res, authToken, true);
+    }
+
+    @Get('/saml')
+    @UseGuards(SamlAuthGuard)
+    async samlOAuth() {}
+
+    @Get('/saml//callback')
+    @UseGuards(SamlAuthGuard)
+    async samlOAuthCallback(@Request() req, @Response() res) {
+        const genToken = await this.authService.refreshAuthToken(
+            req.user,
+            req.cookies['refresh_token'],
+        );
+        cookieHandler(res, genToken, false);
     }
 
     @Get('/refresh')

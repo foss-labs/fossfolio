@@ -1,6 +1,5 @@
 import { MainNav } from '@app/layout/components/MainNav';
-import dynamic from 'next/dynamic';
-const Lottie = dynamic(() => import('react-lottie'), { ssr: false });
+import { useLottie } from 'lottie-react';
 
 import Flight from '@app/public/lottie/flight.json';
 
@@ -13,13 +12,13 @@ export const PageLoader = () => {
             preserveAspectRatio: 'xMidYMid slice',
         },
     };
+
+    const { View } = useLottie(defaultOptions);
     return (
         <>
             <MainNav />
             <div className="h-[90vh] w-full flex justify-center items-center">
-                {typeof window !== undefined && (
-                    <Lottie options={defaultOptions} height={400} width={400} />
-                )}
+                {typeof window !== undefined && <>{View}</>}
             </div>
         </>
     );

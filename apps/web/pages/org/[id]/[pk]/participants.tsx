@@ -2,23 +2,31 @@ import { NextPageWithLayout } from 'next';
 import { DashboardLayout } from '@app/layout';
 import { Participants } from '@app/views/dashboard';
 import { useEventParticipants } from '@app/hooks/api/org';
-import { RiLoaderFill } from 'react-icons/ri';
+import { useEvent } from '@app/hooks/api/Events';
+import { Loader } from '@app/components/preloaders';
+import { Error } from '@app/components/Error';
 
 const Dashboard: NextPageWithLayout = () => {
-    const { isLoading, data } = useEventParticipants();
+    const { isLoading, data, refetch, error } = useEventParticipants();
+    const { data: eventData } = useEvent('event');
     if (isLoading) {
-        return (
-            <div className="h-[100vh] flex items-center justify-center">
-                <RiLoaderFill className="animate-spin h-8 w-8" />
-            </div>
-        );
+        return <Loader />;
+    }
+
+    if (error) {
+        <Error />;
     }
 
     if (data) {
         return (
-            <div>
-                <h2 className="mb-3 mt-3 font-semibold text-2xl">All Registred Particpants</h2>
-                <Participants data={data?.data} />
+            <div className="p-4 ">
+                <h2 className="font-semibold text-2xl p-4">All Registred Particpants</h2>
+                <Participants
+                    data={data?.data}
+                    doesEventHaveForm={eventData?.data.isFormPublished ? true : false}
+                    refetch={refetch}
+                    id={eventData?.data.id as string}
+                />
             </div>
         );
     }

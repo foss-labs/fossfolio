@@ -77,20 +77,34 @@ export class OrganizationMemberService {
     }
 
     async updateRole(organizationId: string, userUid: string, role: Role) {
-        const newRole = await this.prismaService.organizationMember.update({
-            where: {
-                userUid_organizationId: {
-                    userUid,
-                    organizationId,
+        try {
+            const newRole = await this.prismaService.organizationMember.update({
+                where: {
+                    userUid_organizationId: {
+                        userUid,
+                        organizationId,
+                    },
                 },
-            },
-            data: {
-                role,
-            },
-        });
+                data: {
+                    role,
+                },
+            });
 
-        if (!newRole) return ROLE_UPDATE_FAILED;
+            if (!newRole) throw new NotFoundException();
 
-        return newRole;
+            return {
+                ok: true,
+                message: 'role updated successfully',
+                data: newRole,
+            };
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                throw new NotFoundException({
+                    ROLE_UPDATE_FAILED,
+                });
+            } else {
+                return e;
+            }
+        }
     }
 }

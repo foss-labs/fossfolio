@@ -21,6 +21,7 @@ export const UserNav = () => {
     return (
         <>
             <ProfileModal isOpen={isOpen} onClose={triggerModal.off} />
+
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -52,6 +53,7 @@ export const UserNav = () => {
                                 Organize Events
                             </DropdownMenuItem>
                         </Link>
+
                         <Link href="/tickets" className="!hover:cursor-pointer">
                             <DropdownMenuItem className="!hover:cursor-pointer">
                                 My Tickets

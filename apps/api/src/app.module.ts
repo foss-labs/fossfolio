@@ -1,19 +1,24 @@
 import * as Joi from 'joi';
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { MailModule } from './mail/mail.module';
+import { CloudModule } from './cloud/cloud.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { EventsModule } from './events/events.module';
+import { StripeModule } from './stripe/stripe.module';
 import { OrganizationModule } from './organization/organization.module';
 import { OrganizationMemberModule } from './org-member/org-member.module';
 import { OrganizationInviteModule } from './org-invite/org-invite.module';
-import { EventsModule } from './events/events.module';
-import { MailModule } from './mail/mail.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { AppController } from './app.controller';
+import { KanbanModule } from './kanban/kanban.module';
+import { FormModule } from './form/form.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
     imports: [
@@ -21,7 +26,7 @@ import { APP_GUARD } from '@nestjs/core';
         ThrottlerModule.forRoot([
             {
                 ttl: 60000,
-                limit: 10,
+                limit: 50,
             },
         ]),
         ConfigModule.forRoot({
@@ -43,13 +48,18 @@ import { APP_GUARD } from '@nestjs/core';
                 MAIL_PORT: Joi.number(),
                 MAIL_USER: Joi.string(),
                 MAIL_PASSWORD: Joi.string(),
+                AWS_ACCESS_KEY: Joi.string(),
+                AWS_SECRET_KEY: Joi.string(),
+                AWS_REGION: Joi.string(),
+                STRIPE_SECRET_KEY: Joi.string(),
+                STRIPE_WEBHOOK_SECRET: Joi.string(),
+                AI_KEY: Joi.string(),
             }),
             validationOptions: {
                 allowUnknown: true,
                 abortEarly: true,
             },
         }),
-
         LoggerModule.forRoot({
             pinoHttp: {
                 level: 'info',
@@ -64,6 +74,11 @@ import { APP_GUARD } from '@nestjs/core';
         OrganizationInviteModule,
         EventsModule,
         MailModule,
+        CloudModule,
+        StripeModule,
+        KanbanModule,
+        AiModule,
+        FormModule,
     ],
     controllers: [AppController],
     providers: [

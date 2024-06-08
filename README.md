@@ -36,22 +36,60 @@ FossFolio is an open source web application for people to Find, Host and Manage 
   </ol>
 </details>
 
-## Find Hackathons
 
-Users can go to the website and see a directory of all the published hackathons which are ongoing and upcoming. Users can find the ones they like to join and register for the event on the site by filling in the necessary information. Users get a dashboard where the can see all the hackathons they've registered for and options to edit their profile information.
+## How to run locally
 
-## Host Hackathons
+### Install pnpm globally
 
-Users who want to host hackathons can use the "Create Hackathon" option and fill in the necessary details in a form and publish the event. Upon publishing everyone can see that event on the site.
+```bash
+npm i -g pnpm
+```
 
-### Managing Created Hackathons
+### Install all local dependencies
 
-Users who are hosting hackathons will get a detailed dashboard that displays the following data:
+```bash
+pnpm install
+```
 
--   Total number of participants
--   Total number of teams
--   Number of student and professional applicants
--   List of all the participants and teams with details of participants
+### Install docker and run 
+
+```bash
+docker compose up
+```
+### Migrate prisma and seed the db
+
+```bash
+pnpm --filter api prisma migrate dev
+pnpm --filter api db:seed
+```
+### Run client and server
+
+```bash
+pnpm --filter web dev
+
+pnpm --filter api nest:dev
+```
+
+
+
+
+# Website Pages Showcase
+
+<!-- First Row -->
+<div align="start">
+  <img src="./packages/docs/all-events.png" alt="Page 1" width="300" />
+  <img src="./packages/docs/editor.png" alt="Page 2" width="300" />
+  <img src="./packages/docs/event.png" alt="Page 3" width="300" />
+  <img src="./packages/docs/members.png" alt="Page 3" width="300" />
+  <img src="./packages/docs/orgs.png" alt="Page 4" width="300" />
+  <img src="./packages/docs/particpents.png" alt="Page 5" width="300" />
+  <img src="./packages/docs/profile.png" alt="Page 6" width="300" />
+  <img src="./packages/docs/settings.png" alt="Page 6" width="300" />
+</div>
+
+
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

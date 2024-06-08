@@ -89,21 +89,21 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="w-[325px] md:w-auto">
+            <DialogContent className="w-[325px] rounded-md md:w-auto">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleUpdates)}>
-                        <DialogHeader>
-                            <DialogTitle className="mb-4">Update Profile</DialogTitle>
+                        <DialogHeader className="flex-start">
+                            <DialogTitle>Update Profile</DialogTitle>
                             <DialogDescription>
                                 Make changes to your profile here. Click save once done
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="grid gap-4 py-4">
+                        <div className="grid gap-4 py-8">
                             <FormField
                                 control={form.control}
                                 name="name"
                                 render={({ field }) => (
-                                    <FormItem className="items-center ">
+                                    <FormItem>
                                         <FormLabel>Name</FormLabel>
                                         <FormControl>
                                             <Input placeholder="Name" {...field} />
@@ -116,7 +116,7 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
                                 control={form.control}
                                 name="slug"
                                 render={({ field }) => (
-                                    <FormItem className=" items-center">
+                                    <FormItem>
                                         <FormLabel>Username</FormLabel>
                                         <FormControl>
                                             <Input
@@ -161,7 +161,7 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
                                     control={form.control}
                                     name="collegeName"
                                     render={({ field }) => (
-                                        <FormItem className="items-center ">
+                                        <FormItem>
                                             <FormLabel>College Name</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="College" {...field} />

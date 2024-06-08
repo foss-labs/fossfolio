@@ -3,6 +3,7 @@ import { TicketModal } from '@app/views/tickets';
 import { Button } from '@app/components/ui/Button';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import Image from 'next/image';
 import type { Data, Info } from '@app/hooks/api/user/useTickets';
 import { useState } from 'react';
 
@@ -33,17 +34,24 @@ export const TicketCard = ({ data, type }: Prop) => {
 
     return (
         <>
-            <div className="flex justify-between mt-10 p-14">
+            <div className="flex flex-col justify-between mt-10 p-12 flex-wrap lg:flex-row lg:items-center lg:justify-start gap-16">
                 <TicketModal isOpen={isOpen} onClose={triggerModal.off} data={info} />
                 {data.map((el) => (
                     <div
                         onClick={() => handleOpen(el)}
                         key={el.id}
-                        className="border-2 border-gray-300 py-5 px-8 rounded-xl hover:cursor-pointer"
+                        className="border-2 border-gray-300 py-5 px-8 rounded-xl hover:cursor-pointer max-w-[350px]"
                     >
                         <h1>{el.name}</h1>
                         <h2>Date: {format(new Date(el.eventDate), 'dd/MM/yyyy')}</h2>
                         <h2>Venue : {el.location}</h2>
+                        <Image
+                            src={el.coverImage}
+                            width={400}
+                            height={400}
+                            alt="cover image"
+                            className="mt-4"
+                        />
                     </div>
                 ))}
             </div>

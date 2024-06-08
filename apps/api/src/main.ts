@@ -2,6 +2,7 @@ import session from 'express-session';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
+import * as express from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -18,8 +19,9 @@ async function bootstrap() {
         }),
     );
     app.use(cookieParser());
-
     app.useGlobalPipes(new ValidationPipe());
+    // prevent body parsing in stripe webhook route to access the  stripe signature as buffer
+    app.use('/api/payment/webhook', express.raw({ type: '*/*' }));
     app.setGlobalPrefix('api');
     app.enableCors({
         origin: process.env.CLIENT_URL || 'http://localhost:3000',

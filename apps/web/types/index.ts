@@ -1,5 +1,12 @@
+import { IFormInput } from '@app/views/form';
+
 export interface Child {
     children: React.ReactNode;
+}
+
+interface DbProps {
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface User {
@@ -10,6 +17,7 @@ export interface User {
     photoURL: string;
     isStudent: boolean;
     collegeName?: string;
+    refreshToken: string;
 }
 
 export type Member = {
@@ -62,7 +70,55 @@ export interface OrgEvents {
     description: string | null;
     lastDate: Date;
     eventDate: Date;
-    maxTickerCount?: number;
+    maxTicketCount?: number;
     minTicketCount?: number;
     isCollegeEvent?: boolean;
+    coverImage?: string;
+    isFormPublished: boolean;
+    form: Iform[];
+    slug: string;
+    ticketPrice: number;
+}
+
+export type Iform = {
+    selectOptions?: Array<{
+        option: string;
+    }>;
+    label: string;
+    placeholder?: string;
+    options?: Array<string>;
+    required: boolean;
+    type: IFormInput;
+    id?: string;
+};
+
+export interface Kanban extends DbProps {
+    id: string;
+    title: string;
+    userUid: string;
+    createdBy: UserInKanban;
+    tasks: Task[];
+    _count: {
+        tasks: number;
+    };
+}
+
+export interface ServerResponse<T> {
+    ok: boolean;
+    message: string;
+    data: T;
+}
+
+type UserInKanban = Omit<User, 'slug' | 'refreshToken' | 'isStudent' | 'collegeName' | 'uid'>;
+export interface Task extends DbProps {
+    id: string;
+    title: string;
+    createdBy: UserInKanban;
+    Comment: Comments[];
+}
+
+export interface Comments {
+    id: string;
+    data: string;
+    user: UserInKanban;
 }

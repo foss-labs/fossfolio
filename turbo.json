@@ -3,7 +3,11 @@
     "pipeline": {
         "build": {
             "dependsOn": [],
-            "outputs": ["build/**", "lib/**"]
+            "outputs": ["build/**", "lib/**", ".next/**", "!.next/cache/**"]
+        },
+        "web#build": {
+            "dependsOn": ["^build"],
+            "outputs": ["dist/**"]
         },
         "start": {
             "dependsOn": [],
@@ -19,5 +23,19 @@
             "outputs": []
         }
     },
-    "globalEnv": ["NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_WEBSITE_DOMAIN", "NODE_ENV", "PORT", "CI"]
+    "globalEnv": [
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_WEBSITE_DOMAIN",
+        "NEXT_PUBLIC_POSTHOG_KEY",
+        "NEXT_PUBLIC_POSTHOG_HOST",
+        "MISTRAL_API_KEY",
+        "NODE_ENV",
+        "PORT",
+        "NEXT_PUBLIC_POSTHOG_KEY",
+        "NEXT_PUBLIC_POSTHOG_HOST",
+        "CI",
+        "OPEN_AI_TOKEN",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_KEY"
+    ]
 }
