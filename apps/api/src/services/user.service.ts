@@ -6,7 +6,7 @@ import type { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@api/db/schema';
 import { fakerEN } from '@faker-js/faker';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ConfigService } from '@nestjs/config'; 
+import { ConfigService } from '@nestjs/config';
 import { UserModel } from '@api/models/User';
 import { AccountModel } from '@api/models';
 
@@ -15,7 +15,7 @@ export class UserService {
 	constructor(
 		private readonly prismaService: PrismaService,
 		private readonly eventEmitter: EventEmitter2,
-		private readonly configService:ConfigService
+		private readonly configService: ConfigService,
 	) {}
 
 	async findUserBySlug(slug: string) {
@@ -64,16 +64,16 @@ export class UserService {
 			fk_user_id: user.id,
 		});
 
-		const isProd = Boolean(this.configService.get("NODE_ENV"));
-    
-		if(isProd){
+		const isProd = Boolean(this.configService.get('NODE_ENV'));
+
+		if (isProd) {
 			this.eventEmitter.emit('user.registered', {
 				email: user.email,
 				name: user.display_name,
 				avatarUrl: user.photo_url,
 			});
 		}
-	
+
 		return user;
 	}
 

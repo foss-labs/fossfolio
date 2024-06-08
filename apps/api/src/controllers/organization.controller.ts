@@ -39,10 +39,10 @@ export class OrganizationController {
 		return this.organizationService.findOrgBySlug(slug);
 	}
 
-	@Get('/:orgID')
+	@Get('/:orgId')
 	@UseGuards(AuthGuard('jwt'))
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async getOrgInfo(@Param('orgID') info) {
+	async getOrgInfo(@Param('orgId') info) {
 		return await this.organizationService.getOrgById(info);
 	}
 
@@ -51,10 +51,10 @@ export class OrganizationController {
 		return await this.organizationService.getEventsByorg(slug);
 	}
 
-	@Get('/events/:orgID')
+	@Get('/events/:orgId')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async getAllEvents(@Param('orgID') orgID: string, @UserRole() role: Role) {
+	async getAllEvents(@Param('orgId') orgID: string, @UserRole() role: Role) {
 		return this.organizationService.getAllEvents(orgID, role);
 	}
 

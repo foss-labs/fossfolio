@@ -26,7 +26,7 @@ export default function createBaseModel<T extends SystemTable, M extends {}>(
 			try {
 				const queryBuilder = trx ?? BaseContext.knex;
 				const data = await queryBuilder<M>(tableName)
-					.where("id",id)
+					.where('id', id)
 					.andWhere('is_deleted', false)
 					.first();
 				return (data as M) || null;

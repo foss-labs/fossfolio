@@ -5,7 +5,6 @@ import { Separator } from "@app/ui/components/separator";
 import Drawer from "react-modern-drawer";
 import { RiLoaderFill } from "react-icons/ri";
 import "react-modern-drawer/dist/index.css";
-import { useEffect } from "react";
 
 export const FormDrawer = ({ open, onClose, userId }: Props) => {
   const {

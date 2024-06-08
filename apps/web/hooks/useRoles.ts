@@ -1,7 +1,7 @@
 import { useAuth } from "./useAuth";
 
 const Properties = {
-  ADMIN: {
+  admin: {
     canDeleteOrg: true,
     canSendInvite: true,
     canCreateEvent: true,
@@ -13,7 +13,7 @@ const Properties = {
     canDeleteEvent: true,
     canEditOrg: true,
   },
-  EDITOR: {
+  editor: {
     canDeleteOrg: false,
     canEditEvent: true,
     canCreateEvent: true,
@@ -25,7 +25,7 @@ const Properties = {
     canDeleteEvent: false,
     canEditOrg: false,
   },
-  VIEWER: {
+  viewer: {
     canDeleteOrg: false,
     canEditEvent: false,
     canCreateEvent: false,
@@ -37,7 +37,7 @@ const Properties = {
     canDeleteEvent: false,
     canEditOrg: false,
   },
-  NO_ACCESS: {
+  no_access: {
     canDeleteOrg: false,
     canEditEvent: false,
     canCreateEvent: false,
@@ -55,7 +55,7 @@ export const useRoles = () => {
   const { role } = useAuth();
 
   if (!role) {
-    return Properties["NO_ACCESS"];
+    return Properties["no_access"];
   }
   return Properties[role];
 };

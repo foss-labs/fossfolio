@@ -30,34 +30,25 @@ export type Member = {
   role: Roles;
 };
 
-type Organization = {
+export type Organization = {
   id: string;
   name: string;
   slug: string;
-  createdAt: Date;
-  updatedAt: Date;
-  _count: {
-    members: number;
-    events: number;
-  };
+  org_created_at: Date;
+  org_updated_at: Date;
+  total_members: number;
+  total_events: number;
+  role: Roles;
+  is_verified: boolean;
 };
 
-export interface IOrg {
-  ok: boolean;
-  message: string;
-  data: {
-    organization: Organization;
-    role: Roles;
-  }[];
-}
-
 export enum Roles {
-  Admin = "ADMIN",
-  Editor = "EDITOR",
-  Viewer = "VIEWER",
+  ADMIN = "admin",
+  EDITOR = "editor",
+  VIEWER = "viewer",
 }
 
-export type Role = "ADMIN" | "EDITOR" | "VIEWER";
+export type Role = "admin" | "editor" | "viewer";
 
 export interface OrgEvents {
   id: string;

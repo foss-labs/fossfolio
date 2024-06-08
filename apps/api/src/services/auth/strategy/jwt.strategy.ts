@@ -28,14 +28,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		});
 	}
 
-	async validate(payload: {
-		iss: string;
-		sub: string;
-		iat: number;
-	}) {
+	async validate(payload: { iss: string; sub: string; iat: number }) {
 		const user = await UserModel.findById(payload.sub);
-
-		console.log(user)
 
 		if (!user) {
 			FFError.unauthorized('Invalid user');

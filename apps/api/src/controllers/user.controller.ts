@@ -3,8 +3,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthUser } from '../services/auth/decorators/user.decorator';
 import { OrganizationService } from '../services/organization.service';
 import { UserService } from '../services/user.service';
-import { User } from '@api/db/schema'; 
+import { User } from '@api/db/schema';
 import type { UpdateUserDto } from '../services/dto/update-user.dto';
+import { OrgModel } from '@api/models';
 
 @Controller('user')
 export class UserController {
@@ -16,7 +17,7 @@ export class UserController {
 	@Get('/orgs')
 	@UseGuards(AuthGuard('jwt'))
 	async findOrgs(@AuthUser() user: User) {
-		return this.organizationService.findOrgsByUser(user.id);
+		return OrgModel.getOrgsWithUserAsMember(user.id);
 	}
 
 	@Get('/')
