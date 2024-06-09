@@ -11,7 +11,7 @@ export type IOrgEvents = {
 };
 
 const getAllEventsInOrg = async (id: string) => {
-  const { data } = await apiHandler.get(`/org/events/${id}`);
+  const { data } = await apiHandler.get(`/org/${id}/events`);
   return data;
 };
 

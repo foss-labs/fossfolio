@@ -7,7 +7,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "start": "nest start",
-    "dev": "node -r '@swc-node/register' --watch --enable-source-maps src/main.ts | pino-pretty",
+    "dev": "node --inspect -r '@swc-node/register' --enable-source-maps src/main.ts | pino-pretty",
     "dev-new": "concurrently \"tsc --noEmit --watch\"  \"node -r '@swc-node/register' --watch --enable-source-maps src/main.ts | pino-pretty \"",
     "start:prod": "node dist/main",
     "lint": "biome lint --error-on-warnings ./src",
