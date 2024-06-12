@@ -19,6 +19,12 @@ export class EventsService {
 		return await EventModel.findById(id);
 	}
 
+	public async getEventBySlug(slug: string) {
+		return await EventModel.findOne({
+			slug,
+		});
+	}
+
 	async createEvent({
 		newEvent,
 		user,

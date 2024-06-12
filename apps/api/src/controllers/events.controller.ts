@@ -62,6 +62,14 @@ export class EventsController {
 		return await this.events.getEventById(id);
 	}
 
+	@Get('/:orgId/events/:slug')
+	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
+	@UseGuards(AuthGuard('jwt'), RbacGuard)
+	@ZodValidator({ params: EventParamsSchema })
+	async getEventBySlug(@Param('slug') slug: string) {
+		return await this.events.getEventBySlug(slug);
+	}
+
 	@Patch('/:orgId/events/:eventId')
 	@Roles(Role.ADMIN, Role.EDITOR)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
