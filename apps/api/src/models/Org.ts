@@ -55,7 +55,6 @@ export class OrgModel extends BaseModel<SystemTable.Org, Organization>(
 				);
 			return orgs;
 		} catch (error) {
-			console.log(error);
 			FFError.databaseError(`${SystemTable.OrgMember}: Query Failed : `, error);
 		}
 	}

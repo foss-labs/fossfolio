@@ -8,7 +8,7 @@ import { PrismaService } from './prisma.service';
 import { ORG_NOT_FOUND } from '../error';
 import type { CreateOrgDto } from './dto/create-org.dto';
 import type { UpdateOrgDto } from './dto/update-org.dto';
-import { OrgMemberModel, OrgModel } from '@api/models';
+import { EventModel, OrgMemberModel, OrgModel } from '@api/models';
 
 @Injectable()
 export class OrganizationService {
@@ -29,7 +29,9 @@ export class OrganizationService {
 				role: Role.ADMIN,
 			});
 
-			return await OrgModel.getOrgsWithUserAsMember(newOrg.id);
+			return await OrgModel.findOne({
+				id: newOrg.id,
+			});
 		} catch (error) {
 			if (error instanceof NotFoundException) {
 				throw new NotFoundException();
@@ -145,13 +147,13 @@ export class OrganizationService {
 		}
 	}
 
-	async getAllEvents(id: string, role: Role) {
+	async getAllEvents(userId: string, orgId: string) {
 		try {
-			const event = await this.prismaService.events.findMany({
-				where: {
-					organizationId: id,
-				},
+			const event = await EventModel.find({
+				fk_organization_id: orgId,
 			});
+
+			const role = await OrgMemberModel.getMemberRole(userId, orgId);
 
 			return {
 				event,

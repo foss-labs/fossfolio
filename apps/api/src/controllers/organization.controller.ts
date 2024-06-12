@@ -48,8 +48,8 @@ export class OrganizationController {
 	@Get('/:orgId/events')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async getAllEvents(@Param('orgId') orgID: string, @UserRole() role: Role) {
-		return this.organizationService.getAllEvents(orgID, role);
+	async getAllEvents(@Param('orgId') orgID: string, @AuthUser() user: User) {
+		return this.organizationService.getAllEvents(user.id, orgID);
 	}
 
 	@Get('/events/public/:slug')
