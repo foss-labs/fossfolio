@@ -23,21 +23,20 @@ apiHandler.interceptors.response.use(
       error.response?.status === 401 &&
       error.request.responseURL !== ENV.api_base + "/auth/refresh"
     ) {
+      const originalRequestURL = window.location.href;
+      // Create a promise to retry the original request after the token is refreshed
+      const retryOriginalRequest = new Promise((resolve) => {
+        refreshQueue.push(() => resolve(apiHandler(error.request)));
+      });
       if (!isRefreshing) {
         try {
           isRefreshing = true;
           // new tokens are stored directly to cookies
           await apiHandler.get("/auth/refresh");
-          /*
-                       IF  access token was missing and this function get 200 response it should return
-                       to the route where the interceptor was called from
-                       NOTE - Right now will will only return to /org irrespective of where the api was called
-                       // This need to be fixed
-                    */
-          window.location.href = ENV.web_base_url + "/org";
+          window.location.href = originalRequestURL;
         } catch (refreshError) {
           isRefreshing = false;
-          throw { isTokenRefreshError: true };
+          throw new Error();
         } finally {
           isRefreshing = false;
         }
@@ -46,11 +45,6 @@ apiHandler.interceptors.response.use(
         refreshQueue.forEach((resolve) => resolve());
         refreshQueue = [];
       }
-
-      // Create a promise to retry the original request after the token is refreshed
-      const retryOriginalRequest = new Promise((resolve) => {
-        refreshQueue.push(() => resolve(apiHandler(error.request)));
-      });
 
       return retryOriginalRequest;
     } else {

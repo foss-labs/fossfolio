@@ -40,7 +40,6 @@ export class OrganizationController {
 	}
 
 	@Get('/:orgId')
-	@UseGuards(AuthGuard('jwt'))
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	async getOrgInfo(@Param('orgId') info) {
 		return await this.organizationService.getOrgById(info);
