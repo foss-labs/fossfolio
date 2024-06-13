@@ -7,6 +7,7 @@ import { OrgCard, NewOrgDialog } from "@app/views/org";
 import { useAuth, useToggle } from "@app/hooks";
 import { useOrgs } from "@app/hooks/api/org";
 import { OrgLoader } from "@app/components/preloaders";
+import { pluralize } from "@app/utils";
 
 const Index: NextPageWithLayout = () => {
   const [isOpen, setOpen] = useToggle(false);
@@ -18,16 +19,17 @@ const Index: NextPageWithLayout = () => {
       <NewOrgDialog isOpen={isOpen} onClose={setOpen.off} />
       <div className="flex items-center gap-y-2 flex-wrap justify-between">
         <h4 className="text-xl font-semibold md:text-[40px]">
-          {user?.display_name.split(" ")[0]}&apos;s organisations
+          {user?.display_name.split(" ")[0]}&apos;s{" "}
+          {pluralize("organization", data?.length || 0)}
         </h4>
         <div className="flex md:w-auto justify-end w-full">
-          <Button onClick={setOpen.on}>New Organisation</Button>
+          <Button onClick={setOpen.on}>New Organization</Button>
         </div>
       </div>
       <div className="flex justify-center md:justify-start flex-wrap mt-10 gap-5">
         {isLoading ? (
           <div className="flex flex-col flex-wrap gap-5 md:flex-row">
-            <OrgLoader />
+            <OrgLoader count={12} />
           </div>
         ) : (
           <>
@@ -37,7 +39,7 @@ const Index: NextPageWithLayout = () => {
             >
               <div className="flex flex-col items-center group-hover:scale-110 transition justify-center gap-2">
                 <GoOrganization className="border-black border-2 rounded-full text-3xl p-1" />
-                Create a new organisation
+                Create a new organization
               </div>
             </div>
             {data?.map((el) => (

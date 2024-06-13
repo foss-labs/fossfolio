@@ -12,6 +12,8 @@ import { ENV, apiHandler } from "@app/config";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAddOrg } from "@app/hooks/api/org";
+import { Truncate } from "@app/components/ui/Truncate";
+import { useMediaQuery } from "@app/hooks";
 
 type IModal = {
   isOpen: boolean;
@@ -59,6 +61,7 @@ const Schema = yup.object().shape({
 type ISchema = yup.InferType<typeof Schema>;
 
 export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
+  const isPhoneScreen = useMediaQuery("(max-width: 767px)");
   const { mutate } = useAddOrg();
   const {
     register,
@@ -81,7 +84,7 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[320px] rounded-md md:w-[400px] md:w-md-auto">
+      <DialogContent className="rounded-md md:w-sm-auto">
         <DialogHeader>
           <DialogTitle className="mb-4">Create new organization</DialogTitle>
           <DialogDescription>
@@ -100,9 +103,13 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
                     An org with same name already exist
                   </span>
                 )}
-                <label className="text-start">{`Your organization Url is ${
-                  ENV.web_base_url
-                }/${watch("slug")}`}</label>
+                <span className="text-start inline-block">
+                  Your organization Url is
+                  <Truncate
+                    text={`${ENV.web_base_url}/${watch("slug")}`}
+                    size={isPhoneScreen ? 40 : 60}
+                  />
+                </span>
               </div>
               <div className="flex flex-col gap-3 mt-4">
                 <Button type="submit" disabled={isSubmitting ? true : false}>

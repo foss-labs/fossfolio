@@ -15,7 +15,7 @@ export const Truncate = ({ text, size = 10 }: Prop) => {
     return (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>{text.substring(0, 9)}...</TooltipTrigger>
+          <TooltipTrigger>{text.substring(0, size - 1)}...</TooltipTrigger>
           <TooltipContent>
             <p>{text}</p>
           </TooltipContent>
