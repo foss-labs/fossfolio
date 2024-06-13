@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "sonner";
 import { AiOutlineDelete } from "react-icons/ai";
-import { SubmitHandler, useForm, useWatch } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { RemoveMemberModal } from "./RemoveMemberModal";
 import {
@@ -35,13 +35,7 @@ import * as yup from "yup";
 import { isProd } from "@app/utils";
 import { RiLoaderFill } from "react-icons/ri";
 import { useState } from "react";
-import { Role } from "@app/types";
-
-enum Roles {
-  Admin = "ADMIN",
-  Editor = "EDITOR",
-  Viewer = "VIEWER",
-}
+import { Role, Roles } from "@app/types";
 
 type IProp = {
   setLink: React.Dispatch<string>;
@@ -81,7 +75,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
     resolver: yupResolver(invite),
     defaultValues: {
       email: "",
-      role: Roles.Viewer,
+      role: Roles.VIEWER,
     },
   });
 
@@ -168,9 +162,9 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={Roles.Admin}>Admin</SelectItem>
-                        <SelectItem value={Roles.Editor}>Editor</SelectItem>
-                        <SelectItem value={Roles.Viewer}>Viewer</SelectItem>
+                        <SelectItem value={Roles.ADMIN}>Admin</SelectItem>
+                        <SelectItem value={Roles.EDITOR}>Editor</SelectItem>
+                        <SelectItem value={Roles.VIEWER}>Viewer</SelectItem>
                       </SelectContent>
                     </Select>
 
@@ -201,15 +195,15 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
           </TableHeader>
           <TableBody>
             {data?.map((el) => (
-              <TableRow key={el.user.id}>
+              <TableRow key={el.id}>
                 <TableCell className="font-medium">
-                  <h5>{el.user.displayName ?? el.user.slug}</h5>
+                  <h5 className="truncate">{el.display_name}</h5>
                 </TableCell>
-                <TableCell>{el.user.email}</TableCell>
+                <TableCell>{el.email}</TableCell>
                 <TableCell>
                   <Select
-                    disabled={!canSendInvite || user?.id === el.user.id}
-                    onValueChange={(e: Role) => updateRole(e, el.user.id)}
+                    disabled={!canSendInvite || user?.id === el.fk_user_id}
+                    onValueChange={(e: Role) => updateRole(e, el.fk_user_id)}
                   >
                     <SelectTrigger className="w-44">
                       <SelectValue placeholder={el.role} />
@@ -223,13 +217,13 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
                 </TableCell>
                 {canRemoveOrgUser && (
                   <TableCell className="text-right">
-                    {user?.email !== el.user.email && (
+                    {user?.email !== el.email && (
                       <AiOutlineDelete
                         className="hover:text-[red] cursor-pointer text-lg"
                         onClick={() =>
                           handleRemoveButtonClick({
-                            userId: el.user.id,
-                            userName: el.user.displayName,
+                            userId: el.fk_user_id,
+                            userName: el.display_name,
                           })
                         }
                       />

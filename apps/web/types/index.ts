@@ -21,13 +21,14 @@ export interface User {
 }
 
 export type Member = {
-  user: {
-    id: string;
-    email: string;
-    displayName: string;
-    slug: string;
-  };
-  role: Roles;
+  id: string;
+  fk_user_id: string;
+  role: Role;
+  created_at: Date;
+  updated_at: Date;
+  photo_url: string;
+  email: string;
+  display_name: string;
 };
 
 export type Organization = {
@@ -116,3 +117,11 @@ export interface Comments {
   data: string;
   user: UserInKanban;
 }
+
+export const TabName = [
+  { value: "events", title: "All Events" },
+  { value: "teams", title: "Members" },
+  { value: "settings", title: "Settings" },
+] as const;
+
+export type Tabs = (typeof TabName)[number]["value"];

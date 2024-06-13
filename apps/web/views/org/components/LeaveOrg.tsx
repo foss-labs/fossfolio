@@ -2,7 +2,6 @@ import { Card, CardContent } from "@app/ui/components/card";
 import { Button } from "@app/ui/components/button";
 import { useToggle } from "@app/hooks";
 import { LeaveModal } from "./LeaveModal";
-import { FormDescription } from "@app/ui/components/form";
 
 export const LeaveOrg = () => {
   const [isOpen, triggerModal] = useToggle(false);
@@ -18,8 +17,9 @@ export const LeaveOrg = () => {
           </p>
           <div className="flex justify-end">
             <Button
-              className="bg-[red] hover:bg-[#ff0000c2]"
+              className=" border border-red-500 text-red-500"
               onClick={triggerModal.on}
+              variant="outline"
             >
               Leave Organization
             </Button>
