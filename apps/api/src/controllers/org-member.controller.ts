@@ -36,7 +36,7 @@ export class OrgMemberController {
 		);
 	}
 
-	@Patch('/role')
+	@Patch('/:orgId/role')
 	@ApiTags('org-members')
 	@ApiOperation({ summary: 'Update member role in org' })
 	@ApiResponse({ status: 200, description: 'User role will be updated' })

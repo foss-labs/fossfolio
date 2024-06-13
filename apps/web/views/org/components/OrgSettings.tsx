@@ -58,8 +58,7 @@ export const OrgSettings = ({ activeTab }: Props) => {
   const handleOrgUpdate: SubmitHandler<IOrgVal> = async (changes) => {
     // handle update with api call
     try {
-      await apiHandler.patch("/org/update", {
-        organizationId: id,
+      await apiHandler.patch(`/org/${id}/update`, {
         name: changes.orgName,
         slug: changes.slug,
       });

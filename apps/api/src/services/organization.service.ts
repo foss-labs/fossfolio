@@ -114,27 +114,68 @@ export class OrganizationService {
 		};
 	}
 
-	/*  
-  
-  *  if there is only one admin and he is the one leaving the org we should tranfer the org to the first 
-     person who joined the org
-
-  *  if the person is the last person to leave the org we should delete the org completly
- 
-  *  if there is multiple admins just make user leave the org
-   
-  */
-
 	async leaveOrg(orgId: string, userId: string) {
 		try {
-			await this.prismaService.organizationMember.delete({
-				where: {
-					userUid_organizationId: {
-						userUid: userId,
-						organizationId: orgId,
-					},
-				},
+			const OrgMemberCount = await OrgMemberModel.count({
+				fk_organization_id: orgId,
 			});
+			// If the person is the last person to leave the org we should delete the org completely
+			if (OrgMemberCount === 1) {
+				await OrgMemberModel.delete({
+					fk_organization_id: orgId,
+					fk_user_id: userId,
+				});
+
+				await OrgModel.delete({
+					id: orgId,
+				});
+			} else {
+				const userRole = await OrgMemberModel.findOne({
+					fk_organization_id: orgId,
+					fk_user_id: userId,
+				}).then((el) => el?.role);
+
+				if (userRole !== Role.ADMIN) {
+					await OrgMemberModel.delete({
+						fk_organization_id: orgId,
+						fk_user_id: userId,
+					});
+				} else {
+					// If there is multiple admins just make user leave the org
+					const totalNumberOfAdmins = await OrgMemberModel.count({
+						fk_organization_id: orgId,
+						role: Role.ADMIN,
+					});
+
+					if (totalNumberOfAdmins > 1) {
+						await OrgMemberModel.delete({
+							fk_organization_id: orgId,
+							fk_user_id: userId,
+						});
+					} else {
+						// if there is only one admin and he is the one leaving the org we should transfer
+						// the org to the first person who joined the org
+						const member =
+							await OrgMemberModel.getMemberWhoWasFirstAdded(orgId);
+
+						await OrgMemberModel.update(
+							{
+								fk_organization_id: orgId,
+								fk_user_id: member,
+							},
+							{
+								role: Role.ADMIN,
+							},
+						);
+
+						await OrgMemberModel.delete({
+							fk_organization_id: orgId,
+							fk_user_id: userId,
+						});
+					}
+				}
+			}
+
 			return {
 				ok: true,
 				message: 'successfully left the organization',
@@ -190,23 +231,19 @@ export class OrganizationService {
 
 	async UpdateOrg(id: string, payload: Data) {
 		try {
-			const data = await this.prismaService.organization.update({
-				where: {
+			await OrgModel.update(
+				{
 					id,
 				},
-				data: {
-					name: payload.name,
+				{
 					slug: payload.slug,
+					name: payload.name,
 				},
-			});
+			);
 
-			if (!data) {
-				throw new NotFoundException();
-			}
 			return {
 				ok: true,
 				message: 'Org was updated successfully',
-				data,
 			};
 		} catch (e) {
 			if (e instanceof NotFoundException) {

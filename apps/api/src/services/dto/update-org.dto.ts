@@ -5,11 +5,6 @@ export class UpdateOrgDto {
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
-	organizationId: string;
-
-	@ApiProperty()
-	@IsString()
-	@IsNotEmpty()
 	name: string;
 
 	@ApiProperty()

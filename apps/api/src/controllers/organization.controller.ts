@@ -13,9 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../services/decorator/roles.decorator';
 import { RbacGuard } from '../services/guards/rbac-member.guard';
 import { AuthUser } from '../services/auth/decorators/user.decorator';
-import { UserRole } from '../services/auth/decorators/role.decorator';
 import { Role } from '@api/utils/db';
-import type { LeaveOrg } from '../services/dto/leave-org.dto';
 import type { CreateOrgDto } from '../services/dto/create-org.dto';
 import type { DeleteOrgDto } from '../services/dto/delete-org.dto';
 import type { UpdateOrgDto } from '../services/dto/update-org.dto';
@@ -64,10 +62,10 @@ export class OrganizationController {
 		return this.organizationService.update(updateOrgDto);
 	}
 
-	@Patch('/update')
+	@Patch('/:orgId/update')
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async UpdateOrg(@Body() data: UpdateOrgDto) {
-		return await this.organizationService.UpdateOrg(data.organizationId, data);
+	async UpdateOrg(@Body() data: UpdateOrgDto, @Param('orgId') orgID: string) {
+		return await this.organizationService.UpdateOrg(orgID, data);
 	}
 
 	@Delete('/delete')
@@ -77,9 +75,9 @@ export class OrganizationController {
 		return this.organizationService.deleteOrg(data.organizationId);
 	}
 
-	@Delete('/leave')
+	@Delete('/:orgId/leave')
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async leaveOrg(@AuthUser() user: User, @Body() body: LeaveOrg) {
-		return this.organizationService.leaveOrg(body.organizationId, user.id);
+	async leaveOrg(@AuthUser() user: User, @Param('orgId') orgID: string) {
+		return this.organizationService.leaveOrg(orgID, user.id);
 	}
 }

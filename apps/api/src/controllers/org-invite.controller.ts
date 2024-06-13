@@ -1,32 +1,44 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Query,
+	UseGuards,
+} from '@nestjs/common';
 import { RbacGuard } from '../services/guards/rbac-member.guard';
 import { Roles } from '../services/decorator/roles.decorator';
 import { OrganizationInviteService } from '../services/org-invite.service';
 import { AuthUser } from '../services/auth/decorators/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from '@api/utils/db';
-import type { User } from '@prisma/client';
-import type { OrgInvie } from '../services/dto/user-invite.dto';
+import { User } from '@api/db/schema/user';
+import type { OrgInvite } from '../services/dto/user-invite.dto';
 
-@Controller('org/invite')
+@Controller('org/:orgId/invite')
 export class OrgInviteController {
 	constructor(private readonly service: OrganizationInviteService) {}
 
 	@Post('/')
 	@Roles(Role.ADMIN)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async sendInvite(@AuthUser() user: User, @Body() data: OrgInvie) {
-		return this.service.inviteToOrg(
-			data.email,
-			user.uid,
-			data.organizationId,
-			data.role,
-		);
+	async sendInvite(
+		@AuthUser() user: User,
+		@Body() data: OrgInvite,
+		@Param('orgId') orgId: string,
+	) {
+		return this.service.inviteToOrg({
+			email: data.email,
+			userId: user.id,
+			role: data.role,
+			orgId: orgId,
+		});
 	}
 
 	@Get('/verify')
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	async verfyEmail(@AuthUser() user: User, @Query() { id }) {
-		return this.service.verifyEmailInvite(id, user.uid, user.email);
+		return this.service.verifyEmailInvite(id, user.id, user.email);
 	}
 }
