@@ -40,7 +40,7 @@ export class OrganizationInviteService {
 						fk_organization_id: orgId,
 					},
 					tx,
-				);
+				).then((el) => el.id);
 
 				const org = await OrgModel.findOne({
 					id: orgId,

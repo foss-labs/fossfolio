@@ -55,24 +55,17 @@ export class OrganizationController {
 		return await this.organizationService.getEventsByorg(slug);
 	}
 
-	@Patch('/')
-	@Roles(Role.ADMIN)
-	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async updateOrganization(@Body() updateOrgDto: UpdateOrgDto) {
-		return this.organizationService.update(updateOrgDto);
-	}
-
 	@Patch('/:orgId/update')
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	async UpdateOrg(@Body() data: UpdateOrgDto, @Param('orgId') orgID: string) {
 		return await this.organizationService.UpdateOrg(orgID, data);
 	}
 
-	@Delete('/delete')
+	@Delete('/:orgId/delete')
 	@Roles(Role.ADMIN)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async deleteOrganization(@Body() data: DeleteOrgDto) {
-		return this.organizationService.deleteOrg(data.organizationId);
+	async deleteOrganization(@Param('orgId') orgId: string) {
+		return this.organizationService.deleteOrg(orgId);
 	}
 
 	@Delete('/:orgId/leave')

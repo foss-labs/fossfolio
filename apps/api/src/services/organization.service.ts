@@ -3,12 +3,13 @@ import {
 	Injectable,
 	InternalServerErrorException,
 	NotFoundException,
+	ServiceUnavailableException,
 } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { ORG_NOT_FOUND } from '../error';
 import type { CreateOrgDto } from './dto/create-org.dto';
-import type { UpdateOrgDto } from './dto/update-org.dto';
 import { EventModel, OrgMemberModel, OrgModel } from '@api/models';
+import { FFError } from '@api/utils/error';
 
 @Injectable()
 export class OrganizationService {
@@ -52,61 +53,15 @@ export class OrganizationService {
 		return ORG_NOT_FOUND;
 	}
 
-	async update(updateOrgDto: UpdateOrgDto) {
-		const { organizationId, name } = updateOrgDto;
-
-		const org = await this.prismaService.organization.findUnique({
-			where: {
-				id: organizationId,
-			},
-		});
-
-		if (!org) return ORG_NOT_FOUND;
-
-		const updatedOrg = await this.prismaService.organization.update({
-			where: {
-				id: organizationId,
-			},
-			data: {
-				name,
-			},
-		});
-
-		return updatedOrg;
-	}
-
-	async findOrgsByUser(uid: string) {
-		const data = await this.prismaService.organizationMember.findMany({
-			where: {
-				userUid: uid,
-			},
-			select: {
-				organization: {
-					include: {
-						_count: {
-							select: {
-								members: true,
-								events: true,
-							},
-						},
-					},
-				},
-				role: true,
-			},
-		});
-
-		return {
-			ok: true,
-			message: 'orgs found successfully',
-			data,
-		};
-	}
-
 	async deleteOrg(id: string) {
-		await this.prismaService.organization.delete({
-			where: {
-				id,
-			},
+		await OrgMemberModel.delete({
+			fk_organization_id: id,
+		});
+
+		// TODO - Delete Events in the org
+
+		await OrgModel.delete({
+			id,
 		});
 		return {
 			ok: true,
@@ -209,28 +164,19 @@ export class OrganizationService {
 		}
 	}
 
-	async getOrgRole(orgId: string, user: string) {
-		try {
-			return await this.prismaService.organizationMember.findUnique({
-				where: {
-					userUid_organizationId: {
-						userUid: user,
-						organizationId: orgId,
-					},
-				},
-				select: {
-					role: true,
-				},
-			});
-		} catch {}
-	}
-
 	async getOrgById(orgId: string) {
 		return await OrgModel.findById(orgId);
 	}
 
 	async UpdateOrg(id: string, payload: Data) {
 		try {
+			if (payload.slug) {
+				const takenSlugs = await this.findOrgBySlug(payload.slug);
+				if (Array.isArray(takenSlugs) && takenSlugs.length) {
+					throw new ServiceUnavailableException();
+				}
+			}
+
 			await OrgModel.update(
 				{
 					id,
@@ -246,6 +192,12 @@ export class OrganizationService {
 				message: 'Org was updated successfully',
 			};
 		} catch (e) {
+			if (e instanceof ServiceUnavailableException) {
+				throw new ServiceUnavailableException({
+					message: 'Slug already taken',
+				});
+			}
+
 			if (e instanceof NotFoundException) {
 				throw new NotFoundException();
 			}

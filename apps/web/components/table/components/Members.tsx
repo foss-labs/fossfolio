@@ -81,8 +81,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
 
   const updateRole = async (role: Role, member: string) => {
     try {
-      await apiHandler.patch("/org/member/role", {
-        organizationId: router.query?.id,
+      await apiHandler.patch(`/org/${router.query?.id}/member/role`, {
         role: role,
         memberId: member,
       });
@@ -97,11 +96,13 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
 
   const sendEmailInvite: SubmitHandler<Invite> = async (data) => {
     try {
-      const { data: response } = await apiHandler.post("/org/invite", {
-        email: data.email,
-        organizationId: router.query?.id,
-        role: data.role,
-      });
+      const { data: response } = await apiHandler.post(
+        `/org/${router.query?.id}/invite`,
+        {
+          email: data.email,
+          role: data.role,
+        }
+      );
 
       //In DEV setup we dont send email so instead  a modal open with the invite link
 
@@ -113,7 +114,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
       toast.success("Email was sent");
       form.reset();
     } catch {
-      toast.error("Couldnt send email please try again later");
+      toast.error("couldn't send email please try again later");
     }
   };
 

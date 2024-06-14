@@ -35,6 +35,7 @@ import { OrganizationController } from '../controllers/organization.controller';
 import { PrismaService } from '../services/prisma.service';
 import { UserController } from '../controllers/user.controller';
 import { envSchema } from '@api/utils/envSchema';
+import { CloudController } from '@api/controllers/cloud.controller';
 
 const AuthProviders = [
 	AuthService,
@@ -121,6 +122,7 @@ const GlobalModules = [
 		FormController,
 		KanbanController,
 		UserController,
+		CloudController,
 	],
 	providers: [
 		{
