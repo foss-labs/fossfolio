@@ -8,14 +8,17 @@ import {
 interface Prop {
   text: string;
   size?: number;
+  className?: string;
 }
 
-export const Truncate = ({ text, size = 10 }: Prop) => {
+export const Truncate = ({ text, size = 10, className }: Prop) => {
   if (text.length > size) {
     return (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>{text.substring(0, size - 1)}...</TooltipTrigger>
+          <TooltipTrigger className={className}>
+            {text.substring(0, size - 1)}...
+          </TooltipTrigger>
           <TooltipContent>
             <p>{text}</p>
           </TooltipContent>
@@ -23,6 +26,6 @@ export const Truncate = ({ text, size = 10 }: Prop) => {
       </TooltipProvider>
     );
   } else {
-    return <p>{text}</p>;
+    return <p className={className}>{text}</p>;
   }
 };

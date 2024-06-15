@@ -20,6 +20,17 @@
   color: blue;
 }
 
+#nprogress .bar {
+  background: #ff00d09a !important;
+  padding: 0 10px !important;
+  height: 2px !important;
+}
+
+#nprogress .spinner .spinner-icon {
+  border-top-color: #ff00d09a !important;
+  border-left-color: #ff00d09a !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

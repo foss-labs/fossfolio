@@ -41,10 +41,10 @@ type IModal = {
 const Schema = yup.object().shape({
   name: yup.string().required().min(3),
   website: yup.string().url().required(),
-  lastDate: yup.date().required(),
   cover_image: yup.mixed().required(),
   event_date: yup.date().required(),
   location: yup.string().required(),
+  description: yup.string(),
 });
 
 type ISchema = yup.InferType<typeof Schema>;
@@ -59,6 +59,7 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
       website: "",
       name: "",
       location: "",
+      description: "",
     },
   });
 
@@ -89,10 +90,7 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
     */
   const onUserSubMit: SubmitHandler<ISchema> = async (val) => {
     try {
-      if (
-        isBefore(val.event_date, new Date()) ||
-        isBefore(val.lastDate, new Date())
-      ) {
+      if (isBefore(val.event_date, new Date())) {
         toast.message("Date mismatch", {
           description: "Event date should be after todays date",
         });
@@ -102,9 +100,10 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
       const { id } = router.query;
       const payload = {
         ...val,
+        description: "",
       };
       // create new event
-      await apiHandler.post(`/${id}/events`, payload);
+      await apiHandler.post(`/events/${id}/create`, payload);
 
       onClose();
     } catch {

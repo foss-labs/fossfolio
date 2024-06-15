@@ -40,7 +40,7 @@ export class EventsService {
 
 		let slug: string;
 
-		if (isEventWithSlugExist) {
+		if (isEventWithSlugExist.length) {
 			const totalEventCount = await EventModel.count({
 				slug: newEvent.name,
 			});
@@ -58,6 +58,7 @@ export class EventsService {
 			slug,
 			event_date: newEvent.event_date,
 			description: newEvent.description ?? '',
+			cover_image: newEvent.cover_image,
 		});
 
 		// Creating an Event will create a default Form

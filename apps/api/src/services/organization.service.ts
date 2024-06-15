@@ -10,6 +10,7 @@ import { ORG_NOT_FOUND } from '../error';
 import type { CreateOrgDto } from './dto/create-org.dto';
 import { EventModel, OrgMemberModel, OrgModel } from '@api/models';
 import { FFError } from '@api/utils/error';
+import { hyphenate } from '@api/utils/hyphenate';
 
 @Injectable()
 export class OrganizationService {
@@ -17,7 +18,9 @@ export class OrganizationService {
 
 	async create(createOrgDto: CreateOrgDto, uid: string) {
 		try {
-			const { name, slug } = createOrgDto;
+			let { name, slug } = createOrgDto;
+
+			slug = hyphenate(slug);
 
 			const newOrg = await OrgModel.insert({
 				name,
@@ -39,17 +42,15 @@ export class OrganizationService {
 			}
 
 			throw new InternalServerErrorException({
-				error,
+				message: error,
 			});
 		}
 	}
 
 	async findOrgBySlug(slug: string) {
-		const org = await OrgModel.find({
-			slug,
-		});
+		const org = await OrgModel.checkIfOrgWithSlugExist(slug);
 
-		if (org) return org;
+		if (org.length) return org;
 		return ORG_NOT_FOUND;
 	}
 

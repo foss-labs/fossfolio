@@ -1,35 +1,57 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { Editor } from "novel";
 import { toast } from "sonner";
 import { DashboardLayout } from "@app/layout";
-import { apiHandler } from "@app/config";
+import { apiHandler, ENV } from "@app/config";
 import { useEvent } from "@app/hooks/api/Events";
 import { Loader } from "@app/components/preloaders";
-import { useRoles } from "@app/hooks";
+import { useMediaQuery, useRoles } from "@app/hooks";
+import { Input } from "@app/ui/components/input";
+import * as yup from "yup";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@app/ui/components/form";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Truncate } from "@app/components/ui/Truncate";
 
-const defaultEditorContent = {
-  type: "doc",
-  content: [
-    {
-      type: "heading",
-      attrs: { level: 2 },
-      content: [{ type: "text", text: "Add Your Event Info Here" }],
-    },
-  ],
-};
+const Schema = yup.object({
+  name: yup.string().required("Event name is required"),
+  slug: yup.string().required("Event slug is required"),
+  tagLine: yup.string().required("Tagline is required"),
+});
+
+type EventSchema = yup.InferType<typeof Schema>;
 
 const Event = () => {
   const { data, isLoading } = useEvent("event");
   const router = useRouter();
+  const isPhoneScreen = useMediaQuery("(max-width: 767px)");
   const { id, pk } = router.query;
 
-  const { canEditEvent } = useRoles();
+  const form = useForm<EventSchema>({
+    mode: "onChange",
+    resolver: yupResolver(Schema),
+    defaultValues: {
+      slug: data?.slug,
+      name: data?.name,
+    },
+  });
 
   useEffect(() => {
-    // remove description when ever component unmounts
-    return () => localStorage.removeItem("novel__content");
-  }, []);
+    if (data) {
+      form.setValue("name", data?.name);
+      form.setValue("slug", data?.slug);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
+  const { canEditEvent } = useRoles();
 
   const handleSaveShortcut = async (event: KeyboardEvent) => {
     if (!canEditEvent) {
@@ -78,20 +100,57 @@ const Event = () => {
   }
 
   return (
-    <div className="p-4">
-      <Editor
-        className="w-full"
-        defaultValue={
-          JSON.parse(data?.data.description as string) ||
-          defaultEditorContent ||
-          ""
-        }
-        editorProps={{
-          editable: () => canEditEvent,
-        }}
-        completionApi={`/api/generate`}
-        onDebouncedUpdate={handleUpdate}
-      />
+    <div className="max-w-md p-10 h-screen">
+      <Form {...form}>
+        <form className="px-1 h-full" onSubmit={() => {}}>
+          <div className="flex flex-col gap-3 h-full">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Event Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tagLine"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>TagLine</FormLabel>
+                  <FormControl>
+                    <Input placeholder="TagLine" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Event Slug" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Truncate
+              className="text-xs font-normal text-start"
+              text={`${ENV.web_base_url}/events/${form.watch("slug")}`}
+              size={isPhoneScreen ? 30 : 50}
+            />
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

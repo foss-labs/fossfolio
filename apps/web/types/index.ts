@@ -54,22 +54,16 @@ export type Role = "admin" | "editor" | "viewer";
 export interface OrgEvents {
   id: string;
   name: string;
+  slug: string;
+  fk_organization_id: string;
+  description: string | null;
+  cover_image: string;
   website: string;
   location: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isPublished: boolean;
-  description: string | null;
-  lastDate: Date;
-  eventDate: Date;
-  maxTicketCount?: number;
-  minTicketCount?: number;
-  isCollegeEvent?: boolean;
-  coverImage?: string;
-  isFormPublished: boolean;
-  form: Iform[];
-  slug: string;
-  ticketPrice: number;
+  is_published: boolean;
+  created_at: Date;
+  updated_at: Date;
+  event_date: Date;
 }
 
 export type Iform = {

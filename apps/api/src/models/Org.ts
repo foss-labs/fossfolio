@@ -5,6 +5,7 @@ import { Logger } from '@nestjs/common';
 import { SystemTable } from '@api/utils/db';
 import { FFError } from '@api/utils/error';
 import { Knex } from 'knex';
+import { hyphenate } from '@api/utils/hyphenate';
 
 export class OrgModel extends BaseModel<SystemTable.Org, Organization>(
 	SystemTable.Org,
@@ -56,6 +57,23 @@ export class OrgModel extends BaseModel<SystemTable.Org, Organization>(
 			return orgs;
 		} catch (error) {
 			FFError.databaseError(`${SystemTable.OrgMember}: Query Failed : `, error);
+		}
+	}
+
+	// need to check for orgs which are is_deleted - false
+	// Otherwise the unique key constraint will fail on insertion
+	public static async checkIfOrgWithSlugExist(slug: string, trx?: Knex) {
+		try {
+			slug = hyphenate(slug);
+			const qb = trx ?? BaseContext.knex;
+
+			const orgs = await qb
+				.select('*')
+				.from(SystemTable.Org)
+				.where('slug', slug);
+			return orgs;
+		} catch (error) {
+			FFError.databaseError(`${SystemTable.Org}: Query Failed : `, error);
 		}
 	}
 }

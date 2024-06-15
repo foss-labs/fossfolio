@@ -1,5 +1,4 @@
 import { BiLink, BiLocationPlus } from "react-icons/bi";
-import { BsCalendarDate } from "react-icons/bs";
 import { Button } from "@app/ui/components/button";
 import {
   Card,
@@ -16,12 +15,11 @@ import Image from "next/image";
 type DescriptionExcluded = Omit<
   OrgEvents,
   | "description"
-  | "createdAt"
-  | "isPublished"
+  | "created_at"
+  | "is_published"
   | "updatedAt"
-  | "isFormPublished"
-  | "form"
-  | "ticketPrice"
+  | "fk_organization_id"
+  | "updated_at"
 >;
 
 interface Prop extends DescriptionExcluded {
@@ -34,10 +32,9 @@ export const EventCard = ({
   description,
   website,
   location,
-  lastDate,
   isOrg = false,
   slug,
-  coverImage,
+  cover_image,
 }: Prop) => {
   const router = useRouter();
 
@@ -60,9 +57,9 @@ export const EventCard = ({
       </CardHeader>
       <CardContent>
         <div className="flex text-sm text-muted-foreground flex-wrap gap-3 w-full">
-          {coverImage && (
+          {cover_image && (
             <Image
-              src={coverImage}
+              src={cover_image}
               width={500}
               height={300}
               alt="event banner"
@@ -72,13 +69,6 @@ export const EventCard = ({
             <BiLocationPlus className="mr-1 h-3.5 w-3.5 fill-sky-400 text-sky-400" />
             {location}
           </div>
-
-          {lastDate && (
-            <div className="flex items-center">
-              <BsCalendarDate className="mr-1 h-3 w-3" />
-              Last date: {format(new Date(lastDate), "dd/MM/yyyy")}
-            </div>
-          )}
         </div>
         {!isOrg ? (
           <Button
