@@ -9,7 +9,7 @@ import {
   TabsTrigger,
 } from "@app/ui/components/tabs";
 import { Events, InviteModal, OrgSettings } from "@app/views/org";
-import { useRoles, useToggle } from "@app/hooks";
+import { useToggle } from "@app/hooks";
 import { useRouter } from "next/router";
 import { TabName, Tabs as ITabs } from "@app/types";
 

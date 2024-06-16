@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from "next";
 import { HomeLayout } from "@app/layout";
-import { EventCard, PreLoader, NoData } from "@app/components/events";
+import { EventCard, PreLoader } from "@app/components/events";
 import { useAllEvents } from "@app/hooks/api/Events";
 import { Error } from "@app/components/Error";
 import { Input } from "@app/ui/components/input";
@@ -46,9 +46,8 @@ const Events: NextPageWithLayout = () => {
                   key={el.id}
                   location={el.location}
                   website={el.website}
-                  lastDate={el.lastDate}
-                  eventDate={el.eventDate}
-                  coverImage={el.coverImage}
+                  event_date={el.event_date}
+                  cover_image={el.cover_image}
                   slug={el.slug}
                 />
               ))}

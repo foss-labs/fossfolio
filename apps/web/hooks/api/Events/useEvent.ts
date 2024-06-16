@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { apiHandler } from "@app/config";
-import type { OrgEvents, ServerResponse } from "@app/types";
+import type { OrgEvents } from "@app/types";
 
 /*
   This hook can be used in both event page in dashboard and event page user facing page 
@@ -46,7 +46,7 @@ export const useEvent = (type: Fetch = "event") => {
     queryKey: eventQueryKey,
     queryFn: () => getEvent(Id, type),
     // query is disabled until the query param is available
-    enabled: !!router.isReady,
+    enabled: !!Id,
   });
 
   return events;

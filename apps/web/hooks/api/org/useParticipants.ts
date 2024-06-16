@@ -17,7 +17,7 @@ type IDataForm = {
 };
 
 const getEventParticipants = async (id: string, orgId: string) => {
-  const { data } = await apiHandler.get(`/events/participants/${orgId}/${id}`);
+  const { data } = await apiHandler.get(`/${orgId}/events/${id}/participants`);
   return data;
 };
 

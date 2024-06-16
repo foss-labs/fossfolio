@@ -18,8 +18,10 @@ import type { CreateOrgDto } from '../services/dto/create-org.dto';
 import type { DeleteOrgDto } from '../services/dto/delete-org.dto';
 import type { UpdateOrgDto } from '../services/dto/update-org.dto';
 import type { User } from '@api/db/schema';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('org')
+@ApiTags('Org')
 export class OrganizationController {
 	constructor(private readonly organizationService: OrganizationService) {}
 

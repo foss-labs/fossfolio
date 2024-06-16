@@ -9,19 +9,18 @@ import type { UpdateMemberRole } from '../services/dto/update-role.dto';
 import type { RemoveMember } from '../services/dto/member-remove.dto';
 
 @Controller('org/:orgId/member')
+@ApiTags('Org- Members')
 export class OrgMemberController {
 	constructor(private readonly orgMemberService: OrganizationMemberService) {}
 
 	@Get('/')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
-	@ApiTags('org-members')
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	async getMembers(@Param('orgId') orgID: string) {
 		return await this.orgMemberService.getMembers(orgID);
 	}
 
 	@Patch('/remove')
-	@ApiTags('org-members')
 	@ApiOperation({ summary: 'Remove members from organization' })
 	@ApiResponse({
 		status: 200,
@@ -34,7 +33,6 @@ export class OrgMemberController {
 	}
 
 	@Patch('/role')
-	@ApiTags('org-members')
 	@ApiOperation({ summary: 'Update member role in org' })
 	@ApiResponse({ status: 200, description: 'User role will be updated' })
 	@Roles(Role.ADMIN)

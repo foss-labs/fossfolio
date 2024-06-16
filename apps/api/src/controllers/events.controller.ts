@@ -15,7 +15,6 @@ import { AuthUser } from '../services/auth/decorators/user.decorator';
 import { RbacGuard } from '../services/guards/rbac-member.guard';
 import {
 	CreateEventDto,
-	DashBoardEventParamsSchema,
 	PublicEventParamsSchema,
 	UpdateEventSchema,
 	UpdateEventDto,
@@ -27,8 +26,10 @@ import { CreateEventSchema } from '@api/dto/events.dto';
 import { Role } from '@api/utils/db';
 import { User } from '@api/db/schema';
 import { z } from 'zod';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('/events')
+@ApiTags('Events')
 export class EventsController {
 	constructor(private readonly events: EventsService) {}
 

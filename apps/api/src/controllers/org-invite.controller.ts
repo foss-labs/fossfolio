@@ -15,8 +15,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { Role } from '@api/utils/db';
 import { User } from '@api/db/schema/user';
 import type { OrgInvite } from '../services/dto/user-invite.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('org/:orgId/invite')
+@ApiTags('Org - Invite')
 export class OrgInviteController {
 	constructor(private readonly service: OrganizationInviteService) {}
 

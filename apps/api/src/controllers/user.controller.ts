@@ -6,8 +6,10 @@ import { UserService } from '../services/user.service';
 import { User } from '@api/db/schema';
 import type { UpdateUserDto } from '../services/dto/update-user.dto';
 import { OrgModel } from '@api/models';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('user')
+@ApiTags('Users')
 export class UserController {
 	constructor(
 		private readonly organizationService: OrganizationService,

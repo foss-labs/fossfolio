@@ -15,11 +15,11 @@ import { RbacGuard } from '@api/services/guards/rbac-member.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/cloud')
+@ApiTags('AWS - Cloud')
 export class CloudController {
 	constructor(private readonly s3Service: S3Service) {}
 
 	@Post('/upload')
-	@ApiTags('events')
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	@UseInterceptors(FileInterceptor('file'))
 	@ApiOperation({ summary: 'Upload image for event cover page' })

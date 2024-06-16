@@ -9,7 +9,6 @@ export class ZodValidationPipe implements PipeTransform {
 	) {}
 
 	transform(value: unknown, metadata: ArgumentMetadata) {
-		console.log(value, metadata);
 		if (metadata.type !== this.type) {
 			return value;
 		}

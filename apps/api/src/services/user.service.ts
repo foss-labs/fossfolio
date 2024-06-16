@@ -1,15 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import type { Profile } from 'passport';
-import { USER_UPDATE_ERROR } from '../error';
+import {
+	Injectable,
+	NotFoundException,
+	InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import type { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@api/db/schema';
 import { fakerEN } from '@faker-js/faker';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ConfigService } from '@nestjs/config';
 import { UserModel } from '@api/models/User';
 import { AccountModel } from '@api/models';
-
+import type { Profile } from 'passport';
+import type { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UserService {
 	constructor(
@@ -20,11 +22,10 @@ export class UserService {
 
 	async findUserBySlug(slug: string) {
 		try {
-			const user = await this.prismaService.user.findUnique({
-				where: {
-					slug,
-				},
+			const user = await UserModel.findOne({
+				slug,
 			});
+
 			return user;
 		} catch (e) {
 			return null;
@@ -83,28 +84,30 @@ export class UserService {
 
 	async updateUser(authUser: User, updateUserDto: UpdateUserDto) {
 		try {
-			const user = await this.prismaService.user.update({
-				where: {
-					uid: authUser.id,
+			const data = {
+				slug: updateUserDto.slug ? updateUserDto.slug : authUser.slug,
+				photo_url: updateUserDto.photoUrl
+					? updateUserDto.photoUrl
+					: authUser.photo_url,
+				display_name: updateUserDto.displayName
+					? updateUserDto.displayName
+					: authUser.display_name,
+				is_student: Object.hasOwn(updateUserDto, 'isCollegeStudent')
+					? updateUserDto.isCollegeStudent
+					: authUser.is_student,
+				college_name: updateUserDto.collegeName || authUser.college_name,
+			};
+
+			const user = await UserModel.update(
+				{
+					id: authUser.id,
 				},
-				data: {
-					slug: updateUserDto.slug ? updateUserDto.slug : authUser.slug,
-					photoURL: updateUserDto.photoUrl
-						? updateUserDto.photoUrl
-						: authUser.photo_url,
-					displayName: updateUserDto.displayName
-						? updateUserDto.displayName
-						: authUser.display_name,
-					isStudent: Object.hasOwn(updateUserDto, 'isCollegeStudent')
-						? updateUserDto.isCollegeStudent
-						: authUser.is_student,
-					collegeName: updateUserDto.collegeName || authUser.college_name,
-				},
-			});
+				data,
+			);
 
 			return user;
 		} catch (error) {
-			return USER_UPDATE_ERROR;
+			throw new InternalServerErrorException(error);
 		}
 	}
 
