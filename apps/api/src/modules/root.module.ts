@@ -31,10 +31,13 @@ import { OrgInviteController } from '../controllers/org-invite.controller';
 import { OrgMemberController } from '../controllers/org-member.controller';
 import { OrganizationMemberService } from '../services/org-member.service';
 import { OrganizationService } from '../services/organization.service';
+import { OrgEventsService } from '@api/services/org-events.service';
 import { OrganizationController } from '../controllers/organization.controller';
 import { PrismaService } from '../services/prisma.service';
 import { UserController } from '../controllers/user.controller';
+import { OrgEventsController } from '@api/controllers/org-events.controller';
 import { envSchema } from '@api/utils/envSchema';
+import { CloudController } from '@api/controllers/cloud.controller';
 
 const AuthProviders = [
 	AuthService,
@@ -114,13 +117,15 @@ const GlobalModules = [
 	controllers: [
 		AuthController,
 		AiController,
+		OrganizationController,
+		OrgMemberController,
+		OrgInviteController,
+		OrgEventsController,
 		EventsController,
 		FormController,
 		KanbanController,
-		OrgInviteController,
-		OrgMemberController,
-		OrganizationController,
 		UserController,
+		CloudController,
 	],
 	providers: [
 		{
@@ -130,13 +135,14 @@ const GlobalModules = [
 		...AuthProviders,
 		AiService,
 		S3Service,
+		OrganizationService,
+		OrganizationInviteService,
+		OrganizationMemberService,
+		OrgEventsService,
 		EventsService,
 		FormService,
 		KanbanService,
 		MailService,
-		OrganizationInviteService,
-		OrganizationMemberService,
-		OrganizationService,
 		PrismaService,
 		UserService,
 	],

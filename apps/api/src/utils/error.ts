@@ -72,9 +72,7 @@ export class FFError {
 	}
 }
 
-const extractDBError = (error: {
-	code: string;
-}) => {
+const extractDBError = (error: { code: string }) => {
 	switch (error.code) {
 		case '23505':
 			return 'Unique constraint violation';

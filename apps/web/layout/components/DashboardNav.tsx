@@ -57,16 +57,15 @@ export const DashNav = () => {
     }
   };
 
-  const toggleEventPublish = async () => {
-    if (data?.data.isPublished) {
-      await unPublishEvent();
-    } else {
-      await publishEvent();
-    }
-    refetch();
-  };
+  // const toggleEventPublish = async () => {
+  //   if (data?.data.isPublished) {
+  //     await unPublishEvent();
+  //   } else {
+  //     await publishEvent();
+  //   }
+  //   refetch();
+  // };
 
-  const isPaidEvent = data && data?.data.ticketPrice > 0 ? true : false;
   return (
     <div className="flex fixed w-full p-3 justify-between bg-brand-pink-100 ">
       <div className="flex">
@@ -79,8 +78,6 @@ export const DashNav = () => {
         <Tabs defaultValue="Event" className="w-[400px]">
           <TabsList>
             {ROUTES.map(({ name }) => {
-              if ((name === "Revenue" && !isPaidEvent) || name === "Tasks")
-                return;
               return (
                 <button
                   key={name}
@@ -117,13 +114,9 @@ export const DashNav = () => {
         <Button
           disabled={isEventLoading || isLoading}
           isLoading={isLoading}
-          onClick={toggleEventPublish}
+          // onClick={toggleEventPublish}
         >
-          {data?.data.isPublished ? (
-            <span className="text-white">UnPublish Event</span>
-          ) : (
-            <span className="text-white">Publish Event</span>
-          )}
+          <span className="text-white">Publish Event</span>
         </Button>
       )}
     </div>

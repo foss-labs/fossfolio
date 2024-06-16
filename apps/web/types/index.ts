@@ -21,63 +21,49 @@ export interface User {
 }
 
 export type Member = {
-  user: {
-    id: string;
-    email: string;
-    displayName: string;
-    slug: string;
-  };
-  role: Roles;
+  id: string;
+  fk_user_id: string;
+  role: Role;
+  created_at: Date;
+  updated_at: Date;
+  photo_url: string;
+  email: string;
+  display_name: string;
 };
 
-type Organization = {
+export type Organization = {
   id: string;
   name: string;
   slug: string;
-  createdAt: Date;
-  updatedAt: Date;
-  _count: {
-    members: number;
-    events: number;
-  };
+  org_created_at: Date;
+  org_updated_at: Date;
+  total_members: number;
+  total_events: number;
+  role: Roles;
+  is_verified: boolean;
 };
 
-export interface IOrg {
-  ok: boolean;
-  message: string;
-  data: {
-    organization: Organization;
-    role: Roles;
-  }[];
-}
-
 export enum Roles {
-  Admin = "ADMIN",
-  Editor = "EDITOR",
-  Viewer = "VIEWER",
+  ADMIN = "admin",
+  EDITOR = "editor",
+  VIEWER = "viewer",
 }
 
-export type Role = "ADMIN" | "EDITOR" | "VIEWER";
+export type Role = "admin" | "editor" | "viewer";
 
 export interface OrgEvents {
   id: string;
   name: string;
+  slug: string;
+  fk_organization_id: string;
+  description: string | null;
+  cover_image: string;
   website: string;
   location: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isPublished: boolean;
-  description: string | null;
-  lastDate: Date;
-  eventDate: Date;
-  maxTicketCount?: number;
-  minTicketCount?: number;
-  isCollegeEvent?: boolean;
-  coverImage?: string;
-  isFormPublished: boolean;
-  form: Iform[];
-  slug: string;
-  ticketPrice: number;
+  is_published: boolean;
+  created_at: Date;
+  updated_at: Date;
+  event_date: Date;
 }
 
 export type Iform = {
@@ -125,3 +111,11 @@ export interface Comments {
   data: string;
   user: UserInKanban;
 }
+
+export const TabName = [
+  { value: "events", title: "All Events" },
+  { value: "teams", title: "Members" },
+  { value: "settings", title: "Settings" },
+] as const;
+
+export type Tabs = (typeof TabName)[number]["value"];

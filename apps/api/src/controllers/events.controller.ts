@@ -15,32 +15,35 @@ import { AuthUser } from '../services/auth/decorators/user.decorator';
 import { RbacGuard } from '../services/guards/rbac-member.guard';
 import {
 	CreateEventDto,
-	CreateEventParamsSchema,
-	EventParamsSchema,
+	PublicEventParamsSchema,
 	UpdateEventSchema,
 	UpdateEventDto,
+	EventParamsSchema,
 } from '../dto/events.dto';
 import { Roles } from '../services/decorator/roles.decorator';
 import { ZodValidator } from '@api/validation/zod.validation.decorator';
 import { CreateEventSchema } from '@api/dto/events.dto';
 import { Role } from '@api/utils/db';
 import { User } from '@api/db/schema';
+import { z } from 'zod';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller()
+@Controller('/events')
+@ApiTags('Events')
 export class EventsController {
 	constructor(private readonly events: EventsService) {}
 
-	@Get('/events')
+	@Get('/')
 	async getAllEvents(@Query('search') query: string) {
 		return await this.events.getAllEvents(query);
 	}
 
-	@Post('/:orgId/events')
+	@Post('/:orgId/create')
 	@Roles(Role.ADMIN, Role.EDITOR)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	@ZodValidator({
 		body: CreateEventSchema,
-		params: CreateEventParamsSchema,
+		params: z.string(),
 	})
 	async createEvent(
 		@Body() createEventData: CreateEventDto,
@@ -54,15 +57,19 @@ export class EventsController {
 		});
 	}
 
-	@Get('/:orgId/events/:eventId')
-	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
+	@Get('/:slug')
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	@ZodValidator({ params: EventParamsSchema })
-	async getEventByID(@Param('eventId') id: string) {
+	@ZodValidator({ params: PublicEventParamsSchema })
+	async getEventBySlug(@Param('slug') slug: string) {
+		return await this.events.getEventBySlug(slug);
+	}
+
+	@Get('/org/:eventId')
+	async getEventById(@Param('eventId') id: string) {
 		return await this.events.getEventById(id);
 	}
 
-	@Patch('/:orgId/events/:eventId')
+	@Patch('/:orgId/:eventId')
 	@Roles(Role.ADMIN, Role.EDITOR)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	@ZodValidator({
@@ -83,7 +90,7 @@ export class EventsController {
 		});
 	}
 
-	@Delete('/:orgId/events/:eventId')
+	@Delete('/:orgId/:eventId')
 	@Roles(Role.ADMIN)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	@ZodValidator({

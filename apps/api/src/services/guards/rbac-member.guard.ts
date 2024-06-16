@@ -9,6 +9,8 @@ import { NO_ROLE_ACCESS } from '../../error';
 import { FFError } from '@api/utils/error';
 import { OrgMemberModel } from '@api/models';
 import { User } from '@api/db/schema';
+import { Request } from 'express';
+import { Role } from '@api/utils/db';
 
 @Injectable()
 export class RbacGuard implements CanActivate {
@@ -20,7 +22,7 @@ export class RbacGuard implements CanActivate {
 			return true;
 		}
 
-		const request = context.switchToHttp().getRequest();
+		const request: IncomingRequest = context.switchToHttp().getRequest();
 		const user = request.user as User | undefined;
 		const organizationId = request.params.orgId;
 
@@ -40,4 +42,8 @@ export class RbacGuard implements CanActivate {
 
 		return roles.includes(organizationMember.role);
 	}
+}
+
+interface IncomingRequest extends Request {
+	role: Role;
 }

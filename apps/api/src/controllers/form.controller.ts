@@ -27,6 +27,7 @@ import { User } from '@api/db/schema';
 import type { ToggleFormPublishStatus } from '../services/dto/publish-form.dto';
 
 @Controller('/events')
+@ApiTags('Events- Form')
 export class FormController {
 	constructor(
 		private form: FormService,
@@ -34,7 +35,6 @@ export class FormController {
 	) {}
 
 	@Get('/form/:orgID/:eventId/:formId')
-	@ApiTags('events')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@ApiOperation({ summary: 'get form schema of a specific event' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -46,7 +46,6 @@ export class FormController {
 	}
 
 	@Post('/form/:eventId')
-	@ApiTags('events')
 	@ApiOperation({ summary: 'users register form via this route' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	async postFormResponse(
@@ -73,7 +72,6 @@ export class FormController {
 	}
 
 	@Post('/publish/form/:id')
-	@ApiTags('events')
 	@ApiOperation({
 		summary:
 			'publish event , by doing this we lets public to register for event',
@@ -91,7 +89,6 @@ export class FormController {
 	}
 
 	@Post('/form/:formId')
-	@ApiTags('events')
 	@Roles(Role.ADMIN, Role.EDITOR)
 	@ApiOperation({ summary: 'Create form for each event' })
 	@ZodValidator({
@@ -106,7 +103,6 @@ export class FormController {
 	}
 
 	@Get('/participants/:orgID/:id/:userId/form')
-	@ApiTags('events')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@ApiOperation({ summary: 'Get all the form submission from participant' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -118,7 +114,6 @@ export class FormController {
 	}
 
 	@Delete('/form/bulk-delete/:slug')
-	@ApiTags('events')
 	@Roles(Role.ADMIN, Role.EDITOR)
 	@ApiOperation({ summary: 'Bulk delete form for each event' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)

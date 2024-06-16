@@ -1,8 +1,8 @@
 import { PrismaService } from './prisma.service';
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
-import type { Role } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ConfigService } from '@nestjs/config';
+import { OrgInviteModel, OrgModel, UserModel } from '@api/models';
 import BaseContext from '@api/BaseContext';
 
 @Injectable()
@@ -13,85 +13,57 @@ export class OrganizationInviteService {
 		private readonly configService: ConfigService,
 	) {}
 
-	async inviteToOrg(
-		email: string,
-		inviterid: string,
-		orgId: string,
-		role: Role,
-	) {
+	async inviteToOrg({ email, userId, role, orgId }) {
 		try {
 			// if there is already invite
-			const isAlreadySent =
-				await this.prismaService.organizationInvite.findUnique({
-					where: {
-						inviteeEmail_organizationId: {
-							inviteeEmail: email,
-							organizationId: orgId,
-						},
-					},
-					select: {
-						id: true,
-					},
-				});
+			const isAlreadySent = await OrgInviteModel.findOne({
+				invitee_email: email,
+				fk_organization_id: orgId,
+			}).then((el) => el?.id);
+
 			// if user already exist in db
 			// delete the already existing invite
 			if (isAlreadySent) {
-				await this.prismaService.organizationInvite.delete({
-					where: {
-						inviteeEmail_organizationId: {
-							organizationId: orgId,
-							inviteeEmail: email,
-						},
-					},
+				await OrgInviteModel.delete({
+					fk_organization_id: orgId,
+					invitee_email: email,
 				});
 			}
-
+			let inviteUrl;
 			// transaction
-			const inviteUrl = await this.prismaService.$transaction(async (db) => {
-				const data = await db.organization.update({
-					where: {
-						id: orgId,
+			await BaseContext.knex.transaction(async (tx) => {
+				const inviteId = await OrgInviteModel.insert(
+					{
+						invitee_email: email,
+						inviter_uid: userId,
+						role: role,
+						fk_organization_id: orgId,
 					},
-					data: {
-						invites: {
-							create: {
-								inviteeEmail: email,
-								inviterUid: inviterid,
-								inviteeRole: role,
-							},
-						},
-					},
-					include: {
-						invites: true,
-					},
+					tx,
+				).then((el) => el.id);
+
+				const org = await OrgModel.findOne({
+					id: orgId,
 				});
-				// the guy who send invite
-				const inviter = await db.user.findUnique({
-					where: {
-						uid: inviterid,
-					},
+
+				const senderInfo = await UserModel.findOne({
+					id: userId,
 				});
-				const inviteId = data.invites.find(
-					(el) => el.inviteeEmail === email,
-				).id;
+
 				//  finding the id of new invite
 				const localPort =
 					this.configService.get('CLIENT_URL') || 'http://localhost:3000';
-				const inviteURL = `${localPort}/verify?id=${inviteId}`;
+				inviteUrl = `${localPort}/verify?id=${inviteId}`;
 
-				// we dont want to send invite on local
-				// @sreehari2003 Removing this for presentation
-				// if (process.env.NODE_ENV === 'production') {
-				await this.eventEmitter.emit('org.invite', {
-					to: email,
-					inviteUrl: inviteURL,
-					from: inviter.displayName,
-					orgName: data.name,
-					fromEmail: inviter.email,
-				});
-				// }
-
-				return inviteURL;
+				if (process.env.NODE_ENV === 'production') {
+					await this.eventEmitter.emit('org.invite', {
+						to: email,
+						inviteUrl: inviteUrl,
+						from: senderInfo?.display_name,
+						orgName: org?.name,
+						fromEmail: senderInfo?.email,
+					});
+				}
 			});
 
 			return {

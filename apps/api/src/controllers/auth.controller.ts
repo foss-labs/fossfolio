@@ -8,8 +8,10 @@ import { Response as EResponse, Request as ERequest } from 'express';
 import { AuthUser } from '@api/services/auth/decorators/user.decorator';
 import { User } from '@api/db/schema';
 import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
 	constructor(
 		private readonly authService: AuthService,

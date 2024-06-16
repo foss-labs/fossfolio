@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { NextPageWithLayout } from "next";
-import { isBefore } from "date-fns";
+import { isBefore, isAfter } from "date-fns";
 import { HomeLayout } from "@app/layout";
 import { Button } from "@app/components/ui/Button";
 import { TicketCard } from "@app/views/tickets";
@@ -12,13 +12,23 @@ const Ticket: NextPageWithLayout = () => {
   const { isLoading, data } = useTickets();
 
   const oldTickets = useMemo(() => {
-    const d = data?.data?.filter((el) => {
+    const filteredOldTickets = data?.data?.filter((el) => {
       if (isBefore(new Date(), el.eventDate)) {
         return el;
       }
     });
 
-    return d;
+    return filteredOldTickets;
+  }, [data]);
+
+  const upcomingTickets = useMemo(() => {
+    const filteredUpcomingTicket = data?.data?.filter((el) => {
+      if (isAfter(new Date(), el.eventDate)) {
+        return el;
+      }
+    });
+
+    return filteredUpcomingTicket;
   }, [data]);
 
   return (
@@ -48,7 +58,7 @@ const Ticket: NextPageWithLayout = () => {
         ) : (
           <div>
             {activeTab === "upcoming" && (
-              <TicketCard data={data?.data} type="Upcoming" />
+              <TicketCard data={upcomingTickets} type="Upcoming" />
             )}
             {activeTab === "archived" && (
               <TicketCard data={oldTickets} type="Archived" />

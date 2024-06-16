@@ -1,272 +1,238 @@
-import { Role, SystemTable } from "@api/utils/db";
+import { Role } from '@api/utils/db';
 import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from "@nestjs/common";
-import { PrismaService } from "./prisma.service";
-import { ORG_EXISTS, ORG_NOT_FOUND } from "../error";
-import type { CreateOrgDto } from "./dto/create-org.dto";
-import type { UpdateOrgDto } from "./dto/update-org.dto";
-import { OrgMemberModel, OrgModel } from "@api/models";
-import BaseContext from "@api/BaseContext";
+	Injectable,
+	InternalServerErrorException,
+	NotFoundException,
+	ServiceUnavailableException,
+} from '@nestjs/common';
+import { PrismaService } from './prisma.service';
+import { ORG_NOT_FOUND } from '../error';
+import type { CreateOrgDto } from './dto/create-org.dto';
+import { EventModel, OrgMemberModel, OrgModel } from '@api/models';
+import { FFError } from '@api/utils/error';
+import { hyphenate } from '@api/utils/hyphenate';
 
 @Injectable()
 export class OrganizationService {
-  constructor(private readonly prismaService: PrismaService) {}
+	constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createOrgDto: CreateOrgDto, uid: string) {
-    try {
-      const { name, slug } = createOrgDto;
+	async create(createOrgDto: CreateOrgDto, uid: string) {
+		try {
+			let { name, slug } = createOrgDto;
 
-      const newOrg = await OrgModel.insert({
-        name,
-        slug,
-      });
+			slug = hyphenate(slug);
 
-      await OrgMemberModel.insert({
-        fk_organization_id: newOrg.id,
-        fk_user_id: uid,
-        role: Role.ADMIN,
-      });
+			const newOrg = await OrgModel.insert({
+				name,
+				slug,
+			});
 
-      return await OrgModel.getOrgWithMemberInfo(newOrg.id);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException();
-      }
+			await OrgMemberModel.insert({
+				fk_organization_id: newOrg.id,
+				fk_user_id: uid,
+				role: Role.ADMIN,
+			});
 
-      throw new InternalServerErrorException({
-        error,
-      });
-    }
-  }
+			return await OrgModel.findOne({
+				id: newOrg.id,
+			});
+		} catch (error) {
+			if (error instanceof NotFoundException) {
+				throw new NotFoundException();
+			}
 
-  async findOrgBySlug(slug: string) {
-    const org = await this.prismaService.organization.findUnique({
-      where: {
-        slug,
-      },
-    });
+			throw new InternalServerErrorException({
+				message: error,
+			});
+		}
+	}
 
-    if (org) return org;
-    return ORG_NOT_FOUND;
-  }
+	async findOrgBySlug(slug: string) {
+		const org = await OrgModel.checkIfOrgWithSlugExist(slug);
 
-  async update(updateOrgDto: UpdateOrgDto) {
-    const { organizationId, name } = updateOrgDto;
+		if (org.length) return org;
+		return ORG_NOT_FOUND;
+	}
 
-    const org = await this.prismaService.organization.findUnique({
-      where: {
-        id: organizationId,
-      },
-    });
+	async deleteOrg(id: string) {
+		await OrgMemberModel.delete({
+			fk_organization_id: id,
+		});
 
-    if (!org) return ORG_NOT_FOUND;
+		// TODO - Delete Events in the org
 
-    const updatedOrg = await this.prismaService.organization.update({
-      where: {
-        id: organizationId,
-      },
-      data: {
-        name,
-      },
-    });
+		await OrgModel.delete({
+			id,
+		});
+		return {
+			ok: true,
+			message: 'org was deleted successfully',
+		};
+	}
 
-    return updatedOrg;
-  }
+	async leaveOrg(orgId: string, userId: string) {
+		try {
+			const OrgMemberCount = await OrgMemberModel.count({
+				fk_organization_id: orgId,
+			});
+			// If the person is the last person to leave the org we should delete the org completely
+			if (OrgMemberCount === 1) {
+				await OrgMemberModel.delete({
+					fk_organization_id: orgId,
+					fk_user_id: userId,
+				});
 
-  async findOrgsByUser(uid: string) {
-    const data = await this.prismaService.organizationMember.findMany({
-      where: {
-        userUid: uid,
-      },
-      select: {
-        organization: {
-          include: {
-            _count: {
-              select: {
-                members: true,
-                events: true,
-              },
-            },
-          },
-        },
-        role: true,
-      },
-    });
+				await OrgModel.delete({
+					id: orgId,
+				});
+			} else {
+				const userRole = await OrgMemberModel.findOne({
+					fk_organization_id: orgId,
+					fk_user_id: userId,
+				}).then((el) => el?.role);
 
-    return {
-      ok: true,
-      message: "orgs found successfully",
-      data,
-    };
-  }
+				if (userRole !== Role.ADMIN) {
+					await OrgMemberModel.delete({
+						fk_organization_id: orgId,
+						fk_user_id: userId,
+					});
+				} else {
+					// If there is multiple admins just make user leave the org
+					const totalNumberOfAdmins = await OrgMemberModel.count({
+						fk_organization_id: orgId,
+						role: Role.ADMIN,
+					});
 
-  async deleteOrg(id: string) {
-    await this.prismaService.organization.delete({
-      where: {
-        id,
-      },
-    });
-    return {
-      ok: true,
-      message: "org was deleted successfully",
-    };
-  }
+					if (totalNumberOfAdmins > 1) {
+						await OrgMemberModel.delete({
+							fk_organization_id: orgId,
+							fk_user_id: userId,
+						});
+					} else {
+						// if there is only one admin and he is the one leaving the org we should transfer
+						// the org to the first person who joined the org
+						const member =
+							await OrgMemberModel.getMemberWhoWasFirstAdded(orgId);
 
-  /*  
-  
-  *  if there is only one admin and he is the one leaving the org we should tranfer the org to the first 
-     person who joined the org
+						await OrgMemberModel.update(
+							{
+								fk_organization_id: orgId,
+								fk_user_id: member,
+							},
+							{
+								role: Role.ADMIN,
+							},
+						);
 
-  *  if the person is the last person to leave the org we should delete the org completly
- 
-  *  if there is multiple admins just make user leave the org
-   
-  */
+						await OrgMemberModel.delete({
+							fk_organization_id: orgId,
+							fk_user_id: userId,
+						});
+					}
+				}
+			}
 
-  async leaveOrg(orgId: string, userId: string) {
-    try {
-      await this.prismaService.organizationMember.delete({
-        where: {
-          userUid_organizationId: {
-            userUid: userId,
-            organizationId: orgId,
-          },
-        },
-      });
-      return {
-        ok: true,
-        message: "successfully left the organization",
-      };
-    } catch {
-      return {
-        ok: false,
-        message: "Unable to leave the org please try again later",
-      };
-    }
-  }
+			return {
+				ok: true,
+				message: 'successfully left the organization',
+			};
+		} catch {
+			return {
+				ok: false,
+				message: 'Unable to leave the org please try again later',
+			};
+		}
+	}
 
-  async getAllEvents(id: string, role: Role) {
-    try {
-      const event = await this.prismaService.events.findMany({
-        where: {
-          organizationId: id,
-        },
-      });
+	async getAllEvents(userId: string, orgId: string) {
+		try {
+			const event = await EventModel.find({
+				fk_organization_id: orgId,
+			});
 
-      return {
-        event,
-        role,
-      };
-    } catch (e) {
-      return {
-        ok: false,
-        message: "could not find the events",
-        ERROR: e,
-      };
-    }
-  }
+			const role = await OrgMemberModel.getMemberRole(userId, orgId);
 
-  async getOrgRole(orgId: string, user: string) {
-    try {
-      return await this.prismaService.organizationMember.findUnique({
-        where: {
-          userUid_organizationId: {
-            userUid: user,
-            organizationId: orgId,
-          },
-        },
-        select: {
-          role: true,
-        },
-      });
-    } catch {}
-  }
+			return {
+				event,
+				role,
+			};
+		} catch (e) {
+			return {
+				ok: false,
+				message: 'could not find the events',
+				ERROR: e,
+			};
+		}
+	}
 
-  async getOrgById(orgId: string) {
-    try {
-      const data = await this.prismaService.organization.findUnique({
-        where: {
-          id: orgId,
-        },
-      });
+	async getOrgById(orgId: string) {
+		return await OrgModel.findById(orgId);
+	}
 
-      if (!data) {
-        throw new NotFoundException();
-      }
+	async UpdateOrg(id: string, payload: Data) {
+		try {
+			if (payload.slug) {
+				const takenSlugs = await this.findOrgBySlug(payload.slug);
+				if (Array.isArray(takenSlugs) && takenSlugs.length) {
+					throw new ServiceUnavailableException();
+				}
+			}
 
-      return {
-        ok: true,
-        message: "org found successfully",
-        data,
-      };
-    } catch (e) {
-      if (e instanceof NotFoundException) {
-        throw new NotFoundException({
-          ok: false,
-          message: e.message || "error loading organization",
-        });
-      }
-    }
-  }
+			await OrgModel.update(
+				{
+					id,
+				},
+				{
+					slug: payload.slug,
+					name: payload.name,
+				},
+			);
 
-  async UpdateOrg(id: string, payload: Data) {
-    try {
-      const data = await this.prismaService.organization.update({
-        where: {
-          id,
-        },
-        data: {
-          name: payload.name,
-          slug: payload.slug,
-        },
-      });
+			return {
+				ok: true,
+				message: 'Org was updated successfully',
+			};
+		} catch (e) {
+			if (e instanceof ServiceUnavailableException) {
+				throw new ServiceUnavailableException({
+					message: 'Slug already taken',
+				});
+			}
 
-      if (!data) {
-        throw new NotFoundException();
-      }
-      return {
-        ok: true,
-        message: "Org was updated successfully",
-        data,
-      };
-    } catch (e) {
-      if (e instanceof NotFoundException) {
-        throw new NotFoundException();
-      }
-    }
-  }
+			if (e instanceof NotFoundException) {
+				throw new NotFoundException();
+			}
+		}
+	}
 
-  async getEventsByorg(key: string) {
-    try {
-      const data = await this.prismaService.organization.findUnique({
-        where: {
-          slug: key,
-        },
-        select: {
-          events: {
-            where: {
-              isPublished: true,
-            },
-          },
-          name: true,
-        },
-      });
-      if (!data) throw new NotFoundException();
-      return {
-        ok: true,
-        message: "Events found successfully",
-        data,
-      };
-    } catch {
-      throw new NotFoundException();
-    }
-  }
+	async getEventsByorg(key: string) {
+		try {
+			const data = await this.prismaService.organization.findUnique({
+				where: {
+					slug: key,
+				},
+				select: {
+					events: {
+						where: {
+							isPublished: true,
+						},
+					},
+					name: true,
+				},
+			});
+			if (!data) throw new NotFoundException();
+			return {
+				ok: true,
+				message: 'Events found successfully',
+				data,
+			};
+		} catch {
+			throw new NotFoundException();
+		}
+	}
 }
 
 type Data = {
-  slug: string;
-  name: string;
+	slug: string;
+	name: string;
 };

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Event management software",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

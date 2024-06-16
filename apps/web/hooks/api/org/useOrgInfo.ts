@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import { apiHandler } from "@app/config";
 
 type IData = {
-  ok: boolean;
-  message: string;
-  data: {
-    name: string;
-    id: string;
-    slug: string;
-  };
+  id: string;
+  slug: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  is_verified: boolean;
+  is_deleted: boolean;
 };
 
 const getOrg = async (id: string) => {

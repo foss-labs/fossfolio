@@ -1,5 +1,6 @@
 import { useAuth } from "@app/hooks";
 import { Roles } from "@app/types";
+import { pluralize } from "@app/utils";
 import { useRouter } from "next/router";
 import { BsChevronRight } from "react-icons/bs";
 import { IoIosList, IoMdPeople } from "react-icons/io";
@@ -33,11 +34,11 @@ export const OrgCard = ({ name, id, role, members, events }: Prop) => {
       <div className="flex justify-between">
         <span className="flex items-center gap-2">
           <IoIosList />
-          {events} Events
+          {pluralize("Event", events, true)}
         </span>
         <span className="flex items-center gap-2">
           <IoMdPeople />
-          {members} Members
+          {pluralize("Member", members, true)}
         </span>
       </div>
     </div>

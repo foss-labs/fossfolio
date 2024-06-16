@@ -12,7 +12,7 @@ export const DeleteOrg = () => {
         <div className="space-y-2">
           <p className="mb-1">Delete this Organization</p>
           <p className="text-sm text-muted-foreground">
-            Deleting the organisation will delete its all members and all the
+            Deleting the organization will delete its all members and all the
             events associated with the organization
           </p>
           <div className="flex justify-end">

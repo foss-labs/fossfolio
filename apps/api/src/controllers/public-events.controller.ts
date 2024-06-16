@@ -8,6 +8,7 @@ import { RbacGuard } from '../services/guards/rbac-member.guard';
 import type { RegisterEventDto } from '../services/dto/register-event.dto';
 
 @Controller()
+@ApiTags('Events - Public View')
 export class PublicEventsController {
 	constructor(private readonly events: EventsService) {}
 

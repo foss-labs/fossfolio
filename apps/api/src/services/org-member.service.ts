@@ -2,30 +2,21 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ORG_MEMBER_NOT_FOUND, ROLE_UPDATE_FAILED } from '../error';
 import { PrismaService } from './prisma.service';
 import { Role } from '@api/utils/db';
+import { FFError } from '@api/utils/error';
+import { OrgMemberModel } from '@api/models';
 
 @Injectable()
 export class OrganizationMemberService {
 	constructor(private readonly prismaService: PrismaService) {}
 
 	async getMembers(organizationId: string) {
-		const members = await this.prismaService.organizationMember.findMany({
-			where: {
-				organizationId,
-			},
-			select: {
-				user: {
-					select: {
-						uid: true,
-						email: true,
-						displayName: true,
-						slug: true,
-					},
-				},
-				role: true,
-			},
-		});
-
-		return members;
+		try {
+			const data = await OrgMemberModel.getOrgMembersWithInfo(organizationId);
+			if (!data) throw new NotFoundException();
+			return data;
+		} catch (e) {
+			FFError.notFound(e);
+		}
 	}
 
 	async findMember(organizationId: string, userUid: string) {

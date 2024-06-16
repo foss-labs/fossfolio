@@ -1,8 +1,4 @@
-import {
-	PipeTransform,
-	ArgumentMetadata,
-	BadRequestException,
-} from '@nestjs/common';
+import { PipeTransform, ArgumentMetadata } from '@nestjs/common';
 import { ZodSchema } from 'zod';
 import { FFError } from '@api/utils/error';
 
@@ -21,7 +17,7 @@ export class ZodValidationPipe implements PipeTransform {
 			const parsedValue = this.schema.parse(value);
 			return parsedValue;
 		} catch (error: unknown) {
-			FFError.badRequest('Invalid request body');
+			FFError.badRequest(`Invalid request ${this.type}:${error}`);
 		}
 	}
 }

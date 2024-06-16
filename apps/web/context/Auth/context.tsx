@@ -94,7 +94,7 @@ export const AuthGuard = ({ children }: Child): JSX.Element => {
       (async () => {
         try {
           const { data } = await apiHandler.get<IOrgEvents>(
-            `/org/events/${router.query.id}`
+            `/org/${router.query.id}/events`
           );
           ctx.setRole(data.role);
         } catch {

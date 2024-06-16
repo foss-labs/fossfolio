@@ -19,17 +19,17 @@ export const LeaveModal = ({ isOpen, onClose }: IModal) => {
 
   const handleLeaveClick = async () => {
     try {
-      const { data } = await apiHandler.delete("/org/leave", {
-        data: { organizationId: router.query?.id },
-      });
+      const { data } = await apiHandler.delete(
+        `/org/${router.query?.id}/leave`
+      );
       if (!data.ok) {
         throw new Error();
       }
       onClose();
-      toast.success("successfully left the organisation");
+      toast.success("successfully left the organization");
       router.push("/org");
     } catch {
-      toast.error("error leaving the organisation");
+      toast.error("error leaving the organization");
     }
   };
 
@@ -39,7 +39,7 @@ export const LeaveModal = ({ isOpen, onClose }: IModal) => {
         <DialogHeader>
           Leave Organization
           <DialogDescription className="mt-3">
-            Are you sure You want to leave the organisation?
+            Are you sure You want to leave the organization?
             <div className="flex justify-end space-x-2 mt-5">
               <Button
                 className="text-[black] bg-[#F9F5FF] hover:bg-emerald-50 border-[1.4px]"

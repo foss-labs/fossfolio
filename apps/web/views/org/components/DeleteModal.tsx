@@ -19,9 +19,9 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
 
   const handleDeleteClick = async () => {
     try {
-      const { data } = await apiHandler.delete("/org/delete", {
-        data: { organizationId: router.query?.id },
-      });
+      const { data } = await apiHandler.delete(
+        `/org/${router.query?.id}/delete`
+      );
       if (!data.ok) {
         throw new Error();
       }
@@ -39,7 +39,7 @@ export const DeleteModal = ({ isOpen, onClose }: IModal) => {
         <DialogHeader>
           Delete Org
           <DialogDescription className="mt-3">
-            Are you sure You want to delete the organisation ? You can&apos;t
+            Are you sure You want to delete the organization ? You can&apos;t
             undo this action afterwards.
             <div className="flex justify-end space-x-2 mt-5">
               <Button

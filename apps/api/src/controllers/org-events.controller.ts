@@ -24,10 +24,7 @@ export class OrgEventsController {
 	@Get('/:orgId/events/:eventId/participants')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	@ZodValidator({
-		params: EventParamsSchema,
-	})
-	async getRegisterdParticipants(
+	async getRegisteredParticipants(
 		@Param('orgId') orgId: string,
 		@Param('id') eventId: string,
 	) {
