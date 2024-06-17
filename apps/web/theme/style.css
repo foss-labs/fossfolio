@@ -105,3 +105,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+.ProseMirror {
+  outline: none;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: scroll;
+}

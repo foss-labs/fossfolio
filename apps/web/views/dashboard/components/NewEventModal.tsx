@@ -76,6 +76,7 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
             },
           });
           form.setValue("cover_image", data.file);
+          toast.success("Image Uploaded Successfully");
         } catch {
           toast.error("Failed to upload image");
         }
