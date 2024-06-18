@@ -81,7 +81,7 @@ export const ProfileModal = ({ isOpen, onClose }: IModal) => {
       });
       toast.success("profile was updated successfully");
     } catch {
-      toast.error("couldnt update the profile");
+      toast.error("couldn't update the profile");
     } finally {
       onClose();
     }

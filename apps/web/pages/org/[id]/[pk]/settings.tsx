@@ -8,7 +8,6 @@ import {
   FormControl,
   FormMessage,
 } from "@app/ui/components/form";
-import { Input } from "@app/ui/components/input";
 import { cn } from "@app/ui/lib/utils";
 import { DeleteEvent, IProfile } from "@app/views/dashboard";
 import {
@@ -41,7 +40,7 @@ const Settings = () => {
   const deleteEvent = async () => {
     try {
       setDelete.on();
-      await apiHandler.delete(`/events/delete/${data?.data.id}`, {
+      await apiHandler.delete(`/events/delete/${data?.id}`, {
         data: { organizationId: id },
       });
       toast.success("Event was deleted successfully");
@@ -62,21 +61,16 @@ const Settings = () => {
 
   const form = useForm<IProfile>({
     defaultValues: {
-      eventDate: data?.data?.eventDate
-        ? new Date(data?.data?.eventDate)
-        : new Date(),
+      eventDate: data?.event_date ? new Date(data?.event_date) : new Date(),
       lastDate: data?.data?.lastDate
         ? new Date(data?.data?.lastDate)
         : new Date(),
-      maxTicketCount: data?.data.maxTicketCount,
     },
   });
 
   useEffect(() => {
     form.reset({
-      eventDate: data?.data?.eventDate
-        ? new Date(data?.data?.eventDate)
-        : undefined,
+      eventDate: data?.event_date ? new Date(data?.event_date) : undefined,
       lastDate: data?.data?.lastDate
         ? new Date(data?.data?.lastDate)
         : undefined,
@@ -86,7 +80,7 @@ const Settings = () => {
 
   const handleUpdates = () => {};
 
-  if (!data?.data.isPublished) {
+  if (!data?.is_published) {
     return (
       <div className="flex flex-col justify-center w-full h-screen items-center">
         <div className="h-[70vh]">
@@ -128,26 +122,6 @@ const Settings = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleUpdates)}>
               <div className="grid gap-4 py-4">
-                <FormField
-                  control={form.control}
-                  name="maxTicketCount"
-                  render={({ field }) => (
-                    <FormItem className="items-center ">
-                      <FormLabel>Total Tickets left</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={!canEditEvent}
-                          min={1}
-                          placeholder="0"
-                          {...field}
-                          type="number"
-                          defaultValue={data?.data.maxTicketCount}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <FormField
                   control={form.control}
                   name="lastDate"
@@ -227,11 +201,11 @@ const Settings = () => {
                   )}
                 />
 
-                {data?.data.coverImage && (
+                {data?.cover_image && (
                   <>
                     <h4 className="text-lg">Cover Image</h4>
                     <Image
-                      src={data.data.coverImage}
+                      src={data.cover_image}
                       width={400}
                       height={400}
                       alt="cover image"

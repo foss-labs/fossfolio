@@ -21,13 +21,13 @@ const Dashboard: NextPageWithLayout = () => {
     return (
       <div className="p-4 ">
         <h2 className="font-semibold text-2xl p-4">
-          All Registred Particpants
+          All Registered Participants
         </h2>
         <Participants
           data={data?.data}
-          doesEventHaveForm={eventData?.data.isFormPublished ? true : false}
+          doesEventHaveForm={eventData?.is_published ? true : false}
           refetch={refetch}
-          id={eventData?.data.id as string}
+          id={eventData?.id as string}
         />
       </div>
     );
