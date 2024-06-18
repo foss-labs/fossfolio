@@ -4,17 +4,17 @@ import { Participants } from "@app/views/dashboard";
 import { useEventParticipants } from "@app/hooks/api/org";
 import { useEvent } from "@app/hooks/api/Events";
 import { Loader } from "@app/components/preloaders";
-import { Error } from "@app/components/Error";
+import { TicketLottie } from "@app/views/dashboard";
 
 const Dashboard: NextPageWithLayout = () => {
   const { isLoading, data, refetch, error } = useEventParticipants();
   const { data: eventData } = useEvent("event");
-  if (isLoading) {
-    return <Loader />;
-  }
 
   if (error) {
-    <Error />;
+    return <TicketLottie />;
+  }
+  if (isLoading) {
+    return <Loader />;
   }
 
   if (data) {

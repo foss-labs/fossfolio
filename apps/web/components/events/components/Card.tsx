@@ -58,12 +58,14 @@ export const EventCard = ({
       <CardContent>
         <div className="flex text-sm text-muted-foreground flex-wrap gap-3 w-full">
           {cover_image && (
-            <Image
-              src={cover_image}
-              width={500}
-              height={300}
-              alt="event banner"
-            />
+            <div className="image-container w-10 h-10">
+              <Image
+                src={cover_image}
+                alt="event banner"
+                fill={true}
+                objectFit="contain"
+              />
+            </div>
           )}
           <div className="flex items-center">
             <BiLocationPlus className="mr-1 h-3.5 w-3.5 fill-sky-400 text-sky-400" />

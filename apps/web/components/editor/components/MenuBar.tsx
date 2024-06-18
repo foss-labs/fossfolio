@@ -1,6 +1,15 @@
 import { Editor } from "@tiptap/react";
-import clsx from "clsx";
 import React from "react";
+import { cn } from "@app/ui/lib/utils";
+import {
+  LuHeading1,
+  LuHeading2,
+  LuHeading3,
+  LuHeading4,
+  LuBold,
+  LuItalic,
+  LuStrikethrough,
+} from "react-icons/lu";
 import { Separator } from "@app/ui/components/separator";
 
 interface Props {
@@ -12,75 +21,92 @@ export const MenuBar = ({ editor }: Props) => {
     return null;
   }
 
+  const activeStyle = "bg-black text-white";
+
   return (
     <div>
       <div className="flex flex-wrap gap-2 px-5 py-2">
         <button
-          onClick={() => editor.chain().focus().run()}
-          disabled={!editor.can().chain().focus().run()}
-          className={clsx(
-            editor.isActive("bold") && "is-active",
+          type="button"
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          disabled={!editor.can().chain().focus().toggleBold().run()}
+          className={cn(
+            editor.isActive("bold") && activeStyle,
             "border rounded-sm px-2 hover:bg-gray-300 delay-100"
           )}
         >
-          Bold
+          <LuBold />
         </button>
         <button
-          onClick={() => editor.chain().focus().run()}
-          disabled={!editor.can().chain().focus().run()}
-          className={clsx(
-            editor.isActive("italic") && "is-active",
+          type="button"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          disabled={!editor.can().chain().focus().toggleItalic().run()}
+          className={cn(
+            editor.isActive("italic") && activeStyle,
             "border rounded-sm px-2 hover:bg-gray-300 delay-100"
           )}
         >
-          Italic
+          <LuItalic />
         </button>
         <button
-          onClick={() => editor.chain().run()}
-          disabled={!editor.can().chain().focus().run()}
-          className={clsx(
-            editor.isActive("strike") && "is-active",
+          type="button"
+          onClick={() => editor.chain().toggleStrike().run()}
+          disabled={!editor.can().chain().focus().toggleStrike().run()}
+          className={cn(
+            editor.isActive("strike") && activeStyle,
             "border rounded-sm px-2 hover:bg-gray-300 delay-100"
           )}
         >
-          Strike
+          <LuStrikethrough />
         </button>
 
         <button
-          onClick={() => editor.chain().focus().run()}
-          className={clsx(
-            editor.isActive("heading", { level: 1 }) && "is-active",
+          type="button"
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+          className={cn(
+            editor.isActive("heading", { level: 1 }) && activeStyle,
             "border rounded-sm px-2 hover:bg-gray-300 delay-100"
           )}
         >
-          H1
+          <LuHeading1 />
         </button>
         <button
-          onClick={() => editor.chain().focus().run()}
-          className={clsx(
-            editor.isActive("heading", { level: 2 }) && "is-active",
+          type="button"
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          className={cn(
+            editor.isActive("heading", { level: 2 }) && activeStyle,
             "border rounded-sm px-2 hover:bg-gray-300 delay-100"
           )}
         >
-          H2
+          <LuHeading2 />
         </button>
         <button
-          onClick={() => editor.chain().focus().run()}
-          className={clsx(
-            editor.isActive("heading", { level: 3 }) && "is-active",
+          type="button"
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+          className={cn(
+            editor.isActive("heading", { level: 3 }) && activeStyle,
             "border rounded-sm px-2 hover:bg-gray-300 delay-100"
           )}
         >
-          H3
+          <LuHeading3 />
         </button>
         <button
-          onClick={() => editor.chain().focus().run()}
-          className={clsx(
-            editor.isActive("heading", { level: 4 }) && "is-active",
+          type="button"
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 4 }).run()
+          }
+          className={cn(
+            editor.isActive("heading", { level: 4 }) && activeStyle,
             "border rounded-sm px-2 hover:bg-gray-300 delay-100"
           )}
         >
-          H4
+          <LuHeading4 />
         </button>
       </div>
       <Separator className="bg-gray-700" />

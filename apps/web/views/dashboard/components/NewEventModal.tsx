@@ -64,24 +64,28 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
   });
 
   useEffect(() => {
-    (async () => {
-      const image = form.watch("cover_image") as File;
-      if (typeof image === "object") {
-        const formData = new FormData();
-        formData.append("file", image);
-        try {
-          const { data } = await apiHandler.post(`/cloud/upload`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          form.setValue("cover_image", data.file);
-          toast.success("Image Uploaded Successfully");
-        } catch {
-          toast.error("Failed to upload image");
-        }
-      }
-    })();
+    const image = form.watch("cover_image") as File;
+    if (typeof image === "object") {
+      const formData = new FormData();
+      formData.append("file", image);
+
+      const uploadPromise = async () => {
+        const { data } = await apiHandler.post(`/cloud/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        form.setValue("cover_image", data.file);
+        return data;
+      };
+
+      toast.promise(uploadPromise(), {
+        loading: "Uploading image...",
+        success: (data) => `Image uploaded successfully`,
+        error: "Failed to upload image",
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.watch("cover_image")]);
 

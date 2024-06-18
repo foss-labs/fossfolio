@@ -6,3 +6,4 @@ export type { IProfile } from "./components/PublishModal";
 export { ComingSoon } from "./components/ComingSoon";
 export { DeleteEvent } from "./components/DeleteEvent";
 export { FormBuilderHeader } from "./components/FormBuilderHeader";
+export { TicketLottie } from "./components/TicketLottie";
