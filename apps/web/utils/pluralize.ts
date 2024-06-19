@@ -3,6 +3,7 @@ export const pluralize = (
   count: number,
   shouldCombine = false
 ) => {
+  console.log(word, count);
   if (count <= 1) {
     if (shouldCombine) {
       return `${count} ${word}`;
@@ -17,4 +18,6 @@ export const pluralize = (
       return `${word}s`;
     }
   }
+
+  return `${count} ${word}`;
 };

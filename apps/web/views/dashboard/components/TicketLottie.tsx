@@ -1,5 +1,4 @@
 import { useLottie } from "lottie-react";
-
 import Ticket from "@app/public/lottie/ticketsLottie.json";
 import { Button } from "@app/components/ui/Button";
 
@@ -16,7 +15,7 @@ export const TicketLottie = () => {
   const { View } = useLottie(defaultOptions);
   return (
     <>
-      <div className="h-[90vh] w-full flex justify-center items-center">
+      <div className="h-[90vh] w-full flex flex-col md:flex-row justify-center items-center">
         {typeof window !== undefined && <>{View}</>}
         <div className="flex flex-col max-w-sm gap-2">
           <h1 className="font-bold text-2xl text-center">
