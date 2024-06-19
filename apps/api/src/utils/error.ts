@@ -4,6 +4,7 @@ import {
 	InternalServerErrorException,
 	NotFoundException,
 	UnauthorizedException,
+	Logger,
 } from '@nestjs/common';
 
 class RootError extends Error {
@@ -30,10 +31,14 @@ export class ExternalError extends Error implements RootError {}
 export class UploadAttachmentError extends RootError {}
 
 export class DatabaseError extends RootError {
+	private readonly logger = new Logger(DatabaseError.name);
 	constructor(message: string, error: unknown) {
 		super(message);
 		this.message =
 			message + extractDBError(error as unknown as { code: string });
+
+		// Log the error message
+		this.logger.error(error);
 	}
 }
 

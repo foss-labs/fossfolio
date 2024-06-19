@@ -4,30 +4,30 @@ import { Participants } from "@app/views/dashboard";
 import { useEventParticipants } from "@app/hooks/api/org";
 import { useEvent } from "@app/hooks/api/Events";
 import { Loader } from "@app/components/preloaders";
-import { Error } from "@app/components/Error";
+import { TicketLottie } from "@app/views/dashboard";
 
 const Dashboard: NextPageWithLayout = () => {
   const { isLoading, data, refetch, error } = useEventParticipants();
   const { data: eventData } = useEvent("event");
-  if (isLoading) {
-    return <Loader />;
-  }
 
   if (error) {
-    <Error />;
+    return <TicketLottie />;
+  }
+  if (isLoading) {
+    return <Loader />;
   }
 
   if (data) {
     return (
       <div className="p-4 ">
         <h2 className="font-semibold text-2xl p-4">
-          All Registred Particpants
+          All Registered Participants
         </h2>
         <Participants
           data={data?.data}
-          doesEventHaveForm={eventData?.data.isFormPublished ? true : false}
+          doesEventHaveForm={eventData?.is_published ? true : false}
           refetch={refetch}
-          id={eventData?.data.id as string}
+          id={eventData?.id as string}
         />
       </div>
     );

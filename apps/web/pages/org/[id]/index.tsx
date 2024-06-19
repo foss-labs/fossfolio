@@ -21,6 +21,15 @@ const Org: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (router.isReady) {
+      const { tab } = router.query;
+      if (tab && (tab === "events" || tab === "teams" || tab === "settings")) {
+        setTab(tab as ITabs);
+      }
+    }
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (router.isReady) {
       router.replace({
         query: {
           ...router.query,

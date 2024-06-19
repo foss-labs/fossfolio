@@ -1,24 +1,24 @@
 import { NextPageWithLayout } from "next";
-import { GoOrganization } from "react-icons/go";
 import { HomeLayout } from "@app/layout";
-import { Button } from "@app/components/ui/Button";
 import { Separator } from "@app/ui/components/separator";
-import { OrgCard, NewOrgDialog } from "@app/views/org";
-import { useAuth, useToggle } from "@app/hooks";
+import { Button } from "@app/components/ui/Button";
 import { useOrgs } from "@app/hooks/api/org";
 import { OrgLoader } from "@app/components/preloaders";
+import { OrgCard, NewOrgDialog } from "@app/views/org";
+import { useAuth, useToggle } from "@app/hooks";
 import { pluralize } from "@app/utils";
+import { GoOrganization } from "react-icons/go";
 
 const Index: NextPageWithLayout = () => {
   const [isOpen, setOpen] = useToggle(false);
   const { data, isLoading } = useOrgs();
   const { user } = useAuth();
   return (
-    <div className="p-[20px]">
+    <div className="p-5">
       <Separator className="mb-5" />
       <NewOrgDialog isOpen={isOpen} onClose={setOpen.off} />
       <div className="flex items-center gap-y-2 flex-wrap justify-between">
-        <h4 className="text-xl font-semibold md:text-[40px]">
+        <h4 className="text-xl font-semibold md:text-10">
           {user?.display_name.split(" ")[0]}&apos;s{" "}
           {pluralize("organization", data?.length || 0)}
         </h4>

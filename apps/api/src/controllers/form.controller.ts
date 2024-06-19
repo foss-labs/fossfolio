@@ -27,14 +27,25 @@ import { User } from '@api/db/schema';
 import type { ToggleFormPublishStatus } from '../services/dto/publish-form.dto';
 
 @Controller('/events')
-@ApiTags('Events- Form')
+@ApiTags('Events-Form')
 export class FormController {
 	constructor(
 		private form: FormService,
 		private events: EventsService,
 	) {}
 
-	@Get('/form/:orgID/:eventId/:formId')
+	@Get('/form/:orgId/:eventId')
+	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
+	@ApiOperation({ summary: 'get all form of a specific event' })
+	@UseGuards(AuthGuard('jwt'), RbacGuard)
+	async getAllForms(
+		@Param('eventId') eventId: string,
+		@Param('formId') formId: string,
+	) {
+		return await this.form.getAllForm(eventId);
+	}
+
+	@Get('/form/:orgId/:eventId/:formId')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@ApiOperation({ summary: 'get form schema of a specific event' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
@@ -102,7 +113,7 @@ export class FormController {
 		return await this.form.createForm(payload, formId);
 	}
 
-	@Get('/participants/:orgID/:id/:userId/form')
+	@Get('/participants/:orgId/:id/:userId/form')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@ApiOperation({ summary: 'Get all the form submission from participant' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)

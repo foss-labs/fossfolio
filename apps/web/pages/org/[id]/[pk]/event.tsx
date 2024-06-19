@@ -7,7 +7,7 @@ import { useEvent } from "@app/hooks/api/Events";
 import { Loader } from "@app/components/preloaders";
 import { useMediaQuery, useRoles } from "@app/hooks";
 import { Input } from "@app/ui/components/input";
-import * as yup from "yup";
+import { Editor } from "@app/components/editor";
 import {
   Form,
   FormControl,
@@ -19,6 +19,7 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Truncate } from "@app/components/ui/Truncate";
+import * as yup from "yup";
 
 const Schema = yup.object({
   name: yup.string().required("Event name is required"),
@@ -100,7 +101,7 @@ const Event = () => {
   }
 
   return (
-    <div className="max-w-md p-10 h-screen">
+    <div className="max-w-md p-10 h-screen mb-20">
       <Form {...form}>
         <form className="px-1 h-full" onSubmit={() => {}}>
           <div className="flex flex-col gap-3 h-full">
@@ -130,6 +131,8 @@ const Event = () => {
                 </FormItem>
               )}
             />
+            <FormLabel>Description</FormLabel>
+            <Editor />
             <FormField
               control={form.control}
               name="slug"

@@ -9,7 +9,7 @@ import type { UpdateMemberRole } from '../services/dto/update-role.dto';
 import type { RemoveMember } from '../services/dto/member-remove.dto';
 
 @Controller('org/:orgId/member')
-@ApiTags('Org- Members')
+@ApiTags('Org-Members')
 export class OrgMemberController {
 	constructor(private readonly orgMemberService: OrganizationMemberService) {}
 

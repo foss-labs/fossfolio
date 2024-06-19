@@ -19,6 +19,10 @@ export class FormService {
 		private readonly EventService: EventsService,
 	) {}
 
+	async getAllForm(eventId: string) {
+		return await FormModel.getAllFormsWithSubmissionsCount(eventId);
+	}
+
 	async createForm(data: CreateFormFieldDto, formId: string) {
 		try {
 			const event = await EventModel.findOne({

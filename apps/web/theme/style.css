@@ -105,3 +105,29 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* For the tiptap editor */
+.ProseMirror {
+  outline: none;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+/* For the image sizing next js */
+.image-container {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+}
+
+.image-container > div {
+  position: unset !important;
+}
+
+.image-container img {
+  object-fit: contain;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+}

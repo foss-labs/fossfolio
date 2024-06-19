@@ -5,8 +5,9 @@ export interface Child {
 }
 
 interface DbProps {
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
+  id: string;
 }
 
 export interface User {
@@ -119,3 +120,16 @@ export const TabName = [
 ] as const;
 
 export type Tabs = (typeof TabName)[number]["value"];
+
+export interface AllForms extends DbProps {
+  fk_event_id: string;
+  title: string;
+  description: string;
+  logo_url: string | null;
+  banner_url: string;
+  confirmation_message: string;
+  misc: Record<string, any>;
+  is_default_form: boolean;
+  is_published: boolean;
+  total_submissions: number;
+}
