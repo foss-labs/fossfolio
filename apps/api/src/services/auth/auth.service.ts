@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { hash, verify } from 'argon2';
@@ -6,13 +6,32 @@ import type { Profile } from 'passport';
 import { User } from '@api/db/schema';
 import { AccountModel, UserModel } from '@api/models';
 import { FFError } from '@api/utils/error';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
+	oauthClient: OAuth2Client;
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService,
-	) {}
+	) {
+		this.oauthClient = new OAuth2Client();
+	}
+
+	async verifyGoogleId(id: string) {
+		try {
+			const ticket = await this.oauthClient.verifyIdToken({
+				idToken: id,
+				audience: this.configService.get('GOOGLE_CLIENT_ID'),
+			});
+			const payload = ticket.getPayload();
+			if (!payload) throw new UnauthorizedException();
+			const userid = payload['sub'];
+			return await this.generateAuthToken(userid);
+		} catch {
+			throw new UnauthorizedException();
+		}
+	}
 
 	async checkIfProviderAccountExists(OAuthUserData: Profile) {
 		const provider = await AccountModel.find({

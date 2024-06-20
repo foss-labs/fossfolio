@@ -76,8 +76,14 @@ const GlobalModules = [
 	]),
 	LoggerModule.forRoot({
 		pinoHttp: {
-			level: 'error',
+			level: 'info',
 			redact: ['req.headers', 'req.remoteAddress', 'res.headers'],
+			transport: {
+				target: 'pino-pretty',
+				options: {
+					colorize: true,
+				},
+			},
 		},
 	}),
 	MailerModule.forRootAsync({

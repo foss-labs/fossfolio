@@ -1,4 +1,11 @@
-import { Controller, Get, Response, UseGuards, Request } from '@nestjs/common';
+import {
+	Controller,
+	Get,
+	Response,
+	UseGuards,
+	Request,
+	Query,
+} from '@nestjs/common';
 import { GithubAuthGuard } from '@api/services/auth/guards/github-oauth.guard';
 import { AuthService } from '@api/services/auth/auth.service';
 import { cookieHandler } from '@api/services/auth/cookieHandler';
@@ -38,6 +45,34 @@ export class AuthController {
 	@UseGuards(GoogleAuthGuard)
 	async googleOAuth() {}
 
+	@Get('/google/callback/mobile')
+	async googleOAuthMobileCallback(
+		@AuthUser() user: User,
+		@Response() res: EResponse,
+		// Id token is for the mobile app auth
+		@Query('token') idToken: string,
+	) {
+		let authToken: {
+			accessToken: string;
+			refreshToken: string;
+		};
+		console.log('in the token', idToken);
+		if (idToken) {
+			authToken = await this.authService.verifyGoogleId(idToken);
+			res.setHeader('Authorization', `Bearer ${authToken.accessToken}`);
+			res.setHeader('Refresh-Token', authToken.refreshToken);
+			return res.status(200).json({
+				ok: true,
+				message: 'login successful',
+			});
+		} else {
+			return res.status(401).json({
+				ok: false,
+				message: 'No token provided',
+			});
+		}
+	}
+
 	@Get('/google/callback')
 	@UseGuards(GoogleAuthGuard)
 	async googleOAuthCallback(
@@ -45,6 +80,7 @@ export class AuthController {
 		@Response() res: EResponse,
 	) {
 		const authToken = await this.authService.generateAuthToken(user.id);
+
 		cookieHandler(res, authToken, true);
 	}
 
