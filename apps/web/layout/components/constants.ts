@@ -28,3 +28,18 @@ export const ROUTES = [
     icon: FiSettings,
   },
 ];
+
+export const FORM_BUILDER_ROUTES = [
+  {
+    name: "Builder",
+    icon: FiHome,
+  },
+  {
+    name: "Responses",
+    icon: FiUser,
+  },
+  {
+    name: "Analytics",
+    icon: FaWpforms,
+  },
+];

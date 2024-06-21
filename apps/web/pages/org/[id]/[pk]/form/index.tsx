@@ -17,7 +17,7 @@ const AllForms: NextPageWithLayout = () => {
   const { data, isLoading } = useAllForms();
 
   const handleEdit = (formId: string) => {
-    router.push(`/org/${id}/${pk}/form/${formId}`);
+    router.push(`/org/${id}/${pk}/form/${formId}/builder`);
   };
 
   return (
