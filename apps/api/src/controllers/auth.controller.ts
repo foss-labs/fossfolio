@@ -47,7 +47,6 @@ export class AuthController {
 
 	@Get('/google/callback/mobile')
 	async googleOAuthMobileCallback(
-		@AuthUser() user: User,
 		@Response() res: EResponse,
 		// Id token is for the mobile app auth
 		@Query('token') idToken: string,
@@ -56,7 +55,6 @@ export class AuthController {
 			accessToken: string;
 			refreshToken: string;
 		};
-		console.log('in the token', idToken);
 		if (idToken) {
 			authToken = await this.authService.verifyGoogleId(idToken);
 			res.setHeader('Authorization', `Bearer ${authToken.accessToken}`);
