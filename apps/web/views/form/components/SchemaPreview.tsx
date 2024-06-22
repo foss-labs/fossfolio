@@ -1,10 +1,7 @@
 import { Button } from "@app/components/ui/Button";
 import { MdDeleteOutline } from "react-icons/md";
 import { apiHandler } from "@app/config";
-import {
-  useFormSchema,
-  useUserRegistrationStatus,
-} from "@app/hooks/api/Events";
+import { useUserRegistrationStatus } from "@app/hooks/api/Events";
 import { Iform } from "@app/types";
 import {
   Card,
@@ -27,6 +24,7 @@ import { Textarea } from "@app/ui/components/textarea";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useFormSchema } from "@app/hooks/api/form";
 
 type Prop = {
   data: Array<Iform>;
@@ -168,7 +166,7 @@ export const SchemaPreview = ({
                     </SelectTrigger>
                     <SelectContent>
                       {el.selectOptions?.map((option) => (
-                        <SelectItem value={option.option}>
+                        <SelectItem value={option.option} key={option.option}>
                           {option.option}
                         </SelectItem>
                       ))}

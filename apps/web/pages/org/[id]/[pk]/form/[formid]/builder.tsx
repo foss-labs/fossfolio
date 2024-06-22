@@ -72,8 +72,6 @@ const Form: NextPageWithLayout = () => {
     },
   });
 
-  const [activeField, setActiveField] = useState<IFormInput | null>(null);
-
   const { fields, append, remove } = useFieldArray<FormValidator>({
     control: form.control,
     name: "selectOptions",
@@ -205,7 +203,7 @@ const Form: NextPageWithLayout = () => {
     <div className="pt-4 pr-3 grid grid-cols-[1.4fr_3.8fr_3.8fr] w-full fixed">
       <DndProvider backend={HTML5Backend}>
         <AvailableFields />
-        <BuilderPreview setActiveField={setActiveField} />
+        <BuilderPreview />
       </DndProvider>
       <BuilderConfig />
     </div>

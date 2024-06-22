@@ -79,7 +79,8 @@
     "sonner": "^0.6.2",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
-    "yup": "^1.0.2"
+    "yup": "^1.0.2",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.4.0",

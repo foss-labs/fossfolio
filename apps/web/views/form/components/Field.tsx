@@ -9,10 +9,10 @@ interface Prop {
 }
 
 export const Fields = ({ label, value }: Prop) => {
-  const ref = useRef<HTMLDivElement>(null); // Initialize the reference
+  const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "FIELD",
-    item: { id: label },
+    item: { id: value },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
