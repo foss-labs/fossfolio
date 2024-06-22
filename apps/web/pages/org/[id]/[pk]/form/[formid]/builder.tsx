@@ -49,10 +49,6 @@ const Form: NextPageWithLayout = () => {
   const { data, isLoading, refetch } = useFormSchema();
   const { data: eventInfo } = useEvent("event");
   const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
-  const [isAiForm, setAiForm] = useToggle();
-  const { canEditEvent } = useRoles();
-
-  const [savingAIForm, setSavingAIForm] = useState(false);
   const [prompt, setPrompt] = useState<string>("");
   const [isFormLoading, setFormLoading] = useState(false);
   const [tempForm, setTempForm] = useState<Iform[]>([]);
@@ -183,13 +179,11 @@ const Form: NextPageWithLayout = () => {
 
   const saveAIForm = async () => {
     try {
-      setSavingAIForm(true);
       await Promise.all(tempForm.map((schema) => updateSchema(schema)));
     } catch {
       toast.error("Error adding new schema");
     } finally {
       setTempForm([]);
-      setSavingAIForm(false);
       refetch();
       form.reset();
     }
@@ -200,7 +194,7 @@ const Form: NextPageWithLayout = () => {
   }
 
   return (
-    <div className="pt-4 pr-3 grid grid-cols-[1.4fr_3.8fr_3.8fr] w-full fixed">
+    <div className="pt-4 pr-3 grid grid-cols-[1.4fr_4.8fr_2.8fr] w-full fixed">
       <DndProvider backend={HTML5Backend}>
         <AvailableFields />
         <BuilderPreview />

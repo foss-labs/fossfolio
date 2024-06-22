@@ -1,13 +1,19 @@
 import { cn } from "@app/ui/lib/utils";
-import React, { useRef, useId } from "react";
+import { useRef, useId } from "react";
 import { useDrop } from "react-dnd";
 import { IFormInput } from "@app/views/form";
 import { RenderField } from "./RenderField";
 import { useFormState } from "@app/store/useFormState";
 
 export const BuilderPreview = () => {
-  const { label, placeHolder, isRequired, activeField, setActiveField } =
-    useFormState();
+  const {
+    label,
+    placeHolder,
+    isRequired,
+    activeField,
+    setActiveField,
+    options,
+  } = useFormState();
   const ref = useRef<HTMLDivElement>(null);
   const tempId = useId();
   const [{ isOver }, drop] = useDrop(() => ({
@@ -31,6 +37,7 @@ export const BuilderPreview = () => {
               placeholder: placeHolder,
               id: tempId,
               required: isRequired,
+              selectOptions: options.map((opt) => ({ option: opt })),
             }}
           />
         ) : (

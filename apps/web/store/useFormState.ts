@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { IFormInput } from "@app/views/form";
 
-// Define the interfaces as described above
 interface FormState {
   doesTemporaryFieldExist: boolean;
   activeField: IFormInput | null;
@@ -13,6 +12,7 @@ interface FormState {
   borderColor: string;
   borderRadius: string;
   isRequired: boolean;
+  options: string[];
 }
 
 interface FormActions {
@@ -26,11 +26,12 @@ interface FormActions {
   setBorderColor: (borderColor: string) => void;
   setBorderRadius: (borderRadius: string) => void;
   setIsRequired: (isRequired: boolean) => void;
+  setOptions: (options: string[], newOption: string) => void;
+  resetFormState: () => void;
 }
 
 type UseFormState = FormState & FormActions;
 
-// Create the Zustand store
 export const useFormState = create<UseFormState>((set) => ({
   // Initial state
   doesTemporaryFieldExist: false,
@@ -43,6 +44,7 @@ export const useFormState = create<UseFormState>((set) => ({
   borderColor: "",
   borderRadius: "",
   isRequired: false,
+  options: [],
 
   // Actions
   setDoesTemporaryFieldExist: (exists) =>
@@ -56,4 +58,19 @@ export const useFormState = create<UseFormState>((set) => ({
   setBorderColor: (borderColor) => set({ borderColor }),
   setBorderRadius: (borderRadius) => set({ borderRadius }),
   setIsRequired: (isRequired) => set({ isRequired }),
+  setOptions: (option, newOption) => set({ options: [...option, newOption] }),
+  resetFormState: () =>
+    set({
+      doesTemporaryFieldExist: false,
+      activeField: null,
+      label: "",
+      placeHolder: "",
+      defaultValue: "",
+      type: "",
+      textColor: "",
+      borderColor: "",
+      borderRadius: "",
+      isRequired: false,
+      options: [],
+    }),
 }));
