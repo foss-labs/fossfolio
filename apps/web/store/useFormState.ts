@@ -13,6 +13,8 @@ interface FormState {
   borderRadius: string;
   isRequired: boolean;
   options: string[];
+  // id will be there for fields which are already in db
+  id: string | null;
 }
 
 interface FormActions {
@@ -27,7 +29,9 @@ interface FormActions {
   setBorderRadius: (borderRadius: string) => void;
   setIsRequired: (isRequired: boolean) => void;
   setOptions: (options: string[], newOption: string) => void;
+  setId: (id: string) => void;
   resetFormState: () => void;
+  setFormState: (data: Partial<FormState>) => void;
 }
 
 type UseFormState = FormState & FormActions;
@@ -45,6 +49,7 @@ export const useFormState = create<UseFormState>((set) => ({
   borderRadius: "",
   isRequired: false,
   options: [],
+  id: null,
 
   // Actions
   setDoesTemporaryFieldExist: (exists) =>
@@ -58,6 +63,7 @@ export const useFormState = create<UseFormState>((set) => ({
   setBorderColor: (borderColor) => set({ borderColor }),
   setBorderRadius: (borderRadius) => set({ borderRadius }),
   setIsRequired: (isRequired) => set({ isRequired }),
+  setId: (id: string) => set({ id }),
   setOptions: (option, newOption) => set({ options: [...option, newOption] }),
   resetFormState: () =>
     set({
@@ -72,5 +78,22 @@ export const useFormState = create<UseFormState>((set) => ({
       borderRadius: "",
       isRequired: false,
       options: [],
+      id: null,
     }),
+  setFormState: (newState) =>
+    set((state) => ({
+      ...state,
+      doesTemporaryFieldExist: newState.doesTemporaryFieldExist,
+      activeField: newState.activeField,
+      label: newState.label,
+      placeHolder: newState.placeHolder,
+      defaultValue: newState.defaultValue,
+      type: newState.type,
+      textColor: newState.textColor,
+      borderColor: newState.borderColor,
+      borderRadius: newState.borderRadius,
+      isRequired: newState.isRequired,
+      options: newState.options,
+      id: newState.id,
+    })),
 }));

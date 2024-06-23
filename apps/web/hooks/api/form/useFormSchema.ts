@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { apiHandler } from "@app/config";
 import { IFormInput } from "@app/views/form";
 
-interface FormResponse {
+export interface FormResponse {
   id: string;
   fk_form_id: string;
   name: string;

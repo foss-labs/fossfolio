@@ -19,6 +19,8 @@ import { EventsService } from '../services/events.service';
 import {
 	CreateFormFieldDto,
 	CreateFormFieldSchema,
+	EditFormFieldDto,
+	EditFormFieldSchema,
 } from '@api/dto/form-field.dto';
 import { AuthUser } from '../services/auth/decorators/user.decorator';
 import { ZodValidator } from '@api/validation/zod.validation.decorator';
@@ -111,6 +113,32 @@ export class FormController {
 		return await this.form.createFormField(payload, formId);
 	}
 
+	@Patch('/form/:orgId/schema/:formId/:fieldId')
+	@Roles(Role.ADMIN, Role.EDITOR)
+	@ApiOperation({ summary: 'Edit specific schema field from form builder' })
+	@ZodValidator({
+		body: EditFormFieldSchema,
+	})
+	@UseGuards(AuthGuard('jwt'), RbacGuard)
+	async editFormField(
+		@Body() payload: EditFormFieldDto,
+		@Param('formId') formId: string,
+		@Param('fieldId') fieldId: string,
+	) {
+		return await this.form.editFormField(payload, formId, fieldId);
+	}
+
+	@Delete('/form/:orgId/schema/:formId/:fieldId')
+	@Roles(Role.ADMIN, Role.EDITOR)
+	@ApiOperation({ summary: 'Delete specific schema field from form builder' })
+	@UseGuards(AuthGuard('jwt'), RbacGuard)
+	async deleteFormField(
+		@Param('formId') formId: string,
+		@Param('fieldId') fieldId: string,
+	) {
+		return await this.form.deleteFormField(formId, fieldId);
+	}
+
 	@Get('/participants/:orgId/:id/:userId/form')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@ApiOperation({ summary: 'Get all the form submission from participant' })
@@ -120,13 +148,5 @@ export class FormController {
 		@Param('userId') uid: string,
 	) {
 		return await this.form.getRegisteredParticipantsFormSubmissions(id, uid);
-	}
-
-	@Delete('/form/bulk-delete/:slug')
-	@Roles(Role.ADMIN, Role.EDITOR)
-	@ApiOperation({ summary: 'Bulk delete form for each event' })
-	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async bulkDeleteForm(@Param('slug') eventName: string) {
-		return await this.events.deleteForm(eventName);
 	}
 }

@@ -8,4 +8,13 @@ export const CreateFormFieldSchema = z.object({
 	type: z.enum(FormInput),
 });
 
+export const EditFormFieldSchema = z.object({
+	label: z.string().optional(),
+	placeholder: z.string().optional(),
+	require: z.boolean().optional(),
+	type: z.enum(FormInput).optional(),
+});
+
 export type CreateFormFieldDto = z.infer<typeof CreateFormFieldSchema>;
+
+export type EditFormFieldDto = z.infer<typeof EditFormFieldSchema>;

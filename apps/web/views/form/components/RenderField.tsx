@@ -1,4 +1,3 @@
-import React from "react";
 import { Checkbox } from "@app/ui/components/checkbox";
 import { Input } from "@app/ui/components/input";
 import Multiselect from "multiselect-react-dropdown";
