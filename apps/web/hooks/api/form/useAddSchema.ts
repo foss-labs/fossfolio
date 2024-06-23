@@ -3,7 +3,6 @@ import { Iform } from "@app/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 
-// Fix placeholder key to placeholder instead of placeHolder
 const addSchema = async (orgId: string, formId: string, data: Iform) => {
   return await apiHandler.patch(`/events/form/${orgId}/schema/${formId}`, {
     type: data.type,
