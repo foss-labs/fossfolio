@@ -24,11 +24,12 @@ import { useFormState } from "@app/store/useFormState";
 import { MdDeleteForever } from "react-icons/md";
 import { IoIosAdd } from "react-icons/io";
 import { useEffect } from "react";
+import { useAddSchema } from "@app/hooks/api/form";
 
 const builderSchema = yup.object().shape({
   label: yup.string().required("label is required"),
   placeholder: yup.string(),
-  required: yup.boolean().optional().default(false),
+  require: yup.boolean().optional().default(false),
   type: yup
     .string()
     .required("question type is required") as yup.StringSchema<IFormInput>,
@@ -58,12 +59,12 @@ export const BuilderConfig = () => {
     resetFormState,
   } = useFormState();
 
+  const { isLoading: isSchemaUpdating, mutate: addNewFieldToDb } =
+    useAddSchema();
+
   const form = useForm<FormValidator>({
     mode: "onBlur",
     resolver: yupResolver(builderSchema),
-    defaultValues: {
-      type: activeField || undefined,
-    },
   });
 
   const { fields, append, remove } = useFieldArray<FormValidator>({
@@ -94,7 +95,6 @@ export const BuilderConfig = () => {
 
   const handleFieldDelete = (index: number) => {
     if (fields.length === 1) return;
-
     remove(index);
   };
 
@@ -102,23 +102,13 @@ export const BuilderConfig = () => {
     if (isSingleOrMultiSelect) {
       addNewField();
     } else {
-      for (let i = 0; i < fields.length; i++) {
-        remove(i);
-      }
+      fields.forEach((_, i) => remove(i));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSingleOrMultiSelect]);
 
   useEffect(() => {
-    const updatedType = form.watch("type");
-    if (updatedType) {
-      setActiveField(updatedType);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.watch("type")]);
-
-  useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
+    const subscription = form.watch((value, { name }) => {
       if (name === "label" && typeof value.label === "string") {
         setLabel(value.label);
       } else if (name === "type" && typeof value.type === "string") {
@@ -131,10 +121,23 @@ export const BuilderConfig = () => {
       }
     });
     return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.watch]);
 
+  useEffect(() => {
+    if (typeof activeField === "string") {
+      form.setValue("type", activeField);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeField]);
+
+  useEffect(() => {
+    return () => resetFormState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleUpdates: SubmitHandler<FormValidator> = async (data) => {
-    console.log(data);
+    await addNewFieldToDb(data);
   };
 
   return (
@@ -166,7 +169,8 @@ export const BuilderConfig = () => {
                       <FormLabel htmlFor="type">Field Type</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={activeField as IFormInput}
+                        value={form.watch("type")}
                       >
                         <FormControl>
                           <SelectTrigger id="type" className="bg-white">
@@ -193,7 +197,7 @@ export const BuilderConfig = () => {
             <div className="flex justify-between gap-8 mt-5">
               <FormField
                 control={form.control}
-                name="required"
+                name="require"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Required</FormLabel>
@@ -212,7 +216,7 @@ export const BuilderConfig = () => {
                 name="placeholder"
                 render={({ field }) => (
                   <FormItem className="w-[47%]">
-                    <FormLabel>Default Value</FormLabel>
+                    <FormLabel>PlaceHolder</FormLabel>
                     <FormControl>
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>
@@ -272,7 +276,9 @@ export const BuilderConfig = () => {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button isLoading={isSchemaUpdating} type="submit">
+                Save
+              </Button>
             </div>
           </form>
         </FormProvider>

@@ -13,7 +13,7 @@ export const useAllForms = () => {
   const router = useRouter();
   const [Id, setId] = useState("");
   const [Pk, setPk] = useState("");
-  const formQueryKey = ["events", "form", Id];
+  const formQueryKey = ["events", "form", Pk];
 
   useEffect(() => {
     // id is the primary key of org

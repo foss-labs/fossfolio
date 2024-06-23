@@ -29,7 +29,7 @@ export const RenderField = ({ fieldProperty }: Prop) => {
           <Input
             type="number"
             placeholder={fieldProperty.placeholder}
-            required={fieldProperty.required}
+            required={fieldProperty.require}
             name={fieldProperty.id}
           />
         )}
@@ -37,18 +37,18 @@ export const RenderField = ({ fieldProperty }: Prop) => {
           <Input
             type="text"
             placeholder={fieldProperty.placeholder}
-            required={fieldProperty.required}
+            required={fieldProperty.require}
             name={fieldProperty.id}
           />
         )}
         {fieldProperty.type === "Checkbox" && (
-          <Checkbox required={fieldProperty.required} name={fieldProperty.id} />
+          <Checkbox required={fieldProperty.require} name={fieldProperty.id} />
         )}
         {fieldProperty.type === "Email" && (
           <Input
             placeholder={fieldProperty.placeholder}
             type="email"
-            required={fieldProperty.required}
+            required={fieldProperty.require}
             name={fieldProperty.id}
           />
         )}
@@ -56,7 +56,7 @@ export const RenderField = ({ fieldProperty }: Prop) => {
           <Input
             placeholder={fieldProperty.placeholder}
             type="phoneNumber"
-            required={fieldProperty.required}
+            required={fieldProperty.require}
             name={fieldProperty.id}
           />
         )}
@@ -64,12 +64,12 @@ export const RenderField = ({ fieldProperty }: Prop) => {
           <Input
             placeholder={fieldProperty.placeholder}
             type="url"
-            required={fieldProperty.required}
+            required={fieldProperty.require}
             name={fieldProperty.id}
           />
         )}
         {fieldProperty.type === "SingleSelect" && (
-          <Select required={fieldProperty.required} name={fieldProperty.id}>
+          <Select required={fieldProperty.require} name={fieldProperty.id}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder={fieldProperty.placeholder} />
             </SelectTrigger>
@@ -104,7 +104,7 @@ export const RenderField = ({ fieldProperty }: Prop) => {
         {fieldProperty.type === "LongText" && (
           <Textarea
             placeholder={fieldProperty.placeholder}
-            required={fieldProperty.required}
+            required={fieldProperty.require}
             name={fieldProperty.id}
           />
         )}
