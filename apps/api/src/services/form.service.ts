@@ -24,69 +24,49 @@ export class FormService {
 	}
 
 	async deleteFormField(formId: string, fieldId: string) {
-		try {
-			const formFieldInfo = await FormFieldsModel.findOne({
-				id: fieldId,
-				fk_form_id: formId,
-			});
-			if (!formFieldInfo) {
-				throw FFError.notFound(
-					`${SystemTable.FormFields}: Query Failed : 
-          form with id ${formId} could not be found`,
-				);
-			}
+		const formFieldInfo = await FormFieldsModel.findOne({
+			id: fieldId,
+			fk_form_id: formId,
+		});
 
-			await FormFieldsModel.delete({
-				id: fieldId,
-			});
+		await FormFieldsModel.delete({
+			id: fieldId,
+		});
 
-			return {
-				ok: true,
-				message: 'Field deleted successfully',
-			};
-		} catch {
-			throw new InternalServerErrorException();
-		}
+		return {
+			ok: true,
+			message: 'Field deleted successfully',
+		};
 	}
 
 	async editFormField(data: EditFormFieldDto, formId: string, fieldId: string) {
-		try {
-			const formInfo = await FormModel.findOne({
-				id: formId,
-			});
-			if (!formInfo) {
-				throw FFError.notFound(
-					`${SystemTable.FormFields}: Query Failed : 
-          form with id ${formId} could not be found`,
-				);
-			}
+		const formInfo = await FormModel.findOne({
+			id: formId,
+		});
 
-			const existingField = await FormFieldsModel.findOne({
-				fk_form_id: fieldId,
+		const existingField = await FormFieldsModel.findOne({
+			fk_form_id: fieldId,
+			id: fieldId,
+		});
+
+		await FormFieldsModel.update(
+			{
 				id: fieldId,
-			});
+			},
+			{
+				placeholder: data.placeholder || existingField?.placeholder,
+				name: data.label?.length ? data.label : existingField?.name,
+				required: Object.hasOwn(data, 'require')
+					? data.require
+					: existingField?.required,
+				type: data.type || existingField?.type,
+			},
+		);
 
-			await FormFieldsModel.update(
-				{
-					id: fieldId,
-				},
-				{
-					placeholder: data.placeholder || existingField?.placeholder,
-					name: data.label?.length ? data.label : existingField?.name,
-					required: Object.hasOwn(data, 'require')
-						? data.require
-						: existingField?.required,
-					type: data.type || existingField?.type,
-				},
-			);
-
-			return {
-				ok: true,
-				message: 'Field updated successfully',
-			};
-		} catch {
-			throw new InternalServerErrorException();
-		}
+		return {
+			ok: true,
+			message: 'Field updated successfully',
+		};
 	}
 
 	async createFormField(data: CreateFormFieldDto, formId: string) {
