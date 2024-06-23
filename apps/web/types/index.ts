@@ -74,7 +74,7 @@ export type Iform = {
   label: string;
   placeholder?: string;
   options?: Array<string>;
-  required: boolean;
+  require: boolean;
   type: IFormInput;
   id?: string;
 };

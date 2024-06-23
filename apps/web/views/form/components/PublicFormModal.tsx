@@ -19,7 +19,7 @@ export const PublicFormModal = ({ isOpen, onClose, schema }: IModal) => {
           data={schema}
           isPublic={true}
           closeModal={onClose}
-          eventId={data?.data.id as string}
+          eventId={data?.id as string}
         />
       </DialogContent>
     </Dialog>

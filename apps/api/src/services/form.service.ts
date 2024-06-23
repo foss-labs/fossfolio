@@ -6,10 +6,10 @@ import {
 import { PrismaService } from './prisma.service';
 import { AiService } from './ai.service';
 import { EventsService } from './events.service';
-import { EventModel, FormFieldsModel, FormModel } from '@api/models';
+import { FormFieldsModel, FormModel } from '@api/models';
 import { CreateFormFieldDto } from '@api/dto/form-field.dto';
-import BaseContext from '@api/BaseContext';
 import { SystemTable } from '@api/utils/db';
+import { FFError } from '@api/utils/error';
 
 @Injectable()
 export class FormService {
@@ -23,46 +23,30 @@ export class FormService {
 		return await FormModel.getAllFormsWithSubmissionsCount(eventId);
 	}
 
-	async createForm(data: CreateFormFieldDto, formId: string) {
+	async createFormField(data: CreateFormFieldDto, formId: string) {
 		try {
-			const event = await EventModel.findOne({
-				fk_organization_id: data.organizationId,
-				id: data.eventId,
-			});
-
-			if (!event) {
-				throw new NotFoundException();
-			}
-
 			const formInfo = await FormModel.findOne({
-				fk_event_id: event.id,
 				id: formId,
 			});
+			if (!formInfo) {
+				throw FFError.notFound(
+					`${SystemTable.FormFields}: Query Failed : 
+          form with id ${formId} could not be found`,
+				);
+			}
 
 			await FormFieldsModel.insert({
-				name: data.data.label,
-				placeholder: data.data.placeholder,
-			});
-
-			const formSchema = await this.prismaService.field.create({
-				data: {
-					label: data.data.label,
-					placeholder: data.data.placeholder,
-					required: data.data.required,
-					type: data.data.type,
-					options: data.data.options,
-					Events: {
-						connect: {
-							id: data.eventId,
-						},
-					},
-				},
+				description: data.label,
+				fk_form_id: formInfo.id,
+				placeholder: data.placeholder,
+				required: data.require,
+				type: data.type,
+				name: '',
 			});
 
 			return {
 				ok: true,
-				message: 'schema updated successfully',
-				data: formSchema,
+				message: 'Schema added successfully',
 			};
 		} catch (e) {
 			if (e instanceof NotFoundException) {
@@ -118,19 +102,17 @@ export class FormService {
 		}
 	}
 
-	async getEventFormScheme(eventId: string, formId: string) {
+	async getEventFormScheme(formId: string) {
 		try {
-			const eventSchema = await BaseContext.knex(SystemTable.Form).select();
+			const eventSchema = await FormFieldsModel.find({
+				fk_form_id: formId,
+			});
 
 			if (!eventSchema) {
 				throw new NotFoundException();
 			}
 
-			return {
-				ok: true,
-				message: 'Event schema found',
-				data: eventSchema.form,
-			};
+			return eventSchema;
 		} catch (e) {
 			if (e instanceof NotFoundException) {
 				throw new NotFoundException();

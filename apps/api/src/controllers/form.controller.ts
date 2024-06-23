@@ -6,6 +6,7 @@ import {
 	InternalServerErrorException,
 	NotFoundException,
 	Param,
+	Patch,
 	Post,
 	UseGuards,
 } from '@nestjs/common';
@@ -45,15 +46,12 @@ export class FormController {
 		return await this.form.getAllForm(eventId);
 	}
 
-	@Get('/form/:orgId/:eventId/:formId')
+	@Get('/form/:orgId/schema/:formId')
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@ApiOperation({ summary: 'get form schema of a specific event' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async getFormSchema(
-		@Param('eventId') eventId: string,
-		@Param('formId') formId: string,
-	) {
-		return await this.form.getEventFormScheme(eventId, formId);
+	async getFormSchema(@Param('formId') formId: string) {
+		return await this.form.getEventFormScheme(formId);
 	}
 
 	@Post('/form/:eventId')
@@ -99,18 +97,18 @@ export class FormController {
 		);
 	}
 
-	@Post('/form/:formId')
+	@Patch('/form/:orgId/schema/:formId')
 	@Roles(Role.ADMIN, Role.EDITOR)
-	@ApiOperation({ summary: 'Create form for each event' })
+	@ApiOperation({ summary: 'Create form schema from form builder' })
 	@ZodValidator({
 		body: CreateFormFieldSchema,
 	})
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async createForm(
+	async createFormField(
 		@Body() payload: CreateFormFieldDto,
-		@Param('id') formId: string,
+		@Param('formId') formId: string,
 	) {
-		return await this.form.createForm(payload, formId);
+		return await this.form.createFormField(payload, formId);
 	}
 
 	@Get('/participants/:orgId/:id/:userId/form')

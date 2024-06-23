@@ -48,10 +48,6 @@ export const InputOption: IinputOption[] = [
     value: "Number",
   },
   {
-    label: "Email",
-    value: "Email",
-  },
-  {
     label: "URL",
     value: "URL",
   },

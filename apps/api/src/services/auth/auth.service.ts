@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+	Injectable,
+	NotFoundException,
+	UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { hash, verify } from 'argon2';
@@ -6,7 +10,8 @@ import type { Profile } from 'passport';
 import { User } from '@api/db/schema';
 import { AccountModel, UserModel } from '@api/models';
 import { FFError } from '@api/utils/error';
-import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +19,7 @@ export class AuthService {
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService,
+		private readonly userService: UserService,
 	) {
 		this.oauthClient = new OAuth2Client();
 	}
@@ -27,7 +33,15 @@ export class AuthService {
 			const payload = ticket.getPayload();
 			if (!payload) throw new UnauthorizedException();
 			const userid = payload['sub'];
-			return await this.generateAuthToken(userid);
+
+			const authTokens = await this.generateAuthToken(userid);
+			await this.createGoogleAccountViaMobileAuth(
+				authTokens.accessToken,
+				authTokens.refreshToken,
+				payload,
+			);
+
+			return authTokens;
 		} catch {
 			throw new UnauthorizedException();
 		}
@@ -99,5 +113,56 @@ export class AuthService {
 		if (!isRefreshTokenValid) FFError.unauthorized('Invalid refresh token');
 
 		return await this.generateAuthToken(user.id);
+	}
+
+	async createGoogleAccountViaMobileAuth(
+		accessToken: string,
+		refreshToken: string,
+		profile: TokenPayload,
+	) {
+		const email = profile.email;
+
+		if (!email) {
+			// If the user doesn't have an email, return an error
+			throw new NotFoundException();
+		}
+
+		// Check whether this user exist in the database or not
+		const user = await UserModel.findUserByEmail(email);
+
+		const profilePayLoad = {
+			displayName: profile.given_name,
+			photos: profile.picture,
+			id: profile.sub,
+			accessToken,
+			refreshToken,
+			provider: 'google',
+		} as Profile;
+
+		// If the user doesn't exist in the database, create a new user
+		if (!user) {
+			return await this.userService.createOAuthUser(
+				accessToken,
+				refreshToken,
+				profilePayLoad,
+				email,
+			);
+		}
+
+		// If the user already exists, check if the user has a provider account
+		const providerAccount =
+			await this.checkIfProviderAccountExists(profilePayLoad);
+
+		// If the user doesn't have a provider account, create a new provider account
+		if (!providerAccount) {
+			await this.createProviderAccount(
+				user,
+				profilePayLoad,
+				accessToken,
+				refreshToken,
+			);
+		}
+
+		return user;
 	}
 }

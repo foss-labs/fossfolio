@@ -10,7 +10,6 @@ interface ZodValidationOptions {
 
 export function ZodValidator(options: ZodValidationOptions) {
 	const decorators: ClassDecorator[] = [] as unknown as ClassDecorator[];
-
 	if (options.body) {
 		decorators.push(UsePipes(new ZodValidationPipe(options.body, 'body')));
 	}

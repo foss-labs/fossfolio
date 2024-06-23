@@ -9,9 +9,10 @@ interface Prop {
   text: string;
   size?: number;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export const Truncate = ({ text, size = 10, className }: Prop) => {
+export const Truncate = ({ text, size = 10, className, children }: Prop) => {
   if (text.length > size) {
     return (
       <TooltipProvider>
@@ -19,9 +20,7 @@ export const Truncate = ({ text, size = 10, className }: Prop) => {
           <TooltipTrigger className={className}>
             {text.substring(0, size - 1)}...
           </TooltipTrigger>
-          <TooltipContent>
-            <p>{text}</p>
-          </TooltipContent>
+          <TooltipContent>{children ? children : <p>{text}</p>}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     );
