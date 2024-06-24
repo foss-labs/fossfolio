@@ -14,12 +14,12 @@ const AllForms: NextPageWithLayout = () => {
   const router = useRouter();
   const [isNewFormDialogOpen, toggleNewFormDialog] = useToggle();
 
-  const { id, pk } = router.query;
+  const { id, eventid } = router.query;
 
   const { data, isLoading } = useAllForms();
 
   const handleEdit = (formId: string) => {
-    router.push(`/org/${id}/${pk}/form/${formId}/builder`);
+    router.push(`/org/${id}/${eventid}/form/${formId}/builder`);
   };
 
   return (

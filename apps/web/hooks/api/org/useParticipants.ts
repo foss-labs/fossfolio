@@ -39,8 +39,8 @@ export const useEventParticipants = () => {
   const orgEventQueryKey = ["org-info", eventId];
   useEffect(() => {
     if (router.isReady) {
-      const { pk, id } = router.query;
-      setEventId(pk as string);
+      const { eventid, id } = router.query;
+      setEventId(eventid as string);
       setOrgId(id as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,8 +63,8 @@ export const useEventParticipantsFormSubmissions = (id: string) => {
   const orgEventQueryKey = ["org-info", "forms", eventId, id];
   useEffect(() => {
     if (router.isReady) {
-      const { pk, id } = router.query;
-      setEventId(pk as string);
+      const { eventid, id } = router.query;
+      setEventId(eventid as string);
       setOrgId(id as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

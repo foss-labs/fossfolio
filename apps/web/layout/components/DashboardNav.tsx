@@ -21,7 +21,7 @@ export const DashNav = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  const { id, pk } = router.query;
+  const { id, eventid } = router.query;
 
   const { data, isLoading: isEventLoading, refetch } = useEvent("event");
 
@@ -32,7 +32,7 @@ export const DashNav = () => {
       toggleLoading.on();
       await apiHandler.patch(`/events/edit`, {
         organizationId: id,
-        eventSlug: pk,
+        eventSlug: eventid,
         isPublished: true,
       });
     } catch (error) {
@@ -47,7 +47,7 @@ export const DashNav = () => {
       toggleLoading.on();
       await apiHandler.patch(`/events/edit`, {
         organizationId: id,
-        eventSlug: pk,
+        eventSlug: eventid,
         isPublished: false,
       });
     } catch (error) {
@@ -82,7 +82,7 @@ export const DashNav = () => {
                 <button
                   key={name}
                   onClick={() => {
-                    router.push(`/org/${id}/${pk}/${name.toLowerCase()}`);
+                    router.push(`/org/${id}/${eventid}/${name.toLowerCase()}`);
                   }}
                   className={`${
                     page === name.toLowerCase() ? "" : "hover:text-black/60"

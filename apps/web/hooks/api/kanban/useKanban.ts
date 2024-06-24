@@ -17,8 +17,8 @@ export const useKanban = () => {
 
   useEffect(() => {
     if (router.isReady) {
-      const { pk } = router.query;
-      setSlug(pk as string);
+      const { eventid } = router.query;
+      setSlug(eventid as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);

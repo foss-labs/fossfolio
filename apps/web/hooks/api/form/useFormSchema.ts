@@ -17,31 +17,31 @@ export interface FormResponse {
   updated_at: Date;
 }
 
-const getForm = async (id: string, pk: string) => {
-  const { data } = await apiHandler.get(`/events/form/${id}/schema/${pk}`);
+const getForm = async (id: string, eventid: string) => {
+  const { data } = await apiHandler.get(`/events/form/${id}/schema/${eventid}`);
   return data;
 };
 
 export const useFormSchema = () => {
   const router = useRouter();
-  const { id, pk, formid } = router.query;
+  const { id, eventid, formid } = router.query;
   const [Id, setId] = useState("");
-  const [Pk, setPk] = useState("");
-  const formQueryKey = ["events", "form", pk, formid];
+  const [eventPk, seteventid] = useState("");
+  const formQueryKey = ["events", "form", eventid, formid];
 
   useEffect(() => {
     // id is the primary key of org
 
     if (router.isReady) {
       setId(id as string);
-      setPk(formid as string);
+      seteventid(formid as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
   const events = useQuery<FormResponse[]>({
     queryKey: formQueryKey,
-    queryFn: () => getForm(Id, Pk),
+    queryFn: () => getForm(Id, eventPk),
     // query is disabled until the query param is available
     enabled: !!Id,
   });

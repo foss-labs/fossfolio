@@ -33,7 +33,7 @@ const Event = () => {
   const { data, isLoading } = useEvent("event");
   const router = useRouter();
   const isPhoneScreen = useMediaQuery("(max-width: 767px)");
-  const { id, pk } = router.query;
+  const { id, eventid } = router.query;
 
   const form = useForm<EventSchema>({
     mode: "onChange",
@@ -89,7 +89,7 @@ const Event = () => {
       await apiHandler.patch(`/events/edit`, {
         description: input,
         organizationId: id,
-        eventSlug: pk,
+        eventSlug: eventid,
       });
     } catch {
       console.warn("error updating event description");

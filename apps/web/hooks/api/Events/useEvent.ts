@@ -6,7 +6,7 @@ import type { OrgEvents } from "@app/types";
 
 /*
   This hook can be used in both event page in dashboard and event page user facing page 
-  PK is the primary key of event in dashboard
+  eventid is the primary key of event in dashboard
   ID is the primary key of event in Event page
 
 */
@@ -22,16 +22,16 @@ export type Fetch = "event" | "public";
 export const useEvent = (type: Fetch = "event") => {
   const router = useRouter();
   const [Id, setId] = useState("");
-  const { id, pk } = router.query;
+  const { id, eventid } = router.query;
 
   useEffect(() => {
     // id is the primary key of event in events page
-    // pk is the primary key of event in org dashboard page
+    // eventid is the primary key of event in org dashboard page
 
     if (router.isReady) {
       // this is done to reuse same function event info page and org dashboard
       if (type === "event") {
-        setId(pk as string);
+        setId(eventid as string);
       }
       if (type === "public") {
         setId(id as string);

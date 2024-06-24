@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { FORM_BUILDER_ROUTES } from "./constants";
-import { Tabs, TabsList, TabsTrigger } from "@app/ui/components/tabs";
+import { Tabs, TabsList } from "@app/ui/components/tabs";
 import { FiArrowLeft } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
@@ -14,14 +14,14 @@ export const FormBuilderNav = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  const { id, pk, formid } = router.query;
+  const { id, eventid, formid } = router.query;
 
   return (
     <div className="flex fixed w-full p-3 justify-between bg-brand-pink-100 ">
       <div className="flex">
         <div
           className="font-small flex text-lg pr-3 hover:cursor-pointer justify-center items-center gap-3"
-          onClick={() => router.push(`/org/${id}/${pk}/form`)}
+          onClick={() => router.push(`/org/${id}/${eventid}/form`)}
         >
           <FiArrowLeft className="mr-2.1" />
         </div>
@@ -33,7 +33,7 @@ export const FormBuilderNav = () => {
                   key={name}
                   onClick={() => {
                     router.push(
-                      `/org/${id}/${pk}/form/${formid}/${name.toLowerCase()}`
+                      `/org/${id}/${eventid}/form/${formid}/${name.toLowerCase()}`
                     );
                   }}
                   className={`${

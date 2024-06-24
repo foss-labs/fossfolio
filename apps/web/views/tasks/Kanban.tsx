@@ -35,7 +35,7 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
 
   const router = useRouter();
 
-  const { pk } = router.query;
+  const { eventid } = router.query;
 
   const addTask = () => {
     router.replace({
@@ -82,7 +82,7 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
 
   const deleteTask = async () => {
     try {
-      await apiHandler.delete(`/events/kanban/${pk}/${id}`);
+      await apiHandler.delete(`/events/kanban/${eventid}/${id}`);
 
       toast.success("board deleted successfully");
     } catch {
@@ -92,7 +92,7 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
 
   const { mutate } = useMutation(deleteTask, {
     onSettled: () => {
-      queryClient.invalidateQueries(["event", "kanban", pk]);
+      queryClient.invalidateQueries(["event", "kanban", eventid]);
     },
   });
 

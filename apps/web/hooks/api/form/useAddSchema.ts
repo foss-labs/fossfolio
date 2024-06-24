@@ -48,14 +48,14 @@ interface UseAddSchemaProps {
 export const useAddSchema = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { id, pk, formid } = router.query;
+  const { id, eventid, formid } = router.query;
 
   return useMutation(
     ({ data, type, fieldId }: UseAddSchemaProps) =>
       addSchema(id as string, formid as string, data, type, fieldId),
     {
       onSettled: () => {
-        queryClient.invalidateQueries(["events", "form", pk, formid]);
+        queryClient.invalidateQueries(["events", "form", eventid, formid]);
       },
       onError: (error) => {
         console.error("Error adding/updating schema:", error);

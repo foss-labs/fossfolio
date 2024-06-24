@@ -64,7 +64,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
   const [isUpdating, setUpdating] = useToggle(false);
   const [cover, selectCover] = useState<string | undefined>("");
   const router = useRouter();
-  const { id, pk } = router.query;
+  const { id, eventid } = router.query;
 
   const form = useForm<IProfile>({
     defaultValues: {
@@ -118,7 +118,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
       const dataWithOutImage = await apiHandler.patch(`/events/edit`, {
         ...payload,
         organizationId: id,
-        eventSlug: pk,
+        eventSlug: eventid,
         maxTicketCount: Number(payload.maxTicketCount),
         isPublished: true,
         maxTeamSize: Number(payload.maxTeamSize),
@@ -127,7 +127,7 @@ export const PublishModal = ({ isOpen, onClose }: IModal) => {
       });
 
       const uploadImageOnly = await apiHandler.patch(
-        `/events/edit/cover?org=${id}&event=${pk}`,
+        `/events/edit/cover?org=${id}&event=${eventid}`,
         formData,
         {
           headers: {

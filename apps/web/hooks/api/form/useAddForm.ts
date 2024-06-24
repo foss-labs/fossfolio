@@ -19,13 +19,13 @@ interface UseAddFormProps {
 export const useAddForm = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { id, pk } = router.query;
+  const { id, eventid } = router.query;
 
   return useMutation(
-    (data: UseAddFormProps) => addForm(id as string, pk as string, data),
+    (data: UseAddFormProps) => addForm(id as string, eventid as string, data),
     {
       onSettled: () => {
-        queryClient.invalidateQueries(["events", "form", pk]);
+        queryClient.invalidateQueries(["events", "form", eventid]);
       },
       onError: (error) => {
         console.error("Error adding Form:", error);
