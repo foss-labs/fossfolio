@@ -14,20 +14,21 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../services/decorator/roles.decorator';
 import { RbacGuard } from '../services/guards/rbac-member.guard';
-import { FormService } from '../services/form.service';
-import { EventsService } from '../services/events.service';
+import { FormService } from '@api/services/form.service';
+import { EventsService } from '@api/services/events.service';
 import {
 	CreateFormFieldDto,
 	CreateFormFieldSchema,
 	EditFormFieldDto,
 	EditFormFieldSchema,
 } from '@api/dto/form-field.dto';
-import { AuthUser } from '../services/auth/decorators/user.decorator';
+import { AuthUser } from '@api/services/auth/decorators/user.decorator';
 import { ZodValidator } from '@api/validation/zod.validation.decorator';
 import { Role } from '@api/utils/db';
 import { EventTicketModel } from '@api/models';
 import { User } from '@api/db/schema';
 import type { ToggleFormPublishStatus } from '../services/dto/publish-form.dto';
+import { NewFormDto, NewFormSchema } from '@api/dto/form.dto';
 
 @Controller('/events')
 @ApiTags('Events-Form')
@@ -46,6 +47,20 @@ export class FormController {
 		@Param('formId') formId: string,
 	) {
 		return await this.form.getAllForm(eventId);
+	}
+
+	@Post('/form/:orgId/:eventId')
+	@Roles(Role.ADMIN, Role.EDITOR)
+	@ApiOperation({ summary: 'create a new form for a specific event' })
+	@ZodValidator({
+		body: NewFormSchema,
+	})
+	@UseGuards(AuthGuard('jwt'), RbacGuard)
+	async createNewForm(
+		@Body() data: NewFormDto,
+		@Param('eventId') eventId: string,
+	) {
+		return await this.form.createNewForm(data, eventId);
 	}
 
 	@Get('/form/:orgId/schema/:formId')
@@ -122,21 +137,17 @@ export class FormController {
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	async editFormField(
 		@Body() payload: EditFormFieldDto,
-		@Param('formId') formId: string,
 		@Param('fieldId') fieldId: string,
 	) {
-		return await this.form.editFormField(payload, formId, fieldId);
+		return await this.form.editFormField(payload, fieldId);
 	}
 
 	@Delete('/form/:orgId/schema/:formId/:fieldId')
 	@Roles(Role.ADMIN, Role.EDITOR)
 	@ApiOperation({ summary: 'Delete specific schema field from form builder' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async deleteFormField(
-		@Param('formId') formId: string,
-		@Param('fieldId') fieldId: string,
-	) {
-		return await this.form.deleteFormField(formId, fieldId);
+	async deleteFormField(@Param('fieldId') fieldId: string) {
+		return await this.form.deleteFormField(fieldId);
 	}
 
 	@Get('/participants/:orgId/:id/:userId/form')

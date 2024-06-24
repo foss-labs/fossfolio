@@ -50,11 +50,6 @@ export const useAddSchema = () => {
   const router = useRouter();
   const { id, pk, formid } = router.query;
 
-  // Check if the query parameters are available
-  if (!id || !pk || !formid) {
-    throw new Error("Missing required query parameters");
-  }
-
   return useMutation(
     ({ data, type, fieldId }: UseAddSchemaProps) =>
       addSchema(id as string, formid as string, data, type, fieldId),

@@ -6,6 +6,7 @@ import { RenderField } from "./RenderField";
 import { useFormState } from "@app/store/useFormState";
 import { useFormSchema } from "@app/hooks/api/form";
 import { FormResponse } from "@app/hooks/api/form/useFormSchema";
+import Image from "next/image";
 
 export const BuilderPreview = () => {
   const {

@@ -188,61 +188,59 @@ export const BuilderConfig = () => {
         {activeField ? (
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(handleUpdates)}>
-              <div className="flex justify-between gap-8">
+              <FormField
+                control={form.control}
+                name="label"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Label</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Field label" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="w-full mt-4">
                 <FormField
                   control={form.control}
-                  name="label"
+                  name="type"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Label</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Field label" {...field} />
-                      </FormControl>
+                      <FormLabel htmlFor="type">Field Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={activeField as IFormInput}
+                        value={form.watch("type")}
+                      >
+                        <FormControl>
+                          <SelectTrigger id="type" className="bg-white">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent position="popper">
+                          {InputOption.map((el) => (
+                            <SelectItem
+                              key={el.value as string}
+                              value={el.value as string}
+                            >
+                              {el.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <div className="w-full">
-                  <FormField
-                    control={form.control}
-                    name="type"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel htmlFor="type">Field Type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={activeField as IFormInput}
-                          value={form.watch("type")}
-                        >
-                          <FormControl>
-                            <SelectTrigger id="type" className="bg-white">
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent position="popper">
-                            {InputOption.map((el) => (
-                              <SelectItem
-                                key={el.value as string}
-                                value={el.value as string}
-                              >
-                                {el.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
               </div>
-              <div className="flex justify-between gap-8 mt-5">
+              <div className="mt-4">
                 <FormField
                   control={form.control}
                   name="require"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Required</FormLabel>
+                      <FormLabel className="self-start">Required</FormLabel>
                       <FormControl>
                         <Checkbox
                           checked={field.value}
@@ -253,12 +251,14 @@ export const BuilderConfig = () => {
                     </FormItem>
                   )}
                 />
+              </div>
+              <div className="mt-4 w-full">
                 <FormField
                   control={form.control}
                   name="placeholder"
                   render={({ field }) => (
-                    <FormItem className="w-[47%]">
-                      <FormLabel>PlaceHolder</FormLabel>
+                    <FormItem>
+                      <FormLabel>Placeholder</FormLabel>
                       <FormControl>
                         <Input placeholder="John Doe" {...field} />
                       </FormControl>
@@ -267,7 +267,6 @@ export const BuilderConfig = () => {
                   )}
                 />
               </div>
-
               {isSingleOrMultiSelect && (
                 <>
                   {fields.map((dynamicField, index) => (

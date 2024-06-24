@@ -4,18 +4,17 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { AiService } from './ai.service';
 import { EventsService } from './events.service';
 import { FormFieldsModel, FormModel } from '@api/models';
 import { CreateFormFieldDto, EditFormFieldDto } from '@api/dto/form-field.dto';
 import { SystemTable } from '@api/utils/db';
 import { FFError } from '@api/utils/error';
+import { NewFormDto } from '@api/dto/form.dto';
 
 @Injectable()
 export class FormService {
 	constructor(
 		private readonly prismaService: PrismaService,
-		private readonly AiService: AiService,
 		private readonly EventService: EventsService,
 	) {}
 
@@ -23,12 +22,22 @@ export class FormService {
 		return await FormModel.getAllFormsWithSubmissionsCount(eventId);
 	}
 
-	async deleteFormField(formId: string, fieldId: string) {
-		const formFieldInfo = await FormFieldsModel.findOne({
-			id: fieldId,
-			fk_form_id: formId,
+	async createNewForm(data: NewFormDto, eventId: string) {
+		await FormModel.insert({
+			title: data.title,
+			description: data.description,
+			fk_event_id: eventId,
+			confirmation_message: '',
+			misc: {},
 		});
 
+		return {
+			ok: true,
+			message: 'Form Added successfully',
+		};
+	}
+
+	async deleteFormField(fieldId: string) {
 		await FormFieldsModel.delete({
 			id: fieldId,
 		});
@@ -39,11 +48,7 @@ export class FormService {
 		};
 	}
 
-	async editFormField(data: EditFormFieldDto, formId: string, fieldId: string) {
-		const formInfo = await FormModel.findOne({
-			id: formId,
-		});
-
+	async editFormField(data: EditFormFieldDto, fieldId: string) {
 		const existingField = await FormFieldsModel.findOne({
 			fk_form_id: fieldId,
 			id: fieldId,

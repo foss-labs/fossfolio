@@ -1,11 +1,9 @@
 import { NextPageWithLayout } from "next";
 import { FormBuilderLayout } from "@app/layout";
 import { apiHandler } from "@app/config";
-import { useRouter } from "next/router";
 import { useFormSchema } from "@app/hooks/api/form";
 import { Iform } from "@app/types";
 import { toast } from "sonner";
-import { useToggle } from "@app/hooks";
 import { useState } from "react";
 import { Loader } from "@app/components/preloaders";
 import {
@@ -17,13 +15,10 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 const Form: NextPageWithLayout = () => {
-  const router = useRouter();
-  const { data, isLoading, refetch } = useFormSchema();
-  const [isFormStatusChanging, toggleFormStatus] = useToggle(false);
+  const { isLoading } = useFormSchema();
   const [prompt, setPrompt] = useState<string>("");
   const [isFormLoading, setFormLoading] = useState(false);
   const [tempForm, setTempForm] = useState<Iform[]>([]);
-  const { pk, id } = router.query;
   const [messages, setMessages] = useState<
     Array<{
       ai: boolean;
@@ -54,32 +49,12 @@ const Form: NextPageWithLayout = () => {
     }
   };
 
-  const publishForm = async (status: boolean) => {
-    try {
-      toggleFormStatus.on();
-      await apiHandler.post(`/events/publish/form/${pk}`, {
-        organizationId: id,
-        shouldFormPublish: status,
-      });
-
-      if (status) {
-        toast.success("form was published successfully");
-      } else {
-        toast.success("form was unpublished successfully");
-      }
-    } catch {
-      toast.error("Couldn't complete the operation");
-    } finally {
-      toggleFormStatus.off();
-    }
-  };
-
   if (isLoading) {
     return <Loader />;
   }
 
   return (
-    <div className="pt-4 pr-3 grid grid-cols-[1.4fr_4.8fr_2.8fr] w-full fixed">
+    <div className="pt-4 pr-3 grid grid-cols-[1.4fr_5.8fr_1.8fr] w-full fixed">
       <DndProvider backend={HTML5Backend}>
         <AvailableFields />
         <BuilderPreview />

@@ -5,12 +5,14 @@ import { Card, CardContent } from "@app/ui/components/card";
 import { FaPlus } from "react-icons/fa6";
 import { LuClipboard } from "react-icons/lu";
 import { useAllForms } from "@app/hooks/api/form";
-import { FormsLoader } from "@app/views/form";
+import { FormsLoader, NewFormDialog } from "@app/views/form";
 import { useRouter } from "next/router";
 import { pluralize } from "@app/utils";
+import { useToggle } from "@app/hooks";
 
 const AllForms: NextPageWithLayout = () => {
   const router = useRouter();
+  const [isNewFormDialogOpen, toggleNewFormDialog] = useToggle();
 
   const { id, pk } = router.query;
 
@@ -22,9 +24,13 @@ const AllForms: NextPageWithLayout = () => {
 
   return (
     <main className="container mx-auto py-10 px-4 md:px-6">
+      <NewFormDialog
+        isOpen={isNewFormDialogOpen}
+        onClose={toggleNewFormDialog.off}
+      />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Manage Forms</h1>
-        <Button variant="outline">
+        <Button variant="outline" onClick={toggleNewFormDialog.on}>
           <div className="flex items-center">
             <FaPlus className="mr-2 h-4 w-4" />
             <span>Create Form</span>
