@@ -28,7 +28,7 @@ interface FormActions {
   setBorderColor: (borderColor: string) => void;
   setBorderRadius: (borderRadius: string) => void;
   setIsRequired: (isRequired: boolean) => void;
-  setOptions: (options: string[], newOption: string) => void;
+  setOptions: (newOption: string[]) => void;
   setId: (id: string) => void;
   resetFormState: () => void;
   setFormState: (data: Partial<FormState>) => void;
@@ -64,7 +64,7 @@ export const useFormState = create<UseFormState>((set) => ({
   setBorderRadius: (borderRadius) => set({ borderRadius }),
   setIsRequired: (isRequired) => set({ isRequired }),
   setId: (id: string) => set({ id }),
-  setOptions: (option, newOption) => set({ options: [...option, newOption] }),
+  setOptions: (newOption) => set({ options: [...newOption] }),
   resetFormState: () =>
     set({
       doesTemporaryFieldExist: false,

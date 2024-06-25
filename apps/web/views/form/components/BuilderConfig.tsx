@@ -23,7 +23,7 @@ import { Button } from "@app/components/ui/Button";
 import { useFormState } from "@app/store/useFormState";
 import { MdDeleteForever } from "react-icons/md";
 import { IoIosAdd } from "react-icons/io";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useAddSchema } from "@app/hooks/api/form";
 
 const builderSchema = yup.object().shape({
@@ -82,19 +82,26 @@ export const BuilderConfig = () => {
     form.watch("type") === "SingleSelect" ||
     form.watch("type") === "MultiSelect";
 
-  const addNewField = () => {
+  const addNewField = useCallback(() => {
     if (Object.hasOwn(form.formState.errors, "selectOptions")) {
       return;
-    }
-
-    if (fields.length - 1) {
-      setOptions(options, fields[fields.length - 1]?.option);
     }
 
     append({
       option: "",
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    const allOptions = fields.reduce<string[]>((acc, el) => {
+      if (el.option !== "") {
+        acc.push(el.option);
+      }
+      return acc;
+    }, []);
+
+    setOptions(allOptions);
+  }, [fields]);
 
   const handleFieldDelete = (index: number) => {
     if (fields.length === 1) return;
@@ -182,9 +189,9 @@ export const BuilderConfig = () => {
   };
 
   return (
-    <div className="border p-4 bg-gray-100 overflow-y-scroll h-">
+    <div className="border p-4 bg-gray-100 h-screen">
       <h3 className="text-start font-semibold">Settings</h3>
-      <section className="p-2 flex flex-col justify-between h-full max-h-[calc(100%-100px)]">
+      <section className="p-2 flex flex-col justify-between h-full max-h-[calc(100%-100px)] overflow-y-scroll">
         {activeField ? (
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(handleUpdates)}>

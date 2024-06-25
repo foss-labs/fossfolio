@@ -38,7 +38,7 @@ export const BuilderPreview = () => {
     setFormState({
       isRequired: field.required,
       activeField: field.type,
-      options: [],
+      options: field.options,
       label: field.name,
       placeHolder: field.placeholder,
       id: field.id,
@@ -62,7 +62,9 @@ export const BuilderPreview = () => {
                   placeholder: field.placeholder,
                   id: field.id,
                   require: field.required,
-                  selectOptions: options.map((opt) => ({ option: opt })),
+                  selectOptions: field.options
+                    ? field?.options.map((opt) => ({ option: opt }))
+                    : [],
                 }}
               />
             </div>

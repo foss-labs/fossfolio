@@ -12,12 +12,15 @@ const addSchema = async (
   type: RequestType,
   fieldId?: string
 ) => {
+  const options = data.selectOptions?.map((el) => el.option);
+
   if (type === "ADD") {
     return await apiHandler.patch(`/events/form/${orgId}/schema/${formId}`, {
       type: data.type,
       label: data.label,
       placeholder: data.placeholder,
       require: data.require,
+      options,
     });
   } else if (type === "UPDATE") {
     if (!fieldId) {
@@ -30,6 +33,7 @@ const addSchema = async (
         label: data.label,
         placeholder: data.placeholder,
         require: data.require,
+        options,
       }
     );
   } else {

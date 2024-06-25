@@ -15,6 +15,7 @@ export interface FormResponse {
   is_deleted: boolean;
   created_at: Date;
   updated_at: Date;
+  options?: Array<string>;
 }
 
 const getForm = async (id: string, eventid: string) => {

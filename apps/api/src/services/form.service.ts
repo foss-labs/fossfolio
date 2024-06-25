@@ -1,246 +1,210 @@
 import {
-	Injectable,
-	InternalServerErrorException,
-	NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from './prisma.service';
-import { EventsService } from './events.service';
-import { FormFieldsModel, FormModel } from '@api/models';
-import { CreateFormFieldDto, EditFormFieldDto } from '@api/dto/form-field.dto';
-import { SystemTable } from '@api/utils/db';
-import { FFError } from '@api/utils/error';
-import { NewFormDto } from '@api/dto/form.dto';
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
+import { PrismaService } from "./prisma.service";
+import { EventsService } from "./events.service";
+import { FormFieldOptionsModel, FormFieldsModel, FormModel } from "@api/models";
+import { CreateFormFieldDto, EditFormFieldDto } from "@api/dto/form-field.dto";
+import { SystemTable } from "@api/utils/db";
+import { FFError } from "@api/utils/error";
+import { NewFormDto } from "@api/dto/form.dto";
 
 @Injectable()
 export class FormService {
-	constructor(
-		private readonly prismaService: PrismaService,
-		private readonly EventService: EventsService,
-	) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly EventService: EventsService
+  ) {}
 
-	async getAllForm(eventId: string) {
-		return await FormModel.getAllFormsWithSubmissionsCount(eventId);
-	}
+  async getAllForm(eventId: string) {
+    return await FormModel.getAllFormsWithSubmissionsCount(eventId);
+  }
 
-	async createNewForm(data: NewFormDto, eventId: string) {
-		await FormModel.insert({
-			title: data.title,
-			description: data.description,
-			fk_event_id: eventId,
-			confirmation_message: '',
-			misc: {},
-		});
+  async createNewForm(data: NewFormDto, eventId: string) {
+    return await FormModel.insert({
+      ...data,
+      fk_event_id: eventId,
+    });
+  }
 
-		return {
-			ok: true,
-			message: 'Form Added successfully',
-		};
-	}
+  async deleteFormField(fieldId: string) {
+    return await FormFieldsModel.delete({
+      id: fieldId,
+    });
+  }
 
-	async deleteFormField(fieldId: string) {
-		await FormFieldsModel.delete({
-			id: fieldId,
-		});
+  async editFormField(data: EditFormFieldDto, fieldId: string) {
+    return await FormFieldsModel.update(
+      {
+        id: fieldId,
+      },
+      data
+    );
+  }
 
-		return {
-			ok: true,
-			message: 'Field deleted successfully',
-		};
-	}
+  async createFormField(data: CreateFormFieldDto, formId: string) {
+    try {
+      const formInfo = await FormModel.findOne({
+        id: formId,
+      });
+      if (!formInfo) {
+        throw FFError.notFound(
+          `${SystemTable.FormFields}: Query Failed : 
+          form with id ${formId} could not be found`
+        );
+      }
 
-	async editFormField(data: EditFormFieldDto, fieldId: string) {
-		const existingField = await FormFieldsModel.findOne({
-			fk_form_id: fieldId,
-			id: fieldId,
-		});
+      const newField = await FormFieldsModel.insert({
+        description: "",
+        fk_form_id: formInfo.id,
+        placeholder: data.placeholder,
+        required: data.require,
+        type: data.type,
+        name: data.label,
+      });
 
-		await FormFieldsModel.update(
-			{
-				id: fieldId,
-			},
-			{
-				placeholder: data.placeholder || existingField?.placeholder,
-				name: data.label?.length ? data.label : existingField?.name,
-				required: Object.hasOwn(data, 'require')
-					? data.require
-					: existingField?.required,
-				type: data.type || existingField?.type,
-			},
-		);
+      if (data.options) {
+        for (const key of data.options) {
+          await FormFieldOptionsModel.insert({
+            fk_form_id: newField.id,
+            option: key,
+          });
+        }
+      }
 
-		return {
-			ok: true,
-			message: 'Field updated successfully',
-		};
-	}
+      return {
+        ok: true,
+        message: "Schema added successfully",
+      };
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw new NotFoundException();
+      }
+      throw e;
+    }
+  }
 
-	async createFormField(data: CreateFormFieldDto, formId: string) {
-		try {
-			const formInfo = await FormModel.findOne({
-				id: formId,
-			});
-			if (!formInfo) {
-				throw FFError.notFound(
-					`${SystemTable.FormFields}: Query Failed : 
-          form with id ${formId} could not be found`,
-				);
-			}
+  async toggleFormPublishStatus(eventSlug: string, shouldPublish: boolean) {
+    try {
+      const event = await this.prismaService.events.findUnique({
+        where: {
+          slug: eventSlug,
+        },
+        select: {
+          form: true,
+        },
+      });
+      if (!event) {
+        throw new NotFoundException();
+      }
 
-			await FormFieldsModel.insert({
-				description: '',
-				fk_form_id: formInfo.id,
-				placeholder: data.placeholder,
-				required: data.require,
-				type: data.type,
-				name: data.label,
-			});
+      if (!event.form.length) {
+        throw new InternalServerErrorException();
+      }
 
-			return {
-				ok: true,
-				message: 'Schema added successfully',
-			};
-		} catch (e) {
-			if (e instanceof NotFoundException) {
-				throw new NotFoundException();
-			}
-			throw e;
-		}
-	}
+      const newEventStatus = await this.prismaService.events.update({
+        where: {
+          slug: eventSlug,
+        },
+        data: {
+          isFormPublished: shouldPublish,
+        },
+      });
 
-	async toggleFormPublishStatus(eventSlug: string, shouldPublish: boolean) {
-		try {
-			const event = await this.prismaService.events.findUnique({
-				where: {
-					slug: eventSlug,
-				},
-				select: {
-					form: true,
-				},
-			});
-			if (!event) {
-				throw new NotFoundException();
-			}
+      return {
+        ok: "true",
+        message: "form status was changed",
+        data: newEventStatus,
+      };
+    } catch (e) {
+      if (e instanceof InternalServerErrorException) {
+        throw new InternalServerErrorException({
+          message: "Please create a form schema to publish the form",
+        });
+      }
+      if (e instanceof NotFoundException) {
+        throw new NotFoundException();
+      }
 
-			if (!event.form.length) {
-				throw new InternalServerErrorException();
-			}
+      return e;
+    }
+  }
 
-			const newEventStatus = await this.prismaService.events.update({
-				where: {
-					slug: eventSlug,
-				},
-				data: {
-					isFormPublished: shouldPublish,
-				},
-			});
+  async getEventFormScheme(formId: string) {
+    return await FormFieldsModel.getFieldWithOptions(formId);
+  }
 
-			return {
-				ok: 'true',
-				message: 'form status was changed',
-				data: newEventStatus,
-			};
-		} catch (e) {
-			if (e instanceof InternalServerErrorException) {
-				throw new InternalServerErrorException({
-					message: 'Please create a form schema to publish the form',
-				});
-			}
-			if (e instanceof NotFoundException) {
-				throw new NotFoundException();
-			}
+  public async addUserFormSubmission(
+    info: Record<string, string | Array<string>>,
+    eventId: string,
+    userId: string
+  ) {
+    const event = await this.EventService.getEventById(eventId);
+    if (!event) return new NotFoundException();
 
-			return e;
-		}
-	}
+    await this.prismaService.response.create({
+      data: {
+        data: info,
+        user: {
+          connect: {
+            uid: userId,
+          },
+        },
+        Events: {
+          connect: {
+            id: event.id,
+          },
+        },
+      },
+    });
+  }
 
-	async getEventFormScheme(formId: string) {
-		try {
-			const eventSchema = await FormFieldsModel.find({
-				fk_form_id: formId,
-			});
+  async getRegisteredParticipantsFormSubmissions(id: string, userId: string) {
+    try {
+      const schema = await this.prismaService.events.findUnique({
+        where: {
+          slug: id,
+        },
+        select: {
+          form: true,
+          id: true,
+        },
+      });
 
-			if (!eventSchema) {
-				throw new NotFoundException();
-			}
+      const label = {};
+      schema.form.forEach((el) => {
+        label[el.id] = el.label;
+      });
 
-			return eventSchema;
-		} catch (e) {
-			if (e instanceof NotFoundException) {
-				throw new NotFoundException();
-			}
-			throw e;
-		}
-	}
+      const data = await this.prismaService.response.findMany({
+        where: {
+          userUid: userId,
+          eventsId: schema.id,
+        },
+      });
+      if (!data) return new NotFoundException();
 
-	public async addUserFormSubmission(
-		info: Record<string, string | Array<string>>,
-		eventId: string,
-		userId: string,
-	) {
-		const event = await this.EventService.getEventById(eventId);
-		if (!event) return new NotFoundException();
+      const result = {};
 
-		await this.prismaService.response.create({
-			data: {
-				data: info,
-				user: {
-					connect: {
-						uid: userId,
-					},
-				},
-				Events: {
-					connect: {
-						id: event.id,
-					},
-				},
-			},
-		});
-	}
+      schema.form.forEach((el) => {
+        // @ts-ignore
+        if (data[0] && el.id in data[0].data) {
+          result[el.label] = data[0].data[el.id];
+        }
+      });
 
-	async getRegisteredParticipantsFormSubmissions(id: string, userId: string) {
-		try {
-			const schema = await this.prismaService.events.findUnique({
-				where: {
-					slug: id,
-				},
-				select: {
-					form: true,
-					id: true,
-				},
-			});
-
-			const label = {};
-			schema.form.forEach((el) => {
-				label[el.id] = el.label;
-			});
-
-			const data = await this.prismaService.response.findMany({
-				where: {
-					userUid: userId,
-					eventsId: schema.id,
-				},
-			});
-			if (!data) return new NotFoundException();
-
-			const result = {};
-
-			schema.form.forEach((el) => {
-				// @ts-ignore
-				if (data[0] && el.id in data[0].data) {
-					result[el.label] = data[0].data[el.id];
-				}
-			});
-
-			return {
-				ok: true,
-				data: result,
-				message: 'received form successfully',
-			};
-		} catch (e) {
-			if (e instanceof NotFoundException) {
-				throw new NotFoundException();
-			}
-			throw e;
-		}
-	}
+      return {
+        ok: true,
+        data: result,
+        message: "received form successfully",
+      };
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        throw new NotFoundException();
+      }
+      throw e;
+    }
+  }
 }
