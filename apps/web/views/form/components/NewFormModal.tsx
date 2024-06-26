@@ -44,8 +44,6 @@ export const NewFormDialog = ({ isOpen, onClose }: IModal) => {
     },
   });
 
-  console.log(form.formState.errors);
-
   const onUserSubMit: SubmitHandler<ISchema> = async (val) => {
     await addNewForm(val);
     onClose();

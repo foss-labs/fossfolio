@@ -25,6 +25,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { IoIosAdd } from "react-icons/io";
 import { useCallback, useEffect } from "react";
 import { useAddSchema } from "@app/hooks/api/form";
+import { motion } from "framer-motion";
 
 const builderSchema = yup.object().shape({
   label: yup.string().required("label is required"),
@@ -114,7 +115,6 @@ export const BuilderConfig = () => {
     } else {
       fields.forEach((_, i) => remove(i));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSingleOrMultiSelect]);
 
   useEffect(() => {
@@ -131,7 +131,6 @@ export const BuilderConfig = () => {
       }
     });
     return () => subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.watch]);
 
   useEffect(() => {
@@ -150,12 +149,17 @@ export const BuilderConfig = () => {
       form.setValue("require", isRequired);
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!fields.length && options && options.length) {
+      options.forEach((el) =>
+        append({
+          option: el,
+        })
+      );
+    }
   }, [activeField, options, label, placeHolder, isRequired]);
 
   useEffect(() => {
     return () => resetFormState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleUpdates: SubmitHandler<FormValidator> = async (data) => {
@@ -193,153 +197,166 @@ export const BuilderConfig = () => {
       <h3 className="text-start font-semibold">Settings</h3>
       <section className="p-2 flex flex-col justify-between h-full max-h-[calc(100%-100px)] overflow-y-scroll">
         {activeField ? (
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(handleUpdates)}>
-              <FormField
-                control={form.control}
-                name="label"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Label</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Field label" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="w-full mt-4">
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            transition={{
+              ease: "easeIn",
+              duration: 0.5,
+            }}
+            whileInView={{
+              opacity: 1,
+            }}
+          >
+            <FormProvider {...form}>
+              <form onSubmit={form.handleSubmit(handleUpdates)}>
                 <FormField
                   control={form.control}
-                  name="type"
+                  name="label"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel htmlFor="type">Field Type</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={activeField as IFormInput}
-                        value={form.watch("type")}
-                      >
-                        <FormControl>
-                          <SelectTrigger id="type" className="bg-white">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent position="popper">
-                          {InputOption.map((el) => (
-                            <SelectItem
-                              key={el.value as string}
-                              value={el.value as string}
-                            >
-                              {el.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="mt-4">
-                <FormField
-                  control={form.control}
-                  name="require"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel className="self-start">Required</FormLabel>
+                      <FormLabel>Label</FormLabel>
                       <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Input placeholder="Field label" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="mt-4 w-full">
-                <FormField
-                  control={form.control}
-                  name="placeholder"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Placeholder</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John Doe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              {isSingleOrMultiSelect && (
-                <>
-                  {fields.map((dynamicField, index) => (
-                    <div
-                      className="flex items-center space-x-2 mt-3 group"
-                      key={index}
-                    >
-                      <FormField
-                        key={index}
-                        control={form.control}
-                        name={`selectOptions.${index}.option`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col w-full">
-                            <FormLabel className="flex items-center">
-                              Option {index + 1}
-                              <span
-                                className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
-                                onClick={() => handleFieldDelete(index)}
+                <div className="w-full mt-4">
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel htmlFor="type">Field Type</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={activeField as IFormInput}
+                          value={form.watch("type")}
+                        >
+                          <FormControl>
+                            <SelectTrigger id="type" className="bg-white">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent position="popper">
+                            {InputOption.map((el) => (
+                              <SelectItem
+                                key={el.value as string}
+                                value={el.value as string}
                               >
-                                <MdDeleteForever className="text-md text-red-600" />
-                              </span>
-                            </FormLabel>
-                            <FormControl>
-                              <Input className="w-full" {...field} />
-                            </FormControl>
-                            <FormMessage {...field} />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  ))}
-                  <Button
-                    className="w-full mt-4"
-                    variant="outline"
-                    onClick={addNewField}
-                  >
-                    <IoIosAdd className="text-xl" />
-                  </Button>
-                </>
-              )}
-              <div className="mt-5 flex gap-5">
-                {fieldPrimaryKey && (
-                  <Button
-                    variant="outline"
-                    onClick={handleDBFieldDelete}
-                    isLoading={isSchemaUpdating}
-                    className="border-red-500 text-red-500 hover:border-red-700 hover:text-red-700"
-                  >
-                    Delete
-                  </Button>
+                                {el.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="mt-4">
+                  <FormField
+                    control={form.control}
+                    name="require"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="self-start">Required</FormLabel>
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="mt-4 w-full">
+                  <FormField
+                    control={form.control}
+                    name="placeholder"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Placeholder</FormLabel>
+                        <FormControl>
+                          <Input placeholder="John Doe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                {isSingleOrMultiSelect && (
+                  <>
+                    {fields.map((dynamicField, index) => (
+                      <div
+                        className="flex items-center space-x-2 mt-3 group"
+                        key={index}
+                      >
+                        <FormField
+                          key={index}
+                          control={form.control}
+                          name={`selectOptions.${index}.option`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col w-full">
+                              <FormLabel className="flex items-center">
+                                Option {index + 1}
+                                <span
+                                  className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
+                                  onClick={() => handleFieldDelete(index)}
+                                >
+                                  <MdDeleteForever className="text-md text-red-600" />
+                                </span>
+                              </FormLabel>
+                              <FormControl>
+                                <Input className="w-full" {...field} />
+                              </FormControl>
+                              <FormMessage {...field} />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    ))}
+                    <Button
+                      className="w-full mt-4"
+                      variant="outline"
+                      onClick={addNewField}
+                    >
+                      <IoIosAdd className="text-xl" />
+                    </Button>
+                  </>
                 )}
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    form.reset();
-                    resetFormState();
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button isLoading={isSchemaUpdating} type="submit">
-                  Save
-                </Button>
-              </div>
-            </form>
-          </FormProvider>
+                <div className="mt-5 flex gap-5">
+                  {fieldPrimaryKey && (
+                    <Button
+                      variant="outline"
+                      onClick={handleDBFieldDelete}
+                      isLoading={isSchemaUpdating}
+                      className="border-red-500 text-red-500 hover:border-red-700 hover:text-red-700"
+                    >
+                      Delete
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      form.reset();
+                      resetFormState();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button isLoading={isSchemaUpdating} type="submit">
+                    Save
+                  </Button>
+                </div>
+              </form>
+            </FormProvider>
+          </motion.div>
         ) : (
           <div className="flex justify-center items-center h-full">
             Please select a field to edit

@@ -1,7 +1,7 @@
 import { cn } from "@app/ui/lib/utils";
 import { useRef } from "react";
 import { useDrag } from "react-dnd";
-import { IFormInput } from "@app/views/form";
+import { DROP_FIELD } from "../constants";
 
 interface Prop {
   label: string;
@@ -11,7 +11,7 @@ interface Prop {
 export const Fields = ({ label, value }: Prop) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: "FIELD",
+    type: DROP_FIELD,
     item: { id: value },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),

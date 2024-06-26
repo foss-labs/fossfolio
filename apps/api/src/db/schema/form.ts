@@ -1,33 +1,33 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import type { SystemFields } from "../../utils/db";
+import type { SystemFields } from '../../utils/db';
 
 export const FormSchema = z.object({
-  id: z.string().length(25),
+	id: z.string().length(25),
 
-  fk_event_id: z.string().length(25),
+	fk_event_id: z.string().length(25),
 
-  title: z.string().min(3).max(255),
+	title: z.string().min(3).max(255),
 
-  description: z.string(),
+	description: z.string(),
 
-  logo_url: z.string().url().optional(),
+	logo_url: z.string().url().optional(),
 
-  banner_url: z.string().url().optional(),
+	banner_url: z.string().url().optional(),
 
-  confirmation_message: z.string().optional(),
+	confirmation_message: z.string().optional(),
 
-  misc: z.record(z.unknown()).optional(),
+	misc: z.record(z.unknown()).optional(),
 
-  is_default_form: z.boolean().default(true),
+	is_default_form: z.boolean().default(true),
 
-  is_published: z.boolean().default(false),
+	is_published: z.boolean().default(false),
 
-  is_deleted: z.boolean().default(false),
+	is_deleted: z.boolean().default(false),
 
-  created_at: z.date(),
+	created_at: z.date(),
 
-  updated_at: z.date(),
+	updated_at: z.date(),
 });
 
 export type Form = z.infer<typeof FormSchema>;
