@@ -4,4 +4,11 @@ export const NewFormSchema = z.object({
 	description: z.string(),
 });
 
+export const updateFormSchema = z.object({
+	title: z.string().optional(),
+	description: z.string().optional(),
+});
+
 export type NewFormDto = z.infer<typeof NewFormSchema>;
+
+export type UpdateFormDto = z.infer<typeof updateFormSchema>;

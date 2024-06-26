@@ -23,7 +23,7 @@ import { Button } from "@app/components/ui/Button";
 import { useFormState } from "@app/store/useFormState";
 import { MdDeleteForever } from "react-icons/md";
 import { IoIosAdd } from "react-icons/io";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useAddSchema } from "@app/hooks/api/form";
 import { motion } from "framer-motion";
 

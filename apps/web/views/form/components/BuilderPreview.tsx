@@ -5,10 +5,12 @@ import { IFormInput } from "@app/views/form";
 import { RenderField } from "./RenderField";
 import { useFormState } from "@app/store/useFormState";
 import { useFormSchema } from "@app/hooks/api/form";
-import { FormResponse } from "@app/hooks/api/form/useFormSchema";
+import { Schema } from "@app/hooks/api/form/useFormSchema";
 import Image from "next/image";
 import { DROP_FIELD } from "../constants";
 import { convert2base64 } from "@app/utils";
+import { Input } from "@app/ui/components/input";
+import { FormDescription } from "./FormDescription";
 
 export const BuilderPreview = () => {
   const {
@@ -37,7 +39,7 @@ export const BuilderPreview = () => {
   }));
   drop(ref);
 
-  const handleFieldEdit = (field: FormResponse) => {
+  const handleFieldEdit = (field: Schema) => {
     setFormState({
       isRequired: field.required,
       activeField: field.type,
@@ -74,7 +76,7 @@ export const BuilderPreview = () => {
   return (
     <div className="bg-white p-12 h-10">
       <div
-        className="relative bg-gray-200 rounded-lg image-container"
+        className="relative bg-gray-200 rounded-lg image-container bottom-10"
         onDrop={onFileUpload}
       >
         {previewUrl ? (
@@ -103,11 +105,17 @@ export const BuilderPreview = () => {
         )}
       </div>
       <section className="shadow-md border border-gray-300 h-[calc(100%-195px)] rounded-md overflow-y-scroll px-4 py-6  sm:max-w-[300px] md:max-w-[450px] lg:max-w-[650px] absolute w-full left-100 lg:left-0 lg:right-20 mx-auto bg-white bottom-5 top-32">
+        {data?.data && (
+          <FormDescription
+            title={data?.data.title}
+            description={data?.data.description}
+          />
+        )}
         {data &&
-          data?.map((field) => (
+          data.schema?.map((field) => (
             <div
               key={field.id}
-              className="hover:cursor-pointer!"
+              className="hover:cursor-pointer! mt-3"
               onClick={() => handleFieldEdit(field)}
             >
               <RenderField
@@ -140,7 +148,7 @@ export const BuilderPreview = () => {
           <div
             ref={ref}
             className={cn(
-              "border-dotted py-4 grid place-content-center rounded-lg border-2 border-black",
+              "border-dotted py-4 grid place-content-center rounded-lg border-2 border-black ",
               isOver && "border-red-600"
             )}
           >

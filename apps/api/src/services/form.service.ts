@@ -9,7 +9,7 @@ import { FormFieldOptionsModel, FormFieldsModel, FormModel } from '@api/models';
 import { CreateFormFieldDto, EditFormFieldDto } from '@api/dto/form-field.dto';
 import { SystemTable } from '@api/utils/db';
 import { FFError } from '@api/utils/error';
-import { NewFormDto } from '@api/dto/form.dto';
+import { NewFormDto, UpdateFormDto } from '@api/dto/form.dto';
 
 @Injectable()
 export class FormService {
@@ -27,6 +27,16 @@ export class FormService {
 			...data,
 			fk_event_id: eventId,
 		});
+	}
+
+	async updateForm(data: UpdateFormDto, eventid: string, formid: string) {
+		return await FormModel.update(
+			{
+				id: formid,
+				fk_event_id: eventid,
+			},
+			data,
+		);
 	}
 
 	async deleteFormField(fieldId: string) {

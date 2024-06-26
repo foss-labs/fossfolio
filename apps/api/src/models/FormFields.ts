@@ -5,6 +5,7 @@ import { SystemTable } from '@api/utils/db';
 import { Knex } from 'knex';
 import BaseContext from '@api/BaseContext';
 import { FFError } from '@api/utils/error';
+import { FormModel } from './Form';
 
 export class FormFieldsModel extends BaseModel<
 	SystemTable.FormFields,
@@ -18,7 +19,7 @@ export class FormFieldsModel extends BaseModel<
 	public static async getFieldWithOptions(formId: string, trx?: Knex) {
 		try {
 			const qb = trx ?? BaseContext.knex;
-			return await qb(SystemTable.FormFields)
+			const schema = await qb(SystemTable.FormFields)
 				.select(
 					'*',
 					BaseContext.knex.raw(
@@ -27,6 +28,13 @@ export class FormFieldsModel extends BaseModel<
 				)
 				.where('fk_form_id', formId)
 				.andWhere('is_deleted', false);
+
+			const formInfo = await FormModel.findById(formId);
+
+			return {
+				schema,
+				data: formInfo,
+			};
 		} catch (error) {
 			FFError.databaseError(
 				`${SystemTable.FormFields}: Query Failed : `,

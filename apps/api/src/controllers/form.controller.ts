@@ -28,7 +28,12 @@ import { Role } from '@api/utils/db';
 import { EventTicketModel } from '@api/models';
 import { User } from '@api/db/schema';
 import type { ToggleFormPublishStatus } from '../services/dto/publish-form.dto';
-import { NewFormDto, NewFormSchema } from '@api/dto/form.dto';
+import {
+	NewFormDto,
+	NewFormSchema,
+	UpdateFormDto,
+	updateFormSchema,
+} from '@api/dto/form.dto';
 
 @Controller('/events')
 @ApiTags('Events-Form')
@@ -61,6 +66,21 @@ export class FormController {
 		@Param('eventId') eventId: string,
 	) {
 		return await this.form.createNewForm(data, eventId);
+	}
+
+	@Patch('/form/:orgId/:eventId/:formId')
+	@Roles(Role.ADMIN, Role.EDITOR)
+	@ApiOperation({ summary: 'update specific form' })
+	@ZodValidator({
+		body: updateFormSchema,
+	})
+	@UseGuards(AuthGuard('jwt'), RbacGuard)
+	async updateForm(
+		@Body() data: UpdateFormDto,
+		@Param('eventId') eventId: string,
+		@Param('formId') formId: string,
+	) {
+		return await this.form.updateForm(data, eventId, formId);
 	}
 
 	@Get('/form/:orgId/schema/:formId')

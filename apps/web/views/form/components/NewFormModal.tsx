@@ -17,34 +17,27 @@ import {
   FormLabel,
   FormMessage,
 } from "@app/ui/components/form";
-import * as yup from "yup";
 import { useAddForm } from "@app/hooks/api/form";
+import { NewFormSchema, NewFormValidationSchema } from "./common";
 
 type IModal = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-const Schema = yup.object().shape({
-  title: yup.string().required(),
-  description: yup.string().required().max(25),
-});
-
-type ISchema = yup.InferType<typeof Schema>;
-
 export const NewFormDialog = ({ isOpen, onClose }: IModal) => {
   const { isLoading, mutate: addNewForm } = useAddForm();
 
-  const form = useForm<ISchema>({
+  const form = useForm<NewFormSchema>({
     mode: "onSubmit",
-    resolver: yupResolver(Schema),
+    resolver: yupResolver(NewFormValidationSchema),
     defaultValues: {
       description: "",
       title: "",
     },
   });
 
-  const onUserSubMit: SubmitHandler<ISchema> = async (val) => {
+  const onUserSubMit: SubmitHandler<NewFormSchema> = async (val) => {
     await addNewForm(val);
     onClose();
   };

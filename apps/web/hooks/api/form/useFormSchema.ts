@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { apiHandler } from "@app/config";
 import { IFormInput } from "@app/views/form";
+import { AllForms } from "@app/types";
 
-export interface FormResponse {
+export interface Schema {
   id: string;
   fk_form_id: string;
   name: string;
@@ -18,8 +19,13 @@ export interface FormResponse {
   options?: Array<string>;
 }
 
-const getForm = async (id: string, eventid: string) => {
-  const { data } = await apiHandler.get(`/events/form/${id}/schema/${eventid}`);
+export interface FormResponse {
+  schema: Schema[];
+  data: AllForms;
+}
+
+const getForm = async (id: string, formId: string) => {
+  const { data } = await apiHandler.get(`/events/form/${id}/schema/${formId}`);
   return data;
 };
 
@@ -27,7 +33,7 @@ export const useFormSchema = () => {
   const router = useRouter();
   const { id, eventid, formid } = router.query;
   const [Id, setId] = useState("");
-  const [eventPk, seteventid] = useState("");
+  const [formPk, setFormId] = useState("");
   const formQueryKey = ["events", "form", eventid, formid];
 
   useEffect(() => {
@@ -35,14 +41,14 @@ export const useFormSchema = () => {
 
     if (router.isReady) {
       setId(id as string);
-      seteventid(formid as string);
+      setFormId(formid as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
-  const events = useQuery<FormResponse[]>({
+  const events = useQuery<FormResponse>({
     queryKey: formQueryKey,
-    queryFn: () => getForm(Id, eventPk),
+    queryFn: () => getForm(Id, formPk),
     // query is disabled until the query param is available
     enabled: !!Id,
   });
