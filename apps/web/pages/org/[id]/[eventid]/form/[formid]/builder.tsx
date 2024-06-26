@@ -13,10 +13,12 @@ import {
 } from "@app/views/form";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useMediaQuery } from "@app/hooks";
 
 const Form: NextPageWithLayout = () => {
   const { isLoading } = useFormSchema();
   const [prompt, setPrompt] = useState<string>("");
+  const isPhoneScreen = useMediaQuery("(max-width: 767px)");
   const [isFormLoading, setFormLoading] = useState(false);
   const [tempForm, setTempForm] = useState<Iform[]>([]);
   const [messages, setMessages] = useState<
@@ -51,6 +53,14 @@ const Form: NextPageWithLayout = () => {
 
   if (isLoading) {
     return <Loader />;
+  }
+
+  if (isPhoneScreen) {
+    return (
+      <div className="h-screen grid place-content-center">
+        <h4>Mobile Screen not supported</h4>
+      </div>
+    );
   }
 
   return (
