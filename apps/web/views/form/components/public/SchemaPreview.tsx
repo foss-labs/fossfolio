@@ -9,14 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@app/ui/components/card";
-import { Checkbox } from "@app/ui/components/checkbox";
-import { Input } from "@app/ui/components/input";
-import { Textarea } from "@app/ui/components/textarea";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useFormSchema } from "@app/hooks/api/form";
-import { RenderField } from "./RenderField";
+import { RenderField } from "../builder/RenderField";
 
 type Prop = {
   data: Array<Iform>;
@@ -107,86 +104,6 @@ export const SchemaPreview = ({
           {(data ?? []).map((el) => (
             <div key={el.id}>
               <RenderField fieldProperty={{ ...el }} />
-              {el.type === "Number" && (
-                <Input
-                  type="number"
-                  placeholder={el.placeholder}
-                  required={el.required}
-                  name={el.id}
-                />
-              )}
-              {el.type === "SingleLineText" && (
-                <Input
-                  type="text"
-                  placeholder={el.placeholder}
-                  required={el.required}
-                  name={el.id}
-                />
-              )}
-              {el.type === "Checkbox" && (
-                <Checkbox required={el.required} name={el.id} />
-              )}
-              {el.type === "Email" && (
-                <Input
-                  placeholder={el.placeholder}
-                  type="email"
-                  required={el.required}
-                  name={el.id}
-                />
-              )}
-              {el.type === "PhoneNumber" && (
-                <Input
-                  placeholder={el.placeholder}
-                  type="phoneNumber"
-                  required={el.required}
-                  name={el.id}
-                />
-              )}
-              {el.type === "URL" && (
-                <Input
-                  placeholder={el.placeholder}
-                  type="url"
-                  required={el.required}
-                  name={el.id}
-                />
-              )}
-              {el.type === "SingleSelect" && (
-                <Select required={el.required} name={el.id}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder={el.placeholder} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {el.selectOptions?.map((option) => (
-                      <SelectItem value={option.option} key={option.option}>
-                        {option.option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-              {el.type === "MultiSelect" && (
-                <>
-                  <Multiselect
-                    options={el.selectOptions?.map((o) => ({
-                      name: o.option,
-                      id: o.option,
-                    }))}
-                    selectedValues={el.options}
-                    onSelect={(e) => el.options?.push(e)}
-                    onRemove={(e) =>
-                      el.options?.splice(el.options?.indexOf(e), 1)
-                    }
-                    displayValue="name"
-                  />
-                </>
-              )}
-              {el.type === "LongText" && (
-                <Textarea
-                  placeholder={el.placeholder}
-                  required={el.required}
-                  name={el.id}
-                />
-              )}
             </div>
           ))}
           <Button type="submit" className="mt-5 w-full">

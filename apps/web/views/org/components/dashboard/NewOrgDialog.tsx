@@ -22,7 +22,14 @@ type IModal = {
 
 // add page names here when ever
 // new pages are created
-const excludedSlug = ["org", "events", "verify"];
+const excludedSlug = [
+  "org",
+  "events",
+  "verify",
+  "tickets",
+  "dashboard",
+  "verify",
+];
 
 const Schema = yup.object().shape({
   name: yup.string().required(),
@@ -112,8 +119,12 @@ export const NewOrgDialog = ({ isOpen, onClose }: IModal) => {
                 </span>
               </div>
               <div className="flex flex-col gap-3 mt-4">
-                <Button type="submit" disabled={isSubmitting ? true : false}>
-                  {isSubmitting ? "..." : "Create organisation"}
+                <Button
+                  type="submit"
+                  disabled={isSubmitting ? true : false}
+                  isLoading={isSubmitting}
+                >
+                  Create organization
                 </Button>
               </div>
             </form>
