@@ -47,10 +47,7 @@ export class FormController {
 	@Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
 	@ApiOperation({ summary: 'get all form of a specific event' })
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
-	async getAllForms(
-		@Param('eventId') eventId: string,
-		@Param('formId') formId: string,
-	) {
+	async getAllForms(@Param('eventId') eventId: string) {
 		return await this.form.getAllForm(eventId);
 	}
 
@@ -134,7 +131,7 @@ export class FormController {
 		);
 	}
 
-	@Patch('/form/:orgId/schema/:formId')
+	@Post('/form/:orgId/schema/:formId')
 	@Roles(Role.ADMIN, Role.EDITOR)
 	@ApiOperation({ summary: 'Create form schema from form builder' })
 	@ZodValidator({

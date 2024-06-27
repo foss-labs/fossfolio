@@ -64,7 +64,7 @@ const Form: NextPageWithLayout = () => {
   }
 
   return (
-    <div className="pt-4 pr-3 grid grid-cols-[1.4fr_5.8fr_1.8fr] w-full fixed">
+    <div className="pt-4 pr-3 grid grid-cols-[1fr_6.2fr_1.8fr] lg:grid-cols-[1.4fr_5.8fr_1.8fr] w-full fixed">
       <DndProvider backend={HTML5Backend}>
         <AvailableFields />
         <BuilderPreview />

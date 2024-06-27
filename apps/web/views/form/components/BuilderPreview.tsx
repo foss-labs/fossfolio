@@ -9,8 +9,8 @@ import { Schema } from "@app/hooks/api/form/useFormSchema";
 import Image from "next/image";
 import { DROP_FIELD } from "../constants";
 import { convert2base64 } from "@app/utils";
-import { Input } from "@app/ui/components/input";
 import { FormDescription } from "./FormDescription";
+import { motion } from "framer-motion";
 
 export const BuilderPreview = () => {
   const {
@@ -39,7 +39,11 @@ export const BuilderPreview = () => {
   }));
   drop(ref);
 
-  const handleFieldEdit = (field: Schema) => {
+  const handleFieldEdit = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    field: Schema
+  ) => {
+    e.stopPropagation();
     setFormState({
       isRequired: field.required,
       activeField: field.type,
@@ -50,7 +54,10 @@ export const BuilderPreview = () => {
     });
   };
 
-  const handleCoverImageClick = () => {
+  const handleCoverImageClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
     document.getElementById("cover-image-selector")?.click();
   };
 
@@ -74,7 +81,7 @@ export const BuilderPreview = () => {
   };
 
   return (
-    <div className="bg-white p-12 h-10">
+    <div className="bg-white p-12 border h-full">
       <div
         className="relative bg-gray-200 rounded-lg image-container bottom-10"
         onDrop={onFileUpload}
@@ -104,7 +111,7 @@ export const BuilderPreview = () => {
           </div>
         )}
       </div>
-      <section className="shadow-md border border-gray-300 h-[calc(100%-195px)] rounded-md overflow-y-scroll px-4 py-6  sm:max-w-[300px] md:max-w-[450px] lg:max-w-[650px] absolute w-full left-100 lg:left-0 lg:right-20 mx-auto bg-white bottom-5 top-32">
+      <section className="shadow-md border border-gray-300 h-[calc(100%-165px)]  rounded-md overflow-y-scroll px-4 py-6 w-[45%] left-8 right-28 top-24 mx-auto bg-white absolute">
         {data?.data && (
           <FormDescription
             title={data?.data.title}
@@ -113,10 +120,16 @@ export const BuilderPreview = () => {
         )}
         {data &&
           data.schema?.map((field) => (
-            <div
+            <motion.div
               key={field.id}
-              className="hover:cursor-pointer! mt-3"
-              onClick={() => handleFieldEdit(field)}
+              onClick={(e) => handleFieldEdit(e, field)}
+              className={cn(
+                "hover:cursor-pointer! mt-3",
+                fieldPrimaryKey === field.id &&
+                  "bg-gray-100 border rounded-md p-6"
+              )}
+              transition={{ duration: 0.3 }}
+              animate={{ scale: fieldPrimaryKey === field.id ? 1.02 : 1 }}
             >
               <RenderField
                 fieldProperty={{
@@ -130,7 +143,7 @@ export const BuilderPreview = () => {
                     : [],
                 }}
               />
-            </div>
+            </motion.div>
           ))}
         {activeField && !fieldPrimaryKey && (
           <RenderField

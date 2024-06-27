@@ -15,11 +15,11 @@ const addSchema = async (
   const options = data.selectOptions?.map((el) => el.option);
 
   if (type === "ADD") {
-    return await apiHandler.patch(`/events/form/${orgId}/schema/${formId}`, {
+    return await apiHandler.post(`/events/form/${orgId}/schema/${formId}`, {
       type: data.type,
-      label: data.label,
+      name: data.label,
       placeholder: data.placeholder,
-      require: data.require,
+      required: data.require,
       options,
     });
   } else if (type === "UPDATE") {
@@ -30,9 +30,9 @@ const addSchema = async (
       `/events/form/${orgId}/schema/${formId}/${fieldId}`,
       {
         type: data.type,
-        label: data.label,
+        name: data.label,
         placeholder: data.placeholder,
-        require: data.require,
+        required: data.require,
         options,
       }
     );

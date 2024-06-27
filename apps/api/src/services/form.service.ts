@@ -55,44 +55,30 @@ export class FormService {
 	}
 
 	async createFormField(data: CreateFormFieldDto, formId: string) {
-		try {
-			const formInfo = await FormModel.findOne({
-				id: formId,
-			});
-			if (!formInfo) {
-				throw FFError.notFound(
-					`${SystemTable.FormFields}: Query Failed : 
+		const formInfo = await FormModel.findOne({
+			id: formId,
+		});
+		if (!formInfo) {
+			throw FFError.notFound(
+				`${SystemTable.FormFields}: Query Failed : 
           form with id ${formId} could not be found`,
-				);
-			}
+			);
+		}
 
-			const newField = await FormFieldsModel.insert({
-				description: '',
-				fk_form_id: formInfo.id,
-				placeholder: data.placeholder,
-				required: data.require,
-				type: data.type,
-				name: data.label,
-			});
+		const { options, ...payload } = data;
 
-			if (data.options) {
-				for (const key of data.options) {
-					await FormFieldOptionsModel.insert({
-						fk_form_id: newField.id,
-						option: key,
-					});
-				}
-			}
+		const newField = await FormFieldsModel.insert({
+			...payload,
+			fk_form_id: formInfo.id,
+		});
 
-			return {
-				ok: true,
-				message: 'Schema added successfully',
-			};
-		} catch (e) {
-			if (e instanceof NotFoundException) {
-				throw new NotFoundException();
+		if (data.options?.length) {
+			for (const key of data.options) {
+				await FormFieldOptionsModel.insert({
+					fk_form_id: newField.id,
+					option: key,
+				});
 			}
-			throw e;
 		}
 	}
 

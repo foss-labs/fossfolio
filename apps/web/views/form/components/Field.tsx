@@ -23,12 +23,12 @@ export const Fields = ({ label, value }: Prop) => {
   return (
     <div
       className={cn(
-        "bg-white rounded-sm py-2 px-5 hover:cursor-grab",
+        "bg-white rounded-sm px-2 py-2 lg:px-5 hover:cursor-grab",
         isDragging && "shadow-lg"
       )}
       ref={ref}
     >
-      <span>{label}</span>
+      <span className="text-sm  lg:text-md">{label}</span>
     </div>
   );
 };
