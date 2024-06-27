@@ -1,23 +1,20 @@
 {
-    "name": "fossfolio",
-    "version": "1.0.0",
-    "private": true,
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
-    "scripts": {
-        "build": "turbo run build",
-        "dev": "turbo run dev --parallel",
-        "lint": "turbo run lint",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "turbo": "turbo",
-        "api-dev": "pnpm --filter api dev",
-        "web-dev": "pnpm --filter web dev"
-    },
-    "devDependencies": {
-        "eslint-config-custom": "*",
-        "prettier": "latest",
-        "turbo": "latest"
-    }
+  "name": "fossfolio",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "turbo": "turbo",
+    "api-dev": "pnpm --filter api dev",
+    "web-dev": "pnpm --filter web dev"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  }
 }

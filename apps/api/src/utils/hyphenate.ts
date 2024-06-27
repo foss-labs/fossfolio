@@ -1,1 +1,3 @@
-export const hyphenete = (text: string) => text.trim().replace(/ /g, '-');
+export const hyphenate = (text: string): string => {
+	return text.trim().replace(/ /g, '-');
+};
