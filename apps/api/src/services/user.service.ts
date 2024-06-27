@@ -12,6 +12,7 @@ import { UserModel } from '@api/models/User';
 import { AccountModel } from '@api/models';
 import type { Profile } from 'passport';
 import type { UpdateUserDto } from './dto/update-user.dto';
+import { stripUndefinedOrNull } from '@api/utils';
 @Injectable()
 export class UserService {
 	constructor(
@@ -82,33 +83,13 @@ export class UserService {
 		return await UserModel.findById(id);
 	}
 
-	async updateUser(authUser: User, updateUserDto: UpdateUserDto) {
-		try {
-			const data = {
-				slug: updateUserDto.slug ? updateUserDto.slug : authUser.slug,
-				photo_url: updateUserDto.photoUrl
-					? updateUserDto.photoUrl
-					: authUser.photo_url,
-				display_name: updateUserDto.displayName
-					? updateUserDto.displayName
-					: authUser.display_name,
-				is_student: Object.hasOwn(updateUserDto, 'isCollegeStudent')
-					? updateUserDto.isCollegeStudent
-					: authUser.is_student,
-				college_name: updateUserDto.collegeName || authUser.college_name,
-			};
-
-			const user = await UserModel.update(
-				{
-					id: authUser.id,
-				},
-				data,
-			);
-
-			return user;
-		} catch (error) {
-			throw new InternalServerErrorException(error);
-		}
+	async updateUser(user: User, updateUserDto: UpdateUserDto) {
+		return await UserModel.update(
+			{
+				id: user.id,
+			},
+			stripUndefinedOrNull(updateUserDto),
+		);
 	}
 
 	async getReservedTickets(id: string) {

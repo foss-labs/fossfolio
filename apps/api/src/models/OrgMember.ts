@@ -15,9 +15,9 @@ export class OrgMemberModel extends BaseModel<
 		super(logger);
 	}
 
-	public static async getMemberRole(userId: string, orgId: String, trx?: Knex) {
+	public static async getMemberRole(userId: string, orgId: string, trx = BaseContext.knex) {
 		try {
-			const qb = trx ?? BaseContext.knex;
+			const qb = trx
 			const userRole = await qb
 				.select('role')
 				.from(SystemTable.OrgMember)
@@ -26,7 +26,7 @@ export class OrgMemberModel extends BaseModel<
 				.andWhere('is_deleted', false)
 				.first();
 
-			if (userRole && userRole.role) {
+			if (userRole?.role) {
 				return userRole.role;
 			}
 		} catch (error) {

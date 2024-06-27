@@ -82,53 +82,51 @@ export class OrganizationService {
 					fk_user_id: userId,
 				});
 
-				await OrgModel.delete({
+				return await OrgModel.delete({
 					id: orgId,
 				});
-			} else {
-				const userRole = await OrgMemberModel.findOne({
+			}
+			const userRole = await OrgMemberModel.findOne({
+				fk_organization_id: orgId,
+				fk_user_id: userId,
+			}).then((el) => el?.role);
+
+			if (userRole !== Role.ADMIN) {
+				await OrgMemberModel.delete({
 					fk_organization_id: orgId,
 					fk_user_id: userId,
-				}).then((el) => el?.role);
+				});
+			} else {
+				// If there is multiple admins just make user leave the org
+				const totalNumberOfAdmins = await OrgMemberModel.count({
+					fk_organization_id: orgId,
+					role: Role.ADMIN,
+				});
 
-				if (userRole !== Role.ADMIN) {
+				if (totalNumberOfAdmins > 1) {
 					await OrgMemberModel.delete({
 						fk_organization_id: orgId,
 						fk_user_id: userId,
 					});
 				} else {
-					// If there is multiple admins just make user leave the org
-					const totalNumberOfAdmins = await OrgMemberModel.count({
+					// if there is only one admin and he is the one leaving the org we should transfer
+					// the org to the first person who joined the org
+					const member = await OrgMemberModel.getMemberWhoWasFirstAdded(orgId);
+
+					await OrgMemberModel.update(
+						{
+							fk_organization_id: orgId,
+							fk_user_id: member,
+						},
+						{
+							role: Role.ADMIN,
+						},
+					);
+
+					await OrgMemberModel.delete({
 						fk_organization_id: orgId,
-						role: Role.ADMIN,
+						fk_user_id: userId,
 					});
-
-					if (totalNumberOfAdmins > 1) {
-						await OrgMemberModel.delete({
-							fk_organization_id: orgId,
-							fk_user_id: userId,
-						});
-					} else {
-						// if there is only one admin and he is the one leaving the org we should transfer
-						// the org to the first person who joined the org
-						const member =
-							await OrgMemberModel.getMemberWhoWasFirstAdded(orgId);
-
-						await OrgMemberModel.update(
-							{
-								fk_organization_id: orgId,
-								fk_user_id: member,
-							},
-							{
-								role: Role.ADMIN,
-							},
-						);
-
-						await OrgMemberModel.delete({
-							fk_organization_id: orgId,
-							fk_user_id: userId,
-						});
-					}
 				}
 			}
 
@@ -145,24 +143,17 @@ export class OrganizationService {
 	}
 
 	async getAllEvents(userId: string, orgId: string) {
-		try {
-			const event = await EventModel.find({
-				fk_organization_id: orgId,
-			});
+		const event = await EventModel.find({
+			fk_organization_id: orgId,
+		});
 
-			const role = await OrgMemberModel.getMemberRole(userId, orgId);
+		// @sreehari2003 Why sending role here? 
+		const role = await OrgMemberModel.getMemberRole(userId, orgId);
 
-			return {
-				event,
-				role,
-			};
-		} catch (e) {
-			return {
-				ok: false,
-				message: 'could not find the events',
-				ERROR: e,
-			};
-		}
+		return {
+			event,
+			role,
+		};
 	}
 
 	async getOrgById(orgId: string) {

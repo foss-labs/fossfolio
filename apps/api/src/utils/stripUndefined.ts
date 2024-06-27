@@ -20,8 +20,7 @@ export const stripUndefinedOrNull = <T>(
 						.reduce((acc, [key, value]) => {
 							acc[key as keyof typeof acc] = strip(value);
 							return acc;
-							// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-						}, {} as any)
+						}, {} as Record<string, unknown>)
 				: input;
 	};
 
