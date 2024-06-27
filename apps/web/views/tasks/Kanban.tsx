@@ -12,17 +12,30 @@ import type { Kanban as KanbanType, Task } from "@app/types";
 import { TaskPane } from "./TaskPane";
 import { useToggle } from "@app/hooks";
 import { useRouter } from "next/router";
-import { Card } from "@app/ui/components/card";
 import { TaskPreviewPane } from "./TaskPreviewPane";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { apiHandler } from "@app/config";
+import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { KanbanTask } from "./KanbanTask";
+import { useUpdateTask } from "@app/hooks/api/kanban";
+import { useDrop } from "react-dnd";
+import clsx from "clsx";
 
 export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
   const [isTaskPaneOpen, setTaskPane] = useToggle(false);
   const [isPreviewPaneOpen, setTaskPreviewPane] = useToggle(false);
 
+  const ref = useRef<HTMLDivElement>(null);
+
+  const updateTask = useUpdateTask();
+  const queryClient = useQueryClient();
+
   const [taskPreview, setTaskPreview] = useState<Task>();
 
   const router = useRouter();
+
+  const { eventid } = router.query;
 
   const addTask = () => {
     router.replace({
@@ -47,6 +60,42 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
     setTaskPane.off();
   };
 
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: "TASK",
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
+    }),
+    drop: (item: any, monitor) => {
+      if (monitor.didDrop()) return;
+
+      if (item.id === id) return;
+      updateTask.mutate({
+        taskId: item.id,
+        newKanbanId: id,
+      });
+    },
+  }));
+
+  // For Fixing the ts issue
+  drop(ref);
+
+  const deleteTask = async () => {
+    try {
+      await apiHandler.delete(`/events/kanban/${eventid}/${id}`);
+
+      toast.success("board deleted successfully");
+    } catch {
+      toast.error("Error deleting board");
+    }
+  };
+
+  const { mutate } = useMutation(deleteTask, {
+    onSettled: () => {
+      queryClient.invalidateQueries(["event", "kanban", eventid]);
+    },
+  });
+
   const handlePreviewPane = (data: Task) => {
     setTaskPreview(data);
     setTaskPreviewPane.on();
@@ -62,7 +111,7 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
         description={taskPreview?.Comment || []}
         storageKey={id}
       />
-      <article className="min-h-[700px] w-[300px]">
+      <article className="min-h-[700px] w-[300px]" ref={ref}>
         <div className="p-5 flex justify-between">
           <h3 className="text-start font-bold">
             {title}
@@ -88,7 +137,7 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {}}
-                className="hover:cursor-pointe"
+                className="text-white bg-red-600"
               >
                 Delete
               </DropdownMenuItem>
@@ -96,15 +145,16 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
           </DropdownMenu>
         </div>
 
-        <div className="p-3 gap-2 flex flex-col">
+        <div
+          className={clsx("p-3 gap-2 flex flex-col", isOver && "bg-slate-200")}
+        >
           {tasks.map((data) => (
-            <Card
+            <KanbanTask
               key={data.id}
-              className="rounded-md p-5 hover:cursor-pointer"
-              onClick={() => handlePreviewPane(data)}
-            >
-              <h2>{data.title}</h2>
-            </Card>
+              data={data}
+              setTaskPreview={setTaskPreview}
+              setTaskPreviewPane={setTaskPreviewPane}
+            />
           ))}
           <Button className="w-full mt-3" variant="outline" onClick={addTask}>
             New Task

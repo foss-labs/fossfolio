@@ -23,8 +23,9 @@ import { Button } from "@app/components/ui/Button";
 import { useFormState } from "@app/store/useFormState";
 import { MdDeleteForever } from "react-icons/md";
 import { IoIosAdd } from "react-icons/io";
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useAddSchema } from "@app/hooks/api/form";
+import { motion } from "framer-motion";
 
 const builderSchema = yup.object().shape({
   label: yup.string().required("label is required"),
@@ -52,15 +53,18 @@ export const BuilderConfig = () => {
   const {
     activeField,
     setLabel,
+    label,
+    placeHolder,
     setActiveField,
     setPlaceHolder,
     options,
     setOptions,
+    isRequired,
+    id: fieldPrimaryKey,
     resetFormState,
   } = useFormState();
 
-  const { isLoading: isSchemaUpdating, mutate: addNewFieldToDb } =
-    useAddSchema();
+  const { isLoading: isSchemaUpdating, mutate: mutateFieldDb } = useAddSchema();
 
   const form = useForm<FormValidator>({
     mode: "onBlur",
@@ -79,19 +83,26 @@ export const BuilderConfig = () => {
     form.watch("type") === "SingleSelect" ||
     form.watch("type") === "MultiSelect";
 
-  const addNewField = () => {
+  const addNewField = useCallback(() => {
     if (Object.hasOwn(form.formState.errors, "selectOptions")) {
       return;
-    }
-
-    if (fields.length - 1) {
-      setOptions(options, fields[fields.length - 1]?.option);
     }
 
     append({
       option: "",
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    const allOptions = fields.reduce<string[]>((acc, el) => {
+      if (el.option !== "") {
+        acc.push(el.option);
+      }
+      return acc;
+    }, []);
+
+    setOptions(allOptions);
+  }, [fields]);
 
   const handleFieldDelete = (index: number) => {
     if (fields.length === 1) return;
@@ -104,7 +115,6 @@ export const BuilderConfig = () => {
     } else {
       fields.forEach((_, i) => remove(i));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSingleOrMultiSelect]);
 
   useEffect(() => {
@@ -121,167 +131,237 @@ export const BuilderConfig = () => {
       }
     });
     return () => subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.watch]);
 
   useEffect(() => {
     if (typeof activeField === "string") {
       form.setValue("type", activeField);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeField]);
+
+    if (typeof label === "string") {
+      form.setValue("label", label);
+    }
+
+    if (typeof placeHolder === "string") {
+      form.setValue("placeholder", placeHolder);
+    }
+    if (typeof isRequired === "boolean") {
+      form.setValue("require", isRequired);
+    }
+
+    if (!fields.length && options && options.length) {
+      options.forEach((el) =>
+        append({
+          option: el,
+        })
+      );
+    }
+  }, [activeField, options, label, placeHolder, isRequired]);
 
   useEffect(() => {
     return () => resetFormState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleUpdates: SubmitHandler<FormValidator> = async (data) => {
-    await addNewFieldToDb(data);
+    // field already exist so send patch request
+    if (fieldPrimaryKey) {
+      await mutateFieldDb({
+        data,
+        type: "UPDATE",
+        fieldId: fieldPrimaryKey,
+      });
+    } else {
+      // send
+      await mutateFieldDb({
+        data,
+        type: "ADD",
+      });
+    }
+
+    form.reset();
+    resetFormState();
+  };
+
+  const handleDBFieldDelete = async () => {
+    await mutateFieldDb({
+      data: {},
+      type: "DELETE",
+      fieldId: fieldPrimaryKey as string,
+    });
+    form.reset();
+    resetFormState();
   };
 
   return (
-    <div className="border p-4 bg-gray-100 overflow-y-scroll h-">
+    <div className="border p-4 bg-gray-100 h-screen">
       <h3 className="text-start font-semibold">Settings</h3>
-      <section className="p-2 flex flex-col justify-between h-full max-h-[calc(100%-100px)]">
-        <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(handleUpdates)}>
-            <div className="flex justify-between gap-8">
-              <FormField
-                control={form.control}
-                name="label"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Label</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Field label" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="w-full">
+      <section className="p-2 flex flex-col justify-between h-full max-h-[calc(100%-100px)] overflow-y-scroll">
+        {activeField ? (
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            transition={{
+              ease: "easeIn",
+              duration: 0.5,
+            }}
+            whileInView={{
+              opacity: 1,
+            }}
+          >
+            <FormProvider {...form}>
+              <form onSubmit={form.handleSubmit(handleUpdates)}>
                 <FormField
                   control={form.control}
-                  name="type"
+                  name="label"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel htmlFor="type">Field Type</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={activeField as IFormInput}
-                        value={form.watch("type")}
-                      >
-                        <FormControl>
-                          <SelectTrigger id="type" className="bg-white">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent position="popper">
-                          {InputOption.map((el) => (
-                            <SelectItem
-                              key={el.value as string}
-                              value={el.value as string}
-                            >
-                              {el.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>Label</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Field label" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
-            </div>
-            <div className="flex justify-between gap-8 mt-5">
-              <FormField
-                control={form.control}
-                name="require"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Required</FormLabel>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="placeholder"
-                render={({ field }) => (
-                  <FormItem className="w-[47%]">
-                    <FormLabel>PlaceHolder</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {isSingleOrMultiSelect && (
-              <>
-                {fields.map((dynamicField, index) => (
-                  <div
-                    className="flex items-center space-x-2 mt-3 group"
-                    key={index}
-                  >
-                    <FormField
-                      key={index}
-                      control={form.control}
-                      name={`selectOptions.${index}.option`}
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col w-full">
-                          <FormLabel className="flex items-center">
-                            Option {index + 1}
-                            <span
-                              className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
-                              onClick={() => handleFieldDelete(index)}
-                            >
-                              <MdDeleteForever className="text-md text-red-600" />
-                            </span>
-                          </FormLabel>
+                <div className="w-full mt-4">
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel htmlFor="type">Field Type</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={activeField as IFormInput}
+                          value={form.watch("type")}
+                        >
                           <FormControl>
-                            <Input className="w-full" {...field} />
+                            <SelectTrigger id="type" className="bg-white">
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
                           </FormControl>
-                          <FormMessage {...field} />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                ))}
-                <Button
-                  className="w-full mt-4"
-                  variant="outline"
-                  onClick={addNewField}
-                >
-                  <IoIosAdd className="text-xl" />
-                </Button>
-              </>
-            )}
-            <div className="mt-5 flex gap-5">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  form.reset();
-                  resetFormState();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button isLoading={isSchemaUpdating} type="submit">
-                Save
-              </Button>
-            </div>
-          </form>
-        </FormProvider>
+                          <SelectContent position="popper">
+                            {InputOption.map((el) => (
+                              <SelectItem
+                                key={el.value as string}
+                                value={el.value as string}
+                              >
+                                {el.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="mt-4">
+                  <FormField
+                    control={form.control}
+                    name="require"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="self-start">Required</FormLabel>
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="mt-4 w-full">
+                  <FormField
+                    control={form.control}
+                    name="placeholder"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Placeholder</FormLabel>
+                        <FormControl>
+                          <Input placeholder="John Doe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                {isSingleOrMultiSelect && (
+                  <>
+                    {fields.map((dynamicField, index) => (
+                      <div
+                        className="flex items-center space-x-2 mt-3 group"
+                        key={index}
+                      >
+                        <FormField
+                          key={index}
+                          control={form.control}
+                          name={`selectOptions.${index}.option`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col w-full">
+                              <FormLabel className="flex items-center">
+                                Option {index + 1}
+                                <span
+                                  className="ml-2 self-center hover:cursor-pointer  hidden group-hover:inline"
+                                  onClick={() => handleFieldDelete(index)}
+                                >
+                                  <MdDeleteForever className="text-md text-red-600" />
+                                </span>
+                              </FormLabel>
+                              <FormControl>
+                                <Input className="w-full" {...field} />
+                              </FormControl>
+                              <FormMessage {...field} />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    ))}
+                    <Button
+                      className="w-full mt-4"
+                      variant="outline"
+                      onClick={addNewField}
+                    >
+                      <IoIosAdd className="text-xl" />
+                    </Button>
+                  </>
+                )}
+                <div className="mt-5 flex gap-5">
+                  {fieldPrimaryKey && (
+                    <Button
+                      variant="outline"
+                      onClick={handleDBFieldDelete}
+                      isLoading={isSchemaUpdating}
+                      className="border-red-500 text-red-500 hover:border-red-700 hover:text-red-700"
+                    >
+                      Delete
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      form.reset();
+                      resetFormState();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button isLoading={isSchemaUpdating} type="submit">
+                    Save
+                  </Button>
+                </div>
+              </form>
+            </FormProvider>
+          </motion.div>
+        ) : (
+          <div className="flex justify-center items-center h-full">
+            Please select a field to edit
+          </div>
+        )}
       </section>
     </div>
   );

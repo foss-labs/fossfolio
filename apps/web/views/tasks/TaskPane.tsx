@@ -48,7 +48,7 @@ const defaultEditorContent = {
 export const TaskPane = ({ open, onClose, boardId }: Props) => {
   const titleRef = useRef<any>();
   const router = useRouter();
-  const { pk } = router.query;
+  const { eventid } = router.query;
   const { refetch } = useKanban();
 
   const handleClose = () => {
@@ -58,7 +58,7 @@ export const TaskPane = ({ open, onClose, boardId }: Props) => {
 
   const onSave = async () => {
     try {
-      await apiHandler.post(`/events/kanban/${pk}/${boardId}`, {
+      await apiHandler.post(`/events/kanban/${eventid}/${boardId}`, {
         title: titleRef.current.value,
         data: localStorage.getItem("kanban-editor"),
       });

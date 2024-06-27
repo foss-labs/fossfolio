@@ -13,8 +13,8 @@ export const Events = () => {
 
   const router = useRouter();
   const { id } = router.query;
-  const moveToDashBoard = (pk: string) => {
-    router.push(`/org/${id}/${pk}/event`);
+  const moveToDashBoard = (eventid: string) => {
+    router.push(`/org/${id}/${eventid}/event`);
   };
 
   if (isLoading) {

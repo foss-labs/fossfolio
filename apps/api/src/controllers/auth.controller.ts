@@ -16,6 +16,7 @@ import { AuthUser } from '@api/services/auth/decorators/user.decorator';
 import { User } from '@api/db/schema';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
+import { FFError } from '@api/utils/error';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -49,26 +50,16 @@ export class AuthController {
 	async googleOAuthMobileCallback(
 		@Response() res: EResponse,
 		// Id token is for the mobile app auth
-		@Query('token') idToken: string,
+		@Query('token') token: string,
 	) {
-		let authToken: {
-			accessToken: string;
-			refreshToken: string;
-		};
-		if (idToken) {
-			authToken = await this.authService.verifyGoogleId(idToken);
-			res.setHeader('Authorization', `Bearer ${authToken.accessToken}`);
-			res.setHeader('Refresh-Token', authToken.refreshToken);
-			return res.status(200).json({
-				ok: true,
-				message: 'login successful',
-			});
-		} else {
-			return res.status(401).json({
-				ok: false,
-				message: 'No token provided',
-			});
+		if (!token) {
+			FFError.unauthorized('Authentication Failure');
 		}
+		const authToken = await this.authService.verifyGoogleId(token);
+		res.setHeader('Authorization', `Bearer ${authToken.accessToken}`);
+		res.setHeader('Refresh-Token', authToken.refreshToken);
+		
+		res.status(200).send()
 	}
 
 	@Get('/google/callback')

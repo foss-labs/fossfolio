@@ -15,9 +15,9 @@ export const FormSchema = z.object({
 
 	banner_url: z.string().url().optional(),
 
-	confirmation_message: z.string(),
+	confirmation_message: z.string().optional(),
 
-	misc: z.record(z.unknown()),
+	misc: z.record(z.unknown()).optional(),
 
 	is_default_form: z.boolean().default(true),
 

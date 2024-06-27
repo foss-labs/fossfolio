@@ -261,9 +261,8 @@ export class OrgEventsService {
 	private aggregateCountsByDay(responses: Insights[]) {
 		const aggregatedCounts = {};
 
-		responses.forEach((response) => {
-			// Extract the date part from createdAt
-			const date = new Date(response.createdAt).toISOString().split('T')[0];
+		for (const res of responses) {
+			const date = new Date(res.createdAt).toISOString().split('T')[0];
 
 			// Initialize count for the day if not exists
 			if (!aggregatedCounts[date]) {
@@ -271,8 +270,8 @@ export class OrgEventsService {
 			}
 
 			// Add count to the existing count for the day
-			aggregatedCounts[date] += response._count;
-		});
+			aggregatedCounts[date] += res._count;
+		}
 
 		return aggregatedCounts;
 	}

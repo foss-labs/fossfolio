@@ -15,7 +15,7 @@ import { RbacGuard } from '@api/services/guards/rbac-member.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/cloud')
-@ApiTags('AWS - Cloud')
+@ApiTags('Cloud')
 export class CloudController {
 	constructor(private readonly s3Service: S3Service) {}
 

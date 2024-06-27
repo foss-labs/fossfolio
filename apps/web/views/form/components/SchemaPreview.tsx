@@ -36,11 +36,11 @@ export const SchemaPreview = ({
   const { refetch: refetchStatus } = useUserRegistrationStatus();
   const { refetch } = useFormSchema();
   const router = useRouter();
-  const { pk, id } = router.query;
+  const { eventid, id } = router.query;
 
   const bulkDeleteFormPreview = async () => {
     try {
-      await apiHandler.delete(`events/form/bulk-delete/${pk}`, {
+      await apiHandler.delete(`events/form/bulk-delete/${eventid}`, {
         data: {
           organizationId: id,
         },

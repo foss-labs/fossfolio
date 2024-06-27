@@ -3,3 +3,4 @@ export { useToggle } from "./useToggle";
 export { useAuth } from "./useAuth";
 export { useRoles } from "./useRoles";
 export { useMediaQuery } from "./useMediaQuery";
+export { useOutsideClick } from "./useOutsideClick";

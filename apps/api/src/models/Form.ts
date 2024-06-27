@@ -18,12 +18,14 @@ export class FormModel extends BaseModel<SystemTable.Form, Form>(
 		try {
 			const qb = trx ?? BaseContext.knex;
 
-			const data = await qb<SystemTable.Form>(SystemTable.Form).select(
-				'*',
-				qb.raw(
-					`(SELECT COUNT(*)::integer FROM ${SystemTable.FormResponse} e WHERE e.fk_form_id = ${SystemTable.Form}.id AND e.is_deleted = false) as total_submissions`,
-				),
-			);
+			const data = await qb<SystemTable.Form>(SystemTable.Form)
+				.select(
+					'*',
+					qb.raw(
+						`(SELECT COUNT(*)::integer FROM ${SystemTable.FormResponse} e WHERE e.fk_form_id = ${SystemTable.Form}.id AND e.is_deleted = false) as total_submissions`,
+					),
+				)
+				.orderBy('created_at', 'asc');
 
 			return data;
 		} catch (error) {

@@ -18,18 +18,18 @@ const updateTaskKanbanId = async ({
 export const useUpdateTask = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { pk } = router.query;
+  const { eventid } = router.query;
 
   return useMutation(updateTaskKanbanId, {
     onMutate: async ({ taskId, newKanbanId }) => {
       const previousKanban = queryClient.getQueryData<KanbanResponse>([
         "event",
         "kanban",
-        pk,
+        eventid,
       ]);
 
       queryClient.setQueryData<KanbanResponse>(
-        ["event", "kanban", pk],
+        ["event", "kanban", eventid],
         // @ts-ignore
         (old: KanbanResponse) => {
           if (!old) return old;
@@ -64,10 +64,13 @@ export const useUpdateTask = () => {
       return { previousKanban };
     },
     onError: (_, __, context: any) => {
-      queryClient.setQueryData(["event", "kanban", pk], context.previousKanban);
+      queryClient.setQueryData(
+        ["event", "kanban", eventid],
+        context.previousKanban
+      );
     },
     onSettled: () => {
-      queryClient.invalidateQueries(["event", "kanban", pk]);
+      queryClient.invalidateQueries(["event", "kanban", eventid]);
     },
   });
 };

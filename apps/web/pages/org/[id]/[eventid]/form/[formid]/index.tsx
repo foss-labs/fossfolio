@@ -9,7 +9,7 @@ export async function getServerSideProps(ctx: any) {
   const url = ctx.req.url as string;
   const length = url.split("/").length;
   const formId = url.split("/")[length - 1];
-  const pk = url.split("/")[length - 2];
+  const eventid = url.split("/")[length - 2];
   const orgId = url.split("/")[length - 3];
   if (!accesToken) {
     return {
@@ -22,7 +22,7 @@ export async function getServerSideProps(ctx: any) {
 
   return {
     redirect: {
-      destination: `/org/${orgId}/${pk}/form/${formId}/builder`,
+      destination: `/org/${orgId}/${eventid}/form/${formId}/builder`,
       permanent: false,
     },
   };

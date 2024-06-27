@@ -8,7 +8,7 @@ export async function getServerSideProps(ctx: any) {
   const accesToken = ctx.req.cookies["access_token"];
   const url = ctx.req.url as string;
   const length = url.split("/").length;
-  const pk = url.split("/")[length - 1];
+  const eventid = url.split("/")[length - 1];
   const orgId = url.split("/")[length - 2];
   if (!accesToken) {
     return {
@@ -21,7 +21,7 @@ export async function getServerSideProps(ctx: any) {
 
   return {
     redirect: {
-      destination: `/org/${orgId}/${pk}/event`,
+      destination: `/org/${orgId}/${eventid}/event`,
       permanent: false,
     },
   };

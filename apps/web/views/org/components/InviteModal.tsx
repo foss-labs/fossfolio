@@ -9,9 +9,9 @@ import { BiCopy } from "react-icons/bi";
 import { toast } from "sonner";
 
 /*
-  this only works in local , inorder to prevent unwanted use of email sending when we 
-  send user invite in local this modal will appear with the invite link u can copy paste this into amother
-  icognito tab
+  this only works in local , in-order to prevent unwanted use of email sending when we 
+  send user invite in local this modal will appear with the invite link u can copy paste this into another
+  incognita tab
 */
 
 type ILink = {

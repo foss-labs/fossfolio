@@ -34,31 +34,22 @@ export class EventsService {
 		user: User;
 		orgId: string;
 	}) {
-		const isEventWithSlugExist = await EventModel.find({
+		const totalEventCount = await EventModel.count({
 			slug: hyphenate(newEvent.name),
 		});
 
 		let slug: string;
 
-		if (isEventWithSlugExist.length) {
-			const totalEventCount = await EventModel.count({
-				slug: newEvent.name,
-			});
-			slug = `${newEvent.name}-${totalEventCount}`;
-			slug = hyphenate(slug);
+		if (totalEventCount > 0) {
+			slug = hyphenate(`${newEvent.name}-${totalEventCount + 1}`);
 		} else {
 			slug = hyphenate(newEvent.name);
 		}
 
 		const event = await EventModel.insert({
+			...newEvent,
 			fk_organization_id: orgId,
-			name: newEvent.name,
-			website: newEvent.website,
-			location: newEvent.location,
 			slug,
-			event_date: newEvent.event_date,
-			description: newEvent.description ?? '',
-			cover_image: newEvent.cover_image,
 		});
 
 		// Creating an Event will create a default Form
@@ -67,7 +58,6 @@ export class EventsService {
 			title: 'Default Form',
 			description: 'Default Form Description',
 			confirmation_message: 'This message is shown after form submission',
-			misc: {},
 			is_default_form: true,
 		});
 
@@ -75,7 +65,7 @@ export class EventsService {
 		await KanbanModal.insertMany([
 			{
 				fk_event_id: event.id,
-				title: 'ToDo',
+				title: 'Todo',
 			},
 			{
 				fk_event_id: event.id,

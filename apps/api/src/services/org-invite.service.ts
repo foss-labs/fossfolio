@@ -29,7 +29,7 @@ export class OrganizationInviteService {
 					invitee_email: email,
 				});
 			}
-			let inviteUrl;
+			let inviteUrl: string;
 			// transaction
 			await BaseContext.knex.transaction(async (tx) => {
 				const inviteId = await OrgInviteModel.insert(

@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { apiHandler } from "@app/config";
 import { IFormInput } from "@app/views/form";
+import { AllForms } from "@app/types";
 
-interface FormResponse {
+export interface Schema {
   id: string;
   fk_form_id: string;
   name: string;
@@ -15,33 +16,39 @@ interface FormResponse {
   is_deleted: boolean;
   created_at: Date;
   updated_at: Date;
+  options?: Array<string>;
 }
 
-const getForm = async (id: string, pk: string) => {
-  const { data } = await apiHandler.get(`/events/form/${id}/schema/${pk}`);
+export interface FormResponse {
+  schema: Schema[];
+  data: AllForms;
+}
+
+const getForm = async (id: string, formId: string) => {
+  const { data } = await apiHandler.get(`/events/form/${id}/schema/${formId}`);
   return data;
 };
 
 export const useFormSchema = () => {
   const router = useRouter();
-  const { id, pk, formid } = router.query;
+  const { id, eventid, formid } = router.query;
   const [Id, setId] = useState("");
-  const [Pk, setPk] = useState("");
-  const formQueryKey = ["events", "form", pk, formid];
+  const [formPk, setFormId] = useState("");
+  const formQueryKey = ["events", "form", eventid, formid];
 
   useEffect(() => {
     // id is the primary key of org
 
     if (router.isReady) {
       setId(id as string);
-      setPk(formid as string);
+      setFormId(formid as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
-  const events = useQuery<FormResponse[]>({
+  const events = useQuery<FormResponse>({
     queryKey: formQueryKey,
-    queryFn: () => getForm(Id, Pk),
+    queryFn: () => getForm(Id, formPk),
     // query is disabled until the query param is available
     enabled: !!Id,
   });

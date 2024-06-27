@@ -24,11 +24,11 @@ export const useEventStats = () => {
 
   useEffect(() => {
     // id is the primary key of event in events page
-    // pk is the primary key of event in org dashboard page
+    // eventid is the primary key of event in org dashboard page
 
     if (router.isReady) {
-      const { pk } = router.query;
-      setId(pk as string);
+      const { eventid } = router.query;
+      setId(eventid as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
