@@ -10,6 +10,7 @@ import { CreateFormFieldDto, EditFormFieldDto } from '@api/dto/form-field.dto';
 import { SystemTable } from '@api/utils/db';
 import { FFError } from '@api/utils/error';
 import { NewFormDto, UpdateFormDto } from '@api/dto/form.dto';
+import { FieldType } from '@prisma/client';
 
 @Injectable()
 export class FormService {
@@ -55,31 +56,40 @@ export class FormService {
 	}
 
 	async createFormField(data: CreateFormFieldDto, formId: string) {
+		// TODO - @Sreehari2003. Create a global middleware
+		// We have the orgId, eventId, formId or something which we can use to get the OrgMemberRole.
+		// Handle If it exists and all access related in the single global middleware
 		const formInfo = await FormModel.findOne({
 			id: formId,
 		});
+
 		if (!formInfo) {
-			throw FFError.notFound(
+			FFError.notFound(
 				`${SystemTable.FormFields}: Query Failed : 
           form with id ${formId} could not be found`,
 			);
 		}
 
-		const { options, ...payload } = data;
-
-		const newField = await FormFieldsModel.insert({
-			...payload,
-			fk_form_id: formInfo.id,
+		const field = await FormFieldsModel.insert({
+			...data,
+			fk_form_id: formId,
 		});
 
-		if (data.options?.length) {
-			for (const key of data.options) {
-				await FormFieldOptionsModel.insert({
-					fk_form_id: newField.id,
-					option: key,
-				});
-			}
+		if (
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			[FieldType.MultiSelect, FieldType.SingleSelect].includes(field.type as any) &&
+			data.options
+		) {
+			const insertObj = data.options.map((c) => ({
+				fk_form_id: formId,
+				fk_field_id: field.id,
+				option: c,
+			}));
+
+			await FormFieldOptionsModel.insertMany(insertObj);
 		}
+
+		return field;
 	}
 
 	async toggleFormPublishStatus(eventSlug: string, shouldPublish: boolean) {

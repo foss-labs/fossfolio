@@ -6,6 +6,7 @@ export const CreateFormFieldSchema = z.object({
 	placeholder: z.string().optional(),
 	required: z.boolean(),
 	type: z.enum(FormInput),
+	description: z.string().optional(),
 	options: z.string().array().optional(),
 });
 
@@ -14,6 +15,7 @@ export const EditFormFieldSchema = z.object({
 	placeholder: z.string().optional(),
 	required: z.boolean().optional(),
 	type: z.enum(FormInput).optional(),
+	description: z.string().optional(),
 	options: z.string().array().optional(),
 });
 

@@ -6,6 +6,8 @@ export const FormFieldOptionsSchems = z.object({
 
 	fk_form_id: z.string().length(25),
 
+	fk_field_id: z.string().length(25),
+
 	option: z.string(),
 
 	is_deleted: z.boolean().default(false),
