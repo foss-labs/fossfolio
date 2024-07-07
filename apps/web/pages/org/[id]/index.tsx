@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { NextPageWithLayout } from "next";
 import { HomeLayout } from "@app/layout";
-import { Members } from "@app/components/table";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@app/ui/components/tabs";
-import { Events, InviteModal, OrgSettings } from "@app/views/org";
+import { Events, InviteModal, OrgSettings, Members } from "@app/views/org";
 import { useToggle } from "@app/hooks";
 import { useRouter } from "next/router";
 import { TabName, Tabs as ITabs } from "@app/types";

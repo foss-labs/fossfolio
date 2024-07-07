@@ -1,7 +1,7 @@
 import { Input } from "@app/ui/components/input";
 import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { NewFormSchema, NewFormValidationSchema } from "./common";
+import { NewFormSchema, NewFormValidationSchema } from "../common";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion } from "framer-motion";
 import {

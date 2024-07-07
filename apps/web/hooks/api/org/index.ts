@@ -7,3 +7,4 @@ export {
   useEventParticipants,
   useEventParticipantsFormSubmissions,
 } from "./useParticipants";
+export { useRemoveMember } from "./useRemoveMember";

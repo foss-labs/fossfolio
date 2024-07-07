@@ -91,7 +91,7 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
     }
   };
 
-  const { data, isLoading, refetch } = useMembers();
+  const { data, isLoading } = useMembers();
   const router = useRouter();
 
   const sendEmailInvite: SubmitHandler<Invite> = async (data) => {
@@ -103,14 +103,11 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
           role: data.role,
         }
       );
-
       //In DEV setup we dont send email so instead  a modal open with the invite link
-
       if (!isProd) {
         onInviteModal();
         setLink(response.data);
       }
-
       toast.success("Email was sent");
       form.reset();
     } catch {
@@ -125,9 +122,8 @@ export const Members = ({ setLink, onInviteModal }: IProp) => {
           <RemoveMemberModal
             isOpen={isOpen}
             onClose={triggerModal.off}
-            MemberName={removingMemberInfo.userName}
-            MemberId={removingMemberInfo.userId}
-            refetch={refetch}
+            memberName={removingMemberInfo.userName}
+            memberId={removingMemberInfo.userId}
           />
 
           <form onSubmit={form.handleSubmit(sendEmailInvite)}>

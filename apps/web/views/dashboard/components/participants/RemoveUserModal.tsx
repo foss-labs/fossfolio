@@ -25,7 +25,7 @@ type IModal = {
   ) => Promise<QueryObserverResult<IData, unknown>>;
 };
 
-export const DeleteModal = ({
+export const RemoveUserModal = ({
   isOpen,
   onClose,
   userId,
