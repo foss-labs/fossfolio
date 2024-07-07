@@ -7,7 +7,7 @@ import { useFormState } from "@app/store/useFormState";
 import { useFormSchema } from "@app/hooks/api/form";
 import { Schema } from "@app/hooks/api/form/useFormSchema";
 import Image from "next/image";
-import { DROP_FIELD } from "../constants";
+import { DROP_FIELD } from "../../constants";
 import { convert2base64 } from "@app/utils";
 import { FormDescription } from "./FormDescription";
 import { motion } from "framer-motion";

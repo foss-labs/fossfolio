@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@app/ui/components/table";
-import { DeleteModal } from "./DeleteModal";
+import { RemoveUserModal } from "./RemoveUserModal";
 import { AiOutlineDelete } from "react-icons/ai";
 import { User } from "@app/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@app/ui/components/avatar";
@@ -45,7 +45,7 @@ export const Participants = ({
   const [userMoreInfoId, setUserMoreInfo] = useState("");
   return (
     <Table className="border border-brand-purple-200 rounded-full">
-      <DeleteModal
+      <RemoveUserModal
         isOpen={isModalOpen}
         onClose={toggleModal.off}
         userId={userToBeDeleted}

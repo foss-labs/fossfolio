@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@app/ui/components/form";
 import { useAddForm } from "@app/hooks/api/form";
-import { NewFormSchema, NewFormValidationSchema } from "./common";
+import { NewFormSchema, NewFormValidationSchema } from "../common";
 
 type IModal = {
   isOpen: boolean;

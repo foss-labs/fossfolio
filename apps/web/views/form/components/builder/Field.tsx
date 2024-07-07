@@ -1,7 +1,7 @@
 import { cn } from "@app/ui/lib/utils";
 import { useRef } from "react";
 import { useDrag } from "react-dnd";
-import { DROP_FIELD } from "../constants";
+import { DROP_FIELD } from "../../constants";
 
 interface Prop {
   label: string;
