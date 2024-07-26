@@ -8,10 +8,14 @@ import { DndProvider } from "react-dnd";
 import { Button } from "@app/components/ui/Button";
 
 const Tasks = () => {
-  const { data, isLoading } = useKanban();
+  const { data, isLoading, isError } = useKanban();
 
   if (isLoading) {
     return <Loader />;
+  }
+
+  if (isError) {
+    return <h1>Error</h1>;
   }
   return (
     <div className="h-screen p-5">

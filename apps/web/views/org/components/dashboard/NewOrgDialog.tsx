@@ -46,19 +46,16 @@ const Schema = yup.object().shape({
             // this is used to prevent user from saving the org name as same
             // as the default page names
             if (isPartOfDefaultPages) {
-              throw new Error();
+              resolve(false);
             }
-            if (!el.data.id) {
-              resolve(true);
-            }
-            throw new Error();
 
-            // TODO @sreehari2003
-            // add debouncing here
+            if (el.status === 200) {
+              resolve(false);
+              return;
+            }
           })
           .catch(() => {
-            // already exist
-            resolve(false);
+            resolve(true);
           });
       });
     })
