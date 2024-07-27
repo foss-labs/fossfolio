@@ -113,12 +113,7 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
       />
       <article className="min-h-[700px] w-[300px]" ref={ref}>
         <div className="p-5 flex justify-between">
-          <h3 className="text-start font-bold">
-            {title}
-            <span className="rounded-sm text-gray-400 ml-1 px-2 font-light">
-              {_count.tasks}
-            </span>
-          </h3>
+          <h3 className="text-start font-bold">{title}</h3>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="hover:cursor-pointer">
@@ -137,7 +132,7 @@ export const Kanban = ({ title, _count, id, tasks }: KanbanType) => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {}}
-                className="text-white bg-red-600"
+                className="hover:cursor-pointer"
               >
                 Delete
               </DropdownMenuItem>

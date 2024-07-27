@@ -23,10 +23,6 @@ export const ROUTES = [
     name: "Revenue",
     icon: FiBarChart,
   },
-  {
-    name: "Settings",
-    icon: FiSettings,
-  },
 ];
 
 export const FORM_BUILDER_ROUTES = [

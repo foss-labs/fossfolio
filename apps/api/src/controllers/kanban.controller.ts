@@ -26,9 +26,9 @@ export class KanbanController {
   @ApiOperation({ summary: "get all kanban boards associated with a event" })
   @ApiTags("kanban")
   @UseGuards(AuthGuard("jwt"), RbacGuard)
-  @Get("/:slug")
-  async getAllBoards(@Param("slug") slug: string) {
-    return await this.kanbanService.getAllBoards(slug);
+  @Get("/:id")
+  async getAllBoards(@Param("id") id: string) {
+    return await this.kanbanService.getAllBoards(id);
   }
 
   @ApiOperation({ summary: "create a new task in kanban board" })

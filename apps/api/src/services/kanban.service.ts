@@ -13,14 +13,9 @@ import type { CreateTask } from "./dto/create-task.dto";
 export class KanbanService {
   constructor(private prismaService: PrismaService) {}
 
-  async getAllBoards(slug: string) {
+  async getAllBoards(id: string) {
     try {
-      const event = await EventModel.findOne({
-        slug,
-      });
-
-      if (!event) throw new Error();
-      const allBoards = await KanbanModal.findKanbanBoardsByEvent(event?.id);
+      const allBoards = await KanbanModal.findKanbanBoardsByEvent(id);
 
       return {
         ok: true,

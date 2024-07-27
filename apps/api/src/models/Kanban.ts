@@ -16,15 +16,21 @@ export class KanbanModal extends BaseModel<SystemTable.Kanban, Kanban>(
 
   static async findKanbanBoardsByEvent(id: string, trx?: Knex) {
     try {
-      const kanban = await (trx ?? BaseContext.knex)<SystemTable.Kanban>(
-        SystemTable.Kanban
-      )
+      const qb = trx ?? BaseContext.knex;
+
+      const kanban = await qb(SystemTable.Kanban)
         .where("fk_event_id", id)
-        .select("*");
+        .select(
+          "*",
+          qb.raw(
+            `(SELECT COALESCE(json_agg(row_to_json(${SystemTable.KanbanCard})), '[]'::json) FROM ${SystemTable.KanbanCard} WHERE ${SystemTable.KanbanCard}.fk_kanban_id = ${SystemTable.Kanban}.id) as tasks`
+          )
+        );
 
       return kanban;
     } catch (error) {
       FFError.databaseError(`${SystemTable.Kanban}: Query Failed : `, error);
+      throw error; // Make sure to re-throw the error after logging it
     }
   }
 }
