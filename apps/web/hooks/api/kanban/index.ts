@@ -1,1 +1,2 @@
-export { useKanban } from './useKanban';
+export { useUpdateTask } from "./useUpdateTask";
+export { useKanban } from "./useKanban";

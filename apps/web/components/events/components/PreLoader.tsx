@@ -1,15 +1,15 @@
-import { EventsLoader } from '@app/components/preloaders';
+import { EventsLoader } from "@app/components/preloaders";
 
 type Prop = {
-    count: number;
+  count: number;
 };
 
 export const PreLoader = ({ count = 16 }: Prop) => {
-    return (
-        <div className="flex justify-center md:justify-start flex-wrap gap-4">
-            {new Array(count).fill(0).map((_, index) => (
-                <EventsLoader key={index} />
-            ))}
-        </div>
-    );
+  return (
+    <div className="flex justify-center md:justify-start flex-wrap gap-4">
+      {new Array(count).fill(0).map((_, index) => (
+        <EventsLoader key={index} />
+      ))}
+    </div>
+  );
 };

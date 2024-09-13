@@ -1,124 +1,135 @@
-import { IFormInput } from '@app/views/form';
+import { IFormInput } from "@app/views/form";
 
 export interface Child {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 interface DbProps {
-    createdAt: Date;
-    updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
+  id: string;
 }
 
 export interface User {
-    uid: string;
-    displayName: string;
-    email: string;
-    slug: string;
-    photoURL: string;
-    isStudent: boolean;
-    collegeName?: string;
-    refreshToken: string;
+  id: string;
+  display_name: string;
+  email: string;
+  slug: string;
+  photo_url: string;
+  is_student: boolean;
+  college_name?: string;
+  refresh_token: string;
 }
 
 export type Member = {
-    user: {
-        uid: string;
-        email: string;
-        displayName: string;
-        slug: string;
-    };
-    role: Roles;
+  id: string;
+  fk_user_id: string;
+  role: Role;
+  created_at: Date;
+  updated_at: Date;
+  photo_url: string;
+  email: string;
+  display_name: string;
 };
 
-type Organization = {
-    id: string;
-    name: string;
-    slug: string;
-    createdAt: Date;
-    updatedAt: Date;
-    _count: {
-        members: number;
-        events: number;
-    };
+export type Organization = {
+  id: string;
+  name: string;
+  slug: string;
+  org_created_at: Date;
+  org_updated_at: Date;
+  total_members: number;
+  total_events: number;
+  role: Roles;
+  is_verified: boolean;
 };
-
-export interface IOrg {
-    ok: boolean;
-    message: string;
-    data: {
-        organization: Organization;
-        role: Roles;
-    }[];
-}
 
 export enum Roles {
-    Admin = 'ADMIN',
-    Editor = 'EDITOR',
-    Viewer = 'VIEWER',
+  ADMIN = "admin",
+  EDITOR = "editor",
+  VIEWER = "viewer",
 }
 
-export type Role = 'ADMIN' | 'EDITOR' | 'VIEWER';
+export type Role = "admin" | "editor" | "viewer";
 
 export interface OrgEvents {
-    id: string;
-    name: string;
-    website: string;
-    location: string;
-    createdAt: Date;
-    updatedAt: Date;
-    isPublished: boolean;
-    description: string | null;
-    lastDate: Date;
-    eventDate: Date;
-    maxTicketCount?: number;
-    minTicketCount?: number;
-    isCollegeEvent?: boolean;
-    coverImage?: string;
-    isFormPublished: boolean;
-    form: Iform[];
-    slug: string;
-    ticketPrice: number;
+  id: string;
+  name: string;
+  slug: string;
+  fk_organization_id: string;
+  description: string | null;
+  cover_image: string;
+  website: string;
+  location: string;
+  is_published: boolean;
+  created_at: Date;
+  updated_at: Date;
+  event_date: Date;
 }
 
 export type Iform = {
-    selectOptions?: Array<{
-        option: string;
-    }>;
-    label: string;
-    placeholder?: string;
-    options?: Array<string>;
-    required: boolean;
-    type: IFormInput;
-    id?: string;
+  selectOptions?: Array<{
+    option: string;
+  }>;
+  label: string;
+  placeholder?: string;
+  options?: Array<string>;
+  require: boolean;
+  type: IFormInput;
+  id?: string;
 };
 
 export interface Kanban extends DbProps {
-    id: string;
-    title: string;
-    userUid: string;
-    createdBy: UserInKanban;
-    tasks: Task[];
-    _count: {
-        tasks: number;
-    };
+  id: string;
+  title: string;
+  userUid: string;
+  createdBy: UserInKanban;
+  tasks: Task[];
+  _count: {
+    tasks: number;
+  };
 }
 
 export interface ServerResponse<T> {
-    ok: boolean;
-    message: string;
-    data: T;
+  ok: boolean;
+  message: string;
+  data: T;
 }
 
-type UserInKanban = Omit<User, 'slug' | 'refreshToken' | 'isStudent' | 'collegeName' | 'uid'>;
+type UserInKanban = Omit<
+  User,
+  "slug" | "refreshToken" | "isStudent" | "collegeName" | "uid"
+>;
 export interface Task extends DbProps {
-    id: string;
-    title: string;
-    createdBy: UserInKanban;
-    Comment: Comments[];
+  id: string;
+  title: string;
+  createdBy: UserInKanban;
+  Comment: Comments[];
 }
 
 export interface Comments {
-    id: string;
-    data: string;
-    user: UserInKanban;
+  id: string;
+  data: string;
+  user: UserInKanban;
+}
+
+export const TabName = [
+  { value: "events", title: "All Events" },
+  { value: "teams", title: "Members" },
+  { value: "settings", title: "Settings" },
+] as const;
+
+export type Tabs = (typeof TabName)[number]["value"];
+
+export interface AllForms extends DbProps {
+  fk_event_id: string;
+  title: string;
+  description: string;
+  logo_url: string | null;
+  banner_url: string;
+  confirmation_message: string;
+  misc: Record<string, any>;
+  is_default_form: boolean;
+  is_published: boolean;
+  total_submissions: number;
 }

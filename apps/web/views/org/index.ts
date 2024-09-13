@@ -1,7 +1,9 @@
-export { OrgCard } from './components/OrgCard';
-export { SkeletonCard } from './components/SkeltonCard';
-export { NewOrgDialog } from './components/NewOrgDialog';
-export { DeleteOrg } from './components/DeleteOrg';
-export { Events } from './components/Events';
-export { LeaveOrg } from './components/LeaveOrg';
-export { InviteModal } from './components/InviteModal';
+export { OrgCard } from "./components/dashboard/OrgCard";
+export { SkeletonCard } from "./components/dashboard/SkeltonCard";
+export { NewOrgDialog } from "./components/dashboard/NewOrgDialog";
+export { DeleteOrg } from "./components/settings/DeleteOrg";
+export { Events } from "./components/events/Events";
+export { LeaveOrg } from "./components/settings/LeaveOrg";
+export { InviteModal } from "./components/teams/InviteModal";
+export { OrgSettings } from "./components/settings/OrgSettings";
+export { Members } from "./components/teams/Members";

@@ -1,1 +1,1 @@
-export { AnimatedCharacters } from './components/Animate';
+export { AnimatedCharacters } from "./components/Animate";
