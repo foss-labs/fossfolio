@@ -9,23 +9,27 @@ import { useRoles, useToggle } from "@app/hooks";
 import { motion } from "framer-motion";
 import { Button } from "@app/components/ui/Button";
 import { useMemo } from "react";
+import { useDeleteEvent } from "@app/hooks/api/Events";
+
 
 export const DashNav = () => {
   const router = useRouter();
+  const { id, eventid } = router.query;
 
-  const { canEditEvent } = useRoles();
+  const { mutate: deleteEvent } = useDeleteEvent(eventid as string, id as string);
+
+  const { canEditEvent,canDeleteEvent } = useRoles();
 
   const page = useMemo(() => {
     return router.pathname.split("/")[4];
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  const { id, eventid } = router.query;
 
   const { data, isLoading: isEventLoading, refetch } = useEvent("event");
 
   const [isLoading, toggleLoading] = useToggle(false);
+
 
   const publishEvent = async () => {
     try {
@@ -110,15 +114,12 @@ export const DashNav = () => {
           </TabsList>
         </Tabs>
       </div>
-      {canEditEvent && (
-        <Button
-          disabled={isEventLoading || isLoading}
-          isLoading={isLoading}
-          // onClick={toggleEventPublish}
-        >
-          <span className="text-white">Publish Event</span>
-        </Button>
-      )}
+      <div className="flex gap-3">
+        {canDeleteEvent && (
+          <Button variant="outline" onClick={() => deleteEvent()}>Delete Event</Button>
+        )}
+        {canEditEvent && <Button>Publish Event</Button>}
+      </div>
     </div>
   );
 };

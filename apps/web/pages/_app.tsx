@@ -14,6 +14,7 @@ import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { Analytics } from "@vercel/analytics/react";
 import { ENV } from "@app/config";
+import { isProd } from "@app/utils";
 
 type ComponentWithPageLayout = AppProps & {
   Component: AppProps["Component"] & {
@@ -33,7 +34,7 @@ export const queryClient = new QueryClient({
   },
 });
 
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined" && isProd) {
   posthog.init(ENV.post_hog_key, {
     api_host: ENV.post_hog_host || "https://us.i.posthog.com",
     loaded: (posthog) => {

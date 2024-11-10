@@ -4,7 +4,12 @@ import { apiHandler } from "@app/config";
 import type { Member } from "@app/types";
 
 const getAllMembers = async (id: string): Promise<Member[]> => {
-  const { data } = await apiHandler.get(`/org/${id}/member`);
+  const { data } = await apiHandler.get(`/org/${id}/member`,{
+      params: {
+        orgId: id,
+      },
+    }
+  );
   return data;
 };
 

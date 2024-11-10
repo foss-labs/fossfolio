@@ -2,18 +2,30 @@ import { cn } from "@app/ui/lib/utils";
 import { MenuBar } from "./MenuBar";
 import { defaultContent } from "./constants";
 import { extensions } from "./extentions";
-import { EditorContent, useEditor } from "@tiptap/react";
-import React, { forwardRef } from "react";
+import { Editor as EditorType, EditorContent, useEditor } from "@tiptap/react";
+import React, { forwardRef, HTMLAttributes, useCallback } from "react";
 
-interface Props {
+interface Props extends HTMLAttributes<HTMLDivElement> {
   defaultValue?: string;
   className?: string;
   contentClassName?: string;
-  onChange?: (e: React.FormEvent<HTMLDivElement>) => void;
+  getEditor: (data: EditorType | null) => void;
 }
 
-export const Editor: React.FC<Props> = forwardRef<HTMLDivElement, Props>(
-  ({ defaultValue, className, contentClassName, onChange }, ref) => {
+export const Editor: React.ForwardRefExoticComponent<
+  Props & React.RefAttributes<HTMLDivElement>
+> = forwardRef(
+  (
+    {
+      defaultValue,
+      className,
+      contentClassName,
+      onChange,
+      getEditor,
+      ...props
+    },
+    ref
+  ) => {
     const editor = useEditor({
       extensions: extensions,
       content: defaultValue || defaultContent,
@@ -29,7 +41,7 @@ export const Editor: React.FC<Props> = forwardRef<HTMLDivElement, Props>(
           editor={editor}
           className={cn("p-3", contentClassName)}
           ref={ref}
-          onChange={onChange}
+          onChange={(e) => getEditor(editor)}
         />
       </section>
     );

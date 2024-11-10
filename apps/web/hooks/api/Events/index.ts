@@ -3,3 +3,4 @@ export { useEvent } from "./useEvent";
 export { useUserRegistrationStatus } from "./useEventStatus";
 export { useEventStats } from "./useEventStats";
 export { usePublicOrgEvents } from "./usePublicOrgEvents";
+export { useDeleteEvent } from "./useDeleteEvent";

@@ -108,7 +108,11 @@ export const NewEventDialog = ({ isOpen, onClose, refetch }: IModal) => {
         description: "",
       };
       // create new event
-      await apiHandler.post(`/events/${id}/create`, payload);
+      await apiHandler.post(`/events/create`, payload,{
+        params: {
+          orgId: id,
+        },
+      });
 
       onClose();
     } catch {

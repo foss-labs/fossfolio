@@ -7,6 +7,7 @@ import {
   Post,
   UseGuards,
   Delete,
+  Query,
 } from "@nestjs/common";
 import { OrganizationService } from "../services/organization.service";
 import { AuthGuard } from "@nestjs/passport";
@@ -39,16 +40,16 @@ export class OrganizationController {
     return this.organizationService.findOrgBySlug(slug);
   }
 
-  @Get("/:orgId")
+  @Get("/")
   @UseGuards(AuthGuard("jwt"), RbacGuard)
-  async getOrgInfo(@Param("orgId") info) {
+  async getOrgInfo(@Query("orgId") info) {
     return await this.organizationService.getOrgById(info);
   }
 
-  @Get("/:orgId/events")
+  @Get("/events")
   @Roles(Role.ADMIN, Role.EDITOR, Role.VIEWER)
   @UseGuards(AuthGuard("jwt"), RbacGuard)
-  async getAllEvents(@Param("orgId") orgID: string, @AuthUser() user: User) {
+  async getAllEvents(@Query("orgId") orgID: string, @AuthUser() user: User) {
     return this.organizationService.getAllEvents(user.id, orgID);
   }
 

@@ -14,7 +14,11 @@ type IData = {
 };
 
 const getOrg = async (id: string) => {
-  const { data } = await apiHandler.get(`/org/${id}`);
+  const { data } = await apiHandler.get(`/org`, {
+    params: {
+      orgId: id,
+    },
+  });
   return data;
 };
 

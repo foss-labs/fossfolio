@@ -11,9 +11,13 @@ import type { OrgEvents } from "@app/types";
 
 */
 
-const getEvent = async (id: string, type: Fetch = "event") => {
-  const url = type === "public" ? `/events/${id}` : `/events/org/${id}`;
-  const { data } = await apiHandler.get(url);
+const getEvent = async (id: string, orgId: string, type: Fetch = "event") => {
+  const url = type === "public" ? `/events` : `/org`;
+  const { data } = await apiHandler.get(url, {
+    params: {
+      id: id,
+    },
+  });
   return data;
 };
 

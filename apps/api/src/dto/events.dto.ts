@@ -1,56 +1,85 @@
-import { z } from 'zod';
+import {
+  IsString,
+  IsOptional,
+  IsUrl,
+  IsBoolean,
+  IsDate,
+} from "class-validator";
 
-export const CreateEventSchema = z.object({
-	name: z.string(),
+export class CreateEventDto {
+  @IsString()
+  name: string;
 
-	description: z.string().optional(),
+  @IsString()
+  @IsOptional()
+  description?: string;
 
-	website: z.string(),
+  @IsString()
+  website: string;
 
-	location: z.string(),
+  @IsString()
+  location: string;
 
-	cover_image: z.string(),
+  @IsString()
+  cover_image: string;
 
-	event_date: z.string().transform((str) => new Date(str)),
-});
+  @IsDate()
+  event_date: Date;
+}
 
-export const CreateEventParamsSchema = z.object({
-	orgId: z.string(),
-});
+export class CreateEventParams {
+  @IsString()
+  orgId: string;
+}
 
-export const DashBoardEventParamsSchema = z.object({
-	eventId: z.string(),
-});
+export class DashboardEventParams {
+  @IsString()
+  eventId: string;
+}
 
-export const EventParamsSchema = z.object({
-	eventId: z.string(),
-	orgId: z.string(),
-});
+export class EventParams {
+  @IsString()
+  eventId: string;
 
-export const PublicEventParamsSchema = z.object({
-	slug: z.string(),
-});
+  @IsString()
+  orgId: string;
+}
 
-export const UpdateEventSchema = z.object({
-	name: z.string().optional(),
+export class PublicEventParams {
+  @IsString()
+  slug: string;
+}
 
-	description: z.string().optional(),
+export class UpdateEventDto {
+  @IsString()
+  @IsOptional()
+  name?: string;
 
-	website: z.string().url().optional(),
+  @IsString()
+  @IsOptional()
+  description?: string;
 
-	location: z.string().optional(),
+  @IsUrl()
+  @IsOptional()
+  website?: string;
 
-	cover_image: z.string().url().optional(),
+  @IsString()
+  @IsOptional()
+  location?: string;
 
-	is_published: z.boolean().optional(),
-});
+  @IsUrl()
+  @IsOptional()
+  cover_image?: string;
 
-export type UpdateEventDto = z.infer<typeof UpdateEventSchema>;
+  @IsBoolean()
+  @IsOptional()
+  is_published?: boolean;
 
-export type CreateEventDto = z.infer<typeof CreateEventSchema>;
+  @IsString()
+  @IsOptional()
+  slug?: string;
 
-export type DashBoardEventParams = z.infer<typeof DashBoardEventParamsSchema>;
-
-export type PublicEventParams = z.infer<typeof PublicEventParamsSchema>;
-
-export type EventParams = z.infer<typeof EventParamsSchema>;
+  @IsString()
+  @IsOptional()
+  event_date?: Date;
+}

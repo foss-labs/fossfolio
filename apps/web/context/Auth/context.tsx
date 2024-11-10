@@ -93,9 +93,11 @@ export const AuthGuard = ({ children }: Child): JSX.Element => {
     if (!ctx.role && router.isReady) {
       (async () => {
         try {
-          const { data } = await apiHandler.get<IOrgEvents>(
-            `/org/${router.query.id}/events`
-          );
+          const { data } = await apiHandler.get<IOrgEvents>(`/org/events`, {
+            params: {
+              orgId: router.query.id as string,
+            },
+          });
           ctx.setRole(data.role);
         } catch {
           console.error("Error getting user role");
