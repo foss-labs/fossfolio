@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { NextPageWithLayout } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Editor } from "novel";
+import { Editor } from "@app/components/editor";
 import { RiLoaderFill } from "react-icons/ri";
 import { toast } from "sonner";
 import { Error } from "@app/components/Error";
@@ -93,10 +93,8 @@ const Event: NextPageWithLayout = () => {
         <section className="flex p-4 flex-col md:flex-row">
           <Editor
             className="w-full"
-            defaultValue={JSON.parse(data.data?.description as string)}
-            editorProps={{
-              editable: () => false,
-            }}
+            value={data.description}
+            editable={false}
           />
           <div className="flex flex-col rounded-md">
             <Image

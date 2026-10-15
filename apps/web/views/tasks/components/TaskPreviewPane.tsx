@@ -1,6 +1,6 @@
 import { Button } from "@app/components/ui/Button";
 import { Comments } from "@app/types";
-import { Editor } from "novel";
+import { Editor } from "@app/components/editor";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 
@@ -20,7 +20,6 @@ export const TaskPreviewPane = ({
   storageKey,
 }: Props) => {
   const handleClose = () => {
-    localStorage.clear();
     onClose();
   };
 
@@ -40,14 +39,18 @@ export const TaskPreviewPane = ({
             <Editor
               key={desc.id}
               className="w-full"
-              completionApi={`/api/generate`}
-              storageKey={desc.id}
-              defaultValue={JSON.parse(desc.data) || ""}
+              value={desc.data}
+              editable={false}
             />
           ))}
         </article>
         <article className="border-2 rounded-sm mt-3 p-2">
-          <Editor className="w-full" storageKey={storageKey} defaultValue="" />
+          <Editor
+            key={storageKey}
+            className="w-full"
+            storageKey={`kanban-comment-draft:${storageKey}`}
+            defaultValue=""
+          />
         </article>
         <Button className="mt-3">Save</Button>
       </div>

@@ -1,23 +1,24 @@
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
+import StarterKit from "@tiptap/starter-kit";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
 import TextStyle from "@tiptap/extension-text-style";
-import Bold from "@tiptap/extension-bold";
-import List from "@tiptap/extension-list-item";
-import Italic from "@tiptap/extension-italic";
-import Strike from "@tiptap/extension-strike";
-import Heading from "@tiptap/extension-heading";
+import Underline from "@tiptap/extension-underline";
 
+// Keep the same node and mark names as saved Novel documents.
 export const extensions = [
-  Document,
-  Paragraph,
-  Text,
+  StarterKit,
   TextStyle,
-  Bold,
-  List,
-  Italic,
-  Strike,
-  Heading.configure({
-    levels: [1, 2, 3, 4],
-  }),
+  Color,
+  Underline,
+  Highlight.configure({ multicolor: true }),
+  Link.configure({ openOnClick: false, defaultProtocol: "https" }),
+  Image,
+  TaskList,
+  TaskItem.configure({ nested: true }),
+  Placeholder.configure({ placeholder: "Start writing…" }),
 ];

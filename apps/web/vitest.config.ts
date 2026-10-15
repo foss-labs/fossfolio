@@ -10,6 +10,7 @@ export default defineConfig({
     exclude: ["./e2e"],
     alias: {
       "@app": path.resolve(__dirname),
+      ui: path.resolve(__dirname, "ui"),
     },
   },
 });

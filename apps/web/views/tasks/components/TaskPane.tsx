@@ -11,8 +11,9 @@ import {
 } from "@app/ui/components/select";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { Editor } from "novel";
-import { useRef } from "react";
+import { Editor } from "@app/components/editor";
+import type { JSONContent } from "@tiptap/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 import { toast } from "sonner";
@@ -34,33 +35,38 @@ const InputOption = [
   },
 ];
 
-const defaultEditorContent = {
+const defaultEditorContent: JSONContent = {
   type: "doc",
-  content: [
-    {
-      type: "heading",
-      attrs: { level: 2 },
-      content: [{ type: "text", text: "Add Your Description Here" }],
-    },
-  ],
+  content: [{ type: "paragraph" }],
 };
 
 export const TaskPane = ({ open, onClose, boardId }: Props) => {
-  const titleRef = useRef<any>();
+  const titleRef = useRef<HTMLInputElement>(null);
+  const [description, setDescription] =
+    useState<JSONContent>(defaultEditorContent);
   const router = useRouter();
   const { eventid } = router.query;
   const { refetch } = useKanban();
 
+  const reset = useCallback(() => {
+    setDescription(defaultEditorContent);
+    if (titleRef.current) titleRef.current.value = "";
+  }, []);
+
+  useEffect(() => {
+    if (!open) reset();
+  }, [open, reset]);
+
   const handleClose = () => {
-    localStorage.removeItem("kanban-editor");
+    reset();
     onClose();
   };
 
   const onSave = async () => {
     try {
       await apiHandler.post(`/events/kanban/${eventid}/${boardId}`, {
-        title: titleRef.current.value,
-        data: localStorage.getItem("kanban-editor"),
+        title: titleRef.current?.value,
+        data: JSON.stringify(description),
       });
       handleClose();
     } catch {
@@ -106,9 +112,8 @@ export const TaskPane = ({ open, onClose, boardId }: Props) => {
         <article className="border-2 rounded-sm mt-3 min-h-[700px]">
           <Editor
             className="w-full"
-            completionApi={`/api/generate`}
-            storageKey="kanban-editor"
-            defaultValue={defaultEditorContent}
+            value={description}
+            onChange={setDescription}
           />
         </article>
         <Button className="mt-3" onClick={handleSave} isLoading={isLoading}>
