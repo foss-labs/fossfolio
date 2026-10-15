@@ -1,4 +1,7 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { generateJSON, type JSONContent } from "@tiptap/react";
+import { extensions } from "@app/components/editor/components/extentions";
+import { parseContent } from "@app/components/editor/components/content";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
 import { DashboardLayout } from "@app/layout";
@@ -56,6 +59,16 @@ const Event = () => {
   const router = useRouter();
   const isPhoneScreen = useMediaQuery("(max-width: 767px)");
   const { id, eventid } = router.query;
+  const [description, setDescription] = useState<JSONContent | null>(null);
+  const [isSavingDescription, setIsSavingDescription] = useState(false);
+  const savingDescription = useRef(false);
+
+  useEffect(() => {
+    const content = parseContent(data?.description);
+    setDescription(
+      typeof content === "string" ? generateJSON(content, extensions) : content,
+    );
+  }, [data?.description, id, eventid]);
 
   const form = useForm<EventSchema>({
     mode: "onChange",
@@ -86,47 +99,45 @@ const Event = () => {
 
   const { canEditEvent } = useRoles();
 
-  const handleSaveShortcut = async (event: KeyboardEvent) => {
-    if (!canEditEvent) {
+  const handleUpdate = useCallback(async () => {
+    if (
+      !canEditEvent ||
+      !id ||
+      !eventid ||
+      !description ||
+      savingDescription.current
+    ) {
       return;
     }
-    // Check if the key combination is Ctrl + S (for Windows/Linux) or Command + S (for macOS)
-    if ((event.ctrlKey || event.metaKey) && event.key === "s") {
-      event.preventDefault();
-      try {
-        await handleUpdate();
-        toast.success("Description was saved successfully");
-      } catch {
-        toast.error("Error updating description");
-      }
+    savingDescription.current = true;
+    setIsSavingDescription(true);
+    try {
+      await apiHandler.patch(`/events/${id}/${eventid}`, {
+        description: JSON.stringify(description),
+      });
+      toast.success("Description was saved successfully");
+    } catch {
+      toast.error("Error updating description");
+    } finally {
+      savingDescription.current = false;
+      setIsSavingDescription(false);
     }
-  };
+  }, [canEditEvent, description, id, eventid]);
 
   useEffect(() => {
-    window.addEventListener("keydown", handleSaveShortcut);
-
-    return () => {
-      window.removeEventListener("keydown", handleSaveShortcut);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleUpdate = async () => {
-    try {
-      if (!canEditEvent) {
-        return;
+    const handleSaveShortcut = (event: KeyboardEvent) => {
+      if (
+        canEditEvent &&
+        (event.ctrlKey || event.metaKey) &&
+        event.key.toLowerCase() === "s"
+      ) {
+        event.preventDefault();
+        void handleUpdate();
       }
-      const input = localStorage.getItem("novel__content");
-      // if event date is before end date
-      await apiHandler.patch(`/events/edit`, {
-        description: input,
-        organizationId: id,
-        eventSlug: eventid,
-      });
-    } catch {
-      console.warn("error updating event description");
-    }
-  };
+    };
+    window.addEventListener("keydown", handleSaveShortcut);
+    return () => window.removeEventListener("keydown", handleSaveShortcut);
+  }, [canEditEvent, handleUpdate]);
 
   const handleFaqAdd: SubmitHandler<FaqSchema> = (data) => {
     if (fields.length === 10) {
@@ -173,7 +184,21 @@ const Event = () => {
               )}
             />
             <FormLabel>Description</FormLabel>
-            <Editor />
+            <Editor
+              value={description}
+              onChange={setDescription}
+              editable={canEditEvent}
+            />
+            {canEditEvent && (
+              <Button
+                type="button"
+                onClick={handleUpdate}
+                isLoading={isSavingDescription}
+                isDisabled={!description || !id || !eventid}
+              >
+                Save description
+              </Button>
+            )}
             <FormField
               control={form.control}
               name="slug"

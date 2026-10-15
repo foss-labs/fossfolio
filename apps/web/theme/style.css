@@ -106,12 +106,103 @@
   }
 }
 
-/* For the tiptap editor */
-.ProseMirror {
+/* Shared by editable documents and read-only event/task descriptions. */
+.rich-text-editor .tiptap {
   outline: none;
-  min-height: 200px;
-  max-height: 400px;
-  overflow-y: scroll;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+.rich-text-editor[data-editable="true"] .tiptap {
+  min-height: 240px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.rich-text-editor .tiptap > * + * {
+  margin-top: 0.75em;
+}
+.rich-text-editor .tiptap h1 {
+  font-size: 2em;
+}
+.rich-text-editor .tiptap h2 {
+  font-size: 1.5em;
+}
+.rich-text-editor .tiptap h3 {
+  font-size: 1.25em;
+}
+.rich-text-editor .tiptap :is(h1, h2, h3, h4, h5, h6) {
+  font-weight: 600;
+  line-height: 1.3;
+}
+.rich-text-editor .tiptap ul {
+  list-style: disc;
+  padding-left: 1.5em;
+}
+.rich-text-editor .tiptap ol {
+  list-style: decimal;
+  padding-left: 1.5em;
+}
+.rich-text-editor .tiptap blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 1em;
+  color: hsl(var(--muted-foreground));
+}
+.rich-text-editor .tiptap code {
+  background: hsl(var(--muted));
+  border-radius: 0.25em;
+  padding: 0.15em 0.3em;
+  font-size: 0.9em;
+}
+.rich-text-editor .tiptap pre {
+  background: hsl(var(--muted));
+  border-radius: 0.375em;
+  padding: 1em;
+  overflow-x: auto;
+}
+.rich-text-editor .tiptap pre code {
+  padding: 0;
+  background: none;
+}
+.rich-text-editor .tiptap a {
+  color: hsl(var(--foreground));
+  text-decoration: underline;
+  cursor: pointer;
+}
+.rich-text-editor .tiptap hr {
+  border-top: 1px solid hsl(var(--border));
+  margin: 1.5em 0;
+}
+.rich-text-editor .tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375em;
+}
+.rich-text-editor .tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+.rich-text-editor .tiptap li[data-type="taskItem"] {
+  display: flex;
+  gap: 0.5em;
+  align-items: flex-start;
+}
+.rich-text-editor .tiptap li[data-type="taskItem"] > label {
+  flex-shrink: 0;
+}
+.rich-text-editor .tiptap li[data-type="taskItem"] > div {
+  flex: 1;
+  min-width: 0;
+}
+.rich-text-editor .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground));
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+.rich-text-editor .tiptap .ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--ring));
 }
 
 /* For the image sizing next js */
