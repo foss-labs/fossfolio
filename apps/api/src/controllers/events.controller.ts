@@ -15,6 +15,10 @@ import { AuthUser } from '../services/auth/decorators/user.decorator';
 import { RbacGuard } from '../services/guards/rbac-member.guard';
 import {
 	CreateEventDto,
+	CreateEventParamsSchema,
+	CreateEventParams,
+	EventParams,
+	PublicEventParams,
 	PublicEventParamsSchema,
 	UpdateEventSchema,
 	UpdateEventDto,
@@ -24,8 +28,7 @@ import { Roles } from '../services/decorator/roles.decorator';
 import { ZodValidator } from '@api/validation/zod.validation.decorator';
 import { CreateEventSchema } from '@api/dto/events.dto';
 import { Role } from '@api/utils/db';
-import { User } from '@api/db/schema';
-import { z } from 'zod';
+import type { User } from '@api/db/schema';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('/events')
@@ -43,12 +46,12 @@ export class EventsController {
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	@ZodValidator({
 		body: CreateEventSchema,
-		params: z.string(),
+		params: CreateEventParamsSchema,
 	})
 	async createEvent(
 		@Body() createEventData: CreateEventDto,
 		@AuthUser() user: User,
-		@Param('orgId') orgId: string,
+		@Param() { orgId }: CreateEventParams,
 	) {
 		return await this.events.createEvent({
 			newEvent: createEventData,
@@ -60,7 +63,7 @@ export class EventsController {
 	@Get('/:slug')
 	@UseGuards(AuthGuard('jwt'), RbacGuard)
 	@ZodValidator({ params: PublicEventParamsSchema })
-	async getEventBySlug(@Param('slug') slug: string) {
+	async getEventBySlug(@Param() { slug }: PublicEventParams) {
 		return await this.events.getEventBySlug(slug);
 	}
 
@@ -79,8 +82,7 @@ export class EventsController {
 	async updateEvent(
 		@Body() updateData: UpdateEventDto,
 		@AuthUser() user: User,
-		@Param('orgId') orgId: string,
-		@Param('eventId') eventId: string,
+		@Param() { orgId, eventId }: EventParams,
 	) {
 		return await this.events.updateEvent({
 			updateData,
@@ -96,10 +98,7 @@ export class EventsController {
 	@ZodValidator({
 		params: EventParamsSchema,
 	})
-	async deleteEvent(
-		@Param('orgId') orgId: string,
-		@Param('eventId') eventId: string,
-	) {
+	async deleteEvent(@Param() { orgId, eventId }: EventParams) {
 		return await this.events.deleteEvent({
 			eventId,
 			orgId,

@@ -10,6 +10,7 @@
     "dev": "node --inspect --watch -r '@swc-node/register' --enable-source-maps src/main.ts | pino-pretty",
     "dev-new": "concurrently \"tsc --noEmit --watch\"  \"node -r '@swc-node/register' --watch --enable-source-maps src/main.ts | pino-pretty \"",
     "start:prod": "node dist/main",
+    "test": "node --test -r @swc-node/register src/**/*.spec.ts",
     "lint": "biome lint --error-on-warnings ./src",
     "format": "npx @biomejs/biome format --write ./src"
   },
@@ -60,6 +61,7 @@
     "@biomejs/biome": "^1.7.3",
     "@faker-js/faker": "^8.4.1",
     "@nestjs/cli": "^10.3.2",
+    "@nestjs/testing": "10.3.3",
     "@react-email/components": "^0.0.15",
     "@swc-node/register": "^1.9.1",
     "@swc/cli": "^0.3.9",

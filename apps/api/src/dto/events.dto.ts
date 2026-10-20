@@ -49,6 +49,8 @@ export type UpdateEventDto = z.infer<typeof UpdateEventSchema>;
 
 export type CreateEventDto = z.infer<typeof CreateEventSchema>;
 
+export type CreateEventParams = z.infer<typeof CreateEventParamsSchema>;
+
 export type DashBoardEventParams = z.infer<typeof DashBoardEventParamsSchema>;
 
 export type PublicEventParams = z.infer<typeof PublicEventParamsSchema>;
