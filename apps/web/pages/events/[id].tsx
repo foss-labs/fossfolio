@@ -8,11 +8,11 @@ import { useMutation } from "@tanstack/react-query";
 import { NextPageWithLayout } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Editor } from "novel";
 import { RiLoaderFill } from "react-icons/ri";
 import { toast } from "sonner";
 import { Error } from "@app/components/Error";
 import { Loader } from "@app/components/preloaders";
+import { Editor } from "@app/components/editor";
 
 const Event: NextPageWithLayout = () => {
   const {
@@ -94,9 +94,7 @@ const Event: NextPageWithLayout = () => {
           <Editor
             className="w-full"
             defaultValue={JSON.parse(data.data?.description as string)}
-            editorProps={{
-              editable: () => false,
-            }}
+            editable={false}
           />
           <div className="flex flex-col rounded-md">
             <Image

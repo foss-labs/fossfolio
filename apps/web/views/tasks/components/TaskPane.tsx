@@ -9,9 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@app/ui/components/select";
+import { Editor } from "@app/components/editor";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { Editor } from "novel";
 import { useRef } from "react";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
@@ -104,12 +104,7 @@ export const TaskPane = ({ open, onClose, boardId }: Props) => {
           </Select>
         </article>
         <article className="border-2 rounded-sm mt-3 min-h-[700px]">
-          <Editor
-            className="w-full"
-            completionApi={`/api/generate`}
-            storageKey="kanban-editor"
-            defaultValue={defaultEditorContent}
-          />
+          <Editor className="w-full" defaultValue={defaultEditorContent} />
         </article>
         <Button className="mt-3" onClick={handleSave} isLoading={isLoading}>
           Save
